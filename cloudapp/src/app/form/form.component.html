@@ -1,0 +1,42 @@
+<div class="title">
+  <h2>{{ (id ? 'Form.EditTitle' : 'Form.AddTitle') | translate}}</h2>
+</div>
+
+<div class="loading-shade" *ngIf="loading">
+  <mat-progress-spinner 
+    mode="indeterminate"
+    diameter="50"
+    >
+  </mat-progress-spinner>
+</div>
+
+<h3></h3>
+<form *ngIf="form" [formGroup]="form">
+  <mat-form-field>
+    <mat-label translate>Form.Fields.Id</mat-label>
+    <input matInput formControlName="id">
+    <mat-error *ngIf="form.controls.id.invalid" translate>Form.Errors.Id</mat-error>
+  </mat-form-field>  
+  <mat-form-field>
+    <mat-label translate>Form.Fields.Description</mat-label>
+    <input matInput formControlName="description">
+    <mat-error *ngIf="form.controls.description.invalid" translate>Form.Errors.Description</mat-error>
+  </mat-form-field>   
+  <mat-form-field>
+    <mat-label translate>Form.Fields.Library</mat-label>
+    <input matInput formControlName="library">
+  </mat-form-field>  
+  <mat-form-field>
+    <mat-label translate>Form.Fields.Location</mat-label>
+    <input matInput formControlName="location">
+  </mat-form-field>  
+  <mat-checkbox formControlName="ill" labelPosition="before">{{ 'Form.Fields.Ill' | translate }}</mat-checkbox>   
+  <div class="commands-container">
+    <button mat-stroked-button type="button" color="primary" (click)="save()" [disabled]="!form.dirty || !form.valid">
+      {{ 'Save' | translate }}
+    </button>
+    <button mat-stroked-button [routerLink]="['/holdings', mmsId]">
+      {{'Cancel' | translate}}
+    </button>
+  </div>
+</form>

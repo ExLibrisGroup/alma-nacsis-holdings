@@ -1,0 +1,45 @@
+{
+   "id": "nacsis-holdings",
+   "title": [
+      {
+         "lang": "jp",
+         "text": "NACSIS Holdings"
+      },
+      {
+         "lang": "en",
+         "text": "NACSIS Holdings"
+      }
+   ],
+   "description": [
+      {
+         "lang": "jp",
+         "text": "アルマの特定の書誌レコードのNII NACSIS-CATからの所蔵レコードを表示、編集、および更新します。"
+      },
+      {
+         "lang": "en",
+         "text": "Display, edit, and update holdings records from the NII NACSIS-CAT for a given Bibliographic record in Alma. This app is supported by Ex Libris."
+      }
+   ],
+   "subtitle": [
+      {
+         "lang": "jp",
+         "text": "NACSIS-CATの所蔵記録を更新する"
+      },
+      {
+         "lang": "en",
+         "text": "Update holdings records in NACSIS-CAT"
+      }
+   ],
+   "icon": {
+      "type": "url",
+      "value": "/assets/nacsis-logo.png"
+   },
+   "contentSecurity": {
+      "sandbox": {
+         "modals": true
+      }
+   },
+   "pages": {
+      "config": "/#/configuration"
+   }
+}

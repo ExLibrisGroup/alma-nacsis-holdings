@@ -1,0 +1,17 @@
+<div *ngIf="bibs.length>0 else nobibs">
+  <p translate>Main.Intro</p>
+  <mat-form-field>
+    <mat-placeholder translate>Main.SelectBib</mat-placeholder>
+    <mat-select [(value)]="selected">
+      <mat-option *ngFor="let bib of bibs" [value]="bib.id">
+        {{bib.description}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-button mat-stroked-button color="primary" aria-label="search" (click)="search()" [disabled]="!selected">
+    {{ 'Main.RetrieveHoldings' | translate }}
+</button>
+</div>
+<ng-template #nobibs>      
+    <p translate>Main.NoRecords</p>
+</ng-template>

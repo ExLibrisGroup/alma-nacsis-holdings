@@ -1,0 +1,8 @@
+{
+  "Main": {
+    "Intro": "NACSISの所蔵を取得するレコードを選択してください：",
+    "NoRecords": "NACSISの所蔵を表示するには、書誌レコードに移動します。",
+    "SelectBib": "タイトルを選択",
+    "RetrieveHoldings": "NACSISホールディングスを取得する"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "Main": {
+    "Intro": "Select a record to retrieve NACSIS holdings:",
+    "NoRecords": "To view NACSIS holdings, navigate to a bibliographic record.",
+    "SelectBib": "Select a title",
+    "RetrieveHoldings": "Retrieve NACSIS Holdings"
+  },
+  "Holdings": {
+    "Title": "Holdings",
+    "Library": "Library",
+    "Location": "Location",
+    "ConfirmDelete": "Are you sure you wish to delete this record?",
+    "Deleted": "Record successfully deleted.",
+    "Add": "Add NACSIS Holding"
+  },
+  "Form": {
+    "EditTitle": "Edit Holding",
+    "AddTitle": "Add Holding",
+    "Success": "Holding successfully saved.",
+    "Fields": {
+      "Id": "ID",
+      "Description": "Description",
+      "Library": "Library",
+      "Location": "Location",
+      "Ill": "Available for resource sharing"
+    },
+    "Errors": {
+      "Id": "ID is required",
+      "Description": "Description is required"
+    }
+  },
+  "Config": {
+    "Title": "Configuration",
+    "Success": "Configuration successfully saved.",
+    "Fields": {
+      "Code": "NACSIS Code"
+    }
+  },
+  "Back": "Back",
+  "Cancel": "Cancel",
+  "Save": "Save"
+
+}
