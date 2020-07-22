@@ -37,9 +37,15 @@
    "contentSecurity": {
       "sandbox": {
          "modals": true
-      }
+      },
+      "connectSrc": [
+         "http://*.corp.exlibrisgroup.com:1801"
+      ]
    },
    "pages": {
       "config": "/#/configuration"
+   },
+   "fullscreen": {
+      "allow": true
    }
 }

@@ -23,6 +23,15 @@ export class MainComponent implements OnInit, OnDestroy {
     this.pageLoad$ = this.eventsService.onPageLoad( pageInfo => {
       this.bibs = (pageInfo.entities||[]).filter(e=>e.type==EntityType.BIB_MMS);
     });
+    this.eventsService.getInitData().subscribe(
+      data => {
+        console.log(data);
+        // this.welcomeText = data.user.lastName;
+        // if (data.user.isAdmin) {
+        //   this.welcomeText += " (you are Admin)";
+        // }
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -31,7 +40,9 @@ export class MainComponent implements OnInit, OnDestroy {
 
   search() {
     if (this.selected) {
-      this.router.navigate(['/holdings', this.selected]);
+      // TODO should be single bib, rest call return the same id for all bibs???
+      var bib = this.bibs.filter(bib => bib.id == this.selected);
+      this.router.navigate(['/holdings', this.selected, bib[0].description]);
     }
   }
 }

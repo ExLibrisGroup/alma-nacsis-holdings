@@ -14,6 +14,9 @@ import { HoldingsComponent } from './holdings/holdings.component';
 import { FormComponent } from './form/form.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 
+import { FlexLayoutModule } from '@angular/flex-layout';
+
+
 export function getToastrModule() {
   return ToastrModule.forRoot({
     positionClass: 'toast-top-right',
@@ -39,7 +42,8 @@ export function getToastrModule() {
       FormsModule,
       ReactiveFormsModule,
       getTranslateModule(),
-      getToastrModule()
+      getToastrModule(),
+      FlexLayoutModule
    ],
    providers: [],
    bootstrap: [

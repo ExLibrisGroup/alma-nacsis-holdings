@@ -3,40 +3,116 @@
 </div>
 
 <div class="loading-shade" *ngIf="loading">
-  <mat-progress-spinner 
-    mode="indeterminate"
-    diameter="50"
-    >
+  <mat-progress-spinner mode="indeterminate" diameter="50">
   </mat-progress-spinner>
 </div>
 
 <h3></h3>
-<form *ngIf="form" [formGroup]="form">
-  <mat-form-field>
-    <mat-label translate>Form.Fields.Id</mat-label>
-    <input matInput formControlName="id">
-    <mat-error *ngIf="form.controls.id.invalid" translate>Form.Errors.Id</mat-error>
-  </mat-form-field>  
-  <mat-form-field>
-    <mat-label translate>Form.Fields.Description</mat-label>
-    <input matInput formControlName="description">
-    <mat-error *ngIf="form.controls.description.invalid" translate>Form.Errors.Description</mat-error>
-  </mat-form-field>   
-  <mat-form-field>
-    <mat-label translate>Form.Fields.Library</mat-label>
-    <input matInput formControlName="library">
-  </mat-form-field>  
-  <mat-form-field>
-    <mat-label translate>Form.Fields.Location</mat-label>
-    <input matInput formControlName="location">
-  </mat-form-field>  
-  <mat-checkbox formControlName="ill" labelPosition="before">{{ 'Form.Fields.Ill' | translate }}</mat-checkbox>   
-  <div class="commands-container">
-    <button mat-stroked-button type="button" color="primary" (click)="save()" [disabled]="!form.dirty || !form.valid">
-      {{ 'Save' | translate }}
-    </button>
-    <button mat-stroked-button [routerLink]="['/holdings', mmsId]">
-      {{'Cancel' | translate}}
-    </button>
-  </div>
-</form>
+
+<mat-card-title  *ngIf="id">{{'Holdings.ID' | translate}}: {{id}}</mat-card-title>
+<span><strong>{{'Holdings.Library' | translate}}: {{libraryFullName}}</strong></span>
+<br>
+<span><strong>{{'Form.Title' | translate}}: {{mmsTitle}}</strong></span>
+<br>
+
+<mat-form-field>
+  <mat-label translate>Form.Fields.Location</mat-label>
+  <!-- <input matInput formControlName="LOC"> -->
+  <!-- <mat-error *ngIf="form.controls.LOC.invalid" translate>Form.Errors.LOC</mat-error> -->
+  <input matInput [(ngModel)]="location">
+</mat-form-field>
+
+<mat-card *ngFor="let form of forms; index as i">
+
+  <form *ngIf="form" [formGroup]="form">
+    <div fxLayout="column">
+      <div *ngIf="isBook()" fxLayout="row">
+        <mat-form-field>
+          <mat-label translate>Form.Fields.VOL</mat-label>
+          <input matInput formControlName="VOL">
+          <!-- <mat-error *ngIf="form.controls.VOL.invalid" translate>Form.Errors.Id</mat-error> -->
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label translate>Form.Fields.CLN</mat-label>
+          <input matInput formControlName="CLN">
+          <!-- <mat-error *ngIf="form.controls.description.invalid" translate>Form.Errors.Description</mat-error> -->
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label translate>Form.Fields.RGTN</mat-label>
+          <input matInput formControlName="RGTN">
+        </mat-form-field>
+      </div>
+      <div *ngIf="isBook()" fxLayout="row">
+        <mat-form-field>
+          <mat-label translate>Form.Fields.CPYR</mat-label>
+          <input matInput formControlName="CPYR">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label translate>Form.Fields.CPYNT</mat-label>
+          <input matInput formControlName="CPYNT">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label translate>Form.Fields.LDF</mat-label>
+          <input matInput formControlName="LDF">
+        </mat-form-field>
+      </div>
+      <div *ngIf="!isBook()" fxLayout="row">
+        <mat-form-field>
+          <mat-label translate>Form.Fields.HLYR</mat-label>
+          <input matInput formControlName="HLYR">
+          <mat-error *ngIf="form.controls.HLYR.invalid" translate>Form.Errors.HLYR</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label translate>Form.Fields.HLV</mat-label>
+          <input matInput formControlName="HLV">
+          <mat-error *ngIf="form.controls.HLV.invalid" translate>Form.Errors.HLV</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label translate>Form.Fields.CONT</mat-label>
+          <input matInput formControlName="CONT">
+        </mat-form-field>
+      </div>
+      <div *ngIf="!isBook()" fxLayout="row">
+        <mat-form-field>
+          <mat-label translate>Form.Fields.CLN</mat-label>
+          <input matInput formControlName="CLN">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label translate>Form.Fields.LDF</mat-label>
+          <input matInput formControlName="LDF">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label translate>Form.Fields.CPYNT</mat-label>
+          <input matInput formControlName="CPYNT">
+        </mat-form-field>
+      </div>
+    </div>
+    <!-- <mat-checkbox formControlName="ill" labelPosition="before">{{ 'Form.Fields.Ill' | translate }}</mat-checkbox>    -->
+    <!-- <div class="commands-container">
+      <button mat-stroked-button type="button" color="primary" (click)="save()" [disabled]="!form.dirty || !form.valid">
+        {{ 'Save' | translate }}
+      </button>
+      <button mat-stroked-button [routerLink]="['/holdings', mmsId, mmsTitle]">
+        {{'Cancel' | translate}}
+      </button>
+    </div> -->
+    <div class="commands-container">
+      <button mat-button mat-stroked-button aria-label="Delete" (click)="delete(i)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </form>
+</mat-card>
+
+<div class="commands-container">
+  <!-- <button mat-stroked-button type="button" color="primary" (click)="outsideEvent($event)"> -->
+  <button mat-stroked-button type="button" color="primary" (click)="add()">
+    <mat-icon>add</mat-icon>
+  </button>
+  <button mat-stroked-button type="button" color="primary" (click)="save()">
+    {{ 'Save' | translate }}
+  </button>
+  <button mat-stroked-button [routerLink]="['/holdings', mmsId, mmsTitle]">
+    {{'Cancel' | translate}}
+  </button>
+</div>

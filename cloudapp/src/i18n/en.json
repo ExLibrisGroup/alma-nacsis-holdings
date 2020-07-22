@@ -6,6 +6,10 @@
     "RetrieveHoldings": "Retrieve NACSIS Holdings"
   },
   "Holdings": {
+    "Owner": "Owner",
+    "All": "All",
+    "Mine": "Mine",
+    "ID": "ID",
     "Title": "Holdings",
     "Library": "Library",
     "Location": "Location",
@@ -14,6 +18,7 @@
     "Add": "Add NACSIS Holding"
   },
   "Form": {
+    "Title":"Title",
     "EditTitle": "Edit Holding",
     "AddTitle": "Add Holding",
     "Success": "Holding successfully saved.",
@@ -22,11 +27,23 @@
       "Description": "Description",
       "Library": "Library",
       "Location": "Location",
-      "Ill": "Available for resource sharing"
+      "Ill": "Available for resource sharing",
+      "VOL": "VOL",
+      "CLN": "CLN",
+      "RGTN": "RGTN",
+      "CPYR": "CPYR",
+      "CPYNT": "CPYNT",
+      "LDF": "LDF",
+      "LTR": "LTR",
+      "HLV": "HLV",
+      "CONT": "CONT",
+      "HLYR": "HLYR"
     },
     "Errors": {
       "Id": "ID is required",
-      "Description": "Description is required"
+      "Description": "Description is required",
+      "HLYR": "HLYR is required",
+      "HLV": "HLV is required"
     }
   },
   "Config": {

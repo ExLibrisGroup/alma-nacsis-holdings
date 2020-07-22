@@ -6,6 +6,7 @@
     "start": "eca start"
   },
   "dependencies": {
+    "@angular/flex-layout": "^10.0.0-beta.32",
     "@exlibris/exl-cloudapp-base": "^0.1.20"
   }
 }

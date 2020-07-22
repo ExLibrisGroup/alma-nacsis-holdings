@@ -8,9 +8,11 @@ import { ConfigurationComponent } from './configuration/configuration.component'
 const routes: Routes = [
   { path: '', component: MainComponent },
   { path: 'configuration', component: ConfigurationComponent },
-  { path: 'holdings/:mmsId', component: HoldingsComponent },
-  { path: 'holdings/:mmsId/edit/:id', component: FormComponent },
-  { path: 'holdings/:mmsId/new', component: FormComponent },
+  { path: 'holdings/:mmsId/:mmsTitle', component: HoldingsComponent },
+  { path: 'holdings/:mmsId/edit/:id/:mmsTitle', component: FormComponent },
+  { path: 'holdings/:mmsId/new/:mmsTitle', component: FormComponent },
+  { path: 'holdings/:mmsId/view/:id/:mmsTitle', component: FormComponent },
+
 ];
 
 @NgModule({
