@@ -1,7 +1,36 @@
+.holdings-wrapper {
+  flex-direction: column;
+  display: flex;
+  height: calc(100vh - 70px);
+
+  .holdings-title-wrapper {
+    display: flex;
+    .holdings-drop-down {
+      margin-left: 20px;
+      width: 25%;
+      .holdings-mat-drop-down {
+        width: 100%;
+        .mat-select {
+          min-width: 0px;
+        }
+      }
+    }
+  }
+
+  .holdings-cards {
+    overflow: auto;
+    border-bottom: 1px solid grey;
+    border-top: 1px solid grey;
+    padding: 10px;
+  }
+}
+
 mat-card {
   margin: 20px 0;
+  background: whitesmoke !important;
 }
 
 mat-card-content span {
   display: block;
 }
+

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
 import { tap, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
-import { NacsisService, Holding } from '../nacsis.service';
+import { NacsisService, Holding, Header } from '../nacsis.service';
 
 @Component({
   selector: 'app-holdings',
@@ -24,6 +24,7 @@ export class HoldingsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private restService: CloudAppRestService,
     private http: HttpClient,
     private toastr: ToastrService,
@@ -48,7 +49,7 @@ export class HoldingsComponent implements OnInit {
 
   async load() {
     this.loading = true;
-    this.holdings = await this.nacsis.getHoldings(this.mmsId);
+    this.holdings = this.nacsis.getHoldingList();
     this.type = this.nacsis.getHeader().type;
     this.loading = false;
   }
@@ -68,14 +69,21 @@ export class HoldingsComponent implements OnInit {
     }
   }
 
-  delete(holdingId) {
+  delete(mmsId: string, holdingId: string) {
     if (confirm(this.translate.instant('Holdings.ConfirmDelete'))) {
       this.loading = true;
-      this.nacsis.deleteHolding(holdingId)
+      this.nacsis.deleteHolding(mmsId, holdingId)
         .subscribe({
-          next: () => {
-            this.toastr.success(this.translate.instant('Holdings.Deleted'));
-            this.load();
+          next: (response) => {
+            console.log(response);
+
+            var header: Header = response;
+            if(header.status != this.nacsis.OkStatus) {
+              this.toastr.error(header.errorMessage);
+            } else {
+              this.toastr.success(this.translate.instant('Holdings.Deleted'));
+            }
+            this.router.navigate(['']);
           },
           error: e => this.toastr.error(e),
           complete: () => this.loading = false

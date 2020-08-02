@@ -9,9 +9,9 @@ const routes: Routes = [
   { path: '', component: MainComponent },
   { path: 'configuration', component: ConfigurationComponent },
   { path: 'holdings/:mmsId/:mmsTitle', component: HoldingsComponent },
-  { path: 'holdings/:mmsId/edit/:id/:mmsTitle', component: FormComponent },
+  { path: 'holdings/:mmsId/edit/:holdingId/:mmsTitle', component: FormComponent },
   { path: 'holdings/:mmsId/new/:mmsTitle', component: FormComponent },
-  { path: 'holdings/:mmsId/view/:id/:mmsTitle', component: FormComponent },
+  { path: 'holdings/:mmsId/view/:holdingId/:mmsTitle', component: FormComponent },
 
 ];
 

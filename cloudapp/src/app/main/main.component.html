@@ -10,8 +10,15 @@
   </mat-form-field>
   <button mat-button mat-stroked-button color="primary" aria-label="search" (click)="search()" [disabled]="!selected">
     {{ 'Main.RetrieveHoldings' | translate }}
-</button>
+  </button>
+
+  <div class="loading-shade" *ngIf="loading">
+    <mat-progress-spinner mode="indeterminate" diameter="50">
+    </mat-progress-spinner>
+  </div>
+
 </div>
-<ng-template #nobibs>      
-    <p translate>Main.NoRecords</p>
+
+<ng-template #nobibs>
+  <p translate>Main.NoRecords</p>
 </ng-template>

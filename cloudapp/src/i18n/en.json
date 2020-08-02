@@ -5,6 +5,9 @@
     "SelectBib": "Select a title",
     "RetrieveHoldings": "Retrieve NACSIS Holdings"
   },
+  "Errors": {
+    "generalError": "App general error"
+  },
   "Holdings": {
     "Owner": "Owner",
     "All": "All",
@@ -15,12 +18,16 @@
     "Location": "Location",
     "ConfirmDelete": "Are you sure you wish to delete this record?",
     "Deleted": "Record successfully deleted.",
-    "Add": "Add NACSIS Holding"
+    "Add": "Add NACSIS Holding",
+    "Errors": {
+      "NoNoldings": "No holdings record were found"
+    }
   },
   "Form": {
     "Title":"Title",
     "EditTitle": "Edit Holding",
     "AddTitle": "Add Holding",
+    "ViewTitle": "View Holding",
     "Success": "Holding successfully saved.",
     "Fields": {
       "Id": "ID",
@@ -43,7 +50,8 @@
       "Id": "ID is required",
       "Description": "Description is required",
       "HLYR": "HLYR is required",
-      "HLV": "HLV is required"
+      "HLV": "HLV is required",
+      "LOC": "LOC is required"
     }
   },
   "Config": {
@@ -56,5 +64,4 @@
   "Back": "Back",
   "Cancel": "Cancel",
   "Save": "Save"
-
 }

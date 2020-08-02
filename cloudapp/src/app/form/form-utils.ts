@@ -1,43 +1,31 @@
 import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { Holding } from '../nacsis.service';
 
-//export const holdingFormGroup = (holding: Holding = null): FormGroup => {
-export const holdingFormGroup = (element, type): FormGroup => {
+export const holdingFormGroup = (holdingVolume, isBook: boolean): FormGroup => {
 
-  var newHolding: boolean = false;
-  const book: string = "BOOK";
+  var createNewHolding: boolean = false;
 
-  //if (holding == null) {
-  if (element == null) {
-    newHolding = true;
+  if (holdingVolume == null) {
+    createNewHolding = true;
   }
 
-  if (type === book) {
+  if (isBook) {
     return new FormGroup({
-      VOL: new FormControl(newHolding ? '' : element.VOL),
-      CLN: new FormControl(newHolding ? '' : element.CLN),
-      RGTN: new FormControl(newHolding ? '' : element.RGTN),
-      CPYR: new FormControl(newHolding ? '' : element.CPYR),
-      CPYNT: new FormControl(newHolding ? '' : element.CPYNT),
-      LDF: new FormControl(newHolding ? '' : element.LDF)
+      VOL: new FormControl(createNewHolding ? '' : holdingVolume.VOL),
+      CLN: new FormControl(createNewHolding ? '' : holdingVolume.CLN),
+      RGTN: new FormControl(createNewHolding ? '' : holdingVolume.RGTN),
+      CPYR: new FormControl(createNewHolding ? '' : holdingVolume.CPYR),
+      CPYNT: new FormControl(createNewHolding ? '' : holdingVolume.CPYNT),
+      LDF: new FormControl(createNewHolding ? '' : holdingVolume.LDF)
     });
   }
 
   // serial
   return new FormGroup({
-    HLYR: new FormControl(newHolding ? '' : element.HLYR, Validators.required),
-    HLV: new FormControl(newHolding ? '' : element.HLV, Validators.required),
-    CONT: new FormControl(newHolding ? '' : element.CONT),
-    CLN: new FormControl(newHolding ? '' : element.CLN),
-    LDF: new FormControl(newHolding ? '' : element.LDF),
-    CPYNT: new FormControl(newHolding ? '' : element.CPYNT)
+    HLYR: new FormControl(createNewHolding ? '' : holdingVolume.HLYR, Validators.required),
+    HLV: new FormControl(createNewHolding ? '' : holdingVolume.HLV, Validators.required),
+    CONT: new FormControl(createNewHolding ? '' : holdingVolume.CONT),
+    CLN: new FormControl(createNewHolding ? '' : holdingVolume.CLN),
+    LDF: new FormControl(createNewHolding ? '' : holdingVolume.LDF),
+    CPYNT: new FormControl(createNewHolding ? '' : holdingVolume.CPYNT)
   });
-  // return new FormGroup({
-  // id: new FormControl(holding.ID, Validators.required),
-  // description: new FormControl(holding.description, Validators.required),
-  // library: new FormControl(holding.libraryFullName),
-  // location: new FormControl(holding.LOC),
-  // ill: new FormControl(holding.ill),
-  // info: new FormControl(holding.info)
-  // });
 }

@@ -1,6 +1,6 @@
-<div fxLayout="column"> 
+<div class="holdings-wrapper">
 
-  <div fxFlex=40>
+  <div>
     <div class="title">
       <h2>{{'Holdings.Title' | translate}}</h2>
       <a [routerLink]="['']">
@@ -11,8 +11,16 @@
       </a>
     </div>
 
-    <div>
-      <mat-form-field>
+    <div class="loading-shade" *ngIf="loading">
+      <mat-progress-spinner mode="indeterminate" diameter="50">
+      </mat-progress-spinner>
+    </div>
+  </div>
+
+  <div class="holdings-title-wrapper">
+    <h3>{{mmsTitle}}</h3>
+    <div class="holdings-drop-down">
+      <mat-form-field class="holdings-mat-drop-down">
         <mat-placeholder>{{'Holdings.Owner' | translate}}</mat-placeholder>
         <mat-select [(value)]="selected" (selectionChange)=onOwnerSelected($event)>
           <mat-option *ngFor="let owner of owners" [value]="owner.id">
@@ -21,17 +29,11 @@
         </mat-select>
       </mat-form-field>
     </div>
-
-    <div class="loading-shade" *ngIf="loading">
-      <mat-progress-spinner mode="indeterminate" diameter="50">
-      </mat-progress-spinner>
-    </div>
   </div>
 
-  <div fxLayout="column" fxFlex=60>
+  <div class="holdings-cards">
     <!-- <h3>{{bib?.title}}</h3> -->
-    <h3>{{mmsTitle}}</h3>
-    <div fxFlex="75">
+    <div>
       <mat-card *ngFor="let holding of getDisplayHoldings()">
         <!-- <mat-card-title>{{holding.description}}</mat-card-title> -->
         <mat-card-title>
@@ -54,19 +56,19 @@
             <mat-icon>edit</mat-icon>
           </button>
           <button mat-button [disabled]="!holding.editable" mat-stroked-button aria-label="Delete"
-            (click)="delete(holding.ID)">
+            (click)="delete(mmsId, holding.ID)">
             <mat-icon>delete</mat-icon>
           </button>
         </mat-card-actions>
       </mat-card>
     </div>
-      <div fxFlex="25" class="commands-container">
-        <button mat-stroked-button type="button" color="primary" [routerLink]="['/holdings', mmsId, 'new', mmsTitle]">
-          <mat-icon>add</mat-icon> {{ 'Holdings.Add' | translate }}
-        </button>
-        <button mat-stroked-button [routerLink]="['']">
-          {{'Cancel' | translate}}
-        </button>
-      </div>
+  </div>
+  <div class="commands-container">
+    <button mat-stroked-button type="button" color="primary" [routerLink]="['/holdings', mmsId, 'new', mmsTitle]">
+      <mat-icon>add</mat-icon> {{ 'Holdings.Add' | translate }}
+    </button>
+    <!-- <button mat-stroked-button [routerLink]="['']">
+      {{'Cancel' | translate}}
+    </button> -->
   </div>
 </div>
