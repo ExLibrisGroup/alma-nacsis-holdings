@@ -83,7 +83,7 @@ export class FormComponent implements OnInit {
 
   // add holding volume
   add() {
-    this.forms.push(holdingFormGroup(null, this.type)); 
+    this.forms.push(holdingFormGroup(null, this.isBook())); 
   }
 
   // to nacsis
@@ -98,8 +98,7 @@ export class FormComponent implements OnInit {
 
     this.forms.forEach((element, index) => {
 
-      if (this.type === this.book) {
-
+      if (this.isBook()) {
         let holdingsBook: HoldingsBook = {
           VOL: element.get('VOL').value,
           CLN: element.get('CLN').value,
@@ -110,7 +109,6 @@ export class FormComponent implements OnInit {
         };
         this.holding.nacsisHoldingsList[index] = holdingsBook;
       } else {
-
         let holdingsSerial: HoldingsSerial = {
           HLYR: element.get('HLYR').value,
           HLV: element.get('HLV').value,
