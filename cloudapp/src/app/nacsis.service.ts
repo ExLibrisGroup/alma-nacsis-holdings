@@ -60,7 +60,6 @@ export class NacsisService {
   async getHoldingResponse(mmsId: any): Promise<Header> {
 
     var getUrl = await this.getUrl()  + mmsId;// + this.getLang();
-    //var getUrl = "http://il-shayh-7290.corp.exlibrisgroup.com:1801/view/nacsis/TRAINING_1_INST/9927041500521" + "?lang=jp";
 
     await this.http.get<any>(getUrl)
       .toPromise()
@@ -123,32 +122,12 @@ export class NacsisService {
   }
 
   deleteHolding(mmsId: string, holdingsId: string) {
-    // TODO: delete from this._holdings? currently get called after delete
-    //  and therefore init this._holdings
-    // delete after success response?
-    // this._holdings.splice(this._holdings.findIndex(item => item.ID === holdingsId), 1);
-
     var deleteUrl = this.url + mmsId + '/' + holdingsId;// + this.getLang();
-
-    //var deleteUrl = "http://il-shayh-7290.corp.exlibrisgroup.com:1801/view/nacsis/TRAINING_1_INST/9927041500521";
-    //deleteUrl = deleteUrl + '/' + holdingsId;
-
     return this.http.delete<any>(deleteUrl);
   }
 
   saveHolding(mmsId: string, holding: Holding) {
-
-    // findIndex return last index in list although holding.ID is empty
-    // const index = this._holdings.findIndex(obj => obj.ID === holding.ID);
-    // if (index >= 0)
-    //   this._holdings[index] = holding;
-    // else
-    //   this._holdings.push(holding);
-
     var saveUrl = this.url + mmsId;
-
-    //var saveUrl = "http://il-shayh-7290.corp.exlibrisgroup.com:1801/view/nacsis/TRAINING_1_INST/9927041500521";
-
     var body = JSON.stringify(holding);
 
     if (this.isEmpty(holding.ID)) { // create/POST

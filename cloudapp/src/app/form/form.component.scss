@@ -1,6 +1,8 @@
 mat-form-field {
   margin-top: 10px;
   margin-bottom: 10px;
+  margin-right: 20px;
+  margin-left: 20px;
 }
 
 mat-checkbox {
@@ -35,5 +37,11 @@ mat-card {
 
   .form-commands {
     margin-bottom: 20px;
+  }
+
+  .form-location {
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-bottom: 10px;
   }
 }

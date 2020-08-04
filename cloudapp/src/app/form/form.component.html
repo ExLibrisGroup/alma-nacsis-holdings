@@ -14,7 +14,7 @@
   <span><strong>{{'Form.Title' | translate}}: {{mmsTitle}}</strong></span>
   <br>
 
-  <mat-form-field>
+  <mat-form-field class="form-location">
     <mat-label translate>Form.Fields.Location</mat-label>
     <input [readonly]="isReadOnly" matInput class="form-control" required [(ngModel)]="holding.LOC">
     <mat-error *ngIf="holding?.LOC?.length === 0" translate>Form.Errors.LOC</mat-error>
@@ -27,7 +27,7 @@
           <div *ngIf="isBook()" class="form-card-inputs">
             <mat-form-field>
               <mat-label translate>Form.Fields.VOL</mat-label>
-              <input [readonly]="isReadOnly" matInput formControlName="VOL" required>
+              <input [readonly]="isReadOnly" matInput formControlName="VOL">
             </mat-form-field>
             <mat-form-field>
               <mat-label translate>Form.Fields.CLN</mat-label>
@@ -89,10 +89,10 @@
   </div>
 
   <div class="commands-container form-commands">
-    <button *ngIf="!isReadOnly" mat-stroked-button type="button" color="primary" (click)="add()">
+    <button *ngIf="!isReadOnly" [disabled]="!isAddEnabled()" mat-stroked-button type="button" color="primary" (click)="add()">
       <mat-icon>add</mat-icon>
     </button>
-    <button *ngIf="!isReadOnly" mat-stroked-button type="button" color="primary" (click)="save()">
+    <button *ngIf="!isReadOnly" type="submit" mat-stroked-button type="button" color="primary" (click)="save()">
       {{ 'Save' | translate }}
     </button>
     <button mat-stroked-button (click)="cancel()">

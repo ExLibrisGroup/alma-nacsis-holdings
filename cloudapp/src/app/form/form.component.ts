@@ -86,9 +86,22 @@ export class FormComponent implements OnInit {
     this.forms.push(holdingFormGroup(null, this.isBook())); 
   }
 
+  isAddEnabled(): boolean {
+    return this.isBook() || this.forms.length == 0;
+  } 
+
   // to nacsis
   save() {
     this.loading = true;
+
+    // validate form
+    var invalidForms: FormGroup[] = this.forms.filter((form) => form.invalid)
+
+    if(this.nacsis.isEmpty(this.holding.LOC) || invalidForms.length > 0) { 
+      invalidForms.forEach(form => form.markAllAsTouched())
+      this.loading = false;
+      return;
+    }
 
     this.holding.BID = this.nacsis.getHeader().BID;
     this.holding.FANO = this.nacsis.getHeader().FANO;
