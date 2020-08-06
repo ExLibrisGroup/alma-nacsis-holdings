@@ -1,14 +1,20 @@
 <div class="holdings-wrapper">
 
+  <div class="align-space-between" fxLayout="row">
+    <a [routerLink]="['']">
+      <button mat-flat-button color="secondary">
+        <mat-icon>arrow_back_ios</mat-icon>
+        {{'Back' | translate}}
+      </button>
+    </a>
+    <button mat-flat-button color="primary" [routerLink]="['/holdings', mmsId, 'new', mmsTitle]">
+      <mat-icon>add</mat-icon> {{ 'Holdings.Add' | translate }}
+    </button>
+  </div>
+
   <div>
     <div class="title">
       <h2>{{'Holdings.Title' | translate}}</h2>
-      <a [routerLink]="['']">
-        <button mat-raised-button>
-          <mat-icon>arrow_back</mat-icon>
-          {{'Back' | translate}}
-        </button>
-      </a>
     </div>
 
     <div class="loading-shade" *ngIf="loading">
@@ -32,10 +38,8 @@
   </div>
 
   <div class="holdings-cards">
-    <!-- <h3>{{bib?.title}}</h3> -->
     <div>
       <mat-card *ngFor="let holding of getDisplayHoldings()">
-        <!-- <mat-card-title>{{holding.description}}</mat-card-title> -->
         <mat-card-title>
           <a [routerLink]="['/holdings', mmsId, 'view', holding.ID, mmsTitle]">
             {{'Holdings.ID' | translate}}: {{holding.ID}}
@@ -43,32 +47,25 @@
         </mat-card-title>
 
         <mat-card-content>
-          <!-- <span><strong>{{'Holdings.Library' | translate}}: {{holding.library}}</strong></span> -->
           <span><strong>{{'Holdings.Library' | translate}}: {{holding.libraryFullName}}</strong></span>
-          <!-- <span><strong>{{'Holdings.Location' | translate}}: {{holding.location}}</strong></span> -->
           <span><strong>{{'Holdings.Location' | translate}}: {{holding.LOC}}</strong></span>
           <span><strong>{{holding.info}}</strong></span>
-
         </mat-card-content>
+
         <mat-card-actions>
-          <button mat-button [disabled]="!holding.editable" mat-stroked-button aria-label="Edit"
-            [routerLink]="['/holdings', mmsId, 'edit', holding.ID, mmsTitle]">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-button [disabled]="!holding.editable" mat-stroked-button aria-label="Delete"
-            (click)="delete(mmsId, holding.ID)">
-            <mat-icon>delete</mat-icon>
-          </button>
+          <!-- <div class="align-to-right" fxLayout="row"> -->
+          <div fxLayout="row">
+            <button [disabled]="!holding.editable" class="edit-commands" mat-flat-button color="primary"
+              aria-label="Edit" [routerLink]="['/holdings', mmsId, 'edit', holding.ID, mmsTitle]">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button [disabled]="!holding.editable" mat-flat-button color="primary" aria-label="Delete"
+              (click)="delete(mmsId, holding.ID)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </mat-card-actions>
       </mat-card>
     </div>
-  </div>
-  <div class="commands-container">
-    <button mat-stroked-button type="button" color="primary" [routerLink]="['/holdings', mmsId, 'new', mmsTitle]">
-      <mat-icon>add</mat-icon> {{ 'Holdings.Add' | translate }}
-    </button>
-    <!-- <button mat-stroked-button [routerLink]="['']">
-      {{'Cancel' | translate}}
-    </button> -->
   </div>
 </div>

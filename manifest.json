@@ -39,7 +39,7 @@
          "modals": true
       },
       "connectSrc": [
-         "http://*.corp.exlibrisgroup.com:1801"
+         "*.exlibrisgroup.com"
       ]
    },
    "pages": {

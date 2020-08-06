@@ -1,5 +1,11 @@
-<div *ngIf="bibs.length>0 else nobibs">
+<div *ngIf="bibs.length>0 else nobibs" fxLayout="column">
+  <div class="align-to-right" fxLayout="row">
+  <button mat-flat-button color="primary" aria-label="search" (click)="search()" [disabled]="!selected">
+    {{ 'Main.RetrieveHoldings' | translate }}
+  </button>
+</div>
   <p translate>Main.Intro</p>
+  <!-- <mat-form-field appearance="standard"> -->
   <mat-form-field>
     <mat-placeholder translate>Main.SelectBib</mat-placeholder>
     <mat-select [(value)]="selected">
@@ -8,15 +14,11 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <button mat-button mat-stroked-button color="primary" aria-label="search" (click)="search()" [disabled]="!selected">
-    {{ 'Main.RetrieveHoldings' | translate }}
-  </button>
 
   <div class="loading-shade" *ngIf="loading">
     <mat-progress-spinner mode="indeterminate" diameter="50">
     </mat-progress-spinner>
   </div>
-
 </div>
 
 <ng-template #nobibs>

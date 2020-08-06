@@ -1,4 +1,20 @@
 <div class="form-wrapper">
+
+  <div class="align-space-between" fxLayout="row">
+    <button mat-flat-button type="button" color="secondary" (click)="cancel()">
+      {{'Cancel' | translate}}
+    </button>
+    <div>
+      <button class="form-commands" *ngIf="!isReadOnly" [disabled]="!isAddEnabled()" mat-flat-button type="button" color="primary"
+        (click)="add()">
+        <mat-icon>add</mat-icon>
+      </button>
+      <button *ngIf="!isReadOnly" type="submit" mat-flat-button type="button" color="primary" (click)="save()">
+        {{ 'Save' | translate }}
+      </button>
+    </div>
+  </div>
+
   <div class="title">
     <h2>{{ (id ? isReadOnly ? 'Form.ViewTitle' : 'Form.EditTitle' : 'Form.AddTitle') | translate}}</h2>
   </div>
@@ -14,7 +30,7 @@
   <span><strong>{{'Form.Title' | translate}}: {{mmsTitle}}</strong></span>
   <br>
 
-  <mat-form-field class="form-location">
+  <mat-form-field class="form-input-location">
     <mat-label translate>Form.Fields.Location</mat-label>
     <input [readonly]="isReadOnly" matInput class="form-control" required [(ngModel)]="holding.LOC">
     <mat-error *ngIf="holding?.LOC?.length === 0" translate>Form.Errors.LOC</mat-error>
@@ -86,17 +102,5 @@
         </div>
       </form>
     </mat-card>
-  </div>
-
-  <div class="commands-container form-commands">
-    <button *ngIf="!isReadOnly" [disabled]="!isAddEnabled()" mat-stroked-button type="button" color="primary" (click)="add()">
-      <mat-icon>add</mat-icon>
-    </button>
-    <button *ngIf="!isReadOnly" type="submit" mat-stroked-button type="button" color="primary" (click)="save()">
-      {{ 'Save' | translate }}
-    </button>
-    <button mat-stroked-button (click)="cancel()">
-      {{'Cancel' | translate}}
-    </button>
   </div>
 </div>

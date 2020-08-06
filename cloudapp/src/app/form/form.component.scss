@@ -21,13 +21,15 @@ mat-card {
 .form-wrapper {
   flex-direction: column;
   display: flex;
-  height: calc(100vh - 55px);
+  //height: calc(100vh - 55px);
 
   .form-cards {
     overflow: auto;
-    border-bottom: 1px solid grey;
-    border-top: 1px solid grey;
+    //border-bottom: 1px solid grey;
+    //border-top: 1px solid grey;
     padding: 10px;
+    padding-left: 0px;
+    padding-right: 15px;
 
     .form-card-inputs {
       display: flex;
@@ -36,12 +38,19 @@ mat-card {
   }
 
   .form-commands {
-    margin-bottom: 20px;
+    margin-right: 15px;
   }
 
-  .form-location {
+  .form-input-location {
     margin-right: 0px;
     margin-left: 0px;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
+    width: 20%;
+    min-width: 250px;
+  }
+
+  .align-space-between {
+    justify-content: space-between;
+    margin-bottom: 20px;
   }
 }
