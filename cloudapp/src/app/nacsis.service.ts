@@ -44,14 +44,6 @@ export class NacsisService {
         this.url = data.urls['alma'];
         this.url = this.url + 'view/nacsis/';
         this.url = this.url + data.instCode + '/';
-
-        // patch for development enviroment
-        if(this.url.startsWith("https://")) {
-          if(this.url.indexOf("localhost") >= 0) {
-            this.url = this.url.replace("https", "http");
-          }
-       }
-
         console.log(this.url);
       });
     return this.url;
