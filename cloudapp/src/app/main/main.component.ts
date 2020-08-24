@@ -43,7 +43,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
       try {
         var bib = this.bibs.filter(bib => bib.id == this.selected);
-        var header: Header = await this.nacsis.getHoldingResponse(this.selected);
+        var header: Header = await this.nacsis.getHoldingResponse(this.selected, "Mine");
 
         if (header.status === this.nacsis.OkStatus) {
           this.router.navigate(['/holdings', this.selected, bib[0].description]);

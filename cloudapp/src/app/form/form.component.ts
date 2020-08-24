@@ -106,6 +106,8 @@ export class FormComponent implements OnInit {
     this.holding.BID = this.nacsis.getHeader().BID;
     this.holding.FANO = this.nacsis.getHeader().FANO;
     this.holding.type = this.type; 
+    this.holding.editable = true;
+    this.holding.ID = this.holdingId;
    
     this.holding.nacsisHoldingsList = new Array(this.forms.length);
 
@@ -134,7 +136,7 @@ export class FormComponent implements OnInit {
       }
     });
 
-    this.nacsis.saveHolding(this.mmsId, this.holding)
+    this.nacsis.saveHoldingToNacsis(this.mmsId, this.holding)
       .subscribe({
         next: (response) => {
           console.log(response);
@@ -144,9 +146,12 @@ export class FormComponent implements OnInit {
             this.toastr.error(header.errorMessage);
           } else {
             this.toastr.success(this.translate.instant('Form.Success'));
+            
+            this.holdingId = header.holdingId;
+            this.holding.ID = header.holdingId;
+            this.nacsis.saveHolding(this.holding);
           }
-          this.router.navigate(['']);
-
+          this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
         },
         error: e => this.toastr.error(e),
         complete: () => this.loading = false

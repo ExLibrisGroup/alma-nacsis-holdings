@@ -19,6 +19,7 @@ export class HoldingsComponent implements OnInit {
   holdings: Holding[];
   loading = false;
   selected: string;
+  isAllSelected: boolean;
   mmsTitle: string;
   type: string;
 
@@ -42,25 +43,47 @@ export class HoldingsComponent implements OnInit {
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
 
     if (!this.selected) {
-      this.selected = '1'; // owner = mine
-      this.load();
+      this.selected = '1'; // owner = Mine
     }
+    this.load();
   }
 
-  async load() {
-    this.loading = true;
+  load() {
     this.holdings = this.nacsis.getHoldingList();
     this.type = this.nacsis.getHeader().type;
-    this.loading = false;
   }
 
-  onOwnerSelected() {
-    this.getDisplayHoldings();
+  async onOwnerSelected() {
+    // owner = All, Mine include in All, therefore, no need to retrieve from nacsis
+    // get All only once
+    if(this.selected === '0' && !this.isAllSelected) { 
+      await this.search("All");
+    }
     this.ngOnInit();
   }
 
-  getDisplayHoldings() {
+  async search(owner: String) {
+    if (this.selected) {
+      this.loading = true;
 
+      try {
+        var header: Header = await this.nacsis.getHoldingResponse(this.mmsId, owner);
+
+        if (header.status != this.nacsis.OkStatus) {
+          this.toastr.error(header.errorMessage);
+        } else {
+          this.isAllSelected = true;
+        }
+      } catch (e) {
+        console.log(e.error);
+        this.toastr.error(this.translate.instant('Errors.generalError'));
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
+
+  getDisplayHoldings() {
     if (this.holdings) {
       if (this.selected == '0') { // All
         return this.holdings;
@@ -72,7 +95,7 @@ export class HoldingsComponent implements OnInit {
   delete(mmsId: string, holdingId: string) {
     if (confirm(this.translate.instant('Holdings.ConfirmDelete'))) {
       this.loading = true;
-      this.nacsis.deleteHolding(mmsId, holdingId)
+      this.nacsis.deleteHoldingFromNacsis(mmsId, holdingId)
         .subscribe({
           next: (response) => {
             console.log(response);
@@ -82,8 +105,9 @@ export class HoldingsComponent implements OnInit {
               this.toastr.error(header.errorMessage);
             } else {
               this.toastr.success(this.translate.instant('Holdings.Deleted'));
+              this.nacsis.deleteHolding(holdingId);
             }
-            this.router.navigate(['']);
+            this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
           },
           error: e => this.toastr.error(e),
           complete: () => this.loading = false

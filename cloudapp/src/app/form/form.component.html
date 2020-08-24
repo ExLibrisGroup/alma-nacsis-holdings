@@ -16,7 +16,7 @@
   </div>
 
   <div class="title">
-    <h2>{{ (id ? isReadOnly ? 'Form.ViewTitle' : 'Form.EditTitle' : 'Form.AddTitle') | translate}}</h2>
+    <h2>{{ (isReadOnly ? 'Form.ViewTitle' : holdingId ? 'Form.EditTitle' : 'Form.AddTitle') | translate}}</h2>
   </div>
 
   <div class="loading-shade" *ngIf="loading">

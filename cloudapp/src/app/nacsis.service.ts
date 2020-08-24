@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { delay, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { CloudAppConfigService, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppConfigService, CloudAppEventsService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
 
 
 @Injectable({
@@ -16,7 +16,6 @@ export class NacsisService {
   private lang: string;
   public OkStatus: string = 'OK';
 
-
   constructor(
     private http: HttpClient,
     private configService: CloudAppConfigService,
@@ -24,42 +23,37 @@ export class NacsisService {
 
   ) {
     this.configService.get().subscribe(resp => this._config = resp);
-  }
-
-  isEmpty(val) {
-    return (val === undefined || val == null || val.length <= 0) ? true : false;
-  }
-
-  async getUrl(): Promise<string> {
-
-    if (this.url) {
-      return this.url;
-    }
-
-    await this.eventsService.getInitData().
-      toPromise().
-      then(data => {
+    
+    this.getUrl().subscribe({
+      next: (data) => {
         console.log(data);
         this.lang = data.lang;
         this.url = data.urls['alma'];
         this.url = this.url + 'view/nacsis/';
         this.url = this.url + data.instCode + '/';
         console.log(this.url);
-      });
-    return this.url;
+      }
+    })
   }
 
-  getLang() {
-    return '?lang=' + this.lang;
+  isEmpty(val) {
+    return (val === undefined || val == null || val.length <= 0) ? true : false;
   }
 
+  getUrl() : Observable<InitData>{
+    return this.eventsService.getInitData();
+  }
   getHeader(): Header {
     return this._header;
   }
 
-  async getHoldingResponse(mmsId: any): Promise<Header> {
+  async getHoldingResponse(mmsId: any, owner: String): Promise<Header> {
 
-    var getUrl = await this.getUrl()  + mmsId;// + this.getLang();
+    //var getUrl = "http://il-shayh-7290.corp.exlibrisgroup.com:1801/view/nacsis/TRAINING_1_INST/9927041500521";
+    var getUrl = this.url + mmsId;
+
+    // add query params
+    getUrl = getUrl + "?owner=" + owner;
 
     await this.http.get<any>(getUrl)
       .toPromise()
@@ -70,36 +64,7 @@ export class NacsisService {
           this._holdings = response.nacsisRecordList;
 
           if (this._header.status === this.OkStatus && !this.isEmpty(this._holdings)) {
-
-            this._holdings.forEach(holding => {
-              holding.libraryFullName = holding.LIBABL + ' (' + holding.FANO + ')';
-              var size = holding.nacsisHoldingsList.length;
-              holding.info = '';
-
-              if (size == 1) {
-                Object.values(holding.nacsisHoldingsList[0]).forEach((element) => {
-                  if (!this.isEmpty(element)) {
-                    holding.info = holding.info + ' ' + element;
-                  }
-                });
-              } else if (size <= 3) {
-                holding.nacsisHoldingsList.forEach((element, index) => {
-                  var vol = element.VOL;
-
-                  if (!this.isEmpty(vol)) {
-                    if (index == 0) {
-                      holding.info = vol;
-                    } else {
-                      holding.info = holding.info + ', ' + vol;
-                    }
-                  }
-                });
-              } else {
-                var vol0 = holding.nacsisHoldingsList[0].VOL;
-                var voln = holding.nacsisHoldingsList[holding.nacsisHoldingsList.length - 1].VOL;
-                holding.info = vol0 + ' - ' + voln;
-              }
-            });
+            this.updateHoldingPreview();
           }
         }
       ).catch(e => {
@@ -121,22 +86,79 @@ export class NacsisService {
     return this._holdings;
   }
 
-  deleteHolding(mmsId: string, holdingsId: string) {
-    var deleteUrl = this.url + mmsId + '/' + holdingsId;// + this.getLang();
+  updateHoldingPreview() {
+    this._holdings.forEach(holding => {
+      holding.libraryFullName = holding.LIBABL + ' (' + holding.FANO + ')';
+      var size = holding.nacsisHoldingsList.length;
+      holding.info = '';
+
+      if (size == 1) {
+        Object.values(holding.nacsisHoldingsList[0]).forEach((element) => {
+          if (!this.isEmpty(element)) {
+            holding.info = holding.info + ' ' + element;
+          }
+        });
+      } else if (size <= 3) {
+        holding.nacsisHoldingsList.forEach((element, index) => {
+          var vol = element.VOL;
+
+          if (!this.isEmpty(vol)) {
+            if (index == 0) {
+              holding.info = vol;
+            } else {
+              holding.info = holding.info + ', ' + vol;
+            }
+          }
+        });
+      } else {
+        var vol0 = holding.nacsisHoldingsList[0].VOL;
+        var voln = holding.nacsisHoldingsList[holding.nacsisHoldingsList.length - 1].VOL;
+        holding.info = vol0 + ' - ' + voln;
+      }
+    });
+  }
+
+  deleteHoldingFromNacsis(mmsId: string, holdingsId: string) {
+    //var deleteUrl = "http://il-shayh-7290.corp.exlibrisgroup.com:1801/view/nacsis/TRAINING_1_INST/9927041500521" + '/' + holdingsId;;
+    var deleteUrl = this.url + mmsId + '/' + holdingsId;
+
     return this.http.delete<any>(deleteUrl);
   }
 
-  saveHolding(mmsId: string, holding: Holding) {
+  deleteHolding(holdingId: string) {
+    const index = this._holdings.findIndex(holding => holding.ID === holdingId);
+    if (index > -1) {
+      this._holdings.splice(index, 1);
+      this.updateHoldingPreview();
+    }
+  }
+
+  saveHoldingToNacsis(mmsId: string, holding: Holding) {
+
+    //var saveUrl = "http://il-shayh-7290.corp.exlibrisgroup.com:1801/view/nacsis/TRAINING_1_INST/9927041500521";
     var saveUrl = this.url + mmsId;
+
     var body = JSON.stringify(holding);
 
     if (this.isEmpty(holding.ID)) { // create/POST
-      //saveUrl = saveUrl + this.getLang();
       return this.http.post<any>(saveUrl, body);
     }
-    saveUrl = saveUrl + '/' + holding.ID;// + this.getLang();
 
+    saveUrl = saveUrl + '/' + holding.ID;
     return this.http.put<any>(saveUrl, body); // update/PUT
+  }
+
+  saveHolding(holding: Holding) {
+    if(!this._holdings) {
+      this._holdings = [];
+    }
+    let existHolding = this._holdings.find(thisHolding => thisHolding.ID === holding.ID);
+    if (existHolding) {
+      existHolding = holding;
+    } else {
+      this._holdings.push(holding);
+    }
+    this.updateHoldingPreview();
   }
 
   set config(config: any) {
@@ -148,6 +170,7 @@ export class Header {
   status: string = ""
   errorMessage: string = ""
   BID: string = ""
+  holdingId = ""
   FANO: string = "" // library id
   LIBABL: string = "" // library name
   type: string = "" // BOOK/SERIAL
