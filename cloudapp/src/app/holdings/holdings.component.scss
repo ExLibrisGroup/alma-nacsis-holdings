@@ -5,6 +5,7 @@
 
   .holdings-title-wrapper {
     display: flex;
+    justify-content: space-between;
     .holdings-drop-down {
       margin-left: 20px;
       width: 25%;
@@ -43,11 +44,6 @@ mat-card-content span {
 
 .edit-commands {
   margin-right: 15px;
-}
-
-.align-to-right {
-  justify-content: flex-end;
-  margin-bottom: 20px;
 }
 
 
