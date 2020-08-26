@@ -73,7 +73,7 @@ export class FormComponent implements OnInit {
    
   getLibraryFullName(): string {
     return this.nacsis.getHeader().LIBABL + ' (' + 
-    this.nacsis.getHeader().FANO + ')'
+      this.nacsis.getHeader().FANO + ')'
   }
 
   // delete holding volume
@@ -143,7 +143,9 @@ export class FormComponent implements OnInit {
 
           var header: Header = response;
           if(header.status != this.nacsis.OkStatus) {
-            this.toastr.error(header.errorMessage);
+            
+            this.toastr.error(header.errorMessage, this.translate.instant('Form.Errors.SaveFailed'),
+              {timeOut: 0, extendedTimeOut:0});
           } else {
             this.toastr.success(this.translate.instant('Form.Success'));
             
@@ -153,7 +155,8 @@ export class FormComponent implements OnInit {
           }
           this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
         },
-        error: e => this.toastr.error(e),
+        error: e => this.toastr.error(e, this.translate.instant('Form.Errors.SaveFailed'),
+          { timeOut: 0, extendedTimeOut:0}),
         complete: () => this.loading = false
       });
   }

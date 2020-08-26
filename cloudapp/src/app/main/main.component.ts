@@ -48,11 +48,13 @@ export class MainComponent implements OnInit, OnDestroy {
         if (header.status === this.nacsis.OkStatus) {
           this.router.navigate(['/holdings', this.selected, bib[0].description]);
         } else {
-          this.toastr.error(header.errorMessage);
+          this.toastr.error(header.errorMessage, 
+            this.translate.instant('Holdings.Errors.GetFailed'), {timeOut: 0, extendedTimeOut:0});
         }
       } catch (e) {
-        console.log(e.error);
-        this.toastr.error(this.translate.instant('Errors.generalError'));
+        console.log(e);
+        this.toastr.error(this.translate.instant('Errors.generalError'),
+          this.translate.instant('Holdings.Errors.GetFailed'), {timeOut: 0, extendedTimeOut:0});  
       } finally {
         this.loading = false;
       }

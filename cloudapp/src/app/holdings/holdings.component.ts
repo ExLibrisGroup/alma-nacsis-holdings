@@ -70,13 +70,15 @@ export class HoldingsComponent implements OnInit {
         var header: Header = await this.nacsis.getHoldingResponse(this.mmsId, owner);
 
         if (header.status != this.nacsis.OkStatus) {
-          this.toastr.error(header.errorMessage);
+          this.toastr.error(header.errorMessage, 
+            this.translate.instant('Holdings.Errors.GetFailed'), {timeOut: 0, extendedTimeOut:0});
         } else {
           this.isAllSelected = true;
         }
       } catch (e) {
-        console.log(e.error);
-        this.toastr.error(this.translate.instant('Errors.generalError'));
+        console.log(e);
+        this.toastr.error(this.translate.instant('Errors.generalError'),
+          this.translate.instant('Holdings.Errors.GetFailed'), {timeOut: 0, extendedTimeOut:0});
       } finally {
         this.loading = false;
       }
@@ -102,14 +104,16 @@ export class HoldingsComponent implements OnInit {
 
             var header: Header = response;
             if(header.status != this.nacsis.OkStatus) {
-              this.toastr.error(header.errorMessage);
+              this.toastr.error(header.errorMessage, 
+                this.translate.instant('Holdings.Errors.DeleteFailed'), { timeOut: 0, extendedTimeOut:0});
             } else {
               this.toastr.success(this.translate.instant('Holdings.Deleted'));
               this.nacsis.deleteHolding(holdingId);
             }
             this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
           },
-          error: e => this.toastr.error(e),
+          error: e =>  this.toastr.error(e, this.translate.instant('Holdings.Errors.DeleteFailed'), 
+            {timeOut: 0, extendedTimeOut:0}),
           complete: () => this.loading = false
         })
     }

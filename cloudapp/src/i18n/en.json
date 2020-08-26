@@ -20,7 +20,9 @@
     "Deleted": "Record successfully deleted.",
     "Add": "Add NACSIS Holding",
     "Errors": {
-      "NoNoldings": "No holdings record were found"
+      "NoNoldings": "No holdings record were found",
+      "GetFailed": "Get Holdings Failed",
+      "DeleteFailed": "Delete Holding Failed"
     }
   },
   "Form": {
@@ -48,7 +50,7 @@
     },
     "Errors": {
       "Id": "ID is required",
-      "Description": "Description is required",
+      "SaveFailed": "Save Holding Failed",
       "HLYR": "HLYR is required",
       "HLV": "HLV is required",
       "LOC": "LOC is required"
