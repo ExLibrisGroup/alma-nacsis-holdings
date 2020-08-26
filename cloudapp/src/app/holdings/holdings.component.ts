@@ -6,6 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { NacsisService, Holding, Header } from '../nacsis.service';
+import Swal from 'sweetalert2'
+
 
 @Component({
   selector: 'app-holdings',
@@ -95,8 +97,14 @@ export class HoldingsComponent implements OnInit {
   }
 
   delete(mmsId: string, holdingId: string) {
-    if (confirm(this.translate.instant('Holdings.ConfirmDelete'))) {
-      this.loading = true;
+
+    Swal.fire({
+      text: this.translate.instant('Holdings.ConfirmDelete'),
+      icon: 'warning',
+      showCancelButton: true,
+    }).then((result) => {
+      if (result.value) {
+           this.loading = true;
       this.nacsis.deleteHoldingFromNacsis(mmsId, holdingId)
         .subscribe({
           next: (response) => {
@@ -116,7 +124,8 @@ export class HoldingsComponent implements OnInit {
             {timeOut: 0, extendedTimeOut:0}),
           complete: () => this.loading = false
         })
-    }
+      } 
+    })
   }
 
 }
