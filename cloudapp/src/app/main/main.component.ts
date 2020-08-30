@@ -47,6 +47,11 @@ export class MainComponent implements OnInit, OnDestroy {
 
         if (header.status === this.nacsis.OkStatus) {
           this.router.navigate(['/holdings', this.selected, bib[0].description]);
+          //No holding records exist 
+          let holdings = this.nacsis.getHoldingList();
+          if(holdings == null || holdings.length == 0) {
+            this.toastr.info(this.translate.instant('Main.NoHoldingRecordsExist'));
+          }
         } else {
           this.toastr.error(header.errorMessage, 
             this.translate.instant('Holdings.Errors.GetFailed'), {timeOut: 0, extendedTimeOut:0});
