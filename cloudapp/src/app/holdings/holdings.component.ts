@@ -33,7 +33,7 @@ export class HoldingsComponent implements OnInit {
     private toastr: ToastrService,
     private translate: TranslateService,
     private nacsis: NacsisService
-  ) {   
+  ) {
     this.owners = [
       { id: "0", name: this.translate.instant('Holdings.All') },
       { id: "1", name: this.translate.instant('Holdings.Mine') }
@@ -58,7 +58,7 @@ export class HoldingsComponent implements OnInit {
   async onOwnerSelected() {
     // owner = All, Mine include in All, therefore, no need to retrieve from nacsis
     // get All only once
-    if(this.selected === '0' && !this.isAllSelected) { 
+    if (this.selected === '0' && !this.isAllSelected) {
       await this.search("All");
     }
     this.ngOnInit();
@@ -69,18 +69,18 @@ export class HoldingsComponent implements OnInit {
       this.loading = true;
 
       try {
-        var header: Header = await this.nacsis.getHoldingResponse(this.mmsId, owner);
+        var header: Header = await this.nacsis.getHoldingsFromNacsis(this.mmsId, owner);
 
         if (header.status != this.nacsis.OkStatus) {
-          this.toastr.error(header.errorMessage, 
-            this.translate.instant('Holdings.Errors.GetFailed'), {timeOut: 0, extendedTimeOut:0});
+          this.toastr.error(header.errorMessage,
+            this.translate.instant('Holdings.Errors.GetFailed'), { timeOut: 0, extendedTimeOut: 0 });
         } else {
           this.isAllSelected = true;
         }
       } catch (e) {
         console.log(e);
         this.toastr.error(this.translate.instant('Errors.generalError'),
-          this.translate.instant('Holdings.Errors.GetFailed'), {timeOut: 0, extendedTimeOut:0});
+          this.translate.instant('Holdings.Errors.GetFailed'), { timeOut: 0, extendedTimeOut: 0 });
       } finally {
         this.loading = false;
       }
@@ -96,35 +96,37 @@ export class HoldingsComponent implements OnInit {
     }
   }
 
-  delete(mmsId: string, holdingId: string) {
+  async delete(mmsId: string, holdingId: string) {
 
     Swal.fire({
       text: this.translate.instant('Holdings.ConfirmDelete'),
       icon: 'warning',
       showCancelButton: true,
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.value) {
-           this.loading = true;
-      this.nacsis.deleteHoldingFromNacsis(mmsId, holdingId)
-        .subscribe({
-          next: (response) => {
-            console.log(response);
+        this.loading = true;
 
-            var header: Header = response;
-            if(header.status != this.nacsis.OkStatus) {
-              this.toastr.error(header.errorMessage, 
-                this.translate.instant('Holdings.Errors.DeleteFailed'), { timeOut: 0, extendedTimeOut:0});
-            } else {
-              this.toastr.success(this.translate.instant('Holdings.Deleted'));
-              this.nacsis.deleteHolding(holdingId);
-            }
-            this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
-          },
-          error: e =>  this.toastr.error(e, this.translate.instant('Holdings.Errors.DeleteFailed'), 
-            {timeOut: 0, extendedTimeOut:0}),
-          complete: () => this.loading = false
-        })
-      } 
+        try {
+          var header: Header = await this.nacsis.deleteHoldingFromNacsis(mmsId, holdingId);
+
+          console.log(header);
+
+          if (header.status != this.nacsis.OkStatus) {
+            this.toastr.error(header.errorMessage,
+              this.translate.instant('Holdings.Errors.DeleteFailed'), { timeOut: 0, extendedTimeOut: 0 });
+          } else {
+            this.toastr.success(this.translate.instant('Holdings.Deleted'));
+            this.nacsis.deleteHolding(holdingId);
+          }
+          this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
+        } catch (e) {
+          console.log(e);
+          this.toastr.error(this.translate.instant('Errors.generalError'),
+            this.translate.instant('Holdings.Errors.DeleteFailed'), { timeOut: 0, extendedTimeOut: 0 });
+        } finally {
+          this.loading = false;
+        }
+      }
     })
   }
 

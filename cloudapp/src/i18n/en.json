@@ -4,7 +4,7 @@
     "NoRecords": "To view NACSIS holdings, navigate to a bibliographic record.",
     "SelectBib": "Select a title",
     "RetrieveHoldings": "Retrieve NACSIS Holdings",
-    "NoHoldingRecordsExist": "No holding records exist ."
+    "NoHoldingRecordsExist": "No holding records exist."
     
   },
   "Errors": {

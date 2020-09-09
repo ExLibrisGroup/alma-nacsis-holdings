@@ -1,8 +1,8 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { delay, map } from 'rxjs/operators';
+import { HttpClient } from "@angular/common/http";
+import { map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { CloudAppConfigService, CloudAppEventsService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppConfigService, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
 
 
 @Injectable({
@@ -12,8 +12,9 @@ export class NacsisService {
   private _holdings: Holding[];
   private _header: Header;
   private _config;
-  private url: string;
-  private lang: string;
+  private _url: string;
+  private _authToken: string;
+  private _exp: number;
   public OkStatus: string = 'OK';
 
   constructor(
@@ -23,41 +24,69 @@ export class NacsisService {
 
   ) {
     this.configService.get().subscribe(resp => this._config = resp);
-    
-    this.getUrl().subscribe({
-      next: (data) => {
-        console.log(data);
-        this.lang = data.lang;
-        this.url = data.urls['alma'];
-        this.url = this.url + 'view/nacsis/';
-        this.url = this.url + data.instCode + '/';
-        console.log(this.url);
-      }
-    })
   }
 
   isEmpty(val) {
     return (val === undefined || val == null || val.length <= 0) ? true : false;
   }
 
-  getUrl() : Observable<InitData>{
-    return this.eventsService.getInitData();
-  }
   getHeader(): Header {
     return this._header;
   }
 
-  async getHoldingResponse(mmsId: any, owner: String): Promise<Header> {
+  async getUrl(): Promise<string> {
 
-    //var getUrl = "http://il-shayh-7290.corp.exlibrisgroup.com:1801/view/nacsis/TRAINING_1_INST/9927041500521";
-    var getUrl = this.url + mmsId;
+    if (this._url) {
+      return this._url;
+    }
+
+    await this.eventsService.getInitData().
+      toPromise().then(data => {
+        console.log(data);
+        this._url = data.urls['alma'];
+        this._url = this._url + 'view/nacsis/';
+        this._url = this._url + data.instCode + '/';
+        console.log(this._url);
+      });
+    return this._url;
+  }
+
+  async getAuthHeader(): Promise<any> {
+    const now = Date.now(); // Unix timestamp in milliseconds
+
+    if (this.isEmpty(this._exp) || now >= this._exp) {
+      console.log("App loading JWT...");
+      await this.eventsService.getAuthToken()
+        .toPromise().then(
+          jwt => {
+            console.log("JWT = " + jwt);
+            this._authToken = jwt;
+
+            var fields = jwt.split('.');
+            let field1 = atob(fields[1]);
+            console.log('authToken JWT decoded:', field1);
+
+            // extract exp
+            let jsonObject = JSON.parse(field1);
+            this._exp = Number(jsonObject.exp);
+          }
+        )
+    }
+    return { 'Authorization': `Bearer ${this._authToken}` };
+  }
+
+  async getHoldingsFromNacsis(mmsId: any, owner: String): Promise<Header> {
+    //var url = "http://il-shayh-7290.corp.exlibrisgroup.com:1801/view/nacsis/TRAINING_1_INST/9927041500521";
+    var url = await this.getUrl() + mmsId;
 
     // add query params
-    getUrl = getUrl + "?owner=" + owner;
+    url = url + "?owner=" + owner;
 
-    await this.http.get<any>(getUrl)
-      .toPromise()
-      .then(
+    // add jwt header
+    const headers = await this.getAuthHeader();
+
+    await this.http.get<any>(url, { headers })
+      .toPromise().then(
         response => {
           console.log(response);
           this._header = response;
@@ -70,9 +99,7 @@ export class NacsisService {
       ).catch(e => {
         console.log(e);
       });
-    return new Promise(resolve => {
-      resolve(this._header);
-    });
+    return this._header;
   }
 
   getHolding(id: string): Observable<Holding> {
@@ -118,11 +145,19 @@ export class NacsisService {
     });
   }
 
-  deleteHoldingFromNacsis(mmsId: string, holdingsId: string) {
-    //var deleteUrl = "http://il-shayh-7290.corp.exlibrisgroup.com:1801/view/nacsis/TRAINING_1_INST/9927041500521" + '/' + holdingsId;;
-    var deleteUrl = this.url + mmsId + '/' + holdingsId;
+  async deleteHoldingFromNacsis(mmsId: string, holdingsId: string): Promise<Header> {
+    //var url = "http://il-shayh-7290.corp.exlibrisgroup.com:1801/view/nacsis/TRAINING_1_INST/9927041500521" + '/' + holdingsId;;
+    var url = await this.getUrl() + mmsId + '/' + holdingsId;
 
-    return this.http.delete<any>(deleteUrl);
+    // add jwt header
+    const headers = await this.getAuthHeader();
+
+    let header: Header;
+
+    await this.http.delete<any>(url, { headers }).
+      toPromise().then(response => { header = response });
+
+    return header;
   }
 
   deleteHolding(holdingId: string) {
@@ -133,23 +168,30 @@ export class NacsisService {
     }
   }
 
-  saveHoldingToNacsis(mmsId: string, holding: Holding) {
-
-    //var saveUrl = "http://il-shayh-7290.corp.exlibrisgroup.com:1801/view/nacsis/TRAINING_1_INST/9927041500521";
-    var saveUrl = this.url + mmsId;
+  async saveHoldingToNacsis(mmsId: string, holding: Holding): Promise<Header> {
+    //var url = "http://il-shayh-7290.corp.exlibrisgroup.com:1801/view/nacsis/TRAINING_1_INST/9927041500521";
+    var url = await this.getUrl() + mmsId;
 
     var body = JSON.stringify(holding);
 
-    if (this.isEmpty(holding.ID)) { // create/POST
-      return this.http.post<any>(saveUrl, body);
-    }
+    // add jwt header
+    const headers = await this.getAuthHeader();
 
-    saveUrl = saveUrl + '/' + holding.ID;
-    return this.http.put<any>(saveUrl, body); // update/PUT
+    let header: Header;
+
+    if (this.isEmpty(holding.ID)) { // create/POST
+      await this.http.post<any>(url, body, { headers }).
+        toPromise().then(response => { header = response; });
+    } else { // update/PUT 
+      url = url + '/' + holding.ID;
+      await this.http.put<any>(url, body, { headers }).
+        toPromise().then(response => { header = response; });
+    }
+    return header;
   }
 
   saveHolding(holding: Holding) {
-    if(!this._holdings) {
+    if (!this._holdings) {
       this._holdings = [];
     }
     let existHolding = this._holdings.find(thisHolding => thisHolding.ID === holding.ID);

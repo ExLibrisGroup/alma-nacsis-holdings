@@ -40,7 +40,7 @@ export class FormComponent implements OnInit {
     this.type = this.nacsis.getHeader().type;
 
     this.route.snapshot.url.forEach(sigment => {
-      if(sigment.path == this.urlViewSigment) {
+      if (sigment.path == this.urlViewSigment) {
         this.isReadOnly = true;
       }
     });
@@ -67,12 +67,12 @@ export class FormComponent implements OnInit {
     } else { // create new holding
       this.holding = new Holding();
       this.forms = new Array(0);
-      this.forms[0] = holdingFormGroup(null, this.isBook()); 
+      this.forms[0] = holdingFormGroup(null, this.isBook());
     }
   }
-   
+
   getLibraryFullName(): string {
-    return this.nacsis.getHeader().LIBABL + ' (' + 
+    return this.nacsis.getHeader().LIBABL + ' (' +
       this.nacsis.getHeader().FANO + ')'
   }
 
@@ -83,21 +83,21 @@ export class FormComponent implements OnInit {
 
   // add holding volume
   add() {
-    this.forms.push(holdingFormGroup(null, this.isBook())); 
+    this.forms.push(holdingFormGroup(null, this.isBook()));
   }
 
   isAddEnabled(): boolean {
     return this.isBook() || this.forms.length == 0;
-  } 
+  }
 
   // to nacsis
-  save() {
+  async save() {
     this.loading = true;
 
     // validate form
     var invalidForms: FormGroup[] = this.forms.filter((form) => form.invalid)
 
-    if(this.nacsis.isEmpty(this.holding.LOC) || invalidForms.length > 0) { 
+    if (this.nacsis.isEmpty(this.holding.LOC) || invalidForms.length > 0) {
       invalidForms.forEach(form => form.markAllAsTouched())
       this.loading = false;
       return;
@@ -105,10 +105,10 @@ export class FormComponent implements OnInit {
 
     this.holding.BID = this.nacsis.getHeader().BID;
     this.holding.FANO = this.nacsis.getHeader().FANO;
-    this.holding.type = this.type; 
+    this.holding.type = this.type;
     this.holding.editable = true;
     this.holding.ID = this.holdingId;
-   
+
     this.holding.nacsisHoldingsList = new Array(this.forms.length);
 
     this.forms.forEach((element, index) => {
@@ -136,29 +136,51 @@ export class FormComponent implements OnInit {
       }
     });
 
-    this.nacsis.saveHoldingToNacsis(this.mmsId, this.holding)
-      .subscribe({
-        next: (response) => {
-          console.log(response);
+    //this.nacsis.saveHoldingToNacsis(this.mmsId, this.holding)
+    // .subscribe({
+    //   next: (response) => {
+    //     console.log(response);
 
-          var header: Header = response;
-          if(header.status != this.nacsis.OkStatus) {
-            
-            this.toastr.error(header.errorMessage, this.translate.instant('Form.Errors.SaveFailed'),
-              {timeOut: 0, extendedTimeOut:0});
-          } else {
-            this.toastr.success(this.translate.instant('Form.Success'));
-            
-            this.holdingId = header.holdingId;
-            this.holding.ID = header.holdingId;
-            this.nacsis.saveHolding(this.holding);
-          }
-          this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
-        },
-        error: e => this.toastr.error(e, this.translate.instant('Form.Errors.SaveFailed'),
-          { timeOut: 0, extendedTimeOut:0}),
-        complete: () => this.loading = false
-      });
+    //     var header: Header = response;
+    //     if(header.status != this.nacsis.OkStatus) {
+
+    //       this.toastr.error(header.errorMessage, this.translate.instant('Form.Errors.SaveFailed'),
+    //         {timeOut: 0, extendedTimeOut:0});
+    //     } else {
+    //       this.toastr.success(this.translate.instant('Form.Success'));
+
+    //       this.holdingId = header.holdingId;
+    //       this.holding.ID = header.holdingId;
+    //       this.nacsis.saveHolding(this.holding);
+    //     }
+    //     this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
+    //   },
+    //   error: e => this.toastr.error(e, this.translate.instant('Form.Errors.SaveFailed'),
+    //     { timeOut: 0, extendedTimeOut:0}),
+    //   complete: () => this.loading = false
+    // });
+
+    try {
+      var header: Header = await this.nacsis.saveHoldingToNacsis(this.mmsId, this.holding)
+
+      if (header.status != this.nacsis.OkStatus) {
+        this.toastr.error(header.errorMessage, this.translate.instant('Form.Errors.SaveFailed'),
+          { timeOut: 0, extendedTimeOut: 0 });
+      } else {
+        this.toastr.success(this.translate.instant('Form.Success'));
+
+        this.holdingId = header.holdingId;
+        this.holding.ID = header.holdingId;
+        this.nacsis.saveHolding(this.holding);
+      }
+      this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
+    } catch (e) {
+      console.log(e);
+      this.toastr.error(this.translate.instant('Errors.generalError'),
+        this.translate.instant('Form.Errors.SaveFailed'), { timeOut: 0, extendedTimeOut: 0 });
+    } finally {
+      this.loading = false;
+    }
   }
 
   cancel() {
