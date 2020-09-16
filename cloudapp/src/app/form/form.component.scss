@@ -49,8 +49,13 @@ mat-card {
     min-width: 250px;
   }
 
-  .align-space-between {
-    justify-content: space-between;
+  // .align-space-between {
+  //   justify-content: space-between;
+  //   margin-bottom: 20px;
+  // }
+
+  .align-to-right {
+    justify-content: flex-end;
     margin-bottom: 20px;
   }
 }

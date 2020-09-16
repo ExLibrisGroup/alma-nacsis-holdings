@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
-import { tap, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { NacsisService, Holding, Header } from '../nacsis.service';
 import Swal from 'sweetalert2'
-
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialog } from '../dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-holdings',
@@ -25,14 +24,18 @@ export class HoldingsComponent implements OnInit {
   mmsTitle: string;
   type: string;
 
+  title: string;
+  message: string;
+  isErrorMessageVisible: boolean=false;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private restService: CloudAppRestService,
     private http: HttpClient,
     private toastr: ToastrService,
     private translate: TranslateService,
-    private nacsis: NacsisService
+    private nacsis: NacsisService,
+    private dialog: MatDialog
   ) {
     this.owners = [
       { id: "0", name: this.translate.instant('Holdings.All') },
@@ -51,8 +54,11 @@ export class HoldingsComponent implements OnInit {
   }
 
   load() {
-    this.holdings = this.nacsis.getHoldingList();
-    this.type = this.nacsis.getHeader().type;
+    let header = this.nacsis.getHeader();
+    if (header && header.status === this.nacsis.OkStatus) {
+      this.type = header.type;
+      this.holdings = this.nacsis.getHoldingList();
+    }
   }
 
   async onOwnerSelected() {
@@ -69,18 +75,16 @@ export class HoldingsComponent implements OnInit {
       this.loading = true;
 
       try {
-        var header: Header = await this.nacsis.getHoldingsFromNacsis(this.mmsId, owner);
+        let header: Header = await this.nacsis.getHoldingsFromNacsis(this.mmsId, owner);
 
         if (header.status != this.nacsis.OkStatus) {
-          this.toastr.error(header.errorMessage,
-            this.translate.instant('Holdings.Errors.GetFailed'), { timeOut: 0, extendedTimeOut: 0 });
+            this.showErrorMessage(this.translate.instant('Holdings.Errors.GetFailed'), header.errorMessage);
         } else {
           this.isAllSelected = true;
         }
       } catch (e) {
         console.log(e);
-        this.toastr.error(this.translate.instant('Errors.generalError'),
-          this.translate.instant('Holdings.Errors.GetFailed'), { timeOut: 0, extendedTimeOut: 0 });
+        this.showErrorMessage(this.translate.instant('Holdings.Errors.GetFailed'), this.translate.instant('Errors.generalError'));
       } finally {
         this.loading = false;
       }
@@ -96,14 +100,32 @@ export class HoldingsComponent implements OnInit {
     }
   }
 
+  getNumOfRecords() {
+    let holdings = this.getDisplayHoldings();
+    if (holdings) {
+      return holdings.length;
+    }
+    return 0;
+  }
+
+  isHoldingRecordsExist() {
+    return (this.holdings && this.holdings.length > 0);
+  }
+
   async delete(mmsId: string, holdingId: string) {
 
-    Swal.fire({
-      text: this.translate.instant('Holdings.ConfirmDelete'),
-      icon: 'warning',
-      showCancelButton: true,
-    }).then(async (result) => {
-      if (result.value) {
+    const dialogRef = this.dialog.open(ConfirmationDialog, {
+      data: {
+        message: this.translate.instant('Holdings.ConfirmDelete'),
+        buttonText: {
+          ok: this.translate.instant('OK'),
+          cancel: this.translate.instant('Cancel')
+        }
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(async (confirmed: boolean) => {
+      if (confirmed) {
         this.loading = true;
 
         try {
@@ -112,22 +134,30 @@ export class HoldingsComponent implements OnInit {
           console.log(header);
 
           if (header.status != this.nacsis.OkStatus) {
-            this.toastr.error(header.errorMessage,
-              this.translate.instant('Holdings.Errors.DeleteFailed'), { timeOut: 0, extendedTimeOut: 0 });
+              this.showErrorMessage(this.translate.instant('Holdings.Errors.DeleteFailed'), header.errorMessage);
           } else {
             this.toastr.success(this.translate.instant('Holdings.Deleted'));
             this.nacsis.deleteHolding(holdingId);
+
+            this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
           }
-          this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
         } catch (e) {
           console.log(e);
-          this.toastr.error(this.translate.instant('Errors.generalError'),
-            this.translate.instant('Holdings.Errors.DeleteFailed'), { timeOut: 0, extendedTimeOut: 0 });
+            this.showErrorMessage(this.translate.instant('Holdings.Errors.DeleteFailed'), this.translate.instant('Errors.generalError'));
         } finally {
           this.loading = false;
         }
       }
-    })
+    });
   }
 
+  onCloseClick() {
+    this.isErrorMessageVisible = false;
+  }
+
+  showErrorMessage(title: string, message: string) {
+    this.title = title;
+    this.message = message;
+    this.isErrorMessageVisible = true;
+  }
 }

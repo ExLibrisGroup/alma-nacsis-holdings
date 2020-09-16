@@ -3,9 +3,7 @@
     "Intro": "Select a record to retrieve NACSIS holdings:",
     "NoRecords": "To view NACSIS holdings, navigate to a bibliographic record.",
     "SelectBib": "Select a title",
-    "RetrieveHoldings": "Retrieve NACSIS Holdings",
-    "NoHoldingRecordsExist": "No holding records exist."
-    
+    "RetrieveHoldings": "Retrieve NACSIS Holdings"
   },
   "Errors": {
     "generalError": "App general error"
@@ -21,17 +19,18 @@
     "ConfirmDelete": "Are you sure you wish to delete this record?",
     "Deleted": "Record successfully deleted.",
     "Add": "Add NACSIS Holding",
+    "NoHoldingRecordsExist": "No holding records exist.",
     "Errors": {
       "NoNoldings": "No holdings record were found",
-      "GetFailed": "Get Holdings Failed",
-      "DeleteFailed": "Delete Holding Failed"
+      "GetFailed": "Get holdings failed",
+      "DeleteFailed": "Delete holding failed"
     }
   },
   "Form": {
     "Title":"Title",
-    "EditTitle": "Edit Holding",
-    "AddTitle": "Add Holding",
-    "ViewTitle": "View Holding",
+    "EditTitle": "Edit holdhing",
+    "AddTitle": "Add holding",
+    "ViewTitle": "View holding",
     "Success": "Holding successfully saved.",
     "Fields": {
       "Id": "ID",
@@ -51,11 +50,11 @@
       "HLYR": "HLYR"
     },
     "Errors": {
-      "Id": "ID is required",
-      "SaveFailed": "Save Holding Failed",
-      "HLYR": "HLYR is required",
-      "HLV": "HLV is required",
-      "LOC": "LOC is required"
+      "Id": "ID field is required",
+      "SaveFailed": "Save holding failed",
+      "HLYR": "HLYR field is required",
+      "HLV": "HLV field is required",
+      "LOC": "LOC field is required"
     }
   },
   "Config": {
@@ -67,5 +66,6 @@
   },
   "Back": "Back",
   "Cancel": "Cancel",
-  "Save": "Save"
+  "Save": "Save",
+  "OK": "OK"
 }

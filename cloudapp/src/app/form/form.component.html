@@ -1,10 +1,9 @@
 <div class="form-wrapper">
 
-  <div class="align-space-between" fxLayout="row">
-    <button mat-flat-button type="button" color="secondary" (click)="cancel()">
+  <div class="align-to-right" fxLayout="row">
+    <button class="form-commands" mat-flat-button type="button" color="primary" (click)="cancel()">
       {{'Cancel' | translate}}
     </button>
-    <div>
       <button class="form-commands" *ngIf="!isReadOnly" [disabled]="!isAddEnabled()" mat-flat-button type="button" color="primary"
         (click)="add()">
         <mat-icon>add</mat-icon>
@@ -12,8 +11,12 @@
       <button *ngIf="!isReadOnly" type="submit" mat-flat-button type="button" color="primary" (click)="save()">
         {{ 'Save' | translate }}
       </button>
-    </div>
   </div>
+
+  <!--  -->
+  <error-message-inpu-output *ngIf="isErrorMessageVisible" [title]="title" [message]="message"
+   (onCloseEvent)="onCloseClick()"></error-message-inpu-output>
+  <!--  -->
 
   <div class="title">
     <h2>{{ (isReadOnly ? 'Form.ViewTitle' : holdingId ? 'Form.EditTitle' : 'Form.AddTitle') | translate}}</h2>

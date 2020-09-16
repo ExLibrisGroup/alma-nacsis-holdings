@@ -18,6 +18,10 @@ export class MainComponent implements OnInit, OnDestroy {
   selected: string;
   loading = false;
 
+  title: string;
+  message: string;
+  isErrorMessageVisible: boolean = false;
+
   constructor(
     private eventsService: CloudAppEventsService,
     private router: Router,
@@ -47,22 +51,25 @@ export class MainComponent implements OnInit, OnDestroy {
 
         if (header.status === this.nacsis.OkStatus) {
           this.router.navigate(['/holdings', this.selected, bib[0].description]);
-          //No holding records exist 
-          let holdings = this.nacsis.getHoldingList();
-          if(holdings == null || holdings.length == 0) {
-            this.toastr.info(this.translate.instant('Main.NoHoldingRecordsExist'));
-          }
         } else {
-          this.toastr.error(header.errorMessage, 
-            this.translate.instant('Holdings.Errors.GetFailed'), {timeOut: 0, extendedTimeOut:0});
+            this.showErrorMessage(this.translate.instant('Holdings.Errors.GetFailed'), header.errorMessage);
         }
       } catch (e) {
         console.log(e);
-        this.toastr.error(this.translate.instant('Errors.generalError'),
-          this.translate.instant('Holdings.Errors.GetFailed'), {timeOut: 0, extendedTimeOut:0});  
+          this.showErrorMessage(this.translate.instant('Holdings.Errors.GetFailed'), this.translate.instant('Errors.generalError'));
       } finally {
         this.loading = false;
       }
     }
+  }
+
+  onCloseClick() {
+    this.isErrorMessageVisible = false;
+  }
+
+  showErrorMessage(title: string, message: string) {
+    this.title = title;
+    this.message = message;
+    this.isErrorMessageVisible = true;
   }
 }

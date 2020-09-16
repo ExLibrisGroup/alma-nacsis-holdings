@@ -47,7 +47,11 @@ export class NacsisService {
         this._url = this._url + 'view/nacsis/';
         this._url = this._url + data.instCode + '/';
         console.log(this._url);
+      }).catch(e => {
+        console.log(e);
+        throw new Error('getInitData() Failed');
       });
+
     return this._url;
   }
 
@@ -70,7 +74,10 @@ export class NacsisService {
             let jsonObject = JSON.parse(field1);
             this._exp = Number(jsonObject.exp);
           }
-        )
+        ).catch(e => {
+          console.log(e);
+          throw new Error('getAuthToken() Failed'); 
+        });
     }
     return { 'Authorization': `Bearer ${this._authToken}` };
   }

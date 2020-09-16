@@ -12,19 +12,14 @@
     </button>
   </div>
 
+  <!--  -->
+  <error-message-inpu-output *ngIf="isErrorMessageVisible" [title]="title" [message]="message"
+    (onCloseEvent)="onCloseClick()"></error-message-inpu-output>
+  <!--  -->
+
   <div>
-    <div class="title">
-      <h2>{{'Holdings.Title' | translate}}</h2>
-    </div>
-
-    <div class="loading-shade" *ngIf="loading">
-      <mat-progress-spinner mode="indeterminate" diameter="50">
-      </mat-progress-spinner>
-    </div>
-  </div>
-
-  <div class="holdings-title-wrapper" fxLyout="row">
     <h3>{{mmsTitle}}</h3>
+
     <div class="holdings-drop-down">
       <mat-form-field class="holdings-mat-drop-down">
         <mat-placeholder>{{'Holdings.Owner' | translate}}</mat-placeholder>
@@ -35,36 +30,56 @@
         </mat-select>
       </mat-form-field>
     </div>
+    <div *ngIf="isHoldingRecordsExist()" class="title">
+      <h2>{{'Holdings.Title' | translate}} ({{getNumOfRecords()}})</h2>
+    </div>
+
+    <div class="loading-shade" *ngIf="loading">
+      <mat-progress-spinner mode="indeterminate" diameter="50">
+      </mat-progress-spinner>
+    </div>
+  </div>
+
+  <div class="no-holdings-place-holder" *ngIf="!isHoldingRecordsExist()">
+    <mat-icon class="img-center">warning</mat-icon>
+    <!-- https://stackoverflow.com/questions/38796541/how-to-add-font-awesome-to-angular-2-cli-project -->
+    <!-- <i class="fa fa-list-alt" style="font-size:36px;"></i> -->
+    <h2 class="no-holdings-place-holder-message">{{'Holdings.NoHoldingRecordsExist' | translate}}</h2>
   </div>
 
   <div class="holdings-cards">
-    <div>
-      <mat-card *ngFor="let holding of getDisplayHoldings()">
-        <mat-card-title>
-          <a [routerLink]="['/holdings', mmsId, 'view', holding.ID, mmsTitle]">
-            {{'Holdings.ID' | translate}}: {{holding.ID}}
-          </a>
-        </mat-card-title>
+    <mat-card *ngFor="let holding of getDisplayHoldings(); index as i">
+      <div fxLayout="row">
+        <div class="holdings-cards-index">
+          <span><strong>{{i + 1}}</strong></span>
+        </div>
+        <div>
+          <mat-card-title>
+            <a [routerLink]="['/holdings', mmsId, 'view', holding.ID, mmsTitle]">
+              {{'Holdings.ID' | translate}}: {{holding.ID}}
+            </a>
+          </mat-card-title>
 
-        <mat-card-content>
-          <span><strong>{{'Holdings.Library' | translate}}: {{holding.libraryFullName}}</strong></span>
-          <span><strong>{{'Holdings.Location' | translate}}: {{holding.LOC}}</strong></span>
-          <span><strong>{{holding.info}}</strong></span>
-        </mat-card-content>
+          <mat-card-content>
+            <span><strong>{{'Holdings.Library' | translate}}: {{holding.libraryFullName}}</strong></span>
+            <span><strong>{{'Holdings.Location' | translate}}: {{holding.LOC}}</strong></span>
+            <span><strong>{{holding.info}}</strong></span>
+          </mat-card-content>
 
-        <mat-card-actions>
-          <div fxLayout="row">
-            <button [disabled]="!holding.editable" class="edit-commands" mat-flat-button color="primary"
-              aria-label="Edit" [routerLink]="['/holdings', mmsId, 'edit', holding.ID, mmsTitle]">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button [disabled]="!holding.editable" mat-flat-button color="primary" aria-label="Delete"
-              (click)="delete(mmsId, holding.ID)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </mat-card-actions>
-      </mat-card>
-    </div>
+          <mat-card-actions>
+            <div fxLayout="row">
+              <button [disabled]="!holding.editable" class="edit-commands" mat-flat-button color="primary"
+                aria-label="Edit" [routerLink]="['/holdings', mmsId, 'edit', holding.ID, mmsTitle]">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button [disabled]="!holding.editable" mat-flat-button color="primary" aria-label="Delete"
+                (click)="delete(mmsId, holding.ID)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </mat-card-actions>
+        </div>
+      </div>
+    </mat-card>
   </div>
 </div>

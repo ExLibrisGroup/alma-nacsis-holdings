@@ -16,6 +16,11 @@ import { ConfigurationComponent } from './configuration/configuration.component'
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 
+import {MatDialogModule} from '@angular/material/dialog';
+import {ConfirmationDialog} from './dialog/confirmation-dialog.component';
+
+import {ErrorMessageComponent} from './error-message/error-message.component';
+
 
 export function getToastrModule() {
   return ToastrModule.forRoot({
@@ -31,10 +36,14 @@ export function getToastrModule() {
       FooterComponent,
       HoldingsComponent,
       FormComponent,
-      ConfigurationComponent
+      ConfigurationComponent,
+      ConfirmationDialog,
+      ErrorMessageComponent
    ],
+   entryComponents: [ConfirmationDialog],
    imports: [
       MaterialModule,
+      MatDialogModule,
       BrowserModule,
       BrowserAnimationsModule,
       AppRoutingModule,

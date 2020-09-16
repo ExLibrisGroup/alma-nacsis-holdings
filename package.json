@@ -9,6 +9,7 @@
     "@angular/flex-layout": "^10.0.0-beta.32",
     "@exlibris/exl-cloudapp-angular-lib": "^0.1.26",
     "@exlibris/exl-cloudapp-base": "^0.1.26",
+    "font-awesome": "^4.7.0",
     "sweetalert2": "^9.17.1"
   }
 }

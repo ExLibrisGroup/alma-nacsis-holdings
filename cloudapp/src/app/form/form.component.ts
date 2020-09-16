@@ -22,6 +22,11 @@ export class FormComponent implements OnInit {
   isReadOnly: boolean;
   originLOC: string;
 
+
+  title: string;
+  message: string;
+  isErrorMessageVisible: boolean=false;
+
   book: string = "BOOK";
   urlViewSigment: string = "view";
 
@@ -49,7 +54,7 @@ export class FormComponent implements OnInit {
   }
 
   load() {
-    if (this.holdingId) { // update holding
+    if (this.holdingId) { // existing holding
       this.loading = true;
       this.nacsis.getHolding(this.holdingId)
         .subscribe({
@@ -64,11 +69,15 @@ export class FormComponent implements OnInit {
           },
           complete: () => this.loading = false
         });
-    } else { // create new holding
+    } else { // new holding
       this.holding = new Holding();
       this.forms = new Array(0);
       this.forms[0] = holdingFormGroup(null, this.isBook());
     }
+  }
+
+  onCloseClick() {
+    this.isErrorMessageVisible = false;
   }
 
   getLibraryFullName(): string {
@@ -136,48 +145,23 @@ export class FormComponent implements OnInit {
       }
     });
 
-    //this.nacsis.saveHoldingToNacsis(this.mmsId, this.holding)
-    // .subscribe({
-    //   next: (response) => {
-    //     console.log(response);
-
-    //     var header: Header = response;
-    //     if(header.status != this.nacsis.OkStatus) {
-
-    //       this.toastr.error(header.errorMessage, this.translate.instant('Form.Errors.SaveFailed'),
-    //         {timeOut: 0, extendedTimeOut:0});
-    //     } else {
-    //       this.toastr.success(this.translate.instant('Form.Success'));
-
-    //       this.holdingId = header.holdingId;
-    //       this.holding.ID = header.holdingId;
-    //       this.nacsis.saveHolding(this.holding);
-    //     }
-    //     this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
-    //   },
-    //   error: e => this.toastr.error(e, this.translate.instant('Form.Errors.SaveFailed'),
-    //     { timeOut: 0, extendedTimeOut:0}),
-    //   complete: () => this.loading = false
-    // });
-
     try {
       var header: Header = await this.nacsis.saveHoldingToNacsis(this.mmsId, this.holding)
 
       if (header.status != this.nacsis.OkStatus) {
-        this.toastr.error(header.errorMessage, this.translate.instant('Form.Errors.SaveFailed'),
-          { timeOut: 0, extendedTimeOut: 0 });
+        this.showErrorMessage(this.translate.instant('Form.Errors.SaveFailed'), header.errorMessage);
       } else {
         this.toastr.success(this.translate.instant('Form.Success'));
 
         this.holdingId = header.holdingId;
         this.holding.ID = header.holdingId;
         this.nacsis.saveHolding(this.holding);
+
+        this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
       }
-      this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
     } catch (e) {
       console.log(e);
-      this.toastr.error(this.translate.instant('Errors.generalError'),
-        this.translate.instant('Form.Errors.SaveFailed'), { timeOut: 0, extendedTimeOut: 0 });
+      this.showErrorMessage(this.translate.instant('Form.Errors.SaveFailed'), this.translate.instant('Errors.generalError'));
     } finally {
       this.loading = false;
     }
@@ -191,5 +175,11 @@ export class FormComponent implements OnInit {
 
   isBook(): boolean {
     return this.type === this.book;
+  }
+
+  showErrorMessage(title: string, message: string) {
+      this.title = title;
+      this.message = message;
+      this.isErrorMessageVisible = true;
   }
 }

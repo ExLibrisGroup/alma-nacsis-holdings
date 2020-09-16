@@ -1,11 +1,16 @@
 <div *ngIf="bibs.length>0 else nobibs" fxLayout="column">
   <div class="align-to-right" fxLayout="row">
-  <button mat-flat-button color="primary" aria-label="search" (click)="search()" [disabled]="!selected">
-    {{ 'Main.RetrieveHoldings' | translate }}
-  </button>
-</div>
+    <button mat-flat-button color="primary" aria-label="search" (click)="search()" [disabled]="!selected">
+      {{ 'Main.RetrieveHoldings' | translate }}
+    </button>
+  </div>
+
+ <!--  -->
+ <error-message-inpu-output *ngIf="isErrorMessageVisible" [title]="title" [message]="message"
+ (onCloseEvent)="onCloseClick()"></error-message-inpu-output>
+<!--  -->
+
   <p translate>Main.Intro</p>
-  <!-- <mat-form-field appearance="standard"> -->
   <mat-form-field>
     <mat-placeholder translate>Main.SelectBib</mat-placeholder>
     <mat-select [(value)]="selected">
