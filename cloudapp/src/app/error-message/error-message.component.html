@@ -1,0 +1,11 @@
+<div class="error-message" fxLayout="row" (click)="onCloseClick()">
+    <button class="close-button" mat-raised-button>
+        <div fxLayout="row" fxLayoutAlign="center">
+            <mat-icon class="close-icon">close</mat-icon>
+        </div>
+    </button>
+    <div class="message-area-all" fxLayout="column">
+        <b><h2>{{title}}</h2></b>
+        <mat-placeholder class="message-area">{{message}}</mat-placeholder>
+    </div>
+</div>

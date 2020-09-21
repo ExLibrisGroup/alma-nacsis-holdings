@@ -1,0 +1,71 @@
+{
+  "Main": {
+    "Intro": "Select a record to retrieve NACSIS holdings:",
+    "NoRecords": "To view NACSIS holdings, navigate to a bibliographic record.",
+    "SelectBib": "Select a title",
+    "RetrieveHoldings": "Retrieve NACSIS Holdings"
+  },
+  "Errors": {
+    "generalError": "App general error"
+  },
+  "Holdings": {
+    "Owner": "Owner",
+    "All": "All",
+    "Mine": "Mine",
+    "ID": "ID",
+    "Title": "Holdings",
+    "Library": "Library",
+    "Location": "Location",
+    "ConfirmDelete": "Are you sure you wish to delete this record?",
+    "Deleted": "Record successfully deleted.",
+    "Add": "Add NACSIS Holding",
+    "NoHoldingRecordsExist": "No holding records exist.",
+    "Errors": {
+      "NoNoldings": "No holdings record were found",
+      "GetFailed": "Get holdings failed",
+      "DeleteFailed": "Delete holding failed"
+    }
+  },
+  "Form": {
+    "Title":"Title",
+    "EditTitle": "Edit holdhing",
+    "AddTitle": "Add holding",
+    "ViewTitle": "View holding",
+    "Success": "Holding successfully saved.",
+    "Fields": {
+      "Id": "ID",
+      "Description": "Description",
+      "Library": "Library",
+      "Location": "Location",
+      "Ill": "Available for resource sharing",
+      "VOL": "VOL",
+      "CLN": "CLN",
+      "RGTN": "RGTN",
+      "CPYR": "CPYR",
+      "CPYNT": "CPYNT",
+      "LDF": "LDF",
+      "LTR": "LTR",
+      "HLV": "HLV",
+      "CONT": "CONT",
+      "HLYR": "HLYR"
+    },
+    "Errors": {
+      "Id": "ID field is required",
+      "SaveFailed": "Save holding failed",
+      "HLYR": "HLYR field is required",
+      "HLV": "HLV field is required",
+      "LOC": "LOC field is required"
+    }
+  },
+  "Config": {
+    "Title": "Configuration",
+    "Success": "Configuration successfully saved.",
+    "Fields": {
+      "Code": "NACSIS Code"
+    }
+  },
+  "Back": "Back",
+  "Cancel": "Cancel",
+  "Save": "Save",
+  "OK": "OK"
+}

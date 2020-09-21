@@ -1,0 +1,22 @@
+<div class="title">
+  <h2>{{'Config.Title' | translate}}</h2>
+  <a [routerLink]="['']">
+    <button mat-raised-button>
+      <mat-icon>arrow_back</mat-icon>
+      {{'Back' | translate}}
+    </button>
+  </a>
+</div>
+
+<form *ngIf="form" [formGroup]="form">
+  <section class="config-section">
+    <mat-form-field>
+      <input matInput placeholder="{{'Config.Fields.Code' | translate}}" formControlName="code">
+    </mat-form-field>  
+  </section>
+
+  <div class="commands-container">
+    <button mat-stroked-button type="button" color="primary" (click)="save()" [disabled]="!form.dirty">{{'Save' | translate}}</button>
+    <mat-spinner diameter="30" class="spinner" *ngIf="saving"></mat-spinner>
+  </div>  
+</form>
