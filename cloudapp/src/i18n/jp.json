@@ -1,8 +1,71 @@
 {
   "Main": {
-    "Intro": "NACSISの所蔵を取得するレコードを選択してください：",
-    "NoRecords": "NACSISの所蔵を表示するには、書誌レコードに移動します。",
-    "SelectBib": "タイトルを選択",
-    "RetrieveHoldings": "NACSISホールディングスを取得する"
-  }
+    "Intro": "NACSISから所蔵を取得するための書誌レコードを選択してください：",
+    "NoRecords": "NACSISの所蔵を閲覧表示するため、該当の書誌レコードに移動します。",
+    "SelectBib": "書誌レコードの選択",
+    "RetrieveHoldings": "所蔵の検索"
+  },
+  "Errors": {
+    "generalError": "アプリケーションエラー"
+  },
+  "Holdings": {
+    "Owner": "所蔵館",
+    "All": "すべて",
+    "Mine": "自館所蔵",
+    "ID": "所蔵データID",
+    "Title": "タイトル",
+    "Library": "図書館",
+    "Location": "配置場所",
+    "ConfirmDelete": "このレコードを本当に削除しますか？",
+    "Deleted": "レコードが削除されました.",
+    "Add": "所蔵レコードの追加",
+    "NoHoldingRecordsExist": "所蔵レコードがありません。",
+    "Errors": {
+      "NoNoldings": "所蔵レコードが見つかりません。",
+      "GetFailed": "所蔵レコードの取得ができませんでした。",
+      "DeleteFailed": "所蔵レコードの削除ができませんでした。"
+    }
+  },
+  "Form": {
+    "Title": "タイトル",
+    "EditTitle": "所蔵の編集",
+    "AddTitle": "所蔵の追加",
+    "ViewTitle": "タイトルの表示",
+    "Success": "所蔵が保存されました.",
+    "Fields": {
+      "Id": "データID",
+      "Description": "記述",
+      "Library": "図書館",
+      "Location": "配置場所",
+      "Ill": "ILL（リソース共有）可",
+      "VOL": "巻冊次等",
+      "CLN": "請求記号",
+      "RGTN": "登録番号",
+      "CPYR": "刷の出版年",
+      "CPYNT": "刷の注記",
+      "LDF": "図書館定義フィールド",
+      "LTR": "ローカルトレーシング",
+      "HLV": "所蔵巻次データ",
+      "CONT": "受入継続表示",
+      "HLYR": "所蔵年次データ"
+    },
+    "Errors": {
+	  "Id": "所蔵IDの入力は必須です。",
+      "SaveFailed": "所蔵の保存ができませんでした。",
+      "HLYR": "所蔵年次データの入力は必須です。",
+      "HLV": "所蔵巻次データの入力は必須です",
+      "LOC": "配置コードの入力は必須です"
+    }
+  },
+  "Config": {
+    "Title": "設定",
+    "Success": "設定が保存されました.",
+    "Fields": {
+      "Code": "NACSISのコード"
+    }
+  },
+  "Back": "戻る",
+  "Cancel": "キャンセル",
+  "Save": "保存",
+  "OK": "OK"
 }
