@@ -1,6 +1,5 @@
 {
    "id": "nacsis-holdings",
-   "author": "Ex Libris",
    "title": [
       {
          "lang": "jp",
@@ -21,6 +20,7 @@
          "text": "Display, edit, and update holdings records from the NII NACSIS-CAT for a given Bibliographic record in Alma. This app is supported by Ex Libris. Currently available for beta testing."
       }
    ],
+   "author": "Ex Libris",
    "subtitle": [
       {
          "lang": "jp",
@@ -40,7 +40,8 @@
          "modals": true
       },
       "connectSrc": [
-         "*.exlibrisgroup.com"
+         "*.corp.exlibrisgroup.com",
+         "*.alma.exlibrisgroup.com"
       ]
    },
    "pages": {
