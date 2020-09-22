@@ -40,8 +40,8 @@
          "modals": true
       },
       "connectSrc": [
-         "*.corp.exlibrisgroup.com:*",
-         "*.alma.exlibrisgroup.com"
+         "http://*.corp.exlibrisgroup.com:*",
+         "https://*.alma.exlibrisgroup.com"
       ]
    },
    "pages": {
