@@ -40,7 +40,7 @@
          "modals": true
       },
       "connectSrc": [
-         "*.corp.exlibrisgroup.com",
+         "*.corp.exlibrisgroup.com:*",
          "*.alma.exlibrisgroup.com"
       ]
    },
