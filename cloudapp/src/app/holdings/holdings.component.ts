@@ -94,7 +94,15 @@ export class HoldingsComponent implements OnInit {
   getDisplayHoldings() {
     if (this.holdings) {
       if (this.selected == '0') { // All
-        return this.holdings;
+        return this.holdings.sort((a: Holding, b: Holding) => { // sort list --> Mine first 
+          if (a.editable){
+              return -1;
+          }else if (b.editable){
+              return 1;
+          }else{
+              return 0;
+          }
+      });
       }
       return this.holdings.filter((holding) => holding.editable);
     }
