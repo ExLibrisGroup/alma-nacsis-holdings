@@ -45,7 +45,8 @@
       ]
    },
    "pages": {
-      "config": "/#/configuration"
+      "config": "/#/configuration",
+      "help": "/#/help"
    },
    "fullscreen": {
       "allow": true

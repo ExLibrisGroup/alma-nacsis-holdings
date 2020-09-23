@@ -64,6 +64,10 @@
       "Code": "NACSIS Code"
     }
   },
+  "Help": {
+    "Text": "This app is supported by Ex Libris. To view the documentation, click the link below. For additional help or to report a problem, please open a SalesForce case.",
+    "OLH": "To the online help"
+  },
   "Back": "Back",
   "Cancel": "Cancel",
   "Save": "Save",

@@ -20,6 +20,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {ConfirmationDialog} from './dialog/confirmation-dialog.component';
 
 import {ErrorMessageComponent} from './error-message/error-message.component';
+import { HelpComponent } from './help/help.component';
 
 
 export function getToastrModule() {
@@ -38,7 +39,8 @@ export function getToastrModule() {
       FormComponent,
       ConfigurationComponent,
       ConfirmationDialog,
-      ErrorMessageComponent
+      ErrorMessageComponent,
+      HelpComponent,
    ],
    entryComponents: [ConfirmationDialog],
    imports: [
