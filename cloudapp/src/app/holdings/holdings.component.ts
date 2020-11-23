@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { ToastrService } from 'ngx-toastr';
+//import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { NacsisService, Holding, Header } from '../nacsis.service';
 import Swal from 'sweetalert2'
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../dialog/confirmation-dialog.component';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+
 
 @Component({
   selector: 'app-holdings',
@@ -24,18 +26,20 @@ export class HoldingsComponent implements OnInit {
   mmsTitle: string;
   type: string;
 
-  title: string;
-  message: string;
-  isErrorMessageVisible: boolean=false;
+  // deleteTitle: string;
+  // deleteMessage: string;
+  isErrorMessageVisible: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient,
-    private toastr: ToastrService,
+    //private toastr: ToastrService,
     private translate: TranslateService,
     private nacsis: NacsisService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private alert: AlertService
+
   ) {
     this.owners = [
       { id: "0", name: this.translate.instant('Holdings.All') },
@@ -78,13 +82,14 @@ export class HoldingsComponent implements OnInit {
         let header: Header = await this.nacsis.getHoldingsFromNacsis(this.mmsId, owner);
 
         if (header.status != this.nacsis.OkStatus) {
-            this.showErrorMessage(this.translate.instant('Holdings.Errors.GetFailed'), header.errorMessage);
+          this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
+
         } else {
           this.isAllSelected = true;
         }
       } catch (e) {
         console.log(e);
-        this.showErrorMessage(this.translate.instant('Holdings.Errors.GetFailed'), this.translate.instant('Errors.generalError'));
+        this.alert.error(this.translate.instant('Errors.generalError'), {keepAfterRouteChange:true});  
       } finally {
         this.loading = false;
       }
@@ -95,14 +100,14 @@ export class HoldingsComponent implements OnInit {
     if (this.holdings) {
       if (this.selected == '0') { // All
         return this.holdings.sort((a: Holding, b: Holding) => { // sort list --> Mine first 
-          if (a.editable){
-              return -1;
-          }else if (b.editable){
-              return 1;
-          }else{
-              return 0;
+          if (a.editable) {
+            return -1;
+          } else if (b.editable) {
+            return 1;
+          } else {
+            return 0;
           }
-      });
+        });
       }
       return this.holdings.filter((holding) => holding.editable);
     }
@@ -120,7 +125,61 @@ export class HoldingsComponent implements OnInit {
     return (this.holdings && this.holdings.length > 0);
   }
 
-  async delete(mmsId: string, holdingId: string) {
+  delete(mmsId: string, holdingId: string) {
+
+    const dialogRef = this.dialog.open(ConfirmationDialog, {
+      autoFocus: false,
+      data: {
+        message: this.translate.instant('Holdings.ConfirmDelete'),
+        title: this.translate.instant('Holdings.DeleteTitle'),
+        buttonText: {
+          ok: this.translate.instant('Holdings.DeleteYesButton'),
+          cancel: this.translate.instant('Holdings.DeleteNoButton')
+        }
+      }/*,
+      position: {
+        top: '0px',
+        left: '0px'
+      }*/
+    });
+
+    dialogRef.afterClosed().subscribe(async (confirmed: boolean) => {
+      if (confirmed) {
+        this.loading = true;
+
+        try {
+
+          this.nacsis.deleteHoldingFromNacsis(mmsId, holdingId)
+            .subscribe({
+              next: (header) => {
+                this.loading = false;
+                console.log(header);
+                if (header.status === this.nacsis.OkStatus) {
+                  this.alert.success(this.translate.instant('Holdings.Deleted'), {keepAfterRouteChange:true});  
+                  this.nacsis.deleteHolding(holdingId);
+                  this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
+                } else {
+                  this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
+                }
+              },
+              error: e => {
+                this.loading = false;
+                console.log(e.message);
+                this.alert.error(e.message, {keepAfterRouteChange:true});
+              },
+              complete: () => this.loading = false
+            });
+
+        } catch (e) {
+          this.loading = false;
+          console.log(e);
+          this.alert.error(this.translate.instant('Errors.generalError'));
+         }
+      }
+    });
+  }
+
+  async deleteUsingPromise(mmsId: string, holdingId: string) {
 
     const dialogRef = this.dialog.open(ConfirmationDialog, {
       data: {
@@ -137,21 +196,20 @@ export class HoldingsComponent implements OnInit {
         this.loading = true;
 
         try {
-          var header: Header = await this.nacsis.deleteHoldingFromNacsis(mmsId, holdingId);
+          var header: Header = await this.nacsis.deleteHoldingFromNacsisUsingPromise(mmsId, holdingId);
 
           console.log(header);
 
-          if (header.status != this.nacsis.OkStatus) {
-              this.showErrorMessage(this.translate.instant('Holdings.Errors.DeleteFailed'), header.errorMessage);
-          } else {
-            this.toastr.success(this.translate.instant('Holdings.Deleted'));
+          if (header.status === this.nacsis.OkStatus) {
+            this.alert.success(this.translate.instant('Holdings.Deleted'), {keepAfterRouteChange:true});  
             this.nacsis.deleteHolding(holdingId);
-
             this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
+          } else {
+            this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
           }
         } catch (e) {
           console.log(e);
-            this.showErrorMessage(this.translate.instant('Holdings.Errors.DeleteFailed'), this.translate.instant('Errors.generalError'));
+          this.alert.error(this.translate.instant('Errors.generalError'), {keepAfterRouteChange:true});  
         } finally {
           this.loading = false;
         }
@@ -161,11 +219,5 @@ export class HoldingsComponent implements OnInit {
 
   onCloseClick() {
     this.isErrorMessageVisible = false;
-  }
-
-  showErrorMessage(title: string, message: string) {
-    this.title = title;
-    this.message = message;
-    this.isErrorMessageVisible = true;
   }
 }

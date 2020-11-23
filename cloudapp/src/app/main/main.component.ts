@@ -2,9 +2,10 @@ import { Subscription } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CloudAppEventsService, Entity, EntityType } from '@exlibris/exl-cloudapp-angular-lib';
 import { Router } from '@angular/router';
-import { NacsisService, Holding, Header } from '../nacsis.service';
-import { ToastrService } from 'ngx-toastr';
+import { NacsisService, Header } from '../nacsis.service';
 import { TranslateService } from '@ngx-translate/core';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+
 
 @Component({
   selector: 'app-main',
@@ -26,8 +27,8 @@ export class MainComponent implements OnInit, OnDestroy {
     private eventsService: CloudAppEventsService,
     private router: Router,
     private nacsis: NacsisService,
-    private toastr: ToastrService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private alert: AlertService
 
   ) { }
 
@@ -52,11 +53,11 @@ export class MainComponent implements OnInit, OnDestroy {
         if (header.status === this.nacsis.OkStatus) {
           this.router.navigate(['/holdings', this.selected, bib[0].description]);
         } else {
-            this.showErrorMessage(this.translate.instant('Holdings.Errors.GetFailed'), header.errorMessage);
+            this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
         }
       } catch (e) {
         console.log(e);
-          this.showErrorMessage(this.translate.instant('Holdings.Errors.GetFailed'), this.translate.instant('Errors.generalError'));
+          this.alert.error(this.translate.instant('Errors.generalError'), {keepAfterRouteChange:true});  
       } finally {
         this.loading = false;
       }
@@ -65,11 +66,5 @@ export class MainComponent implements OnInit, OnDestroy {
 
   onCloseClick() {
     this.isErrorMessageVisible = false;
-  }
-
-  showErrorMessage(title: string, message: string) {
-    this.title = title;
-    this.message = message;
-    this.isErrorMessageVisible = true;
   }
 }

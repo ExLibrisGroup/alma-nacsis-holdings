@@ -1,8 +1,10 @@
-mat-form-field {
-  width: 100%;
-}
-
 .align-to-right {
   justify-content: flex-end;
   margin-bottom: 15px;
+}
+
+::ng-deep .cdk-overlay-pane
+{
+  min-width: auto !important;
+  width: 90%;
 }

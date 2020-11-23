@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialModule, getTranslateModule } from '@exlibris/exl-cloudapp-angular-lib';
+import { MaterialModule, getTranslateModule, AlertModule } from '@exlibris/exl-cloudapp-angular-lib';
 import { ToastrModule } from 'ngx-toastr';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -21,7 +21,6 @@ import {ConfirmationDialog} from './dialog/confirmation-dialog.component';
 
 import {ErrorMessageComponent} from './error-message/error-message.component';
 import { HelpComponent } from './help/help.component';
-
 
 export function getToastrModule() {
   return ToastrModule.forRoot({
@@ -54,7 +53,8 @@ export function getToastrModule() {
       ReactiveFormsModule,
       getTranslateModule(),
       getToastrModule(),
-      FlexLayoutModule
+      FlexLayoutModule,
+      AlertModule,
    ],
    providers: [],
    bootstrap: [

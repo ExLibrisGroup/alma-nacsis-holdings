@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { CloudAppConfigService } from '@exlibris/exl-cloudapp-angular-lib';
-import { ToastrService } from 'ngx-toastr';
+//import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { NacsisService } from '../nacsis.service';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+
 
 @Component({
   selector: 'app-configuration',
@@ -17,9 +19,11 @@ export class ConfigurationComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private configService: CloudAppConfigService,
-    private toastr: ToastrService,
+    //private toastr: ToastrService,
     private translate: TranslateService,
-    private nacsis: NacsisService
+    private nacsis: NacsisService,
+    private alert: AlertService
+
   ) { }
 
   ngOnInit() {
@@ -41,10 +45,11 @@ export class ConfigurationComponent implements OnInit {
     this.nacsis.config = this.form.value;
     this.configService.set(this.form.value).subscribe(
       () => {
-        this.toastr.success(this.translate.instant('Config.Success'));
+        this.alert.success(this.translate.instant('Config.Success'), {keepAfterRouteChange:true});  
+
         this.form.markAsPristine();
       },
-      err => this.toastr.error(err.message),
+      err => this.alert.error(err.message, {keepAfterRouteChange:true}),
       ()  => this.saving = false
     );
   }  

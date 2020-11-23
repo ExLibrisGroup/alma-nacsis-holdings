@@ -12,11 +12,6 @@
     </button>
   </div>
 
-  <!--  -->
-  <error-message-inpu-output *ngIf="isErrorMessageVisible" [title]="title" [message]="message"
-    (onCloseEvent)="onCloseClick()"></error-message-inpu-output>
-  <!--  -->
-
   <div>
     <h3>{{mmsTitle}}</h3>
 
@@ -40,14 +35,7 @@
     </div>
   </div>
 
-  <div class="no-holdings-place-holder" *ngIf="!isHoldingRecordsExist()">
-    <mat-icon class="img-center">warning</mat-icon>
-    <!-- https://stackoverflow.com/questions/38796541/how-to-add-font-awesome-to-angular-2-cli-project -->
-    <!-- <i class="fa fa-list-alt" style="font-size:36px;"></i> -->
-    <h2 class="no-holdings-place-holder-message">{{'Holdings.NoHoldingRecordsExist' | translate}}</h2>
-  </div>
-
-  <div class="holdings-cards">
+  <div *ngIf="isHoldingRecordsExist() else emptyList" class="holdings-cards">
     <mat-card *ngFor="let holding of getDisplayHoldings(); index as i">
       <div fxLayout="row">
         <div class="holdings-cards-index">
@@ -82,4 +70,12 @@
       </div>
     </mat-card>
   </div>
+
+  <ng-template #emptyList>
+    <div id="emptyList">
+      <span class="uxf-icon uxf-list" style="font-size: 3em;"></span>
+      <h2>{{'Holdings.NoHoldingRecordsExist' | translate}}</h2>
+    </div>
+  </ng-template>
+
 </div>

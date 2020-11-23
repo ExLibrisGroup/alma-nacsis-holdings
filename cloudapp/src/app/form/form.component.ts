@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
+//import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { NacsisService, Holding, HoldingsBook, HoldingsSerial, Header } from '../nacsis.service';
 import { holdingFormGroup } from './form-utils';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+
 
 @Component({
   selector: 'app-form',
@@ -33,9 +35,10 @@ export class FormComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private toastr: ToastrService,
+    //private toastr: ToastrService,
     private translate: TranslateService,
-    private nacsis: NacsisService
+    private nacsis: NacsisService,
+    private alert: AlertService
   ) { }
 
   ngOnInit() {
@@ -61,11 +64,17 @@ export class FormComponent implements OnInit {
           next: holding => {
             this.originLOC = holding.LOC;
             this.holding = holding;
-            this.forms = new Array(this.holding.nacsisHoldingsList.length);
+            let formsLength = this.nacsis.isEmpty(this.holding.nacsisHoldingsList) ? 0 : this.holding.nacsisHoldingsList.length;
+            //this.forms = new Array(this.holding.nacsisHoldingsList.length);
+            this.forms = new Array(formsLength);
 
-            this.holding.nacsisHoldingsList.forEach((holdingVolume, index) => {
-              this.forms[index] = holdingFormGroup(holdingVolume, this.isBook());
-            });
+            if(formsLength > 0) {
+              this.holding.nacsisHoldingsList.forEach((holdingVolume, index) => {
+                this.forms[index] = holdingFormGroup(holdingVolume, this.isBook());
+              })
+            } else {
+              this.forms[0] = holdingFormGroup(null, this.isBook());
+            };
           },
           complete: () => this.loading = false
         });
@@ -148,20 +157,18 @@ export class FormComponent implements OnInit {
     try {
       var header: Header = await this.nacsis.saveHoldingToNacsis(this.mmsId, this.holding)
 
-      if (header.status != this.nacsis.OkStatus) {
-        this.showErrorMessage(this.translate.instant('Form.Errors.SaveFailed'), header.errorMessage);
-      } else {
-        this.toastr.success(this.translate.instant('Form.Success'));
-
+      if (header.status === this.nacsis.OkStatus) {
+        this.alert.success(this.translate.instant('Form.Success'), {keepAfterRouteChange:true});  
         this.holdingId = header.holdingId;
         this.holding.ID = header.holdingId;
         this.nacsis.saveHolding(this.holding);
-
         this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
+      } else {
+        this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
       }
     } catch (e) {
       console.log(e);
-      this.showErrorMessage(this.translate.instant('Form.Errors.SaveFailed'), this.translate.instant('Errors.generalError'));
+      this.alert.error(this.translate.instant('Errors.generalError'), {keepAfterRouteChange:true});  
     } finally {
       this.loading = false;
     }
@@ -177,9 +184,4 @@ export class FormComponent implements OnInit {
     return this.type === this.book;
   }
 
-  showErrorMessage(title: string, message: string) {
-      this.title = title;
-      this.message = message;
-      this.isErrorMessageVisible = true;
-  }
 }

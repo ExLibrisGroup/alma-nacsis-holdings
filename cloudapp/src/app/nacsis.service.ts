@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
-import { map } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { map, switchMap, mergeMap } from 'rxjs/operators';
+import { Observable, of, BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { CloudAppConfigService, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
 
@@ -16,6 +16,8 @@ export class NacsisService {
   private _authToken: string;
   private _exp: number;
   public OkStatus: string = 'OK';
+
+  public _headerSubject = new BehaviorSubject<Header>(null);
 
   constructor(
     private http: HttpClient,
@@ -47,10 +49,13 @@ export class NacsisService {
         this._url = this._url + 'view/nacsis/';
         this._url = this._url + data.instCode + '/';
         console.log(this._url);
-      }).catch(e => {
+      }, error => {
+        console.log(error);
+        throw error;
+      }/*).catch(e => {
         console.log(e);
         throw new Error('getInitData() Failed');
-      });
+      }*/);
 
     return this._url;
   }
@@ -73,18 +78,21 @@ export class NacsisService {
             // extract exp
             let jsonObject = JSON.parse(field1);
             this._exp = Number(jsonObject.exp);
+          }, error => {
+            console.log(error);
+            throw error;
           }
-        ).catch(e => {
+        )/*.catch(e => {
           console.log(e);
-          throw new Error('getAuthToken() Failed'); 
-        });
+          throw new Error('getAuthToken() Failed');
+        });*/
     }
     return { 'Authorization': `Bearer ${this._authToken}` };
   }
 
   async getHoldingsFromNacsis(mmsId: any, owner: String): Promise<Header> {
-    //var url = "http://il-shayh-7290.corp.exlibrisgroup.com:1801/view/nacsis/TRAINING_1_INST/9927041500521";
-    var url = await this.getUrl() + mmsId;
+
+    let url = await this.getUrl() + mmsId;
 
     // add query params
     url = url + "?owner=" + owner;
@@ -92,7 +100,7 @@ export class NacsisService {
     // add jwt header
     const headers = await this.getAuthHeader();
 
-    await this.http.get<any>(url, { headers })
+    await this.http.get<any>(url, { headers })//.pipe(timeout(60*1000))
       .toPromise().then(
         response => {
           console.log(response);
@@ -102,10 +110,14 @@ export class NacsisService {
           if (this._header.status === this.OkStatus && !this.isEmpty(this._holdings)) {
             this.updateHoldingPreview();
           }
+        }, error => {
+          console.log(error);
+          throw error;
         }
-      ).catch(e => {
+      )/*.catch(e => {
         console.log(e);
-      });
+        throw new Error('getHoldingsFromNacsis() Failed');
+      });*/
     return this._header;
   }
 
@@ -152,9 +164,62 @@ export class NacsisService {
     });
   }
 
-  async deleteHoldingFromNacsis(mmsId: string, holdingsId: string): Promise<Header> {
-    //var url = "http://il-shayh-7290.corp.exlibrisgroup.com:1801/view/nacsis/TRAINING_1_INST/9927041500521" + '/' + holdingsId;;
-    var url = await this.getUrl() + mmsId + '/' + holdingsId;
+  setUrl(): Observable<string> {
+
+    if (this.isEmpty(this._url)) {
+      this.eventsService.getInitData()
+        .subscribe(data => {
+          console.log(data);
+          this._url = data.urls['alma'];
+          this._url = this._url + 'view/nacsis/';
+          this._url = this._url + data.instCode + '/';
+          console.log(this._url);
+        });
+    }
+    return of(this._url);
+  }
+
+  setAuthHeader(): Observable<any> {
+
+    const now = Date.now(); // Unix timestamp in milliseconds
+
+    if (this.isEmpty(this._exp) || now >= this._exp) {
+      console.log("App loading JWT...");
+      this.eventsService.getAuthToken()
+        .subscribe(jwt => {
+          console.log("JWT = " + jwt);
+          this._authToken = jwt;
+
+          var fields = jwt.split('.');
+          let field1 = atob(fields[1]);
+          console.log('authToken JWT decoded:', field1);
+
+          // extract exp
+          let jsonObject = JSON.parse(field1);
+          this._exp = Number(jsonObject.exp);
+        }
+        );
+    }
+    return of({ 'Authorization': `Bearer ${this._authToken}` });
+  }
+
+  deleteHoldingFromNacsis(mmsId: string, holdingsId: string) {
+    
+    let fullUrl: string;
+    
+    return this.setUrl().pipe(
+      mergeMap(baseUrl => {
+        fullUrl = baseUrl + mmsId + '/' + holdingsId;
+        return this.setAuthHeader()}),
+      mergeMap(headers => {
+        return this.http.delete<any>(fullUrl, { headers });
+      })
+    );
+  }
+
+  async deleteHoldingFromNacsisUsingPromise(mmsId: string, holdingsId: string): Promise<Header> {
+
+    let url = await this.getUrl() + mmsId + '/' + holdingsId;
 
     // add jwt header
     const headers = await this.getAuthHeader();
@@ -176,10 +241,10 @@ export class NacsisService {
   }
 
   async saveHoldingToNacsis(mmsId: string, holding: Holding): Promise<Header> {
-    //var url = "http://il-shayh-7290.corp.exlibrisgroup.com:1801/view/nacsis/TRAINING_1_INST/9927041500521";
-    var url = await this.getUrl() + mmsId;
+    
+    let url = await this.getUrl() + mmsId;
 
-    var body = JSON.stringify(holding);
+    let body = JSON.stringify(holding);
 
     // add jwt header
     const headers = await this.getAuthHeader();

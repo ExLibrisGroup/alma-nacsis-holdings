@@ -4,19 +4,17 @@
     <button class="form-commands" mat-flat-button type="button" color="primary" (click)="cancel()">
       {{'Cancel' | translate}}
     </button>
-      <button class="form-commands" *ngIf="!isReadOnly" [disabled]="!isAddEnabled()" mat-flat-button type="button" color="primary"
-        (click)="add()">
-        <mat-icon>add</mat-icon>
-      </button>
-      <button *ngIf="!isReadOnly" type="submit" mat-flat-button type="button" color="primary" (click)="save()">
-        {{ 'Save' | translate }}
-      </button>
+    <button class="form-commands" *ngIf="!isReadOnly" [disabled]="!isAddEnabled()" mat-flat-button type="button"
+      color="primary" (click)="add()">
+      <mat-icon>add</mat-icon>
+    </button>
+    <button *ngIf="!isReadOnly" type="submit" mat-flat-button type="button" color="primary" (click)="save()">
+      {{ 'Save' | translate }}
+    </button>
   </div>
-
-  <!--  -->
-  <error-message-inpu-output *ngIf="isErrorMessageVisible" [title]="title" [message]="message"
-   (onCloseEvent)="onCloseClick()"></error-message-inpu-output>
-  <!--  -->
+  
+  <!-- <error-message-inpu-output *ngIf="isErrorMessageVisible" [title]="title" [message]="message"
+    (onCloseEvent)="onCloseClick()"></error-message-inpu-output> -->
 
   <div class="title">
     <h2>{{ (isReadOnly ? 'Form.ViewTitle' : holdingId ? 'Form.EditTitle' : 'Form.AddTitle') | translate}}</h2>
@@ -43,7 +41,7 @@
     <mat-card *ngFor="let form of forms; index as i">
       <form *ngIf="form" [formGroup]="form">
         <div fxLayout="column">
-          <div *ngIf="isBook()" class="form-card-inputs">
+          <div *ngIf="isBook() else serial" class="form-card-inputs">
             <mat-form-field>
               <mat-label translate>Form.Fields.VOL</mat-label>
               <input [readonly]="isReadOnly" matInput formControlName="VOL">
@@ -68,8 +66,13 @@
               <mat-label translate>Form.Fields.LDF</mat-label>
               <input [readonly]="isReadOnly" matInput formControlName="LDF">
             </mat-form-field>
+            <div class="delete-command">
+              <button *ngIf="!isReadOnly" mat-button mat-stroked-button aria-label="Delete" (click)="delete(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
           </div>
-          <div *ngIf="!isBook()" class="form-card-inputs">
+          <ng-template #serial class="form-card-inputs">
             <mat-form-field>
               <mat-label translate>Form.Fields.HLYR</mat-label>
               <input [readonly]="isReadOnly" matInput formControlName="HLYR" required>
@@ -96,13 +99,18 @@
               <mat-label translate>Form.Fields.CPYNT</mat-label>
               <input [readonly]="isReadOnly" matInput formControlName="CPYNT">
             </mat-form-field>
-          </div>
+            <div class="delete-command">
+              <button *ngIf="!isReadOnly" mat-button mat-stroked-button aria-label="Delete" (click)="delete(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </ng-template>
         </div>
-        <div class="commands-container">
+        <!-- <div class="commands-container">
           <button *ngIf="!isReadOnly" mat-button mat-stroked-button aria-label="Delete" (click)="delete(i)">
             <mat-icon>delete</mat-icon>
           </button>
-        </div>
+        </div> -->
       </form>
     </mat-card>
   </div>
