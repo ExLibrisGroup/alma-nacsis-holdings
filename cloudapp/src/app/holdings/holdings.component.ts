@@ -22,7 +22,7 @@ export class HoldingsComponent implements OnInit {
   holdings: Holding[];
   loading = false;
   selected: string;
-  isAllSelected: boolean;
+  isAllSearched: boolean;
   mmsTitle: string;
   type: string;
 
@@ -68,7 +68,7 @@ export class HoldingsComponent implements OnInit {
   async onOwnerSelected() {
     // owner = All, Mine include in All, therefore, no need to retrieve from nacsis
     // get All only once
-    if (this.selected === '0' && !this.isAllSelected) {
+    if (this.selected === '0' && !this.isAllSearched) { // consider session storage
       await this.search("All");
     }
     this.ngOnInit();
@@ -81,11 +81,10 @@ export class HoldingsComponent implements OnInit {
       try {
         let header: Header = await this.nacsis.getHoldingsFromNacsis(this.mmsId, owner);
 
-        if (header.status != this.nacsis.OkStatus) {
-          this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
-
+        if (header.status === this.nacsis.OkStatus) {
+          this.isAllSearched = true;
         } else {
-          this.isAllSelected = true;
+          this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
         }
       } catch (e) {
         console.log(e);
