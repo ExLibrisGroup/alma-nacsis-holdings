@@ -35,46 +35,40 @@
     </div>
   </div>
 
-  <div *ngIf="isHoldingRecordsExist() else emptyList">
-    <mat-list>
-      <mat-list-item *ngFor="let holding of getDisplayHoldings(); index as i" class="holdings-cards">
-        <!-- <mat-card> -->
-        <!-- fxLayout="row" -->
-        <div class="holdings-card-wrapper">
-          <div class="holdings-cards-index">
-            <span><strong>{{i + 1}}</strong></span>
-          </div>
-          <div class="holdings-card-fileds-wrapper">
-            <div class="holdings-card-fields">
-              <mat-card-title class="flex1">
-                <a [routerLink]="['/holdings', mmsId, 'view', holding.ID, mmsTitle]">
-                  {{'Holdings.ID' | translate}}: {{holding.ID}}
-                </a>
-              </mat-card-title>
-              <span class="flex1"><strong>{{'Holdings.Library' | translate}}:
-                  {{holding.libraryFullName}}</strong></span>
-              <span class="flex1"><strong>{{'Holdings.Location' | translate}}: {{holding.LOC}}</strong></span>
-              <span class="flex1"><strong>{{holding.info}}</strong></span>
-
-              <div class="flex1">
-                <div *ngIf="holding.editable" fxLayout="row">
-
-                  <i class="uxf-icon uxf-pencil eca-button" aria-label="Edit"
-                    [routerLink]="['/holdings', mmsId, 'edit', holding.ID, mmsTitle]"></i>
-
-                  <i class="uxf-icon uxf-close eca-button" style="margin-left: 10px;" aria-label="Delete"
-                    (click)="delete(mmsId, holding.ID)"></i>
-
-                </div>
-              </div>
-              <!-- </mat-card-content> -->
-            </div>
-            <!-- </mat-card-actions> -->
-          </div>
+  <div *ngIf="isHoldingRecordsExist() else emptyList" class="holdings-cards">
+    <mat-card *ngFor="let holding of getDisplayHoldings(); index as i">
+      <div fxLayout="row">
+        <div class="holdings-cards-index">
+          <span><strong>{{i + 1}}</strong></span>
         </div>
-        <!-- </mat-card> -->
-      </mat-list-item>
-    </mat-list>
+        <div>
+          <mat-card-title>
+            <a [routerLink]="['/holdings', mmsId, 'view', holding.ID, mmsTitle]">
+              {{'Holdings.ID' | translate}}: {{holding.ID}}
+            </a>
+          </mat-card-title>
+
+          <mat-card-content>
+            <span><strong>{{'Holdings.Library' | translate}}: {{holding.libraryFullName}}</strong></span>
+            <span><strong>{{'Holdings.Location' | translate}}: {{holding.LOC}}</strong></span>
+            <span><strong>{{holding.info}}</strong></span>
+          </mat-card-content>
+
+          <mat-card-actions>
+            <div fxLayout="row">
+              <button [disabled]="!holding.editable" class="edit-commands" mat-flat-button color="primary"
+                aria-label="Edit" [routerLink]="['/holdings', mmsId, 'edit', holding.ID, mmsTitle]">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button [disabled]="!holding.editable" mat-flat-button color="primary" aria-label="Delete"
+                (click)="delete(mmsId, holding.ID)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </mat-card-actions>
+        </div>
+      </div>
+    </mat-card>
   </div>
 
   <ng-template #emptyList>
