@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-//import { ToastrService } from 'ngx-toastr';
+//import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { NacsisService, Holding, Header } from '../nacsis.service';
-import Swal from 'sweetalert2'
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../dialog/confirmation-dialog.component';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-
 
 @Component({
   selector: 'app-holdings',
@@ -22,24 +19,22 @@ export class HoldingsComponent implements OnInit {
   holdings: Holding[];
   loading = false;
   selected: string;
-  isAllSelected: boolean;
+  isAllRetrieved: boolean = false;
   mmsTitle: string;
   type: string;
-
-  // deleteTitle: string;
-  // deleteMessage: string;
   isErrorMessageVisible: boolean = false;
+  _owner: string = 'All'
+
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient,
-    //private toastr: ToastrService,
+    //private http: HttpClient,
     private translate: TranslateService,
     private nacsis: NacsisService,
     private dialog: MatDialog,
     private alert: AlertService
-
+ 
   ) {
     this.owners = [
       { id: "0", name: this.translate.instant('Holdings.All') },
@@ -51,9 +46,13 @@ export class HoldingsComponent implements OnInit {
     this.mmsId = this.route.snapshot.params['mmsId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
 
-    if (!this.selected) {
+    let owner = this.nacsis.getSessionStorageItem(this.nacsis.OwnerKey);
+
+    if(!this.nacsis.isEmpty(owner)) {
+      this.selected = owner;
+    } else if(this.nacsis.isEmpty(this.selected)) {
       this.selected = '1'; // owner = Mine
-    }
+    } 
     this.load();
   }
 
@@ -65,33 +64,45 @@ export class HoldingsComponent implements OnInit {
     }
   }
 
-  async onOwnerSelected() {
-    // owner = All, Mine include in All, therefore, no need to retrieve from nacsis
-    // get All only once
-    if (this.selected === '0' && !this.isAllSelected) {
-      await this.search("All");
-    }
-    this.ngOnInit();
-  }
+  onOwnerSelected() {
+    
+    this.nacsis.setSessionStorageItem(this.nacsis.OwnerKey, this.selected);
 
-  async search(owner: String) {
+   // owner = All, Mine is included in All, therefore, no need to retrieve from nacsis
+    // get All only once
+    if (this.selected === '0' && !this.isAllRetrieved) {
+      this.searchAll();
+    }
+    //this.ngOnInit();
+   }
+
+  searchAll() {
     if (this.selected) {
       this.loading = true;
 
       try {
-        let header: Header = await this.nacsis.getHoldingsFromNacsis(this.mmsId, owner);
-
-        if (header.status != this.nacsis.OkStatus) {
-          this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
-
-        } else {
-          this.isAllSelected = true;
-        }
+        this.nacsis.getHoldingsFromNacsis(this.mmsId, this._owner)
+          .subscribe({
+            next: (header) => {
+              console.log(header);
+              if (header.status === this.nacsis.OkStatus) {
+                this.isAllRetrieved = true;
+                this.ngOnInit();
+              } else {
+                this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
+              }
+            },
+            error: e => {
+              this.loading = false;
+              console.log(e.message);
+              this.alert.error(e.message, {keepAfterRouteChange:true});
+            },
+            complete: () => this.loading = false
+          });
       } catch (e) {
+        this.loading = false;
         console.log(e);
         this.alert.error(this.translate.instant('Errors.generalError'), {keepAfterRouteChange:true});  
-      } finally {
-        this.loading = false;
       }
     }
   }
@@ -152,7 +163,6 @@ export class HoldingsComponent implements OnInit {
           this.nacsis.deleteHoldingFromNacsis(mmsId, holdingId)
             .subscribe({
               next: (header) => {
-                this.loading = false;
                 console.log(header);
                 if (header.status === this.nacsis.OkStatus) {
                   this.alert.success(this.translate.instant('Holdings.Deleted'), {keepAfterRouteChange:true});  
@@ -175,44 +185,6 @@ export class HoldingsComponent implements OnInit {
           console.log(e);
           this.alert.error(this.translate.instant('Errors.generalError'));
          }
-      }
-    });
-  }
-
-  async deleteUsingPromise(mmsId: string, holdingId: string) {
-
-    const dialogRef = this.dialog.open(ConfirmationDialog, {
-      data: {
-        message: this.translate.instant('Holdings.ConfirmDelete'),
-        buttonText: {
-          ok: this.translate.instant('OK'),
-          cancel: this.translate.instant('Cancel')
-        }
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(async (confirmed: boolean) => {
-      if (confirmed) {
-        this.loading = true;
-
-        try {
-          var header: Header = await this.nacsis.deleteHoldingFromNacsisUsingPromise(mmsId, holdingId);
-
-          console.log(header);
-
-          if (header.status === this.nacsis.OkStatus) {
-            this.alert.success(this.translate.instant('Holdings.Deleted'), {keepAfterRouteChange:true});  
-            this.nacsis.deleteHolding(holdingId);
-            this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
-          } else {
-            this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
-          }
-        } catch (e) {
-          console.log(e);
-          this.alert.error(this.translate.instant('Errors.generalError'), {keepAfterRouteChange:true});  
-        } finally {
-          this.loading = false;
-        }
       }
     });
   }

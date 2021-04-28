@@ -34,11 +34,12 @@ mat-card {
     padding-right: 0px;
     margin-bottom: 40px;
 
-    .form-card-inputs {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-    }
+    // .form-card-inputs {
+    //   padding-top: 10px;
+    //   display: flex;
+    //   flex-wrap: wrap;
+    //   justify-content: space-between;
+    // }
   }
 
   .form-commands {
@@ -53,14 +54,15 @@ mat-card {
     min-width: 250px;
   }
 
-  // .align-space-between {
-  //   justify-content: space-between;
-  //   margin-bottom: 20px;
-  // }
-
   .align-to-right {
     justify-content: flex-end;
     margin-bottom: 20px;
+  }
+
+  .holding-card-actions {
+    justify-content: flex-end;
+    padding-bottom: 15px;
+    margin-right: 20px;
   }
 
   .delete-command {
@@ -71,4 +73,22 @@ mat-card {
     margin-right: 15px;
     
   }
+
+  div.form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    column-gap: 1em;
+  }
+
+  // .input-small-size {
+  //   max-width: 100px;
+  // }
+  
+  // .input-medium-size {
+  //   max-width: 200px;
+  // }
+  
+  // .input-large-size {
+  //   max-width: 350px;
+  // }
 }

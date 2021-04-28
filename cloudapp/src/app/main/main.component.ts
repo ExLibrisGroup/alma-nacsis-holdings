@@ -2,7 +2,7 @@ import { Subscription } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CloudAppEventsService, Entity, EntityType } from '@exlibris/exl-cloudapp-angular-lib';
 import { Router } from '@angular/router';
-import { NacsisService, Header } from '../nacsis.service';
+import { NacsisService} from '../nacsis.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 
@@ -33,7 +33,10 @@ export class MainComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => {
+  
+  this.nacsis.clearSessionStorage();
+
+  this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => {
       this.bibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS);
     });
   }
@@ -42,24 +45,31 @@ export class MainComponent implements OnInit, OnDestroy {
     this.pageLoad$.unsubscribe();
   }
 
-  async search() {
+  search() {
     if (this.selected) {
       this.loading = true;
 
       try {
-        var bib = this.bibs.filter(bib => bib.id == this.selected);
-        var header: Header = await this.nacsis.getHoldingsFromNacsis(this.selected, "Mine");
-
-        if (header.status === this.nacsis.OkStatus) {
-          this.router.navigate(['/holdings', this.selected, bib[0].description]);
-        } else {
-            this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
-        }
+        let bib = this.bibs.filter(bib => bib.id == this.selected);
+        this.nacsis.getHoldingsFromNacsis(this.selected, "Mine") .subscribe({
+          next: (header) => {
+            if (header.status === this.nacsis.OkStatus) {
+              this.router.navigate(['/holdings', this.selected, bib[0].description]);
+            } else {
+                this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
+            }
+          },
+          error: e => {
+            this.loading = false;
+            console.log(e.message);
+            this.alert.error(e.message, {keepAfterRouteChange:true});
+          },
+          complete: () => this.loading = false
+        });
       } catch (e) {
-        console.log(e);
-          this.alert.error(this.translate.instant('Errors.generalError'), {keepAfterRouteChange:true});  
-      } finally {
         this.loading = false;
+        console.log(e);
+        this.alert.error(this.translate.instant('Errors.generalError'), {keepAfterRouteChange:true});  
       }
     }
   }
