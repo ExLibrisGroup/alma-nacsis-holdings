@@ -11,7 +11,7 @@ mat-checkbox {
 }
 
 mat-card {
-  margin-top: 0px;
+  margin-top: 10px;
   margin-bottom: 10px;
   margin-right: 10px;
   margin-left: 0;
@@ -22,24 +22,18 @@ mat-card {
 .form-wrapper {
   flex-direction: column;
   display: flex;
-  //height: calc(100vh - 55px);
 
   .form-cards {
     overflow: auto;
-    //border-bottom: 1px solid grey;
-    //border-top: 1px solid grey;
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 0px;
     padding-right: 0px;
     margin-bottom: 40px;
 
-    // .form-card-inputs {
-    //   padding-top: 10px;
-    //   display: flex;
-    //   flex-wrap: wrap;
-    //   justify-content: space-between;
-    // }
+     .form-card-inputs {
+       padding-top: 10px;
+     }
   }
 
   .form-commands {
@@ -59,19 +53,17 @@ mat-card {
     margin-bottom: 20px;
   }
 
-  .holding-card-actions {
+  .form-card-actions {
     justify-content: flex-end;
     padding-bottom: 15px;
     margin-right: 20px;
   }
 
   .delete-command {
-    // height:fit-content;
     display: flex;
     align-items: center;
     vertical-align: middle;
     margin-right: 15px;
-    
   }
 
   div.form {
@@ -80,15 +72,14 @@ mat-card {
     column-gap: 1em;
   }
 
-  // .input-small-size {
-  //   max-width: 100px;
-  // }
-  
-  // .input-medium-size {
-  //   max-width: 200px;
-  // }
-  
-  // .input-large-size {
-  //   max-width: 350px;
-  // }
+  mat-list-item {
+    i.eca-button,
+    i.cloudapp-button {
+      visibility: visible !important;
+    }
+    &:hover i.eca-button,
+    &:hover i.cloudapp-button {
+      visibility: visible;
+    }
+  }
 }

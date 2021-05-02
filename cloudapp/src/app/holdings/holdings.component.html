@@ -57,7 +57,6 @@
           <mat-card-actions class="holding-card-actions" *ngIf="holding.editable">
             <i class="uxf-icon uxf-pencil eca-button" aria-label="Edit"
               [routerLink]="['/holdings', mmsId, 'edit', holding.ID, mmsTitle]"></i>
-
             <i class="uxf-icon uxf-trash eca-button" style="margin-left: 20px;" aria-label="Delete"
               (click)="delete(mmsId, holding.ID)"></i>
           </mat-card-actions>
