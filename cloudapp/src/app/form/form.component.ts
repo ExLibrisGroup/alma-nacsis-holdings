@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup } from '@angular/forms';
-//import { ToastrService } from 'ngx-toastr';
+import { FormGroup, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { NacsisService, Holding, HoldingsBook, HoldingsSerial, Header } from '../nacsis.service';
 import { holdingFormGroup } from './form-utils';
@@ -14,6 +13,8 @@ import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
   styleUrls: ['./form.component.scss']
 })
 export class FormComponent implements OnInit {
+  //<input #locationInput ...>
+  //@ViewChild('locationInput') locationInput: ElementRef; /*create a view child*/
   mmsId: string;
   mmsTitle: string;
   holdingId: string;
@@ -32,10 +33,11 @@ export class FormComponent implements OnInit {
   book: string = "BOOK";
   urlViewSigment: string = "view";
 
+  locationFormControl = new FormControl();
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    //private toastr: ToastrService,
     private translate: TranslateService,
     private nacsis: NacsisService,
     private alert: AlertService
@@ -58,26 +60,19 @@ export class FormComponent implements OnInit {
 
   load() {
     if (this.holdingId) { // existing holding
-      this.loading = true;
-      this.nacsis.getHolding(this.holdingId)
-        .subscribe({
-          next: holding => {
-            this.originLOC = holding.LOC;
-            this.holding = holding;
-            let formsLength = this.nacsis.isEmpty(this.holding.nacsisHoldingsList) ? 0 : this.holding.nacsisHoldingsList.length;
-            //this.forms = new Array(this.holding.nacsisHoldingsList.length);
-            this.forms = new Array(formsLength);
+      let holding = this.nacsis.getHolding(this.holdingId);
+      this.originLOC = holding.LOC;
+      this.holding = holding;
+      let formsLength = this.nacsis.isEmpty(this.holding.nacsisHoldingsList) ? 0 : this.holding.nacsisHoldingsList.length;
+      this.forms = new Array(formsLength);
 
-            if(formsLength > 0) {
-              this.holding.nacsisHoldingsList.forEach((holdingVolume, index) => {
-                this.forms[index] = holdingFormGroup(holdingVolume, this.isBook());
-              })
-            } else {
-              this.forms[0] = holdingFormGroup(null, this.isBook());
-            };
-          },
-          complete: () => this.loading = false
-        });
+      if(formsLength > 0) {
+        this.holding.nacsisHoldingsList.forEach((holdingVolume, index) => {
+          this.forms[index] = holdingFormGroup(holdingVolume, this.isBook());
+        })
+      } else {
+        this.forms[0] = holdingFormGroup(null, this.isBook());
+      }
     } else { // new holding
       this.holding = new Holding();
       this.forms = new Array(0);
@@ -90,8 +85,10 @@ export class FormComponent implements OnInit {
   }
 
   getLibraryFullName(): string {
-    return this.nacsis.getHeader().LIBABL + ' (' +
-      this.nacsis.getHeader().FANO + ')'
+    if(this.nacsis.isEmpty(this.holdingId)){
+       return this.nacsis.getHeader().LIBABL + ' (' + this.nacsis.getHeader().FANO + ')'
+    }
+    return this.holding.LIBABL + ' (' + this.holding.FANO + ')';
   }
 
   // delete holding volume
@@ -109,14 +106,24 @@ export class FormComponent implements OnInit {
   }
 
   // to nacsis
-  async save() {
+   save() {
     this.loading = true;
 
     // validate form
-    var invalidForms: FormGroup[] = this.forms.filter((form) => form.invalid)
+    let invalid: boolean = false;
 
-    if (this.nacsis.isEmpty(this.holding.LOC) || invalidForms.length > 0) {
-      invalidForms.forEach(form => form.markAllAsTouched())
+    if(this.locationFormControl.invalid) {
+      this.locationFormControl.markAsTouched();
+      invalid = true;
+    }
+
+    let invalidForms: FormGroup[] = this.forms.filter((form) => form.invalid)
+    if (invalidForms.length > 0) {
+      invalidForms.forEach(form => form.markAllAsTouched());
+      invalid = true;
+    }
+
+    if(invalid) {
       this.loading = false;
       return;
     }
@@ -155,23 +162,33 @@ export class FormComponent implements OnInit {
     });
 
     try {
-      var header: Header = await this.nacsis.saveHoldingToNacsis(this.mmsId, this.holding)
 
-      if (header.status === this.nacsis.OkStatus) {
-        this.alert.success(this.translate.instant('Form.Success'), {keepAfterRouteChange:true});  
-        this.holdingId = header.holdingId;
-        this.holding.ID = header.holdingId;
-        this.nacsis.saveHolding(this.holding);
-        this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
-      } else {
-        this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
-      }
+      this.nacsis.saveHoldingToNacsis(this.mmsId, this.holding)
+      .subscribe({
+        next: (header) => {
+          console.log(header);
+          if (header.status === this.nacsis.OkStatus) {
+            this.alert.success(this.translate.instant('Form.Success'), {keepAfterRouteChange:true});  
+            this.holdingId = header.holdingId;
+            this.holding.ID = header.holdingId;
+            this.nacsis.saveHolding(this.holding);
+            this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
+          } else {
+            this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
+          }
+        },
+        error: e => {
+          this.loading = false;
+          console.log(e.message);
+          this.alert.error(e.message, {keepAfterRouteChange:true});
+        },
+        complete: () => this.loading = false
+      });
     } catch (e) {
+      this.loading = false;
       console.log(e);
       this.alert.error(this.translate.instant('Errors.generalError'), {keepAfterRouteChange:true});  
-    } finally {
-      this.loading = false;
-    }
+    } 
   }
 
   cancel() {
