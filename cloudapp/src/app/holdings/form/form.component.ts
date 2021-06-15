@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { NacsisService, Holding, HoldingsBook, HoldingsSerial, Header } from '../nacsis.service';
+import { HoldingsService, Holding, HoldingsBook, HoldingsSerial, Header } from '../../service/holdings.service';
 import { holdingFormGroup } from './form-utils';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 
@@ -39,7 +39,7 @@ export class FormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
-    private nacsis: NacsisService,
+    private nacsis: HoldingsService,
     private alert: AlertService
   ) { }
 

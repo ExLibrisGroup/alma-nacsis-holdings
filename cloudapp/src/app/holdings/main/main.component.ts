@@ -2,7 +2,7 @@ import { Subscription } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CloudAppEventsService, Entity, EntityType } from '@exlibris/exl-cloudapp-angular-lib';
 import { Router } from '@angular/router';
-import { NacsisService} from '../nacsis.service';
+import { HoldingsService} from '../../service/holdings.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 
@@ -26,7 +26,7 @@ export class MainComponent implements OnInit, OnDestroy {
   constructor(
     private eventsService: CloudAppEventsService,
     private router: Router,
-    private nacsis: NacsisService,
+    private nacsis: HoldingsService,
     private translate: TranslateService,
     private alert: AlertService
 

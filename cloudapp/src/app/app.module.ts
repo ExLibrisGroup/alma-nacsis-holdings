@@ -2,16 +2,16 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialModule, getTranslateModule, AlertModule } from '@exlibris/exl-cloudapp-angular-lib';
+import { MaterialModule, getTranslateModule, AlertModule, MenuModule } from '@exlibris/exl-cloudapp-angular-lib';
 import { ToastrModule } from 'ngx-toastr';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { MainComponent } from './main/main.component';
+import { MainComponent } from './holdings/main/main.component';
 import { FooterComponent } from './footer/footer.component';
-import { HoldingsComponent } from './holdings/holdings.component';
-import { FormComponent } from './form/form.component';
+import { HoldingsComponent } from './holdings/holdings/holdings.component';
+import { FormComponent } from './holdings/form/form.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -19,8 +19,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import {MatDialogModule} from '@angular/material/dialog';
 import {ConfirmationDialog} from './dialog/confirmation-dialog.component';
 
-import {ErrorMessageComponent} from './error-message/error-message.component';
-import { HelpComponent } from './help/help.component';
+import { HelpComponent } from './holdings/help/help.component';
+import { MainMenuComponent } from './main-menu/main-menu.component';
+
 
 export function getToastrModule() {
   return ToastrModule.forRoot({
@@ -38,8 +39,8 @@ export function getToastrModule() {
       FormComponent,
       ConfigurationComponent,
       ConfirmationDialog,
-      ErrorMessageComponent,
       HelpComponent,
+      MainMenuComponent,
    ],
    entryComponents: [ConfirmationDialog],
    imports: [
@@ -55,6 +56,7 @@ export function getToastrModule() {
       getToastrModule(),
       FlexLayoutModule,
       AlertModule,
+      MenuModule,
    ],
    providers: [],
    bootstrap: [

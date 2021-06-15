@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 //import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
-import { NacsisService, Holding, Header } from '../nacsis.service';
+import { HoldingsService, Holding, Header } from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmationDialog } from '../dialog/confirmation-dialog.component';
+import { ConfirmationDialog } from '../../dialog/confirmation-dialog.component';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 
 @Component({
@@ -31,7 +31,7 @@ export class HoldingsComponent implements OnInit {
     private router: Router,
     //private http: HttpClient,
     private translate: TranslateService,
-    private nacsis: NacsisService,
+    private nacsis: HoldingsService,
     private dialog: MatDialog,
     private alert: AlertService
  
