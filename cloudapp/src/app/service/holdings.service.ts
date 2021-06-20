@@ -4,7 +4,6 @@ import { of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { CloudAppEventsService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
 
-
 import { BaseService } from "./base.service";
 
 @Injectable({
@@ -17,8 +16,8 @@ export class HoldingsService extends BaseService {
   private PREVIEW_MAX_LENGTH: number = 30;
 
   constructor(
-    protected http: HttpClient,
-    protected eventsService: CloudAppEventsService
+    protected eventsService: CloudAppEventsService,
+    protected http: HttpClient
   ) {
     super(eventsService, http);
   }
