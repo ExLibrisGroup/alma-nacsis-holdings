@@ -24,28 +24,28 @@ import { TranslateService } from '@ngx-translate/core';
         return new Array(
             {
                 title:  'MainMenu.Holdings.Title',
-                text:   'NACSIS holding information management',
+                text:   'MainMenu.Holdings.Text',
                 icon:   'uxf-icon uxf-link',
                 link:   'holdings'
             },
             {
-                title:  'Catalog',
-                text:   'Search and Copy cataloging NACSIS Bib/Auth records',
+                title:  'MainMenu.Catalog.Title',
+                text:   'MainMenu.Catalog.Text',
                 icon:   'uxf-icon uxf-background-color',
-                link:   'main'
+                link:   'catalog'
             },
-            /*{
-                title:  'Members',
-                text:   'NACSIS members information management',
-                icon:   'uxf-icon uxf-switch',
-                link:   'main'
-            },
-            {
-                title:  'ILL Borrowing Requests',
-                text:   'NACSIS borrowing request creation',
-                icon:   'uxf-icon uxf-external-link',
-                link:   'main'
-            },*/
+            // {
+            //     title:  'Members',
+            //     text:   'NACSIS members information management',
+            //     icon:   'uxf-icon uxf-switch',
+            //     link:   'main'
+            // },
+            // {
+            //     title:  'ILL Borrowing Requests',
+            //     text:   'NACSIS borrowing request creation',
+            //     icon:   'uxf-icon uxf-external-link',
+            //     link:   'main'
+            // },
         );
     }
 

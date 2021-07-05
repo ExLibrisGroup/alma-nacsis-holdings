@@ -1,0 +1,56 @@
+<div class="align-space-between" fxLayout="row">
+  <a [routerLink]="['']">
+    <button mat-flat-button color="secondary">
+      <mat-icon>arrow_back_ios</mat-icon>
+      {{'Back' | translate}}
+    </button>
+  </a>
+  <div class="form-buttons">
+    <button mat-flat-button color="secondary" (click)="clear()" [disabled]="!isSearchTypeChoosed">
+      {{ 'Clear' | translate }}
+    </button>
+    <button mat-flat-button color="primary" type="submit" (click)="save()" [disabled]="!isSearchTypeChoosed">
+      {{ 'Search' | translate }}
+    </button>
+  </div>
+</div>
+
+<p>  {{'Catalog.Form.MainTitle' | translate}} </p>
+
+<mat-form-field>
+  <mat-label>{{'Catalog.Form.SelectSearchType' | translate}}</mat-label>
+    <mat-select (selectionChange)="searchTypeSelection($event)">
+    <mat-option *ngFor="let searchType of getSearchTypeList() | keyvalue" value="{{searchType.key}}">
+      {{searchType.value | translate}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+
+<br><br>
+
+<div *ngIf="isSearchTypeChoosed">
+  <!-- <hr><br> -->
+  <mat-form-field>
+    <mat-label>{{'Catalog.Form.SelectDatabase' | translate}}</mat-label>
+    <mat-select [(value)]="currentDatabase">
+      <mat-option *ngFor="let database of getDatabases()" value="{{database}}">
+        {{ database }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-card class="serach-form-card" color="secondary">
+    <form *ngFor="let item of searchItemArray">
+      <mat-form-field class="form-card-inputs">
+        <mat-label>{{item.getFieldLabel() | translate}}</mat-label>
+          <textarea cdkTextareaAutosize matInput [formControl]="item.getFormControl()">
+          </textarea>
+      </mat-form-field>
+    </form>
+  </mat-card>
+
+  <br><p>{{url}}</p>
+</div>
+
+<br><br><br>

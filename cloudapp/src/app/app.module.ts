@@ -13,14 +13,14 @@ import { FooterComponent } from './footer/footer.component';
 import { HoldingsComponent } from './holdings/holdings/holdings.component';
 import { FormComponent } from './holdings/form/form.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
-
 import { FlexLayoutModule } from '@angular/flex-layout';
-
 import {MatDialogModule} from '@angular/material/dialog';
 import {ConfirmationDialog} from './dialog/confirmation-dialog.component';
-
 import { HelpComponent } from './holdings/help/help.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
+
+import { CatalogSearchFormComponent } from './catalog/search-form/search-form.component';
+
 
 
 export function getToastrModule() {
@@ -41,6 +41,7 @@ export function getToastrModule() {
       ConfirmationDialog,
       HelpComponent,
       MainMenuComponent,
+      CatalogSearchFormComponent
    ],
    entryComponents: [ConfirmationDialog],
    imports: [

@@ -1,9 +1,102 @@
 {
   "MainMenu": {
     "Holdings": {
-      "Title": "Holdings"
+      "Title": "Holdings",
+      "Text": "NACSIS holding information management"
+    },
+    "Catalog": {
+      "Title": "Catalog",
+      "Text": "Search and Copy cataloging NACSIS Bib/Auth records"
     }
   },
+
+  "Catalog": {
+    "Form": {
+      "MainTitle": "Search records in NACSIS central catalog",
+      "SelectSearchType": "Select search type",
+      "SelectDatabase": "Select a database",
+      "Monographs": {
+        "MainTitle": "Monographs",
+        "Field": {
+          "TITLE": "TITLE",
+          "FTITLE": "FTITLE",
+          "PTBL": "PTBL",
+          "VOL": "VOL",
+          "TiPtVo": "TITLE / PTBL / VOL",
+          "AUTH": "AUTH",
+          "ISSN": "ISSN",
+          "ISBN": "ISBN",
+          "NBN": "NBN",
+          "NDLCN": "NDLCN / LCCN / OTHN",
+          "PUB": "PUB",
+          "YEAR": "YEAR",
+          "PLACE": "PLACE",
+          "CNTRY": "CNTRY",
+          "LANG": "LANG",
+          "SH": "SH",
+          "AKEY": "AKEY",
+          "ID": "ID",
+          "PID": "PID"
+        }
+      },
+      "Serials": {
+        "MainTitle": "Serials",
+        "Field": {
+          "TITLE": "TITLE",
+          "FTITLE": "FTITLE",
+          "AUTH": "AUTH",
+          "ISSN": "ISSN",
+          "CODEN": "CODEN",
+          "NDLPN": "NDLPN / LCCN",
+          "PUB": "PUB",
+          "YEAR": "YEAR",
+          "PLACE": "PLACE",
+          "CNTRY": "CNTRY",
+          "LANG": "LANG",
+          "SH": "SH",
+          "AKEY": "AKEY",
+          "ID": "ID",
+          "FID": "FID"
+        }
+      },
+      "Names": {
+        "MainTitle": "Name",
+        "Database": {
+          "All": "All",
+          "NAME": "NAME",
+          "JPMARCA": "JPMARCA",
+          "USMARCA": "USMARCA"
+        },
+        "Field": {
+          "AUTH": "AUTH",
+          "AKEY": "AKEY",
+          "PLACE": "PLACE",
+          "DATE": "DATE",
+          "ID": "ID",
+          "SAID": "SAID"
+        }
+      },
+      "UniformTitles": {
+        "MainTitle": "Uniform Titles",
+        "Database": {
+          "All": "All",
+          "TITLE": "TITLE",
+          "USMARCT": "USMARCT"
+        },
+        "Field": {
+          "TITLE": "TITLE",
+          "AUTH": "AUTH",
+          "AKEY": "AKEY",
+          "ID": "ID",
+          "SAID": "SAID"
+        }
+      }
+    }
+  },
+
+
+  "comment":"TODO: Holdings",
+
   "Main": {
     "Intro": "Select a record to retrieve NACSIS holdings:",
     "NoRecords": "To view NACSIS holdings, navigate to a bibliographic record.",

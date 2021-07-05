@@ -1,9 +1,99 @@
 {
   "MainMenu": {
     "Holdings": {
-      "Title": "タイトル"
+      "Title": "タイトル",
+      "Text": "??? NACSIS holding ???"
+    },
+    "Catalog": {
+      "Title": "???",
+      "Text": "??? Search and Copy cataloging ???"
     }
   },
+
+  "Catalog": {
+    "Form": {
+      "MainTitle": "Search records ???",
+      "SelectSearchType": "Select search ???",
+      "SelectDatabase": "Select a ???",
+      "Monographs": {
+        "MainTitle": "Monographs??",
+        "Field": {
+          "TITLE": "TITLE??",
+          "FTITLE": "FTITLE??",
+          "PTBL": "PTBL",
+          "VOL": "VOL",
+          "TiPtVo": "TITLE / PTBL / VOL",
+          "AUTH": "AUTH",
+          "ISSN": "ISSN",
+          "ISBN": "ISBN",
+          "NBN": "NBN",
+          "NDLCN": "NDLCN / LCCN / OTHN",
+          "PUB": "PUB",
+          "YEAR": "YEAR",
+          "PLACE": "PLACE",
+          "CNTRY": "CNTRY",
+          "LANG": "LANG",
+          "SH": "SH",
+          "AKEY": "AKEY",
+          "ID": "ID",
+          "PID": "PID"
+        }
+      },
+      "Serials": {
+        "MainTitle": "Serials???",
+        "Field": {
+          "TITLE": "TITLE??",
+          "FTITLE": "FTITLE??",
+          "AUTH": "AUTH",
+          "ISSN": "ISSN",
+          "CODEN": "CODEN",
+          "NDLPN": "NDLPN / LCCN",
+          "PUB": "PUB",
+          "YEAR": "YEAR",
+          "PLACE": "PLACE",
+          "CNTRY": "CNTRY",
+          "LANG": "LANG",
+          "SH": "SH",
+          "AKEY": "AKEY",
+          "ID": "ID",
+          "FID": "FID"
+        }
+      },
+      "Names": {
+        "MainTitle": "Name??",
+        "Database": {
+          "All": "All??",
+          "NAME": "NAME??",
+          "JPMARCA": "JPMARCA",
+          "USMARCA": "USMARCA"
+        },
+        "Field": {
+          "AUTH": "AUTH??",
+          "AKEY": "AKEY??",
+          "PLACE": "PLACE",
+          "DATE": "DATE",
+          "ID": "ID",
+          "SAID": "SAID"
+        }
+      },
+      "UniformTitles": {
+        "MainTitle": "Uniform Titles???",
+        "Database": {
+          "All": "All",
+          "TITLE": "TITLE",
+          "USMARCT": "USMARCT"
+        },
+        "Field": {
+          "TITLE": "TITLE???",
+          "AUTH": "AUTH???",
+          "AKEY": "AKEY",
+          "ID": "ID",
+          "SAID": "SAID"
+        }
+      }
+    }
+  },
+
   "Main": {
     "Intro": "NACSISから所蔵を取得するための書誌レコードを選択してください：",
     "NoRecords": "NACSISの所蔵を閲覧表示するため、該当の書誌レコードに移動します。",

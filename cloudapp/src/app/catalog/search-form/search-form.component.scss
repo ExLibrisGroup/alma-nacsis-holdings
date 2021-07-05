@@ -1,0 +1,29 @@
+p {
+    margin-bottom: 15px;
+  }
+
+.align-space-between {
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.form-buttons {
+  display: inline-flex;
+  column-gap: 20px;
+}
+
+.mat-form-field {
+  display: contents;
+}
+
+.serach-form-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  column-gap: 20px;
+  row-gap: 1em;
+  background-color: whitesmoke !important;
+}
+
+.form-card-inputs{
+  display: block;
+}
