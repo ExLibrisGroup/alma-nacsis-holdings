@@ -10,17 +10,16 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { MainComponent } from './holdings/main/main.component';
 import { FooterComponent } from './footer/footer.component';
-import { HoldingsComponent } from './holdings/holdings/holdings.component';
+import { HoldingsComponent } from './holdings/viewHoldings/viewHoldings.component';
 import { FormComponent } from './holdings/form/form.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import {MatDialogModule} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import {ConfirmationDialog} from './dialog/confirmation-dialog.component';
 import { HelpComponent } from './holdings/help/help.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 
 import { CatalogSearchFormComponent } from './catalog/search-form/search-form.component';
-
 
 
 export function getToastrModule() {

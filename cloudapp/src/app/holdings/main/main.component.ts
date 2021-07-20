@@ -8,6 +8,7 @@ import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 
 import { map, catchError, switchMap, tap } from 'rxjs/operators';
 import { AlmaApiService, IntegrationProfile } from '../../service/alma.api.service';
+import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
 
 
 
@@ -44,7 +45,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
   
-  this.nacsis.clearSessionStorage();
+  sessionStorage.clear();
 
   this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => {
 
@@ -108,6 +109,7 @@ export class MainComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (header) => {
             if (header.status === this.nacsis.OkStatus) {
+              sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.HoldingsMainPage);
               this.router.navigate(['/holdings', this.selected, bib[0].description]);
             } else {
                 this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
