@@ -13,6 +13,7 @@
   "Catalog": {
     "Form": {
       "MainTitle": "Search records ???",
+      "RefineSearch": "Refine Search???",
       "SelectSearchType": "Select search ???",
       "SelectDatabase": "Select a ???",
       "Monographs": {
@@ -91,6 +92,15 @@
           "SAID": "SAID"
         }
       }
+    },
+    "Search": {
+      "Title": "Records???",
+      "NoRecordsExist": "No ??? exist.",
+      "By": "Byby???",
+      "Book": "Book",
+      "NACSISID": "NACSISID",
+      "ISBN": "ISBN",
+      "Subjects": "Subjects???"
     }
   },
 

@@ -6,11 +6,12 @@ import { HoldingsService, Holding, Header } from '../../service/holdings.service
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../../dialog/confirmation-dialog.component';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
 
 @Component({
   selector: 'app-holdings',
-  templateUrl: './holdings.component.html',
-  styleUrls: ['./holdings.component.scss']
+  templateUrl: './viewHoldings.component.html',
+  styleUrls: ['./viewHoldings.component.scss']
 })
 export class HoldingsComponent implements OnInit {
   mmsId: string;
@@ -23,7 +24,8 @@ export class HoldingsComponent implements OnInit {
   mmsTitle: string;
   type: string;
   isErrorMessageVisible: boolean = false;
-  _owner: string = 'All'
+  _owner: string = 'All';
+  backSession;//: AppRoutingState;
 
 
   constructor(
@@ -46,7 +48,8 @@ export class HoldingsComponent implements OnInit {
     this.mmsId = this.route.snapshot.params['mmsId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
 
-    let owner = this.nacsis.getSessionStorageItem(this.nacsis.OwnerKey);
+    let owner = sessionStorage.getItem(this.nacsis.OwnerKey);
+    this.backSession = sessionStorage.getItem(ROUTING_STATE_KEY);
 
     if(!this.nacsis.isEmpty(owner)) {
       this.selected = owner;
@@ -66,7 +69,7 @@ export class HoldingsComponent implements OnInit {
 
   onOwnerSelected() {
     
-    this.nacsis.setSessionStorageItem(this.nacsis.OwnerKey, this.selected);
+    sessionStorage.setItem(this.nacsis.OwnerKey, this.selected);
 
    // owner = All, Mine is included in All, therefore, no need to retrieve from nacsis
     // get All only once

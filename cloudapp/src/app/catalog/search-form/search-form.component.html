@@ -1,56 +1,162 @@
-<div class="align-space-between" fxLayout="row">
+<div class="align-space-left" fxLayout="row">
   <a [routerLink]="['']">
     <button mat-flat-button color="secondary">
       <mat-icon>arrow_back_ios</mat-icon>
-      {{'Back' | translate}}
+      <!-- {{'Back' | translate}} -->
+      Back to menu
     </button>
   </a>
-  <div class="form-buttons">
-    <button mat-flat-button color="secondary" (click)="clear()" [disabled]="!isSearchTypeChoosed">
-      {{ 'Clear' | translate }}
-    </button>
-    <button mat-flat-button color="primary" type="submit" (click)="save()" [disabled]="!isSearchTypeChoosed">
-      {{ 'Search' | translate }}
-    </button>
-  </div>
 </div>
-
+<br>
 <p>  {{'Catalog.Form.MainTitle' | translate}} </p>
 
-<mat-form-field>
-  <mat-label>{{'Catalog.Form.SelectSearchType' | translate}}</mat-label>
-    <mat-select (selectionChange)="searchTypeSelection($event)">
-    <mat-option *ngFor="let searchType of getSearchTypeList() | keyvalue" value="{{searchType.key}}">
-      {{searchType.value | translate}}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+<mat-tab-group (selectedTabChange)="onTabChange($event)">
+  <mat-tab *ngFor="let searchType of getSearchTypesLabels()"
+  label="{{ searchType | translate }}">
+    <mat-accordion>
+      <mat-expansion-panel (opened)="panelOpenState()" (closed)="panelCloseState()" [expanded]="panelState">
+        <mat-expansion-panel-header>
+          <mat-panel-title *ngIf="!panelState">{{ 'Catalog.Form.RefineSearch' | translate }}</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <ng-container *ngTemplateOutlet="searchBody"></ng-container>
+
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-tab>
+</mat-tab-group>
+
+<!-- <ng-container *ngTemplateOutlet="searchResults"></ng-container> -->
+<ng-container *ngTemplateOutlet="currentResulsTmpl"></ng-container>
 
 
-<br><br>
+<div class="loading-shade" *ngIf="loading">
+  <mat-progress-spinner mode="indeterminate" diameter="50">
+  </mat-progress-spinner>
+</div>
 
-<div *ngIf="isSearchTypeChoosed">
-  <!-- <hr><br> -->
+
+
+<ng-template #searchBody>
   <mat-form-field>
     <mat-label>{{'Catalog.Form.SelectDatabase' | translate}}</mat-label>
     <mat-select [(value)]="currentDatabase">
-      <mat-option *ngFor="let database of getDatabases()" value="{{database}}">
+      <mat-option *ngFor="let database of getCurrentDatabases()" value="{{database}}">
         {{ database }}
       </mat-option>
     </mat-select>
   </mat-form-field>
-
-  <mat-card class="serach-form-card" color="secondary">
-    <form *ngFor="let item of searchItemArray">
-      <mat-form-field class="form-card-inputs">
-        <mat-label>{{item.getFieldLabel() | translate}}</mat-label>
-          <textarea cdkTextareaAutosize matInput [formControl]="item.getFormControl()">
-          </textarea>
+  <br>
+  <mat-card class="form-card-parent" color="secondary">
+    <form *ngFor="let item of getSearchFields()" class="{{item.getFieldLength()}}">
+      <mat-form-field>
+        <mat-label>{{ item.getFieldLabel(currentSearchType) | translate }}</mat-label>
+          <input matInput [formControl]="item.getFormControl()">
+          <!-- <textarea cdkTextareaAutosize matInput [formControl]="item.getFormControl()">
+          </textarea> -->
       </mat-form-field>
     </form>
   </mat-card>
+    <br>
+    <div class="align-to-right" fxLayout="row">
+      <button style="margin-right: 15px" mat-flat-button color="secondary" (click)="clear()">
+        {{ 'Clear' | translate }}
+      </button>
+      <button mat-flat-button color="primary" type="submit" (click)="search()">
+        {{ 'Search' | translate }}
+      </button>
+    </div>
+  
+</ng-template>
 
-  <br><p>{{url}}</p>
-</div>
+
+
+<ng-template #searchResults>
+  <!-- <div *ngIf="resultsState=='existingResults' else noResults"> -->
+  <div>
+    <div class="title">
+      <h2>{{'Catalog.Results.Title' | translate}} ({{numOfResults}})</h2>
+    </div>
+
+    <mat-list role="list">
+      <mat-list-item class="result-list-item" role="listitem"
+      *ngFor="let record of resultsSummaryDisplay; index as i">
+        <mat-card class="result-card">
+          <div class="result-card-data">
+            <mat-card-title fxLayout="row">
+              <div class="result-card-index">
+                <span><strong>{{i + 1}}</strong></span>
+              </div>
+              <a [routerLink]="null">
+                {{record.getDisplayTitle()}}
+              </a>
+            </mat-card-title>
+            <mat-card-content class="result-card-content" *ngFor="let line of record.initContentDisplay()">
+              <span><strong>{{line}}</strong></span>
+            </mat-card-content>
+          </div>
+          <div class="result-actions">
+            <button mat-button class="result-actions-button" [matMenuTriggerFor]="actionsMenu" color="primary">
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+            
+            <mat-menu #actionsMenu="matMenu">
+              <div *ngFor="let item of resultActionList; index as index">
+                <button mat-menu-item type="submit" (click)="onActionsClick(index, record)">
+                  {{ item | translate }}
+                </button>
+              </div>
+            </mat-menu>
+          </div>
+        </mat-card>
+      </mat-list-item>
+    </mat-list>
+  </div>  
+</ng-template>
+
+<ng-template #noResults>
+  <div class="noResults">
+    <span class="uxf-icon uxf-list" style="font-size: 3em;"></span>
+    <h2>{{'Catalog.Results.NoRecordsExist' | translate}}</h2>
+  </div>
+</ng-template>
+
+<ng-template #notSearched>
+  <div class="notSearched"></div>
+</ng-template>
+
+
+
+<ng-template #fullRecord>
+  <button mat-flat-button color="secondary" (click)="onBackFromFullView()">
+    <mat-icon>arrow_back_ios</mat-icon>
+    {{'Back' | translate}}
+  </button>
+
+  <br><br><br>
+
+  <div class="full-view-record">
+    <div *ngFor="let line of resultFullDisplay;index as i"
+    class="full-view-line {{isEvenRow(i)}}">
+      <div class="full-view-line-header">
+        {{line.getHeaderLabel()}} 
+      </div>
+      <div class="full-view-line-content">
+        <div class="full-view-line-field" *ngFor="let field of line.getContent()">
+          <div class="full-view-line-field-label" *ngIf="field.hasLabel()">
+            {{field.getLabel()}}
+          </div>
+          <a *ngIf="field.isLinkable() else noLink" [routerLink]="field.link">
+            {{field.getContent()}}
+          </a>
+          <ng-template #noLink>
+            {{field.getContent()}}
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+</ng-template>
 
 <br><br><br>

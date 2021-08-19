@@ -72,3 +72,19 @@ export abstract class BaseService {
         return { 'Authorization': `Bearer ${this._authToken}` };
     }
 }
+
+
+export class Header {
+    status: string = ""
+    errorMessage: string = ""
+    BID: string = ""
+    type: string = "" // BOOK/SERIAL
+  }
+
+export const ROUTING_STATE_KEY = "routingState";
+
+export enum AppRoutingState {
+    MainMenuPage = "",
+    HoldingsMainPage = "/holdings",
+    CatalogSearchPage = "/catalog"
+}

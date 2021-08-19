@@ -1,27 +1,42 @@
 import { FormControl } from "@angular/forms";
 
 
-export class SearchItem {
-    _key: string;
-    _fieldLabel: string;
-    _formControl: FormControl;
+export class SearchField {
 
-    constructor(key:string, entity:SearchType){
-        this._key = key;
-        this._fieldLabel = "Catalog.Form." + entity + ".Field." + key;
-        this._formControl = new FormControl();
+    key: FieldName;
+    fieldLabel: string;
+    formControl: FormControl;
+    fieldLength: FieldSize = FieldSize.regular;
+
+    constructor(key: FieldName, fieldSize?: FieldSize){
+        this.key = key;
+        this.formControl = new FormControl();
+        this.fieldLength = fieldSize;
     }
-    
+
     getKey(): string {
-        return this._key;
+        return this.key;
     }
 
-    getFieldLabel() : string {
-        return this._fieldLabel;
+    getFieldLabel(searchType: SearchType): string {
+        this.fieldLabel = "Catalog.Form." + searchType + ".Field." + this.key;
+        return this.fieldLabel;
     }
 
-    getFormControl() : FormControl {
-        return this._formControl;
+    getFormControl(): FormControl {
+        return this.formControl;
+    }
+
+    setFormControl(data: string) {
+        this.formControl.setValue(data);
+    }
+
+    getFieldLength(): string {
+        return this.fieldLength;
+    }
+
+    setFieldLength(size: FieldSize) {
+        this.fieldLength = size;
     }
 }
 
@@ -32,3 +47,37 @@ export enum SearchType {
     Names = "Names",
     UniformTitles = "UniformTitles"
 }
+
+export enum FieldSize {
+    regular = "form-card-child-regular",
+    large = "form-card-child-large"
+}
+
+export enum FieldName {
+    TITLE = "TITLE",
+    FTITLE = "FTITLE",
+    PTBL = "PTBL",
+    VOL = "VOL",
+    TiPtVo = "TiPtVo",
+    AUTH = "AUTH",
+    ISSN = "ISSN",
+    ISBN = "ISBN",
+    NBN = "NBN",
+    NDLCN = "NDLCN",
+    PUB = "PUB",
+    YEAR = "YEAR",
+    PLACE = "PLACE",
+    CNTRY = "CNTRY",
+    LANG = "LANG",
+    SH = "SH",
+    AKEY = "AKEY",
+    ID = "ID",
+    PID = "PID",
+    CODEN = "CODEN",
+    NDLPN = "NDLPN",
+    FID = "FID",
+    DATE = "DATE",
+    SAID = "SAID",
+}
+
+

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MainComponent } from './holdings/main/main.component';
-import { HoldingsComponent } from './holdings/holdings/holdings.component';
+import { HoldingsComponent } from './holdings/viewHoldings/viewHoldings.component';
 import { FormComponent } from './holdings/form/form.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { HelpComponent } from './holdings/help/help.component';
@@ -17,7 +17,6 @@ const routes: Routes = [
   { path: 'holdings/:mmsId/new/:mmsTitle', component: FormComponent },
   { path: 'holdings/:mmsId/view/:holdingId/:mmsTitle', component: FormComponent },
   { path: 'help', component: HelpComponent },
-
   { path: 'catalog', component: CatalogSearchFormComponent },
 ];
 

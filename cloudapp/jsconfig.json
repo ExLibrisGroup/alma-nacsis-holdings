@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "target": "es5"
+    "target": "es5",
+
+    "resolveJsonModule": true
   }
 }

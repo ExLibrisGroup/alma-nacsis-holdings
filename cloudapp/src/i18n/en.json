@@ -13,6 +13,7 @@
   "Catalog": {
     "Form": {
       "MainTitle": "Search records in NACSIS central catalog",
+      "RefineSearch": "Refine Search",
       "SelectSearchType": "Select search type",
       "SelectDatabase": "Select a database",
       "Monographs": {
@@ -60,7 +61,7 @@
         }
       },
       "Names": {
-        "MainTitle": "Name",
+        "MainTitle": "Names",
         "Database": {
           "All": "All",
           "NAME": "NAME",
@@ -90,6 +91,21 @@
           "ID": "ID",
           "SAID": "SAID"
         }
+      }
+    },
+    "Results": {
+      "Title": "Records",
+      "NoRecordsExist": "No records exist.",
+      "By": "By",
+      "Book": "Book",
+      "NACSISID": "NACSIS ID",
+      "ISBN": "ISBN",
+      "ISSN": "ISSN",
+      "Subjects": "Subjects",
+      "Actions" : {
+        "View" : "View",
+        "Import" : "Import",
+        "ViewHoldings" : "View Holdings"
       }
     }
   },

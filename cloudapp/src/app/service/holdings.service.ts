@@ -24,7 +24,7 @@ export class HoldingsService extends BaseService {
 
   setBaseUrl(initData: InitData) : string {
     let baseUrl = super.setBaseUrl(initData);
-    // baseUrl = baseUrl + "holdings/";
+    baseUrl = baseUrl + "holdings?";
     return baseUrl;
   }
 
@@ -32,13 +32,13 @@ export class HoldingsService extends BaseService {
     return this._header;
   }
 
-  getHoldingsFromNacsis(mmsId: any, owner: String){
+  getHoldingsFromNacsis(nacsisId: any, owner: String){
 
     let fullUrl: string;
     
     return this.getInitData().pipe(
       mergeMap(initData => {
-        fullUrl = this.setBaseUrl(initData) + mmsId + "?owner=" + owner;
+        fullUrl = this.setBaseUrl(initData) + "nacsisId=" + nacsisId + "&owner=" + owner;
         return this.getAuthToken()}),
       mergeMap(authToken => {
         let headers = this.setAuthHeader(authToken);
@@ -99,13 +99,13 @@ export class HoldingsService extends BaseService {
     });
   }
 
-  deleteHoldingFromNacsis(mmsId: string, holdingsId: string) {
+  deleteHoldingFromNacsis(nacsisId: string, holdingsId: string) {
     
     let fullUrl: string;
-    
+
     return this.getInitData().pipe(
       mergeMap(initData => {
-        fullUrl = this.setBaseUrl(initData) + mmsId + '/' + holdingsId;
+        fullUrl = this.setBaseUrl(initData) + "nacsisId=" + nacsisId + '&holdingId=' + holdingsId;
         return this.getAuthToken()}),
       mergeMap(authToken => {
         let headers = this.setAuthHeader(authToken);
@@ -122,21 +122,21 @@ export class HoldingsService extends BaseService {
     }
   }
 
-  saveHoldingToNacsis(mmsId: string, holding: Holding) {
+  saveHoldingToNacsis(nacsisId: string, holding: Holding) {
   
     let fullUrl: string;
     let body = JSON.stringify(holding);
 
     return this.getInitData().pipe(
       mergeMap(initData => {
-        fullUrl = this.setBaseUrl(initData) + mmsId;
+        fullUrl = this.setBaseUrl(initData) + "nacsisId=" + nacsisId;
         return this.getAuthToken()}),
       mergeMap(authToken => {
         let headers = this.setAuthHeader(authToken);
         if (this.isEmpty(holding.ID)) { // create/POST
           return this.http.post<any>(fullUrl, body, { headers });
         } else { // update/PUT 
-          fullUrl = fullUrl + '/' + holding.ID;
+          fullUrl = fullUrl + '&holdingId=' + holding.ID;
           return this.http.put<any>(fullUrl, body, { headers });
         }
       })
@@ -155,18 +155,6 @@ export class HoldingsService extends BaseService {
     }
     this.updateHoldingPreview();
   }
-
-  clearSessionStorage() {
-    sessionStorage.clear();
-  }
-
-  getSessionStorageItem(key: string) : string {
-    return sessionStorage.getItem(key);
-  }  
-
-  setSessionStorageItem(key: string, value: string) {
-    sessionStorage.setItem(key, value);
-  }  
 }
 
 export class Header {
