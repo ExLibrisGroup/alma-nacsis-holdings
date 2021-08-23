@@ -1,0 +1,21 @@
+.mat-form-field {
+  display: contents;
+}
+
+.form-card-parent {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  column-gap: 20px;
+  row-gap: 1em;
+  background-color: whitesmoke !important;
+}
+
+.form-card-child-large{
+  display: block;
+  grid-column-start: 1;
+  grid-column-end: -1;
+}
+
+.form-card-child-regular{
+  display: block;
+}

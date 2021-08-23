@@ -36,17 +36,17 @@ import { ROUTING_STATE_KEY, AppRoutingState } from '../service/base.service';
                 link:   'catalog'
             },
             // {
-            //     title:  'Members',
-            //     text:   'NACSIS members information management',
-            //     icon:   'uxf-icon uxf-switch',
-            //     link:   'main'
+                // title:  'MainMenu.Member.Title',
+                // text:   'MainMenu.Member.Text',
+                // icon:   'uxf-icon uxf-switch',
+                // link:   'main'
             // },
-            // {
-            //     title:  'ILL Borrowing Requests',
-            //     text:   'NACSIS borrowing request creation',
-            //     icon:   'uxf-icon uxf-external-link',
-            //     link:   'main'
-            // },
+            {
+                title:  'MainMenu.ILL.Title',
+                text:   'MainMenu.ILL.Text',
+                icon:   'uxf-icon uxf-external-link',
+                link:   'ILL'
+            },
         );
     }
 

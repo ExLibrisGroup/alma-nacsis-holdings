@@ -39,8 +39,8 @@ export class HoldingsComponent implements OnInit {
  
   ) {
     this.owners = [
-      { id: "0", name: this.translate.instant('Holdings.All') },
-      { id: "1", name: this.translate.instant('Holdings.Mine') }
+      { id: "0", name: this.translate.instant('Holdings.ViewHoldings.All') },
+      { id: "1", name: this.translate.instant('Holdings.ViewHoldings.Mine') }
     ];
   }
 
@@ -105,7 +105,7 @@ export class HoldingsComponent implements OnInit {
       } catch (e) {
         this.loading = false;
         console.log(e);
-        this.alert.error(this.translate.instant('Errors.generalError'), {keepAfterRouteChange:true});  
+        this.alert.error(this.translate.instant('General.Errors.generalError'), {keepAfterRouteChange:true});  
       }
     }
   }
@@ -144,11 +144,11 @@ export class HoldingsComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationDialog, {
       autoFocus: false,
       data: {
-        message: this.translate.instant('Holdings.ConfirmDelete'),
-        title: this.translate.instant('Holdings.DeleteTitle'),
+        message: this.translate.instant('Holdings.ViewHoldings.ConfirmDelete'),
+        title: this.translate.instant('Holdings.ViewHoldings.DeleteTitle'),
         buttonText: {
-          ok: this.translate.instant('Holdings.DeleteYesButton'),
-          cancel: this.translate.instant('Holdings.DeleteNoButton')
+          ok: this.translate.instant('Holdings.ViewHoldings.DeleteYesButton'),
+          cancel: this.translate.instant('Holdings.ViewHoldings.DeleteNoButton')
         }
       }/*,
       position: {
@@ -168,7 +168,7 @@ export class HoldingsComponent implements OnInit {
               next: (header) => {
                 console.log(header);
                 if (header.status === this.nacsis.OkStatus) {
-                  this.alert.success(this.translate.instant('Holdings.Deleted'), {keepAfterRouteChange:true});  
+                  this.alert.success(this.translate.instant('Holdings.ViewHoldings.Deleted'), {keepAfterRouteChange:true});  
                   this.nacsis.deleteHolding(holdingId);
                   this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
                 } else {
@@ -186,7 +186,7 @@ export class HoldingsComponent implements OnInit {
         } catch (e) {
           this.loading = false;
           console.log(e);
-          this.alert.error(this.translate.instant('Errors.generalError'));
+          this.alert.error(this.translate.instant('General.Errors.generalError'));
          }
       }
     });

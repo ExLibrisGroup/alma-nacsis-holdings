@@ -18,8 +18,8 @@ export class SearchField {
         return this.key;
     }
 
-    getFieldLabel(searchType: SearchType): string {
-        this.fieldLabel = "Catalog.Form." + searchType + ".Field." + this.key;
+    getFieldLabel(): string {
+        this.fieldLabel = "Catalog.Form.Fields." + this.key;
         return this.fieldLabel;
     }
 
@@ -46,6 +46,13 @@ export enum SearchType {
     Serials = "Serials",
     Names = "Names",
     UniformTitles = "UniformTitles"
+}
+
+export enum QueryParams {
+    fromIndex = "fromIndex",
+    toIndex = "toIndex",
+    searchType = "searchType",
+    databases = "dataBase"
 }
 
 export enum FieldSize {

@@ -4,17 +4,17 @@
     <a [routerLink]="['']">
       <button mat-flat-button color="secondary">
         <mat-icon>arrow_back_ios</mat-icon>
-        {{'Back' | translate}}
+        {{'General.Back' | translate}}
       </button>
     </a>
     <button mat-flat-button color="primary" aria-label="search" (click)="search()" [disabled]="!selected">
-      {{ 'Main.RetrieveHoldings' | translate }}
+      {{ 'Holdings.Main.RetrieveHoldings' | translate }}
     </button>
   </div>
 
-  <p translate>Main.Intro</p>
+  <p translate>Holdings.Main.Intro</p>
   <mat-form-field>
-    <mat-placeholder translate>Main.SelectBib</mat-placeholder>
+    <mat-placeholder translate>Holdings.Main.SelectBib</mat-placeholder>
     <mat-select panelClass="panel-class" [(value)]="selected">
       <mat-option *ngFor="let bib of bibs" [value]="bib.id">
         <span><strong>{{bib.id}}:&emsp;</strong></span>{{bib.description}}
@@ -33,9 +33,9 @@
     <a [routerLink]="['']">
       <button mat-flat-button color="secondary">
         <mat-icon>arrow_back_ios</mat-icon>
-        {{'Back' | translate}}
+        {{'General.Back' | translate}}
       </button>
     </a>
   </div>
-  <p translate>Main.NoRecords</p>
+  <p translate>Holdings.Main.NoRecords</p>
 </ng-template>

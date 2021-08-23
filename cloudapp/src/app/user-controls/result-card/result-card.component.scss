@@ -1,0 +1,19 @@
+.result-card{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  background-color: whitesmoke !important;
+}
+
+.result-card-index {
+  margin-right: 20px;
+}
+
+ .result-card-content {
+  margin: 0px;
+}
+
+a,
+a label {
+    cursor: pointer;
+}

@@ -1,0 +1,29 @@
+  <mat-card class="result-card">
+    <div class="result-card-data">
+      <mat-card-title fxLayout="row">
+        <div class="result-card-index">
+          <span><strong>{{index + 1}}</strong></span>
+        </div>
+        <a (click)="onTitleClick(record)">
+          {{record.getDisplayTitle()}}
+        </a>
+      </mat-card-title>
+      <mat-card-content class="result-card-content" *ngFor="let line of record.initContentDisplay()">
+        <span><strong>{{line}}</strong></span>
+      </mat-card-content>
+    </div>
+
+    <div class="result-actions">
+      <button mat-button class="result-actions-button" [matMenuTriggerFor]="actionsMenu" color="primary">
+        <mat-icon>more_horiz</mat-icon>
+      </button>
+      <mat-menu #actionsMenu="matMenu">
+        <div *ngFor="let item of resultActionList; index as index">
+          <button mat-menu-item type="submit" (click)="onActionsClick(index, record)">
+            {{ item | translate }}
+          </button>
+        </div>
+      </mat-menu>
+    </div>
+  </mat-card>
+

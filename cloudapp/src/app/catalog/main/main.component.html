@@ -1,0 +1,87 @@
+<div class="align-space-between" fxLayout="row">
+  <button mat-flat-button color="secondary" [routerLink]="['']">
+    <mat-icon>arrow_back_ios</mat-icon>
+    {{ 'General.BackToMenu' | translate }}
+  </button>
+  <div class="align-to-right" fxLayout="row">
+    <button style="margin-right: 15px" mat-flat-button color="secondary" (click)="clear()">
+      {{ 'General.Clear' | translate }}
+    </button>
+    <button mat-flat-button color="primary" type="submit" (click)="search()">
+      {{ 'General.Search' | translate }}
+    </button>
+  </div>
+</div>
+<br>
+
+<p> {{'Catalog.Form.MainTitle' | translate}} </p>
+
+<mat-tab-group (selectedTabChange)="onTabChange($event)">
+  <mat-tab *ngFor="let searchType of getSearchTypesLabels()" label="{{ searchType | translate }}">
+    <mat-accordion>
+      <mat-expansion-panel (opened)="panelOpenState()" (closed)="panelCloseState()" [expanded]="panelState">
+        <mat-expansion-panel-header>
+          <mat-panel-title *ngIf="!panelState">{{ 'Catalog.Form.RefineSearch' | translate }}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <search-form [databasesList]="getCurrentDatabases()" [fieldsList]="getSearchFields()"
+          (selectedDatabase)="setCurrentDatabase($event)">
+        </search-form>
+        <br>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-tab>
+</mat-tab-group>
+<br><br>
+
+<ng-container *ngTemplateOutlet="currentResulsTmpl"></ng-container>
+
+<div class="loading-shade" *ngIf="loading">
+  <mat-progress-spinner mode="indeterminate" diameter="50">
+  </mat-progress-spinner>
+</div>
+
+<br><br><br>
+
+
+<ng-template #searchResults>
+  <results-list [numOfResults]="numOfResults" [resultsSummaryDisplay]="resultsSummaryDisplay"
+    [resultActionList]="resultActionList" (onActionSelected)="onActionsClick($event)"
+    (onTitleSelected)="onTitleClick($event)" (onPageSelected)="onPageAction($event)">
+  </results-list>
+</ng-template>
+
+
+<ng-template #noResults>
+  <div class="noResults">
+    <span class="uxf-icon uxf-list" style="font-size: 3em;"></span>
+    <h2>{{'Catalog.Results.NoRecordsExist' | translate}}</h2>
+  </div>
+</ng-template>
+
+
+<ng-template #notSearched>
+  <div class="notSearched"></div>
+</ng-template>
+
+
+<ng-template #fullRecord>
+  <button mat-flat-button color="secondary" (click)="onBackFromFullView()">
+    <mat-icon>arrow_back_ios</mat-icon>
+    {{'General.Back' | translate}}
+  </button>
+  <br><br><br>
+  <div class="full-view">
+    <div class="full-view-left-table" *ngIf="!(isColapsedMode && isRightTableOpen)">
+      <full-view-display [resultFullDisplay]="resultFullDisplay" (onFullViewLinkSelected)="onFullViewLink($event)">
+      </full-view-display>
+    </div>
+    <div class="full-view-right-table" (window:resize)="onResize($event)" *ngIf="isRightTableOpen">
+      <button class="close-button" (click)="onFullViewLinkClose()">
+        <i class="uxf-icon uxf-close eca-button" aria-label="Delete" (click)="delete(i)"></i>
+      </button>
+      <full-view-display [resultFullDisplay]="resultFullDisplay" (onFullViewLinkSelected)="onFullViewLink($event)">
+      </full-view-display>
+    </div>
+  </div>
+
+</ng-template>

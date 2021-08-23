@@ -1,12 +1,34 @@
 {
+  "General": {
+    "Back": "戻る",
+    "BackToMenu": "???Back to menu",
+    "Cancel": "キャンセル",
+    "Save": "保存",
+    "OK": "OK",
+    "Clear": "???Clear",
+    "Search": "???Search",
+    "Errors": {
+      "generalError": "アプリケーションエラー"
+    }
+  },
+  
   "MainMenu": {
+    "Intro": "???This app includes all functionalities within NACSIS-CAT/ILL",
     "Holdings": {
       "Title": "タイトル",
       "Text": "??? NACSIS holding ???"
     },
     "Catalog": {
-      "Title": "???",
+      "Title": "Copy Catalog12 345 ???",
       "Text": "??? Search and Copy cataloging ???"
+    },
+    "ILL": {
+      "Title": "ILL Borrowing ??? Requests",
+      "Text": "NACSIS borrowing request creation???"
+    },
+    "Members": {
+      "Title": "Members??",
+      "Text": "NACSIS members information management???"
     }
   },
 
@@ -16,152 +38,118 @@
       "RefineSearch": "Refine Search???",
       "SelectSearchType": "Select search ???",
       "SelectDatabase": "Select a ???",
-      "Monographs": {
-        "MainTitle": "Monographs??",
-        "Field": {
-          "TITLE": "TITLE??",
-          "FTITLE": "FTITLE??",
-          "PTBL": "PTBL",
-          "VOL": "VOL",
-          "TiPtVo": "TITLE / PTBL / VOL",
-          "AUTH": "AUTH",
-          "ISSN": "ISSN",
-          "ISBN": "ISBN",
-          "NBN": "NBN",
-          "NDLCN": "NDLCN / LCCN / OTHN",
-          "PUB": "PUB",
-          "YEAR": "YEAR",
-          "PLACE": "PLACE",
-          "CNTRY": "CNTRY",
-          "LANG": "LANG",
-          "SH": "SH",
-          "AKEY": "AKEY",
-          "ID": "ID",
-          "PID": "PID"
-        }
+      "EmptyForm": "The search form is empty. ???",
+      "SearchTypes": {
+        "Monographs": "Monographs???",
+        "Serials": "Serials???",
+        "Names": "Names???",
+        "UniformTitles": "Uniform Titles???"
       },
-      "Serials": {
-        "MainTitle": "Serials???",
-        "Field": {
-          "TITLE": "TITLE??",
-          "FTITLE": "FTITLE??",
-          "AUTH": "AUTH",
-          "ISSN": "ISSN",
-          "CODEN": "CODEN",
-          "NDLPN": "NDLPN / LCCN",
-          "PUB": "PUB",
-          "YEAR": "YEAR",
-          "PLACE": "PLACE",
-          "CNTRY": "CNTRY",
-          "LANG": "LANG",
-          "SH": "SH",
-          "AKEY": "AKEY",
-          "ID": "ID",
-          "FID": "FID"
-        }
-      },
-      "Names": {
-        "MainTitle": "Name??",
-        "Database": {
-          "All": "All??",
-          "NAME": "NAME??",
-          "JPMARCA": "JPMARCA",
-          "USMARCA": "USMARCA"
-        },
-        "Field": {
-          "AUTH": "AUTH??",
-          "AKEY": "AKEY??",
-          "PLACE": "PLACE",
-          "DATE": "DATE",
-          "ID": "ID",
-          "SAID": "SAID"
-        }
-      },
-      "UniformTitles": {
-        "MainTitle": "Uniform Titles???",
-        "Database": {
-          "All": "All",
-          "TITLE": "TITLE",
-          "USMARCT": "USMARCT"
-        },
-        "Field": {
-          "TITLE": "TITLE???",
-          "AUTH": "AUTH???",
-          "AKEY": "AKEY",
-          "ID": "ID",
-          "SAID": "SAID"
-        }
+      "Fields": {
+        "TITLE": "TITLE???",
+        "FTITLE": "FTITLE???",
+        "PTBL": "PTBL???",
+        "VOL": "VOL",
+        "TiPtVo": "TITLE / PTBL / VOL",
+        "AUTH": "AUTH",
+        "ISSN": "ISSN",
+        "ISBN": "ISBN",
+        "NBN": "NBN",
+        "NDLCN": "NDLCN / LCCN / OTHN",
+        "PUB": "PUB",
+        "YEAR": "YEAR",
+        "PLACE": "PLACE",
+        "CNTRY": "CNTRY",
+        "LANG": "LANG",
+        "SH": "SH",
+        "AKEY": "AKEY",
+        "ID": "ID",
+        "PID": "PID",
+        "CODEN": "CODEN",
+        "NDLPN": "NDLPN / LCCN",
+        "FID": "FID",
+        "DATE": "DATE",
+        "SAID": "SAID"
       }
     },
-    "Search": {
-      "Title": "Records???",
-      "NoRecordsExist": "No ??? exist.",
-      "By": "Byby???",
-      "Book": "Book",
-      "NACSISID": "NACSISID",
-      "ISBN": "ISBN",
-      "Subjects": "Subjects???"
+    "Results": {
+      "Title": "???Records",
+      "NoRecordsExist": "???No records exist.",
+      "By": "???By",
+      "Book": "???Book",
+      "NACSISID": "???NACSIS ID",
+      "ISBN": "???ISBN",
+      "ISSN": "???ISSN",
+      "Subjects": "???Subjects",
+      "Actions" : {
+        "View" : "???View",
+        "Import" : "???Import",
+        "ViewHoldings" : "???View Holdings"
+      }
     }
   },
 
-  "Main": {
-    "Intro": "NACSISから所蔵を取得するための書誌レコードを選択してください：",
-    "NoRecords": "NACSISの所蔵を閲覧表示するため、該当の書誌レコードに移動します。",
-    "SelectBib": "書誌レコードの選択",
-    "RetrieveHoldings": "所蔵の検索"
-  },
-  "Errors": {
-    "generalError": "アプリケーションエラー"
-  },
   "Holdings": {
-    "Owner": "所蔵館",
-    "All": "すべて",
-    "Mine": "自館所蔵",
-    "ID": "所蔵データID",
-    "Title": "タイトル",
-    "Library": "図書館",
-    "Location": "配置場所",
-    "ConfirmDelete": "このレコードを本当に削除しますか？",
-    "Deleted": "レコードが削除されました.",
-    "Add": "所蔵レコードの追加",
-    "NoHoldingRecordsExist": "所蔵レコードがありません。",
-    "Errors": {
-      "NoNoldings": "所蔵レコードが見つかりません。",
-      "GetFailed": "所蔵レコードの取得ができませんでした。",
-      "DeleteFailed": "所蔵レコードの削除ができませんでした。"
-    }
-  },
-  "Form": {
-    "Title": "タイトル",
-    "EditTitle": "所蔵の編集",
-    "AddTitle": "所蔵の追加",
-    "ViewTitle": "タイトルの表示",
-    "Success": "所蔵が保存されました.",
-    "Fields": {
-      "Id": "データID",
-      "Description": "記述",
+    "Main": {
+      "Intro": "NACSISから所蔵を取得するための書誌レコードを選択してください：",
+      "NoRecords": "NACSISの所蔵を閲覧表示するため、該当の書誌レコードに移動します。",
+      "SelectBib": "書誌レコードの選択",
+      "RetrieveHoldings": "所蔵の検索"
+    },
+    "ViewHoldings": {
+      "Owner": "所蔵館",
+      "All": "すべて",
+      "Mine": "自館所蔵",
+      "ID": "所蔵データID",
+      "Title": "タイトル",
       "Library": "図書館",
       "Location": "配置場所",
-      "Ill": "ILL（リソース共有）可",
-      "VOL": "巻冊次等",
-      "CLN": "請求記号",
-      "RGTN": "登録番号",
-      "CPYR": "刷の出版年",
-      "CPYNT": "刷の注記",
-      "LDF": "図書館定義フィールド",
-      "LTR": "ローカルトレーシング",
-      "HLV": "所蔵巻次データ",
-      "CONT": "受入継続表示",
-      "HLYR": "所蔵年次データ"
+      "ConfirmDelete": "このレコードを本当に削除しますか？",
+      "DeleteTitle": "???Delete Holding record",
+      "Deleted": "レコードが削除されました.",
+      "Add": "所蔵レコードの追加",
+      "NoHoldingRecordsExist": "所蔵レコードがありません。",
+      "DeleteYesButton": "???Yes, delete it",
+      "DeleteNoButton": "???No, keep it",
+      "Errors": {
+        "NoNoldings": "所蔵レコードが見つかりません。",
+        "GetFailed": "所蔵レコードの取得ができませんでした。",
+        "DeleteFailed": "所蔵レコードの削除ができませんでした。"
+      }
     },
-    "Errors": {
-	  "Id": "所蔵IDの入力は必須です。",
-      "SaveFailed": "所蔵の保存ができませんでした。",
-      "HLYR": "所蔵年次データの入力は必須です。",
-      "HLV": "所蔵巻次データの入力は必須です",
-      "LOC": "配置コードの入力は必須です"
+    "Form": {
+      "Title": "タイトル",
+      "EditTitle": "所蔵の編集",
+      "AddTitle": "所蔵の追加",
+      "ViewTitle": "タイトルの表示",
+      "Success": "所蔵が保存されました.",
+      "Fields": {
+        "Id": "データID",
+        "Description": "記述",
+        "Library": "図書館",
+        "Location": "配置場所",
+        "Ill": "ILL（リソース共有）可",
+        "VOL": "巻冊次等",
+        "CLN": "請求記号",
+        "RGTN": "登録番号",
+        "CPYR": "刷の出版年",
+        "CPYNT": "刷の注記",
+        "LDF": "図書館定義フィールド",
+        "LTR": "ローカルトレーシング",
+        "HLV": "所蔵巻次データ",
+        "CONT": "受入継続表示",
+        "HLYR": "所蔵年次データ"
+      },
+      "Errors": {
+        "Id": "所蔵IDの入力は必須です。",
+        "SaveFailed": "所蔵の保存ができませんでした。",
+        "HLYR": "所蔵年次データの入力は必須です。",
+        "HLV": "所蔵巻次データの入力は必須です",
+        "LOC": "配置コードの入力は必須です"
+      }
     }
   },
+
   "Config": {
     "Title": "設定",
     "Success": "設定が保存されました.",
@@ -169,12 +157,9 @@
       "Code": "NACSISのコード"
     }
   },
+
   "Help": {
     "Text": "このアプリはEx Librisでサポートされています。 ドキュメントを表示するには、下のリンクをクリックしてください。 さらにヘルプが必要な場合や問題を報告するには、SalesForceケースを開いてください。",
     "OLH": "オンラインヘルプへ" 
-  },
-  "Back": "戻る",
-  "Cancel": "キャンセル",
-  "Save": "保存",
-  "OK": "OK"
+  }
 }

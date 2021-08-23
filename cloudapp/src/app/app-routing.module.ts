@@ -6,7 +6,7 @@ import { FormComponent } from './holdings/form/form.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { HelpComponent } from './holdings/help/help.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
-import { CatalogSearchFormComponent } from './catalog/search-form/search-form.component';
+import { CatalogMainComponent } from './catalog/main/main.component';
 
 const routes: Routes = [
   { path: '', component: MainMenuComponent },
@@ -17,7 +17,7 @@ const routes: Routes = [
   { path: 'holdings/:mmsId/new/:mmsTitle', component: FormComponent },
   { path: 'holdings/:mmsId/view/:holdingId/:mmsTitle', component: FormComponent },
   { path: 'help', component: HelpComponent },
-  { path: 'catalog', component: CatalogSearchFormComponent },
+  { path: 'catalog', component: CatalogMainComponent }
 ];
 
 @NgModule({

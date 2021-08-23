@@ -1,5 +1,19 @@
 {
+  "General": {
+    "Back": "Back",
+    "BackToMenu": "Back to menu",
+    "Cancel": "Cancel",
+    "Save": "Save",
+    "OK": "OK",
+    "Clear": "Clear",
+    "Search": "Search",
+    "Errors": {
+      "generalError": "App general error"
+    }
+  },
+
   "MainMenu": {
+    "Intro": "This app includes all functionalities within NACSIS-CAT/ILL",
     "Holdings": {
       "Title": "Holdings",
       "Text": "NACSIS holding information management"
@@ -7,6 +21,14 @@
     "Catalog": {
       "Title": "Catalog",
       "Text": "Search and Copy cataloging NACSIS Bib/Auth records"
+    },
+    "ILL": {
+      "Title": "ILL Borrowing Requests",
+      "Text": "NACSIS borrowing request creation"
+    },
+    "Members": {
+      "Title": "Members",
+      "Text": "NACSIS members information management"
     }
   },
 
@@ -16,81 +38,38 @@
       "RefineSearch": "Refine Search",
       "SelectSearchType": "Select search type",
       "SelectDatabase": "Select a database",
-      "Monographs": {
-        "MainTitle": "Monographs",
-        "Field": {
-          "TITLE": "TITLE",
-          "FTITLE": "FTITLE",
-          "PTBL": "PTBL",
-          "VOL": "VOL",
-          "TiPtVo": "TITLE / PTBL / VOL",
-          "AUTH": "AUTH",
-          "ISSN": "ISSN",
-          "ISBN": "ISBN",
-          "NBN": "NBN",
-          "NDLCN": "NDLCN / LCCN / OTHN",
-          "PUB": "PUB",
-          "YEAR": "YEAR",
-          "PLACE": "PLACE",
-          "CNTRY": "CNTRY",
-          "LANG": "LANG",
-          "SH": "SH",
-          "AKEY": "AKEY",
-          "ID": "ID",
-          "PID": "PID"
-        }
+      "EmptyForm": "The search form is empty. Please enter at least one value",
+      "SearchTypes": {
+        "Monographs": "Monographs",
+        "Serials": "Serials",
+        "Names": "Names",
+        "UniformTitles": "Uniform Titles"
       },
-      "Serials": {
-        "MainTitle": "Serials",
-        "Field": {
-          "TITLE": "TITLE",
-          "FTITLE": "FTITLE",
-          "AUTH": "AUTH",
-          "ISSN": "ISSN",
-          "CODEN": "CODEN",
-          "NDLPN": "NDLPN / LCCN",
-          "PUB": "PUB",
-          "YEAR": "YEAR",
-          "PLACE": "PLACE",
-          "CNTRY": "CNTRY",
-          "LANG": "LANG",
-          "SH": "SH",
-          "AKEY": "AKEY",
-          "ID": "ID",
-          "FID": "FID"
-        }
-      },
-      "Names": {
-        "MainTitle": "Names",
-        "Database": {
-          "All": "All",
-          "NAME": "NAME",
-          "JPMARCA": "JPMARCA",
-          "USMARCA": "USMARCA"
-        },
-        "Field": {
-          "AUTH": "AUTH",
-          "AKEY": "AKEY",
-          "PLACE": "PLACE",
-          "DATE": "DATE",
-          "ID": "ID",
-          "SAID": "SAID"
-        }
-      },
-      "UniformTitles": {
-        "MainTitle": "Uniform Titles",
-        "Database": {
-          "All": "All",
-          "TITLE": "TITLE",
-          "USMARCT": "USMARCT"
-        },
-        "Field": {
-          "TITLE": "TITLE",
-          "AUTH": "AUTH",
-          "AKEY": "AKEY",
-          "ID": "ID",
-          "SAID": "SAID"
-        }
+      "Fields": {
+        "TITLE": "TITLE",
+        "FTITLE": "FTITLE",
+        "PTBL": "PTBL",
+        "VOL": "VOL",
+        "TiPtVo": "TITLE / PTBL / VOL",
+        "AUTH": "AUTH",
+        "ISSN": "ISSN",
+        "ISBN": "ISBN",
+        "NBN": "NBN",
+        "NDLCN": "NDLCN / LCCN / OTHN",
+        "PUB": "PUB",
+        "YEAR": "YEAR",
+        "PLACE": "PLACE",
+        "CNTRY": "CNTRY",
+        "LANG": "LANG",
+        "SH": "SH",
+        "AKEY": "AKEY",
+        "ID": "ID",
+        "PID": "PID",
+        "CODEN": "CODEN",
+        "NDLPN": "NDLPN / LCCN",
+        "FID": "FID",
+        "DATE": "DATE",
+        "SAID": "SAID"
       }
     },
     "Results": {
@@ -110,70 +89,67 @@
     }
   },
 
-
-  "comment":"TODO: Holdings",
-
-  "Main": {
-    "Intro": "Select a record to retrieve NACSIS holdings:",
-    "NoRecords": "To view NACSIS holdings, navigate to a bibliographic record.",
-    "SelectBib": "Select a title",
-    "RetrieveHoldings": "Retrieve NACSIS Holdings"
-  },
-  "Errors": {
-    "generalError": "App general error"
-  },
   "Holdings": {
-    "Owner": "Owner",
-    "All": "All",
-    "Mine": "Mine",
-    "ID": "ID",
-    "Title": "Holdings",
-    "Library": "Library",
-    "Location": "Location",
-    "ConfirmDelete": "Are you sure you wish to delete this holding record?",
-    "DeleteTitle": "Delete Holding record",
-    "Deleted": "Record successfully deleted.",
-    "Add": "Add NACSIS Holding",
-    "NoHoldingRecordsExist": "No holding records exist.",
-    "DeleteYesButton": "Yes, delete it",
-    "DeleteNoButton": "No, keep it",
-    "Errors": {
-      "NoNoldings": "No holdings record were found",
-      "GetFailed": "Get holdings failed",
-      "DeleteFailed": "Delete holding failed"
-    }
-  },
-  "Form": {
-    "Title":"Title",
-    "EditTitle": "Edit holding",
-    "AddTitle": "Add holding",
-    "ViewTitle": "View holding",
-    "Success": "Holding successfully saved.",
-    "Fields": {
-      "Id": "ID",
-      "Description": "Description",
+    "Main": {
+      "Intro": "Select a record to retrieve NACSIS holdings:",
+      "NoRecords": "To view NACSIS holdings, navigate to a bibliographic record.",
+      "SelectBib": "Select a title",
+      "RetrieveHoldings": "Retrieve NACSIS Holdings"
+    },
+    "ViewHoldings": {
+      "Owner": "Owner",
+      "All": "All",
+      "Mine": "Mine",
+      "ID": "ID",
+      "Title": "Holdings",
       "Library": "Library",
       "Location": "Location",
-      "Ill": "Available for resource sharing",
-      "VOL": "VOL",
-      "CLN": "CLN",
-      "RGTN": "RGTN",
-      "CPYR": "CPYR",
-      "CPYNT": "CPYNT",
-      "LDF": "LDF",
-      "LTR": "LTR",
-      "HLV": "HLV",
-      "CONT": "CONT",
-      "HLYR": "HLYR"
+      "ConfirmDelete": "Are you sure you wish to delete this holding record?",
+      "DeleteTitle": "Delete Holding record",
+      "Deleted": "Record successfully deleted.",
+      "Add": "Add NACSIS Holding",
+      "NoHoldingRecordsExist": "No holding records exist.",
+      "DeleteYesButton": "Yes, delete it",
+      "DeleteNoButton": "No, keep it",
+      "Errors": {
+        "NoNoldings": "No holdings record were found",
+        "GetFailed": "Get holdings failed",
+        "DeleteFailed": "Delete holding failed"
+      }
     },
-    "Errors": {
-      "Id": "ID field is required",
-      "SaveFailed": "Save holding failed",
-      "HLYR": "HLYR field is required",
-      "HLV": "HLV field is required",
-      "LOC": "LOC field is required"
+    "Form": {
+      "Title":"Title",
+      "EditTitle": "Edit holding",
+      "AddTitle": "Add holding",
+      "ViewTitle": "View holding",
+      "Success": "Holding successfully saved.",
+      "Fields": {
+        "Id": "ID",
+        "Description": "Description",
+        "Library": "Library",
+        "Location": "Location",
+        "Ill": "Available for resource sharing",
+        "VOL": "VOL",
+        "CLN": "CLN",
+        "RGTN": "RGTN",
+        "CPYR": "CPYR",
+        "CPYNT": "CPYNT",
+        "LDF": "LDF",
+        "LTR": "LTR",
+        "HLV": "HLV",
+        "CONT": "CONT",
+        "HLYR": "HLYR"
+      },
+      "Errors": {
+        "Id": "ID field is required",
+        "SaveFailed": "Save holding failed",
+        "HLYR": "HLYR field is required",
+        "HLV": "HLV field is required",
+        "LOC": "LOC field is required"
+      }
     }
   },
+
   "Config": {
     "Title": "Configuration",
     "Success": "Configuration successfully saved.",
@@ -181,12 +157,37 @@
       "Code": "NACSIS Code"
     }
   },
+
   "Help": {
     "Text": "This app is supported by Ex Libris. To view the documentation, click the link below. For additional help or to report a problem, please open a SalesForce case.",
     "OLH": "To the online help"
   },
-  "Back": "Back",
-  "Cancel": "Cancel",
-  "Save": "Save",
-  "OK": "OK"
+
+  "Common": {
+    "Fields": {
+      "TITLE": "TITLE",
+      "FTITLE": "FTITLE",
+      "PTBL": "PTBL",
+      "VOL": "VOL",
+      "TiPtVo": "TITLE / PTBL / VOL",
+      "AUTH": "AUTH",
+      "ISSN": "ISSN",
+      "ISBN": "ISBN",
+      "NBN": "NBN",
+      "NDLCN": "NDLCN / LCCN / OTHN",
+      "PUB": "PUB",
+      "YEAR": "YEAR",
+      "PLACE": "PLACE",
+      "CNTRY": "CNTRY",
+      "LANG": "LANG",
+      "SH": "SH",
+      "AKEY": "AKEY",
+      "ID": "ID",
+      "PID": "PID",
+      "CODEN": "CODEN",
+      "NDLPN": "NDLPN / LCCN",
+      "FID": "FID"
+    }
+  }
+  
 }

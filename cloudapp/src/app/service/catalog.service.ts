@@ -5,14 +5,13 @@ import { BaseService, Header } from "./base.service";
 import { mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
-import { SearchType } from '../catalog/search-form/form-utils';
+import { SearchType } from '../catalog/main/form-utils';
 import { NacsisCatalogResults, ResultsHeader } from '../catalog/results-types/results-common';
 import { Monograph } from '../catalog/results-types/monographs';
 import { Serial } from '../catalog/results-types/serials';
 import { Name } from '../catalog/results-types/name';
 import { UniformTitle } from '../catalog/results-types/uniformTitle';
-
-
+import { AlmaApiService, IntegrationProfile } from './alma.api.service';
 
 @Injectable({
     providedIn: 'root'
@@ -21,12 +20,14 @@ export class CatalogService extends BaseService {
 
     private resultsHeader: ResultsHeader;
     private searchResultsMap: Map<SearchType, NacsisCatalogResults>;
+    private integrationProfile: string;
 
     public queryParams: string = "";
 
     constructor(
         protected eventsService: CloudAppEventsService,
-        protected http: HttpClient
+        protected http: HttpClient,
+        protected almaApi: AlmaApiService
       ) {
         super(eventsService, http);
         this.initResultsMap();
@@ -62,7 +63,7 @@ export class CatalogService extends BaseService {
     getSearchResultsFromNacsis(queryParams: string, searchType:SearchType){
 
         let fullUrl: string;
-        this.queryParams = this.addPaginationParams() + queryParams;
+        this.queryParams = queryParams;
         
         return this.getInitData().pipe(
             mergeMap(initData => {
@@ -74,7 +75,7 @@ export class CatalogService extends BaseService {
                 return this.http.get<any>(fullUrl, { headers })
             }),
             mergeMap(response => {
-                if (response.status === this.OkStatus) {
+                if (response.status === this.OkStatus && !this.isEmpty(response.records)) {
                     this.searchResultsMap.get(searchType).setHeader(response);
                     this.searchResultsMap.get(searchType).setResults(new Array());
                     response.records.forEach(record => {
@@ -103,10 +104,29 @@ export class CatalogService extends BaseService {
         }
     }
 
-    addPaginationParams(): string {
-        let fromIndex = 1;
-        let toIndex = 20;
-        return "fromIndex=" + fromIndex + "&toIndex=" + toIndex + "&";
+    importRecordToAlma(searchType: SearchType, rawData: string) {
+        return this.almaApi.getIntegrationProfile().pipe(                
+            mergeMap(integrationProfile => {
+                let integrationProfileID = this.integrationProfileFactory(searchType, integrationProfile);
+                let body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bib><record_format>catp</record_format><record>" + rawData + "</record></bib>";
+                return this.http.post<any>("/almaws/v1/bibs?import_profile="+integrationProfileID, body)
+            }),
+            mergeMap(response => {
+                return of(response);
+                // return of(response.warnings, response.mms_id);                    
+            })
+        ); 
+    }
+
+    integrationProfileFactory(searchType: SearchType, integrationProfile: IntegrationProfile) {
+        switch(searchType) {
+            case (SearchType.Monographs || SearchType.Serials):
+                return integrationProfile.repositoryImportProfile;
+            case (SearchType.Names):
+                return integrationProfile.authorityImportProfileNames;
+            case (SearchType.UniformTitles):
+                return integrationProfile.authorityImportProfileUniformTitles;
+        }
     }
 
 }

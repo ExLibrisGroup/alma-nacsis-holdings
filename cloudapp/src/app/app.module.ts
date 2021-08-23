@@ -18,8 +18,13 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {ConfirmationDialog} from './dialog/confirmation-dialog.component';
 import { HelpComponent } from './holdings/help/help.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
+import { CatalogMainComponent } from './catalog/main/main.component';
+import { SearchFormComponent } from './user-controls/search-form/search-form.component';
+import { ResultsListComponent } from './user-controls/results-list/results-list.component';
+import { ResultCardComponent } from './user-controls/result-card/result-card.component';
+import { FullviewDisplayComponent } from './catalog/full-view-display/full-view-display.component';
 
-import { CatalogSearchFormComponent } from './catalog/search-form/search-form.component';
+
 
 
 export function getToastrModule() {
@@ -40,7 +45,11 @@ export function getToastrModule() {
       ConfirmationDialog,
       HelpComponent,
       MainMenuComponent,
-      CatalogSearchFormComponent
+      CatalogMainComponent,
+      SearchFormComponent,
+      ResultsListComponent,
+      ResultCardComponent,
+      FullviewDisplayComponent
    ],
    entryComponents: [ConfirmationDialog],
    imports: [

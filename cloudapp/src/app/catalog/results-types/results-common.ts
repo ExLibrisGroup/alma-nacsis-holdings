@@ -1,4 +1,4 @@
-import { SearchType } from "../search-form/form-utils";
+import { SearchType } from "../main/form-utils";
 import { Header } from "../../service/base.service";
 
 export interface IDisplayLinesSummary {
@@ -61,7 +61,6 @@ export class NacsisCatalogResults {
 
 export class ResultsHeader extends Header {
     totalRecords: number;
-    numberOfRecords: number;
     searchType: SearchType;
 }
 

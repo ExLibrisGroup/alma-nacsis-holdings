@@ -1,0 +1,15 @@
+<h2 class="results-title">{{'Catalog.Results.Title' | translate}} ({{numOfResults}})</h2>
+  <mat-list role="list">
+    <mat-list-item class="result-list-item" role="listitem"
+    *ngFor="let record of resultsSummaryDisplay; index as i">
+      <result-card
+        [index]="i"
+        [record]="record"
+        [resultActionList]="resultActionList"
+        (onActionSelected)="onActionsClick($event)"
+        (onTitleSelected)="onTitleClick($event)">
+      </result-card>
+    </mat-list-item>
+  </mat-list>
+  <mat-paginator showFirstLastButtons [length]="numOfResults" [pageSize]="20" [hidePageSize]="true" (page)="onPageAction($event)">
+  </mat-paginator>

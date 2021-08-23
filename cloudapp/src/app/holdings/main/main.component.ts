@@ -1,8 +1,8 @@
-import { Subscription, of, forkJoin} from 'rxjs';
+import { Subscription, of, forkJoin } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CloudAppEventsService, Entity, EntityType, CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Router } from '@angular/router';
-import { HoldingsService} from '../../service/holdings.service';
+import { HoldingsService } from '../../service/holdings.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 
@@ -44,57 +44,60 @@ export class MainComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-  
-  sessionStorage.clear();
 
-  this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => {
+    sessionStorage.clear();
 
-    this.loading=true;
+    this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => {
 
-    this.almaApiService.getIntegrationProfile()
-      .subscribe(integrationProfile => this.integrationProfile = integrationProfile);
+      this.loading = true;
 
-    let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS);
-    let nacsisBibs: Entity[] = [];
+      this.almaApiService.getIntegrationProfile()
+        .subscribe(integrationProfile => {
 
-    forkJoin(rawBibs.map(entity => this.getRecord(entity)))
-      .subscribe({
-        next: (records: any[])=>{
+          this.integrationProfile = integrationProfile;
 
-          let index: number=0;
+          let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS);
+          let nacsisBibs: Entity[] = [];
 
-          records.forEach(record=>{
-            console.log(record);
-            let nacsisId = this.almaApiService.extractNacsisId(record.anies, this.integrationProfile.systemNumberPrefix); 
-            if(nacsisId != null) {
-              // tweak: override mmsId by nacsisId
-              let nacsisBib = rawBibs[index];
-              nacsisBib.id = nacsisId;
-              nacsisBibs.push(nacsisBib);
-            }
-            index++;
-          })
-        },
-        error: e => {
-          this.loading = false;
-          console.log(e.message);
-          //this.alert.error(e.message, {keepAfterRouteChange:true});
-        },
-        complete: () => {
-          this.loading=false; 
-          this.bibs = nacsisBibs;
-        }
-      });
+          forkJoin(rawBibs.map(entity => this.getRecord(entity)))
+            .subscribe({
+              next: (records: any[]) => {
+
+                let index: number = 0;
+
+                records.forEach(record => {
+                  // console.log(record);
+                  let nacsisId = this.almaApiService.extractNacsisId(record.anies, this.integrationProfile.libraryCode);
+                  if (nacsisId != null) {
+                    // tweak: override mmsId by nacsisId
+                    let nacsisBib = rawBibs[index];
+                    nacsisBib.id = nacsisId;
+                    nacsisBibs.push(nacsisBib);
+                  }
+                  index++;
+                })
+              },
+              error: e => {
+                this.loading = false;
+                console.log(e.message);
+                //this.alert.error(e.message, {keepAfterRouteChange:true});
+              },
+              complete: () => {
+                this.loading = false;
+                this.bibs = nacsisBibs;
+              }
+            });
+        });
     });
 
   }
   ngOnDestroy(): void {
     this.pageLoad$.unsubscribe();
   }
-  
+
   getRecord(entity: Entity) {
     return this.restService.call(entity.link).pipe(
-      tap(()=>this.processed++),
+      tap(() => this.processed++),
       catchError(e => of(e)),
     )
   }
@@ -106,26 +109,26 @@ export class MainComponent implements OnInit, OnDestroy {
       try {
         let bib = this.bibs.filter(bib => bib.id == this.selected);
         this.nacsis.getHoldingsFromNacsis(this.selected, "Mine")
-        .subscribe({
-          next: (header) => {
-            if (header.status === this.nacsis.OkStatus) {
-              sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.HoldingsMainPage);
-              this.router.navigate(['/holdings', this.selected, bib[0].description]);
-            } else {
-                this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
-            }
-          },
-          error: e => {
-            this.loading = false;
-            console.log(e.message);
-            this.alert.error(e.message, {keepAfterRouteChange:true});
-          },
-          complete: () => this.loading = false
-        });
+          .subscribe({
+            next: (header) => {
+              if (header.status === this.nacsis.OkStatus) {
+                sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.HoldingsMainPage);
+                this.router.navigate(['/holdings', this.selected, bib[0].description]);
+              } else {
+                this.alert.error(header.errorMessage, { keepAfterRouteChange: true });
+              }
+            },
+            error: e => {
+              this.loading = false;
+              console.log(e.message);
+              this.alert.error(e.message, { keepAfterRouteChange: true });
+            },
+            complete: () => this.loading = false
+          });
       } catch (e) {
         this.loading = false;
         console.log(e);
-        this.alert.error(this.translate.instant('Errors.generalError'), {keepAfterRouteChange:true});  
+        this.alert.error(this.translate.instant('General.Errors.generalError'), { keepAfterRouteChange: true });
       }
     }
   }

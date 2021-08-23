@@ -4,11 +4,11 @@
     <a [routerLink]="backSession">
       <button mat-flat-button color="secondary">
         <mat-icon>arrow_back_ios</mat-icon>
-        {{'Back' | translate}}
+        {{'General.Back' | translate}}
       </button>
     </a>
     <button mat-flat-button color="primary" [routerLink]="['/holdings', mmsId, 'new', mmsTitle]">
-      <mat-icon>add</mat-icon> {{ 'Holdings.Add' | translate }}
+      <mat-icon>add</mat-icon> {{ 'Holdings.ViewHoldings.Add' | translate }}
     </button>
   </div>
 
@@ -17,7 +17,7 @@
 
     <div class="holdings-drop-down">
       <mat-form-field class="holdings-mat-drop-down">
-        <mat-placeholder>{{'Holdings.Owner' | translate}}</mat-placeholder>
+        <mat-placeholder>{{'Holdings.ViewHoldings.Owner' | translate}}</mat-placeholder>
         <mat-select [(value)]="selected" (selectionChange)=onOwnerSelected()>
           <mat-option *ngFor="let owner of owners" [value]="owner.id">
             {{owner.name}}
@@ -26,7 +26,7 @@
       </mat-form-field>
     </div>
     <div *ngIf="isHoldingRecordsExist()" class="title">
-      <h2>{{'Holdings.Title' | translate}} ({{getNumOfRecords()}})</h2>
+      <h2>{{'Holdings.ViewHoldings.Title' | translate}} ({{getNumOfRecords()}})</h2>
     </div>
 
     <div class="loading-shade" *ngIf="loading">
@@ -45,13 +45,13 @@
             </div>
             <mat-card-title>
               <a [routerLink]="['/holdings', mmsId, 'view', holding.ID, mmsTitle]">
-                {{'Holdings.ID' | translate}}: {{holding.ID}}
+                {{'Holdings.ViewHoldings.ID' | translate}}: {{holding.ID}}
               </a>
             </mat-card-title>
           </div>
           <mat-card-content class="holding-card-content">
-            <span><strong>{{'Holdings.Library' | translate}}: {{holding.libraryFullName}}</strong></span>
-            <span><strong>{{'Holdings.Location' | translate}}: {{holding.LOC}}</strong></span>
+            <span><strong>{{'Holdings.ViewHoldings.Library' | translate}}: {{holding.libraryFullName}}</strong></span>
+            <span><strong>{{'Holdings.ViewHoldings.Location' | translate}}: {{holding.LOC}}</strong></span>
             <span><strong>{{holding.info}}</strong></span>
           </mat-card-content>
           <mat-card-actions class="holding-card-actions" *ngIf="holding.editable">
@@ -68,7 +68,7 @@
   <ng-template #emptyList>
     <div id="emptyList">
       <span class="uxf-icon uxf-list" style="font-size: 3em;"></span>
-      <h2>{{'Holdings.NoHoldingRecordsExist' | translate}}</h2>
+      <h2>{{'Holdings.ViewHoldings.NoHoldingRecordsExist' | translate}}</h2>
     </div>
   </ng-template>
 
