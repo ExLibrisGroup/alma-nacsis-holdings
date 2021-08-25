@@ -14,6 +14,7 @@ import { NameSummaryDisplay, NameFullDisplay } from '../results-types/name';
 import { UniformTitleFullDisplay, UniformTitleSummaryDisplay } from '../results-types/uniformTitle';
 import { HoldingsService } from '../../service/holdings.service';
 import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
+import { RecordSelection } from '../../user-controls/result-card/result-card.component';
 
 
 
@@ -224,17 +225,18 @@ export class CatalogMainComponent implements AfterViewInit {
         }
     }
 
-    onActionsClick(selection) {
-        switch (selection[0]) {
+    onActionsClick(selection: RecordSelection) {
+        let record = this.resultsSummaryDisplay[selection.recordIndex];
+        switch (selection.actionIndex) {
             case 0: // Full view
                 this.currentResulsTmpl = this.fullRecordTmpl;
-                this.resultFullDisplay = this.fullDisplayFactory(selection[1].getFullRecordData()).initContentDisplay();
+                this.resultFullDisplay = this.fullDisplayFactory(record.getFullRecordData()).initContentDisplay();
                 break;
             case 1: // Import the record
-                this.onImportRecord(selection[1].getFullRecordData().getRawData());
+                this.onImportRecord(record.getFullRecordData().getRawData());
                 break;
             case 2: // View Holdings
-                this.onViewHoldings(selection[1].getFullRecordData().getID(), selection[1].getDisplayTitle());
+                this.onViewHoldings(record.getFullRecordData().getID(), record.getDisplayTitle());
                 break;
             default: {
                 this.currentResulsTmpl = this.noResultsTmpl;
@@ -243,10 +245,11 @@ export class CatalogMainComponent implements AfterViewInit {
         
     }
     
-    onTitleClick(result: IDisplayLinesSummary) {
+    onTitleClick(recordIndex: number) {
         // Opening the full view 
+        let record = this.resultsSummaryDisplay[recordIndex];
         this.currentResulsTmpl = this.fullRecordTmpl;
-        this.resultFullDisplay = this.fullDisplayFactory(result.getFullRecordData()).initContentDisplay();
+        this.resultFullDisplay = this.fullDisplayFactory(record.getFullRecordData()).initContentDisplay();
     }
 
 

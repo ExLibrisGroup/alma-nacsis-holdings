@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { IDisplayLinesSummary } from '../../catalog/results-types/results-common';
+import { RecordSelection } from '../result-card/result-card.component';
 
 
 @Component({
@@ -14,19 +15,19 @@ export class ResultsListComponent {
   @Input() numOfResults: number;
   @Input() resultsSummaryDisplay: Array<IDisplayLinesSummary> = new Array();
   @Input() resultActionList: Array<string> = new Array();
-  @Output() onActionSelected = new EventEmitter<[number, IDisplayLinesSummary]>();  
-  @Output() onTitleSelected = new EventEmitter<IDisplayLinesSummary>();  
+  @Output() onActionSelected = new EventEmitter<RecordSelection>();  
+  @Output() onTitleSelected = new EventEmitter<number>();  
   @Output() onPageSelected = new EventEmitter<PageEvent>();  
 
 
   constructor() { }
 
-  onActionsClick(selection: any) {
+  onActionsClick(selection: RecordSelection) {
     this.onActionSelected.emit(selection);
   }
 
-  onTitleClick(result: IDisplayLinesSummary) {
-    this.onTitleSelected.emit(result);
+  onTitleClick(recordIndex: number) {
+    this.onTitleSelected.emit(recordIndex);
   }
 
   onPageAction(pageEvent: PageEvent) {

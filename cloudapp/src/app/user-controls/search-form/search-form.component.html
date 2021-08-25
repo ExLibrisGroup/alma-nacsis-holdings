@@ -1,6 +1,6 @@
 <mat-form-field>
   <mat-label>{{'Catalog.Form.SelectDatabase' | translate}}</mat-label>
-  <mat-select (selectionChange)="selectDatabase($event)" [(value)]="firstDatabase">
+  <mat-select (selectionChange)="selectDatabase($event)" [(value)]="defaultDatabase"> 
     <mat-option *ngFor="let database of databasesList" value="{{database}}">
       {{ database }}
     </mat-option>

@@ -108,7 +108,7 @@ export class CatalogService extends BaseService {
         return this.almaApi.getIntegrationProfile().pipe(                
             mergeMap(integrationProfile => {
                 let integrationProfileID = this.integrationProfileFactory(searchType, integrationProfile);
-                let body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bib><record_format>catp</record_format><record>" + rawData + "</record></bib>";
+                let body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bib><record_format>catp</record_format><record><![CDATA[" + rawData + "]]></record></bib>";
                 return this.http.post<any>("/almaws/v1/bibs?import_profile="+integrationProfileID, body)
             }),
             mergeMap(response => {

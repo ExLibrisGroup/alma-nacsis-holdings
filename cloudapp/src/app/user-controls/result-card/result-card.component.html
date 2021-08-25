@@ -2,9 +2,9 @@
     <div class="result-card-data">
       <mat-card-title fxLayout="row">
         <div class="result-card-index">
-          <span><strong>{{index + 1}}</strong></span>
+          <span><strong>{{recordIndex + 1}}</strong></span>
         </div>
-        <a (click)="onTitleClick(record)">
+        <a (click)="onTitleClick(recordIndex)">
           {{record.getDisplayTitle()}}
         </a>
       </mat-card-title>
@@ -18,8 +18,8 @@
         <mat-icon>more_horiz</mat-icon>
       </button>
       <mat-menu #actionsMenu="matMenu">
-        <div *ngFor="let item of resultActionList; index as index">
-          <button mat-menu-item type="submit" (click)="onActionsClick(index, record)">
+        <div *ngFor="let item of resultActionList; index as Actionsindex">
+          <button mat-menu-item type="submit" (click)="onActionsClick(recordIndex, Actionsindex)">
             {{ item | translate }}
           </button>
         </div>

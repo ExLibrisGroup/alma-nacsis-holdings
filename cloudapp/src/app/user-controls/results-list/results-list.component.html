@@ -3,7 +3,7 @@
     <mat-list-item class="result-list-item" role="listitem"
     *ngFor="let record of resultsSummaryDisplay; index as i">
       <result-card
-        [index]="i"
+        [recordIndex]="i"
         [record]="record"
         [resultActionList]="resultActionList"
         (onActionSelected)="onActionsClick($event)"

@@ -11,26 +11,32 @@ import { IDisplayLinesSummary } from '../../catalog/results-types/results-common
 
 export class ResultCardComponent {
 
-  @Input() index: number;
+  @Input() recordIndex: number;
   @Input() record: IDisplayLinesSummary;
   @Input() resultActionList: Array<string> = new Array();
-  @Output() onActionSelected = new EventEmitter<[number, IDisplayLinesSummary]>();  
-  @Output() onTitleSelected = new EventEmitter<IDisplayLinesSummary>();  
+  @Output() onActionSelected = new EventEmitter<RecordSelection>();  
+  @Output() onTitleSelected = new EventEmitter<number>();  
 
 
   constructor() { }
 
-  onActionsClick(actionIndex: number, record: IDisplayLinesSummary) {
-    this.onActionSelected.emit([actionIndex, record]);
+  onActionsClick(recordIndex: number, actionIndex: number) {
+    this.onActionSelected.emit(new RecordSelection(recordIndex, actionIndex));
   }
 
-  onTitleClick(record: IDisplayLinesSummary) {
-    this.onTitleSelected.emit(record);
+  onTitleClick(recordIndex: number) {
+    this.onTitleSelected.emit(recordIndex);
   }
-
-
-
-    
+  
 }
+
+
+export class RecordSelection {
+  constructor (
+    public recordIndex: number,
+    public actionIndex: number
+  ) { }
+}
+
 
 
