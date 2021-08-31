@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
 
-import { IDisplayLinesSummary, NacsisCatalogResults, BaseResult, IDisplayLinesFull } from '../results-types/results-common'
+import { NacsisCatalogResults, BaseResult, IDisplayLines } from '../results-types/results-common'
 import { MonographSummaryDisplay, MonographFullDisplay } from '../results-types/monographs'
 import { SerialSummaryDisplay, SerialFullDisplay } from '../results-types/serials';
 import { NameSummaryDisplay, NameFullDisplay } from '../results-types/name';
@@ -15,6 +15,7 @@ import { UniformTitleFullDisplay, UniformTitleSummaryDisplay } from '../results-
 import { HoldingsService } from '../../service/holdings.service';
 import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
 import { RecordSelection } from '../../user-controls/result-card/result-card.component';
+import { FullViewLink } from '../full-view-display/full-view-display.component';
 
 
 
@@ -49,17 +50,20 @@ export class CatalogMainComponent implements AfterViewInit {
     // UI variables
     private panelState: boolean = true;
     private loading: boolean = false;
+    isRightTableOpen: boolean = false;
+    isColapsedMode: boolean = true;
 
-    // Data variables
+    // Search variables
     private urlParams: string = "";
     private catalogResultsData: NacsisCatalogResults;
     private numOfResults: number;
-    private resultsSummaryDisplay: Array<IDisplayLinesSummary>;
+    private pageIndex: number = 0;
+    private pageSize: number = 20;
+
+    // Display variables
+    private resultsSummaryDisplay: Array<IDisplayLines>;
     private resultFullDisplay;
-    private fromIndex: number = 1;
-    private toIndex: number = 20;
-
-
+    private resultFullLinkDisplay;
 
     // Templates
     @ViewChild('notSearched') notSearchedTmpl:TemplateRef<any>;
@@ -67,9 +71,6 @@ export class CatalogMainComponent implements AfterViewInit {
     @ViewChild('noResults') noResultsTmpl:TemplateRef<any>;
     @ViewChild('fullRecord') fullRecordTmpl:TemplateRef<any>;
     private currentResulsTmpl: TemplateRef<any>;
-
-    isRightTableOpen: boolean = false;
-    isColapsedMode: boolean = true;
 
 
     constructor(
@@ -90,7 +91,7 @@ export class CatalogMainComponent implements AfterViewInit {
     }
 
     
-    // Search Form Section
+    /***  Search Form Section  ***/
 
     getSearchTypesLabels(): Array<string>{
         let searchTypeMap = new Array(); 
@@ -112,17 +113,6 @@ export class CatalogMainComponent implements AfterViewInit {
         return this.allFieldsMap.get(this.currentSearchType);
     }
 
-    onTabChange(event: MatTabChangeEvent){
-        this.currentSearchType =  this.SEARCH_TYPE_ARRAY[event.index];
-        this.currentDatabase = this.getCurrentDatabases()[0];
-        if(this.catalogService.getSearchResults(this.currentSearchType).getResults() != null){
-            this.setSearchResultsDisplay();
-        } else {
-            this.currentResulsTmpl = this.notSearchedTmpl;
-            this.panelState = true;
-        }
-    }
-
     clear() {
         this.allFieldsMap.get(this.currentSearchType).forEach(searchField => {
             searchField.getFormControl().setValue(null)
@@ -137,47 +127,66 @@ export class CatalogMainComponent implements AfterViewInit {
         this.panelState = false;
     }
 
-    generateUrl() {
+    onTabChange(event: MatTabChangeEvent){
+        this.currentSearchType =  this.SEARCH_TYPE_ARRAY[event.index];
+        this.currentDatabase = this.getCurrentDatabases()[0];
+        if(this.catalogService.getSearchResults(this.currentSearchType).getResults() != null){
+            this.setSearchResultsDisplay();
+            this.resultsTemplateFactory();
+        } else {
+            this.currentResulsTmpl = this.notSearchedTmpl;
+            this.panelState = true;
+        }
+        this.isRightTableOpen = false;
+    }    
+
+    search() {
+        // Generating the URL by the fields' Form Control
         this.urlParams = "";
-        this.urlParams = this.urlParams + this.getPaginationIndex();
-        this.urlParams = this.urlParams + "&" + QueryParams.searchType + "=" + this.currentSearchType;
-        this.urlParams =  this.urlParams + "&" + QueryParams.databases + "=" + this.currentDatabase;
         let valuableFields = this.allFieldsMap.get(this.currentSearchType).filter(field => field.getFormControl().value !== null);
         if (valuableFields.length > 0){
+            this.urlParams = this.urlParams + this.getPaginationIndex();
+            this.urlParams = this.urlParams + "&" + QueryParams.SearchType + "=" + this.currentSearchType;
+            this.urlParams =  this.urlParams + "&" + QueryParams.Databases + "=" + this.currentDatabase;
             valuableFields.forEach(field => {
                     this.urlParams =  this.urlParams + "&" + field.getKey();
                     this.urlParams =  this.urlParams + "=" + field.getFormControl().value;
             });
+            this.getResultsFromNacsis(false);
         } else {
-            this.urlParams = "";
+           return;
         }
     } 
     
-
-
-    search() {
-        this.generateUrl();
-        if(this.urlParams == ""){
-            this.alert.error(this.translate.instant('Catalog.Form.EmptyForm'), {keepAfterRouteChange:true});
-            return;
-        }
-
+    // Calling Nacsis servlet
+    getResultsFromNacsis(isFullViewLink: boolean) {
         this.loading = true;
         try{
             this.catalogService.getSearchResultsFromNacsis(this.urlParams, this.currentSearchType)
             .subscribe({
                 next: (catalogResults) => {
                     if (catalogResults.status === this.catalogService.OkStatus) {
-                        this.setSearchResultsDisplay();
+                        if(!isFullViewLink) {
+                            if (catalogResults.totalRecords >= 1) {
+                                this.catalogService.setSearchResultsMap(this.currentSearchType, catalogResults)
+                                this.setSearchResultsDisplay();
+                            } else {
+                                this.numOfResults = 0;
+                            }
+                            this.resultsTemplateFactory();
+                        } else {
+                            let baseResult = this.catalogService.resultsTypeFactory(this.currentSearchType, catalogResults.records[0]);
+                            this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
+                        }
                     } else {
                         this.alert.error(catalogResults.errorMessage, {keepAfterRouteChange:true});  
                     } },
-                  error: e => {
+                error: e => {
                     this.loading = false;
                     console.log(e.message);
                     this.alert.error(e.message, {keepAfterRouteChange:true});
-                  },
-                  complete: () => this.loading = false
+                },
+                complete: () => this.loading = false
             });
         } catch (e) {
             this.loading = false;
@@ -186,35 +195,6 @@ export class CatalogMainComponent implements AfterViewInit {
         }
     }
 
-
-    // Summary View Section
-
-    private setSearchResultsDisplay(){
-        this.catalogResultsData = this.catalogService.getSearchResults(this.currentSearchType);
-        this.numOfResults = this.catalogResultsData.getHeader().totalRecords;
-        this.resultsSummaryDisplay = new Array();
-        this.catalogResultsData.getResults()?.forEach(result=>{
-            this.resultsSummaryDisplay.push(this.summaryDisplayFactory(this.translate, result));
-        });    
-        this.resultsTemplateFactory();
-        this.panelState = false;
-    }
-
-    summaryDisplayFactory(translate: TranslateService, record: BaseResult){
-        switch (this.currentSearchType) {
-            case SearchType.Monographs:
-                return new MonographSummaryDisplay(translate, record);
-            case SearchType.Serials:
-                return new SerialSummaryDisplay(translate, record);
-            case SearchType.Names:
-                return new NameSummaryDisplay(translate, record);
-            case SearchType.UniformTitles:
-                return new UniformTitleSummaryDisplay(translate, record);
-            default:
-                return null;
-        }
-    }
-    
     resultsTemplateFactory() {
         if(this.numOfResults > 0){
             this.currentResulsTmpl = this.searchResultsTmpl;
@@ -225,18 +205,31 @@ export class CatalogMainComponent implements AfterViewInit {
         }
     }
 
+
+    /***  Summary View Section  ***/
+
+    private setSearchResultsDisplay(){
+        this.catalogResultsData = this.catalogService.getSearchResults(this.currentSearchType);
+        this.numOfResults = this.catalogResultsData.getHeader().totalRecords;
+        this.resultsSummaryDisplay = new Array();
+        this.catalogResultsData.getResults()?.forEach(result=>{
+            this.resultsSummaryDisplay.push(result.getSummaryDisplay());
+        });    
+        this.panelState = false;
+    }
+
     onActionsClick(selection: RecordSelection) {
         let record = this.resultsSummaryDisplay[selection.recordIndex];
         switch (selection.actionIndex) {
             case 0: // Full view
                 this.currentResulsTmpl = this.fullRecordTmpl;
-                this.resultFullDisplay = this.fullDisplayFactory(record.getFullRecordData()).initContentDisplay();
+                this.resultFullDisplay = record.getFullRecordData().getFullViewDisplay().initContentDisplay();
                 break;
             case 1: // Import the record
                 this.onImportRecord(record.getFullRecordData().getRawData());
                 break;
             case 2: // View Holdings
-                this.onViewHoldings(record.getFullRecordData().getID(), record.getDisplayTitle());
+                this.onViewHoldings(record.getFullRecordData().getID(), record.initTitleDisplay().toString());
                 break;
             default: {
                 this.currentResulsTmpl = this.noResultsTmpl;
@@ -246,42 +239,36 @@ export class CatalogMainComponent implements AfterViewInit {
     }
     
     onTitleClick(recordIndex: number) {
-        // Opening the full view 
+        // Clicking on title will open the full view 
         let record = this.resultsSummaryDisplay[recordIndex];
         this.currentResulsTmpl = this.fullRecordTmpl;
-        this.resultFullDisplay = this.fullDisplayFactory(record.getFullRecordData()).initContentDisplay();
+        this.resultFullDisplay = record.getFullRecordData().getFullViewDisplay().initContentDisplay();
     }
 
 
-    // Full View Section
-
-    fullDisplayFactory(record: BaseResult){
-        switch (this.currentSearchType) {
-            case SearchType.Monographs:
-                return new MonographFullDisplay(record.getFullView());
-             case SearchType.Serials:
-                return new SerialFullDisplay(record.getFullView());
-            case SearchType.Names:
-                return new NameFullDisplay(record.getFullView());
-            case SearchType.UniformTitles:
-                return new UniformTitleFullDisplay(record.getFullView());
-            default:
-                return null;
-        }
-    }
+    /***  Full View Section   ***/
 
     onBackFromFullView() {
         this.currentResulsTmpl = this.searchResultsTmpl;
         this.isRightTableOpen = false;
     }
     
-    onFullViewLink(searchType?: string) {
+    onFullViewLink(fullViewLink: FullViewLink) {
+        this.urlParams = "";
+        this.urlParams = this.urlParams + this.getPaginationIndex();
+        this.urlParams = this.urlParams + "&" + QueryParams.SearchType + "=" + fullViewLink.searchType;
+        this.urlParams =  this.urlParams + "&" + QueryParams.Databases + "=" + this.ALL_DATABASES_MAP.get(fullViewLink.searchType)[0];
+        this.urlParams =  this.urlParams + "&" + QueryParams.ID + "=" + fullViewLink.linkID;
+        
+        this.getResultsFromNacsis(true);
         this.isRightTableOpen = true;
         this.isColapsedMode = (window.innerWidth <= 600) ? true : false;
+
     }
 
     onFullViewLinkClose() {
         this.isRightTableOpen = false;
+        this.resultFullLinkDisplay = null;
     }
 
     onResize(event) {
@@ -289,11 +276,10 @@ export class CatalogMainComponent implements AfterViewInit {
     }
     
 
-    // View Holdings
+    /***   View Holdings   ***/
 
     onViewHoldings(nacsisId: string, title: string) {
         this.loading = true;
-        title = "Harry Potter"
         try {
             this.holdingsService.getHoldingsFromNacsis(nacsisId, "Mine")
             .subscribe({
@@ -319,15 +305,16 @@ export class CatalogMainComponent implements AfterViewInit {
         }
     }
 
-    // Import
+    /***   Import   ***/
 
     onImportRecord(rawData: string) {
         this.loading = true;
         try {
             this.catalogService.importRecordToAlma(this.currentSearchType, rawData)
             .subscribe({
-                next: (warnings) => {
-                    let x = 7;
+                next: (importedRecord) => {
+                    let mmsIdText = " (" + importedRecord.mms_id + ")";
+                    this.alert.success(this.translate.instant('Catalog.Results.ImportSucceeded') + mmsIdText, {autoClose: false, keepAfterRouteChange:true});  
                 },
                 error: e => {
                     this.loading = false;
@@ -344,15 +331,15 @@ export class CatalogMainComponent implements AfterViewInit {
     }
 
 
-    // Pagination
+    /***   Pagination    ***/
     
     getPaginationIndex() {
-        return QueryParams.fromIndex + "=" + this.fromIndex + "&" + QueryParams.toIndex + "=" + this.toIndex;
+        return QueryParams.PageIndex + "=" + this.pageIndex + "&" + QueryParams.PageSize + "=" + this.pageSize;
     }
     
     onPageAction(pageEvent: PageEvent) {
-        this.fromIndex = (pageEvent.pageIndex*20) + 1;
-        this.toIndex = (pageEvent.pageIndex+1) * 20;
+        this.pageIndex = pageEvent.pageIndex;
+        this.pageSize = pageEvent.pageSize;
         this.search();
     }
 

@@ -15,6 +15,7 @@
 .full-view-line-header {
   font-weight: bold;
   padding-right: 15px;
+  padding-left: 5px;
 }
 
 .full-view-line-content {
@@ -22,14 +23,14 @@
   flex-wrap: wrap;
 }
 
-.full-view-line-field-label {
-  font-weight: bold;
-  padding-right: 5px;
-}
-
 .full-view-line-field {
   display: flex;
   padding-right: 10px;
+}
+
+.full-view-line-field-label {
+  font-weight: bold;
+  padding-right: 5px;
 }
 
 a,

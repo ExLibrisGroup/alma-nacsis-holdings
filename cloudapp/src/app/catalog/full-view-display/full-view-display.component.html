@@ -8,7 +8,7 @@
         <div class="full-view-line-field-label" *ngIf="field.hasLabel()">
           {{field.getLabel()}}
         </div>
-        <a *ngIf="field.isLinkable() else noLink" (click)="onFullViewLink()">
+        <a *ngIf="field.isLinkable() else noLink" (click)="onFullViewLink(field.getLink(), field.getContent())">
           {{field.getContent()}}
         </a>
         <ng-template #noLink>

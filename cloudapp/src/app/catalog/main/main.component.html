@@ -56,6 +56,7 @@
     <span class="uxf-icon uxf-list" style="font-size: 3em;"></span>
     <h2>{{'Catalog.Results.NoRecordsExist' | translate}}</h2>
   </div>
+  <br><br><br>
 </ng-template>
 
 
@@ -79,7 +80,7 @@
       <button class="close-button" (click)="onFullViewLinkClose()">
         <i class="uxf-icon uxf-close eca-button" aria-label="Delete" (click)="delete(i)"></i>
       </button>
-      <full-view-display [resultFullDisplay]="resultFullDisplay" (onFullViewLinkSelected)="onFullViewLink($event)">
+      <full-view-display [resultFullDisplay]="resultFullLinkDisplay">
       </full-view-display>
     </div>
   </div>

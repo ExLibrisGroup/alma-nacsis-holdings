@@ -11,5 +11,5 @@
       </result-card>
     </mat-list-item>
   </mat-list>
-  <mat-paginator showFirstLastButtons [length]="numOfResults" [pageSize]="20" [hidePageSize]="true" (page)="onPageAction($event)">
+  <mat-paginator showFirstLastButtons [length]="numOfResults" [pageSize]="20" [pageSizeOptions]="[20,50,100]" (page)="onPageAction($event)">
   </mat-paginator>

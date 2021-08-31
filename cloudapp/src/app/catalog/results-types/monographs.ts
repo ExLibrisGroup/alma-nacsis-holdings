@@ -1,25 +1,39 @@
 import { TranslateService } from '@ngx-translate/core';
-import { IDisplayLinesSummary, BaseResult, FullViewField, IDisplayLinesFull, FullViewLine, FieldBuilder } from './results-common';
+import { IDisplayLines, BaseResult, ViewField, ViewLine, ViewFieldBuilder, BLANK_SPACE } from './results-common';
+import { SearchType } from '../main/form-utils';
 
 
 export class Monograph extends BaseResult{
     summaryView: MonographSummary;
     fullView : MonographFull;
     
-    constructor(record: any){
-        super(record);
+    constructor(record: any, translate: TranslateService){
+        super(record, translate);
+    }
+
+    getSummaryDisplay() {
+        return new MonographSummaryDisplay(this.translate, this);
+    }
+
+    getFullViewDisplay() {
+        return new MonographFullDisplay(this);
     }
 }
 
 export class MonographSummary{
-    TITLE: string = "";
-    AUTH: string = "";
+    TRD: string = "";
+    AL: MonographAL[];
     PUBL: string = "";
-    LANG: string = "";
-    YEAR: string = "";
+    TTLL: string = "";
+    YEAR1: string = "";
+    YEAR2: string = "";
+    TRR: string = "";
+    TRVR: string = "";
     ID: string = "";
     ISBN: string = "";
-    SH: string = "";
+    hasMoreThen1ISBN: boolean;
+    SH: MonographSH[];
+    hasMoreThen3SH: Boolean;
 }
 
 export class MonographFull{
@@ -37,7 +51,8 @@ export class MonographFull{
     OTHN: string = "";
     GMD: string = "";
     SMD: string = "";
-    YEAR: string = "";
+    YEAR1: string = "";
+    YEAR2: string = "";
     CNTRY: string = "";
     TTLL: string = "";
     TXTL: string = "";
@@ -74,6 +89,7 @@ export class MonographVOLG{
 export class MonographPUB{
     PUBP: string = "";
     PUBL: string = "";
+    PUBDT: string = "";
 }
 
 export class MonographVT{
@@ -138,174 +154,214 @@ export class MonographIDENT{
     IDENT: string = "";
 }
 
-export class MonographSummaryDisplay implements IDisplayLinesSummary{
-    private fullRecordData: Monograph;
+export class MonographSummaryDisplay extends IDisplayLines{
     private record: MonographSummary;
 
     constructor(
         private translate: TranslateService,
         fullRecordData: Monograph
         ) {
-            this.fullRecordData = fullRecordData;
-            this.record = this.fullRecordData.getSummaryView();
+            super(fullRecordData);
+            this.record = fullRecordData.getSummaryView();
         }
 
-    getDisplayTitle(): string {
-        return this.record.TITLE;
+    initTitleDisplay(): ViewLine {
+        let fieldsArray = new Array<ViewField>();
+        fieldsArray.push(new ViewFieldBuilder().content(this.record.TRD).build());
+        this.titleLine = new ViewLine(new ViewFieldBuilder().build(), fieldsArray);
+        return this.titleLine;
     }
 
-    initContentDisplay(): Array<string> {
-        let summaryLines = new Array<string>();
+    initContentDisplay(): Array<ViewLine> {
+        this.viewLines = new Array<ViewLine>();
+        let fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.By').content(this.record.AL[0]?.AHDNG).build());
+            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.AL[0]?.AHDNGR).build());
+            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.AL[0]?.AHDNGVR).build());
+            fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.Book').build());
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.PUBL).build());
+            fieldsArray.push(new ViewFieldBuilder().label(", ").content(this.record.TTLL).build());
+            fieldsArray.push(new ViewFieldBuilder().label(": ").content(this.record.YEAR1).build());
+            fieldsArray.push(new ViewFieldBuilder().label("- ").content(this.record.YEAR2).build());
+            fieldsArray.push(new ViewFieldBuilder().label(")").build());
+        this.addLine(new ViewFieldBuilder().build(), fieldsArray);
+        fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.TRR).link('').build());  
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.TRVR).link('').build());
+            fieldsArray = this.setMiddleLabel(fieldsArray, "||");
+        this.addLine(new ViewFieldBuilder().build(), fieldsArray);
+        fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.NACSISID').content(this.record.ID).build());      
+        this.addLine(new ViewFieldBuilder().build(), fieldsArray);
+        fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.ISBN').content(this.record.ISBN).build());      
+            if(this.record.hasMoreThen1ISBN){
+                fieldsArray.push(new ViewFieldBuilder().content(('Catalog.Results.AndOthers')).build());
+            }
+        this.addLine(new ViewFieldBuilder().build(), fieldsArray);
+        let shStrFields = "";
+        for (let i = 0; i < this.record.SH.length-1; i++) {
+            shStrFields = shStrFields + this.toStringPairOfFields(this.record.SH[i].SHD, this.record.SH[i].SHR, "||");
+            shStrFields = shStrFields + "<br/>";
+        }
+        if (this.record.SH.length > 0) {
+            let j = this.record.SH.length - 1;
+            shStrFields = shStrFields + this.toStringPairOfFields(this.record.SH[j].SHD, this.record.SH[j].SHR, "||");
+            if(this.record.hasMoreThen3SH) {
+                shStrFields = shStrFields + " " + this.translate.instant('Catalog.Results.AndOthers');
+            }
+        }
+        fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.Subjects').content(shStrFields).build());      
+        this.addLine(new ViewFieldBuilder().build(), fieldsArray);
 
-        summaryLines.push(this.translate.instant('Catalog.Results.By') + " " + this.record.AUTH + " ("
-        + this.translate.instant("Catalog.Results.Book") + " " + this.record.PUBL
-        + ", " + this.record.LANG + ": " + this.record.YEAR + ")");
-        summaryLines.push( this.translate.instant("Catalog.Results.NACSISID") + ": " + this.record.ID);
-        summaryLines.push( this.translate.instant("Catalog.Results.ISBN") + ": " + this.record.ISBN);
-        summaryLines.push( this.translate.instant("Catalog.Results.Subjects") + ": " + this.record.SH);
-        
-        return summaryLines;
+        return this.viewLines;
     }
 
-    getFullRecordData() {
-        return this.fullRecordData;
-    }
 }
 
-export class MonographFullDisplay extends IDisplayLinesFull {
+export class MonographFullDisplay extends IDisplayLines {
+    private record: MonographFull;
     
-    constructor(fullViewRecord: MonographFull) {
+    constructor(fullViewRecord: Monograph) {
             super(fullViewRecord);
+            this.record = fullViewRecord.getFullView();
         }
 
     initContentDisplay(){
-        this.fullViewLines = new Array<FullViewLine>();
-        let fieldArray = new Array<FullViewField>()
-            fieldArray.push(new FieldBuilder().label("Create date: ").content(this.dateFormatDisplay(this.record.CRTDT)).build());
-            fieldArray.push(new FieldBuilder().label("Creating institution: ").content(this.record.CRTFA).link('').build());
-            fieldArray.push(new FieldBuilder().label("Update date: ").content(this.dateFormatDisplay(this.record.RNWDT)).build());
-            fieldArray.push(new FieldBuilder().label("Modifying institution: ").content(this.record.RNWFA).link('').build());
-        this.addLine(new FieldBuilder().build(), fieldArray);
-        fieldArray = new Array<FullViewField>();
-            fieldArray.push(new FieldBuilder().label("ISSN: ").content(this.record.ISSN).build());
-            fieldArray.push(new FieldBuilder().label("NBN: ").content(this.record.NBN).build());
-            fieldArray.push(new FieldBuilder().label("LCCN: ").content(this.record.LCCN).build());
-            fieldArray.push(new FieldBuilder().label("NDLCN: ").content(this.record.NDLCN).build());
-            fieldArray.push(new FieldBuilder().label("REPRO: ").content(this.record.REPRO).build());
-            fieldArray.push(new FieldBuilder().label("GPON: ").content(this.record.GPON).build());
-            fieldArray.push(new FieldBuilder().label("OTHN: ").content(this.record.OTHN).build());
-        this.addLine(new FieldBuilder().label("CODE").build(), fieldArray);
-        fieldArray = new Array<FullViewField>();
-            fieldArray.push(new FieldBuilder().label("GMD: ").content(this.record.GMD).build());
-            fieldArray.push(new FieldBuilder().label("SMD: ").content(this.record.SMD).build());
-            fieldArray.push(new FieldBuilder().label("YEAR: ").content(this.record.YEAR).build());
-            fieldArray.push(new FieldBuilder().label("CNTRY: ").content(this.record.CNTRY).build());
-            fieldArray.push(new FieldBuilder().label("TTLL: ").content(this.record.TTLL).build());
-            fieldArray.push(new FieldBuilder().label("TXTL: ").content(this.record.TXTL).build());
-            fieldArray.push(new FieldBuilder().label("ORGL: ").content(this.record.ORGL).build());
-        this.addLine(new FieldBuilder().label("CODE").build(), fieldArray);
+        this.viewLines = new Array<ViewLine>();
+        let fieldsArray = new Array<ViewField>()
+        fieldsArray = new Array<ViewField>()
+            fieldsArray.push(new ViewFieldBuilder().label("Create date: ").content(this.dateFormatDisplay(this.record.CRTDT)).build());
+            fieldsArray.push(new ViewFieldBuilder().label("Creating institution: ").content(this.record.CRTFA).link(SearchType.Member).build());
+            fieldsArray.push(new ViewFieldBuilder().label("Update date: ").content(this.dateFormatDisplay(this.record.RNWDT)).build());
+            fieldsArray.push(new ViewFieldBuilder().label("Modifying institution: ").content(this.record.RNWFA).link(SearchType.Member).build());
+        this.addLine(new ViewFieldBuilder().build(), fieldsArray);
+        fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().label("ISSN: ").content(this.record.ISSN).build());
+            fieldsArray.push(new ViewFieldBuilder().label("NBN: ").content(this.record.NBN).build());
+            fieldsArray.push(new ViewFieldBuilder().label("LCCN: ").content(this.record.LCCN).build());
+            fieldsArray.push(new ViewFieldBuilder().label("NDLCN: ").content(this.record.NDLCN).build());
+            fieldsArray.push(new ViewFieldBuilder().label("REPRO: ").content(this.record.REPRO).build());
+            fieldsArray.push(new ViewFieldBuilder().label("GPON: ").content(this.record.GPON).build());
+            fieldsArray.push(new ViewFieldBuilder().label("OTHN: ").content(this.record.OTHN).build());
+        this.addLine(new ViewFieldBuilder().label("CODE").build(), fieldsArray);
+        fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().label("GMD: ").content(this.record.GMD).build());
+            fieldsArray.push(new ViewFieldBuilder().label("SMD: ").content(this.record.SMD).build());
+            fieldsArray.push(new ViewFieldBuilder().label("YEAR: ").content(this.record.YEAR1).build());
+            fieldsArray.push(new ViewFieldBuilder().label("- ").content(this.record.YEAR2).build());
+            fieldsArray.push(new ViewFieldBuilder().label("CNTRY: ").content(this.record.CNTRY).build());
+            fieldsArray.push(new ViewFieldBuilder().label("TTLL: ").content(this.record.TTLL).build());
+            fieldsArray.push(new ViewFieldBuilder().label("TXTL: ").content(this.record.TXTL).build());
+            fieldsArray.push(new ViewFieldBuilder().label("ORGL: ").content(this.record.ORGL).build());
+        this.addLine(new ViewFieldBuilder().label("CODE").build(), fieldsArray);
         this.record.VOLG?.forEach(vol=>{
-            fieldArray = new Array<FullViewField>();
-                fieldArray.push(new FieldBuilder().label("VOL: ").content(vol.VOL).build());
-                fieldArray.push(new FieldBuilder().label("ISBN: ").content(vol.ISBN).build());
-                fieldArray.push(new FieldBuilder().label("PRICE: ").content(vol.PRICE).build());
-                fieldArray.push(new FieldBuilder().label("XISBN: ").content(vol.XISBN).build());
-            this.addLine(new FieldBuilder().label("VOLG").build(), fieldArray);
+            fieldsArray = new Array<ViewField>();
+                fieldsArray.push(new ViewFieldBuilder().label("VOL: ").content(vol.VOL).build());
+                fieldsArray.push(new ViewFieldBuilder().label("ISBN: ").content(vol.ISBN).build());
+                fieldsArray.push(new ViewFieldBuilder().label("PRICE: ").content(vol.PRICE).build());
+                fieldsArray.push(new ViewFieldBuilder().label("XISBN: ").content(vol.XISBN).build());
+            this.addLine(new ViewFieldBuilder().label("VOLG").build(), fieldsArray);
         });
-        fieldArray = new Array<FullViewField>();
-            fieldArray.push(new FieldBuilder().content(this.record.TRD).build());
-            fieldArray.push(new FieldBuilder().label("|| ").content(this.record.TRR).build());
-            fieldArray.push(new FieldBuilder().label("|| ").content(this.record.TRVR).build());
-        this.addLine(new FieldBuilder().label("TR").build(), fieldArray);
-        fieldArray = new Array<FullViewField>();
-            fieldArray.push(new FieldBuilder().content(this.record.ED).build());
-        this.addLine(new FieldBuilder().label("ED").build(), fieldArray);
+        fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.TRD).build());
+            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.TRR).build());
+            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.TRVR).build());
+        this.addLine(new ViewFieldBuilder().label("TR").build(), fieldsArray);
+        fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.ED).build());
+        this.addLine(new ViewFieldBuilder().label("ED").build(), fieldsArray);
         this.record.PUB?.forEach(pub=>{
-            fieldArray = new Array<FullViewField>();
-                fieldArray.push(new FieldBuilder().content(pub.PUBP).build());
-                fieldArray.push(new FieldBuilder().label(": ").content(pub.PUBL).build());
-                fieldArray.push(new FieldBuilder().label(", ").content(pub.PUBDT).build());
-            this.addLine(new FieldBuilder().label("PUB").build(), fieldArray);
+            fieldsArray = new Array<ViewField>();
+                fieldsArray.push(new ViewFieldBuilder().content(pub.PUBP).build());
+                fieldsArray.push(new ViewFieldBuilder().label(": ").content(pub.PUBL).build());
+                fieldsArray.push(new ViewFieldBuilder().label(", ").content(pub.PUBDT).build());
+            this.addLine(new ViewFieldBuilder().label("PUB").build(), fieldsArray);
         });
-        fieldArray = new Array<FullViewField>();
-            fieldArray.push(new FieldBuilder().content(this.record.PHYSP).build());
-            fieldArray.push(new FieldBuilder().label("; ").content(this.record.PHYSI).build());
-            fieldArray.push(new FieldBuilder().label("; ").content(this.record.PHYSS).build());
-            fieldArray.push(new FieldBuilder().label("+").content(this.record.PHYSA).build());
-        this.addLine(new FieldBuilder().label("PHYS").build(), fieldArray);
+        fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.PHYSP).build());
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.PHYSI).build());
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.PHYSS).build());
+            fieldsArray = this.setMiddleLabel(fieldsArray, ";");
+            fieldsArray.push(new ViewFieldBuilder().label("+").content(this.record.PHYSA).build());
+        this.addLine(new ViewFieldBuilder().label("PHYS").build(), fieldsArray);
         this.record.VT?.forEach(vt=>{
-            fieldArray = new Array<FullViewField>();
-                fieldArray.push(new FieldBuilder().content(vt.VTK).build());
-                fieldArray.push(new FieldBuilder().label(": ").content(vt.VTD).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(vt.VTR).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(vt.VTVR).build());
-            this.addLine(new FieldBuilder().label("VT").build(), fieldArray);
+            fieldsArray = new Array<ViewField>();
+                fieldsArray.push(new ViewFieldBuilder().content(vt.VTK).build());
+                fieldsArray.push(new ViewFieldBuilder().label(": ").content(vt.VTD).build());
+                fieldsArray.push(new ViewFieldBuilder().label("|| ").content(vt.VTR).build());
+                fieldsArray.push(new ViewFieldBuilder().label("|| ").content(vt.VTVR).build());
+            this.addLine(new ViewFieldBuilder().label("VT").build(), fieldsArray);
         });
         this.record.CW?.forEach(cw=>{
-            fieldArray = new Array<FullViewField>();
-                fieldArray.push(new FieldBuilder().content(cw.CWT).build());
-                fieldArray.push(new FieldBuilder().label("/ ").content(cw.CWA).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(cw.CWR).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(cw.CWVR).build());
-            this.addLine(new FieldBuilder().label("CW").build(), fieldArray);
+            fieldsArray = new Array<ViewField>();
+                fieldsArray.push(new ViewFieldBuilder().content(cw.CWT).build());
+                fieldsArray.push(new ViewFieldBuilder().label("/ ").content(cw.CWA).build());
+                fieldsArray.push(new ViewFieldBuilder().label("|| ").content(cw.CWR).build());
+                fieldsArray.push(new ViewFieldBuilder().label("|| ").content(cw.CWVR).build());
+            this.addLine(new ViewFieldBuilder().label("CW").build(), fieldsArray);
         });
         this.record.NOTE?.forEach(note=>{
-            fieldArray = new Array<FullViewField>();
-                fieldArray.push(new FieldBuilder().content(note.NOTE).build());
-            this.addLine(new FieldBuilder().label("NOTE").build(), fieldArray);
+            fieldsArray = new Array<ViewField>();
+                fieldsArray.push(new ViewFieldBuilder().content(note.NOTE).build());
+            this.addLine(new ViewFieldBuilder().label("NOTE").build(), fieldsArray);
         });
         this.record.PTBL?.forEach(ptbl=>{
-            fieldArray = new Array<FullViewField>();
-                fieldArray.push(new FieldBuilder().content(ptbl.PTBTR).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(ptbl.PTBTRR).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(ptbl.PTBTRVR).build());
-                fieldArray.push(new FieldBuilder().content(ptbl.PTBID).link('').build());
-                fieldArray.push(new FieldBuilder().content(ptbl.PTBNO).build());
-                fieldArray.push(new FieldBuilder().label("// ").content(ptbl.PTBK).build());
-            this.addLine(new FieldBuilder().label("PTBL").build(), fieldArray);
+            fieldsArray = new Array<ViewField>();
+                fieldsArray.push(new ViewFieldBuilder().content(ptbl.PTBTR).build());
+                fieldsArray.push(new ViewFieldBuilder().content(ptbl.PTBTRR).build());
+                fieldsArray.push(new ViewFieldBuilder().content(ptbl.PTBTRVR).build());
+                fieldsArray = this.setMiddleLabel(fieldsArray, "||");
+                fieldsArray.push(new ViewFieldBuilder().content(ptbl.PTBID).link(SearchType.Monographs).build());
+                fieldsArray.push(new ViewFieldBuilder().content(ptbl.PTBNO).build());
+                fieldsArray.push(new ViewFieldBuilder().label("// ").content(ptbl.PTBK).build());
+            this.addLine(new ViewFieldBuilder().label("PTBL").build(), fieldsArray);
         });
         this.record.AL?.forEach(al=>{
-            fieldArray = new Array<FullViewField>();
-                fieldArray.push(new FieldBuilder().content(al.AFLG).build());
-                fieldArray.push(new FieldBuilder().content(al.AHDNG).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(al.AHDNGR).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(al.AHDNGVR).build());
-                fieldArray.push(new FieldBuilder().content(al.AID).link('').build());
-                fieldArray.push(new FieldBuilder().content(al.AF).build());
-            this.addLine(new FieldBuilder().label("AL").build(), fieldArray);
+            fieldsArray = new Array<ViewField>(); 
+                fieldsArray.push(new ViewFieldBuilder().content(al.AFLG).build());
+                fieldsArray.push(new ViewFieldBuilder().content(al.AHDNG).build());
+                fieldsArray.push(new ViewFieldBuilder().content(al.AHDNGR).build());
+                fieldsArray.push(new ViewFieldBuilder().content(al.AHDNGVR).build());
+                fieldsArray = this.setMiddleLabel(fieldsArray, "||");
+                fieldsArray.push(new ViewFieldBuilder().content(al.AID).link(SearchType.Names).build());
+                fieldsArray.push(new ViewFieldBuilder().content(al.AF).build());
+            this.addLine(new ViewFieldBuilder().label("AL").build(), fieldsArray);
         });
         this.record.UTL?.forEach(utl=>{
-            fieldArray = new Array<FullViewField>();
-                fieldArray.push(new FieldBuilder().content(utl.UTFLG).build());
-                fieldArray.push(new FieldBuilder().content(utl.UTHDNG).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(utl.UTHDNGR).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(utl.UTHDNGVR).build());
-                fieldArray.push(new FieldBuilder().content(utl.UTID).build());
-                fieldArray.push(new FieldBuilder().content(utl.UTINFO).build());
-            this.addLine(new FieldBuilder().label("UTL").build(), fieldArray);
+            fieldsArray = new Array<ViewField>();
+                fieldsArray.push(new ViewFieldBuilder().content(utl.UTFLG).build());
+                fieldsArray.push(new ViewFieldBuilder().content(utl.UTHDNG).build());
+                fieldsArray.push(new ViewFieldBuilder().content(utl.UTHDNGR).build());
+                fieldsArray.push(new ViewFieldBuilder().content(utl.UTHDNGVR).build());
+                fieldsArray = this.setMiddleLabel(fieldsArray, "||");
+                fieldsArray.push(new ViewFieldBuilder().content(utl.UTID).build());
+                fieldsArray.push(new ViewFieldBuilder().content(utl.UTINFO).build());
+            this.addLine(new ViewFieldBuilder().label("UTL").build(), fieldsArray);
         });
         this.record.CLS?.forEach(cls=>{
-            fieldArray = new Array<FullViewField>();
-                fieldArray.push(new FieldBuilder().content(cls.CLSK).build());
-                fieldArray.push(new FieldBuilder().label(": ").content(cls.CLSD).build());
-            this.addLine(new FieldBuilder().label("CLS").build(), fieldArray);
+            fieldsArray = new Array<ViewField>();
+                fieldsArray.push(new ViewFieldBuilder().content(cls.CLSK).build());
+                fieldsArray.push(new ViewFieldBuilder().label(": ").content(cls.CLSD).build());
+            this.addLine(new ViewFieldBuilder().label("CLS").build(), fieldsArray);
         });
         this.record.SH?.forEach(sh=>{
-            fieldArray = new Array<FullViewField>();
-                fieldArray.push(new FieldBuilder().content(sh.SHT).build());
-                fieldArray.push(new FieldBuilder().label(": ").content(sh.SHD).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(sh.SHR).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(sh.SHVR).build());
-                fieldArray.push(new FieldBuilder().label("// ").content(sh.SHK).build());
-            this.addLine(new FieldBuilder().label("SH").build(), fieldArray);
+            fieldsArray = new Array<ViewField>();
+                fieldsArray.push(new ViewFieldBuilder().content(sh.SHT).build());
+                fieldsArray.push(new ViewFieldBuilder().label(": ").content(sh.SHD).build());
+                fieldsArray.push(new ViewFieldBuilder().label("|| ").content(sh.SHR).build());
+                fieldsArray.push(new ViewFieldBuilder().label("|| ").content(sh.SHVR).build());
+                fieldsArray.push(new ViewFieldBuilder().label("// ").content(sh.SHK).build());
+            this.addLine(new ViewFieldBuilder().label("SH").build(), fieldsArray);
         });
         this.record.IDENT?.forEach(ident=>{
-            fieldArray = new Array<FullViewField>();
-                fieldArray.push(new FieldBuilder().content(ident.IDENT).build());
-            this.addLine(new FieldBuilder().label("IDENT").build(), fieldArray);
+            fieldsArray = new Array<ViewField>();
+                fieldsArray.push(new ViewFieldBuilder().content(ident.IDENT).build());
+            this.addLine(new ViewFieldBuilder().label("IDENT").build(), fieldsArray);
         });
 
-        return this.fullViewLines;
+        return this.viewLines;
         
 
     }

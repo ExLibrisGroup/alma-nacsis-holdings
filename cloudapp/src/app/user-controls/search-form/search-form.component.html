@@ -9,7 +9,7 @@
 <br>
 <mat-card class="form-card-parent" color="secondary">
   <form *ngFor="let field of fieldsList" class="{{field.getFieldLength()}}">
-    <mat-form-field >
+    <mat-form-field appearance="outline">
       <mat-label>{{ field.getFieldLabel() | translate }}</mat-label>
         <input matInput [formControl]="field.getFormControl()">
     </mat-form-field>

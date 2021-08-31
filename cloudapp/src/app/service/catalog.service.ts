@@ -4,6 +4,8 @@ import { CloudAppEventsService, InitData } from '@exlibris/exl-cloudapp-angular-
 import { BaseService, Header } from "./base.service";
 import { mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+
 
 import { SearchType } from '../catalog/main/form-utils';
 import { NacsisCatalogResults, ResultsHeader } from '../catalog/results-types/results-common';
@@ -12,6 +14,7 @@ import { Serial } from '../catalog/results-types/serials';
 import { Name } from '../catalog/results-types/name';
 import { UniformTitle } from '../catalog/results-types/uniformTitle';
 import { AlmaApiService, IntegrationProfile } from './alma.api.service';
+
 
 @Injectable({
     providedIn: 'root'
@@ -27,7 +30,8 @@ export class CatalogService extends BaseService {
     constructor(
         protected eventsService: CloudAppEventsService,
         protected http: HttpClient,
-        protected almaApi: AlmaApiService
+        protected almaApi: AlmaApiService,
+        protected translate: TranslateService
       ) {
         super(eventsService, http);
         this.initResultsMap();
@@ -45,6 +49,14 @@ export class CatalogService extends BaseService {
     getSearchResults(type: SearchType) {
         return this.searchResultsMap.get(type);
     }
+
+    setSearchResultsMap(searchType: SearchType, response: any) {
+        this.searchResultsMap.get(searchType).setHeader(response);
+        this.searchResultsMap.get(searchType).setResults(new Array());
+        response.records.forEach(record => {
+            this.searchResultsMap.get(searchType).getResults().push(this.resultsTypeFactory(searchType, record));
+        });   
+    }    
 
     clearAllSearchResults(){
         this.initResultsMap();
@@ -75,13 +87,6 @@ export class CatalogService extends BaseService {
                 return this.http.get<any>(fullUrl, { headers })
             }),
             mergeMap(response => {
-                if (response.status === this.OkStatus && !this.isEmpty(response.records)) {
-                    this.searchResultsMap.get(searchType).setHeader(response);
-                    this.searchResultsMap.get(searchType).setResults(new Array());
-                    response.records.forEach(record => {
-                        this.searchResultsMap.get(searchType).getResults().push(this.resultsTypeFactory(searchType, record));
-                    });   
-                }
                 return of(response);
             })
         );
@@ -91,13 +96,13 @@ export class CatalogService extends BaseService {
     resultsTypeFactory(type: SearchType, record: any){
         switch (type){
             case SearchType.Monographs:
-                return new Monograph(record);
+                return new Monograph(record, this.translate);
             case SearchType.Serials:
-                return new Serial(record);
+                return new Serial(record, this.translate);
             case SearchType.Names:
-                    return new Name(record);
+                    return new Name(record, this.translate);
             case SearchType.UniformTitles:
-                return new UniformTitle(record);
+                return new UniformTitle(record, this.translate);
             default:
                 return null;
 

@@ -44,48 +44,25 @@
         "Serials": "Serials???",
         "Names": "Names???",
         "UniformTitles": "Uniform Titles???"
-      },
-      "Fields": {
-        "TITLE": "TITLE???",
-        "FTITLE": "FTITLE???",
-        "PTBL": "PTBL???",
-        "VOL": "VOL",
-        "TiPtVo": "TITLE / PTBL / VOL",
-        "AUTH": "AUTH",
-        "ISSN": "ISSN",
-        "ISBN": "ISBN",
-        "NBN": "NBN",
-        "NDLCN": "NDLCN / LCCN / OTHN",
-        "PUB": "PUB",
-        "YEAR": "YEAR",
-        "PLACE": "PLACE",
-        "CNTRY": "CNTRY",
-        "LANG": "LANG",
-        "SH": "SH",
-        "AKEY": "AKEY",
-        "ID": "ID",
-        "PID": "PID",
-        "CODEN": "CODEN",
-        "NDLPN": "NDLPN / LCCN",
-        "FID": "FID",
-        "DATE": "DATE",
-        "SAID": "SAID"
       }
     },
     "Results": {
       "Title": "???Records",
       "NoRecordsExist": "???No records exist.",
       "By": "???By",
-      "Book": "???Book",
-      "NACSISID": "???NACSIS ID",
-      "ISBN": "???ISBN",
-      "ISSN": "???ISSN",
-      "Subjects": "???Subjects",
+      "Book": "???(Book",
+      "Journal": "???(Journal",
+      "NACSISID": "???NACSIS ID:",
+      "ISBN": "???ISBN:",
+      "ISSN": "???ISSN:",
+      "Subjects": "???Subjects:",
+      "AndOthers": "???and others",
       "Actions" : {
         "View" : "???View",
         "Import" : "???Import",
         "ViewHoldings" : "???View Holdings"
-      }
+      },
+      "ImportSucceeded": "The record was successfully imported ???"
     }
   },
 
@@ -161,5 +138,32 @@
   "Help": {
     "Text": "このアプリはEx Librisでサポートされています。 ドキュメントを表示するには、下のリンクをクリックしてください。 さらにヘルプが必要な場合や問題を報告するには、SalesForceケースを開いてください。",
     "OLH": "オンラインヘルプへ" 
+  },
+
+  "UserControls": {
+    "Fields": {
+      "TITLE": "TITLE???",
+      "FTITLE": "FTITLE???",
+      "PTBL": "PTBL???",
+      "VOL": "VOL???",
+      "TiPtVo": "TITLE / PTBL / VOL???",
+      "AUTH": "AUTH???",
+      "ISSN": "ISSN",
+      "ISBN": "ISBN",
+      "NBN": "NBN",
+      "NDLCN": "NDLCN / LCCN / OTHN",
+      "PUB": "PUB",
+      "YEAR": "YEAR",
+      "PLACE": "PLACE",
+      "CNTRY": "CNTRY",
+      "LANG": "LANG",
+      "SH": "SH",
+      "AKEY": "AKEY",
+      "ID": "ID",
+      "PID": "PID",
+      "CODEN": "CODEN",
+      "NDLPN": "NDLPN / LCCN",
+      "FID": "FID"
+    }
   }
 }

@@ -1,19 +1,29 @@
 import { TranslateService } from '@ngx-translate/core';
-import { IDisplayLinesSummary, BaseResult, IDisplayLinesFull, FullViewField, FullViewLine, FieldBuilder } from './results-common';
+import { IDisplayLines, BaseResult, ViewField, ViewLine, ViewFieldBuilder } from './results-common';
+import { SearchType } from '../main/form-utils';
 
 
 export class Name extends BaseResult {
     summaryView: NameSummary;
     fullView : NameFull;
 
-    constructor(record: any){
-        super(record);
+    constructor(record: any, translate: TranslateService){
+        super(record, translate);
+    }
+
+    getSummaryDisplay() {
+        return new NameSummaryDisplay(this.translate, this);
+    }
+
+    getFullViewDisplay() {
+        return new NameFullDisplay(this);
     }
 }
 
 export class NameSummary{
-    AUTH: string = "";
-    DATE: string = "";
+    HDNGD: string = "";
+    HDNGR: string = "";
+    HDNGVR: string = "";
     ID: string = "";
 }
 
@@ -52,86 +62,95 @@ export class NameNOTE{
     NOTE: string = "";
 }
 
-export class NameSummaryDisplay implements IDisplayLinesSummary{
-    private fullRecordData: Name;
+
+export class NameSummaryDisplay extends IDisplayLines{
     private record: NameSummary;
 
     constructor(
         private translate: TranslateService,
-        fullRecordData: Name){
-            this.fullRecordData = fullRecordData;
-            this.record = this.fullRecordData.getSummaryView();
-    }
-
-    getDisplayTitle(): string {
-        let title = this.record.AUTH + "; " + this.record.DATE;
-        return title;
-    }
-
-    initContentDisplay(): Array<string> {
-        let summaryLines = new Array<string>();
-        summaryLines.push( this.translate.instant("Catalog.Results.NACSISID") + ": " + this.record.ID);
-        return summaryLines;
-    }
-
-    getFullRecordData() {
-        return this.fullRecordData;
-    }
-}
-
-export class NameFullDisplay extends IDisplayLinesFull {
-    
-    constructor(fullViewRecord: NameFull) {
-            super(fullViewRecord);
+        fullRecordData: Name
+        ) {
+            super(fullRecordData);
+            this.record = fullRecordData.getSummaryView();
         }
 
+    initTitleDisplay(): ViewLine {
+        let fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.HDNGD).build());
+            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.HDNGR).build());
+            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.HDNGVR).build());
+        this.titleLine = new ViewLine(new ViewFieldBuilder().build(), fieldsArray.filter(field => field.hasContent() === true));
+        return this.titleLine;
+    }
+
+    initContentDisplay(): Array<ViewLine> {
+        this.viewLines = new Array<ViewLine>();
+        let fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.NACSISID').content(this.record.ID).build());      
+        this.addLine(new ViewFieldBuilder().build(), fieldsArray);
+        
+        return this.viewLines;
+    }
+
+}
+
+export class NameFullDisplay extends IDisplayLines {
+    private record: NameFull;
+    
+    constructor(fullViewRecord: Name) {
+        super(fullViewRecord);
+        this.record = fullViewRecord.getFullView();
+    }
+
     initContentDisplay(){
-        this.fullViewLines = new Array<FullViewLine>();
-        let fieldArray = new Array<FullViewField>()
-            fieldArray.push(new FieldBuilder().label("Create date: ").content(this.dateFormatDisplay(this.record.CRTDT)).build());
-            fieldArray.push(new FieldBuilder().label("Creating institution: ").content(this.record.CRTFA).link('').build());
-            fieldArray.push(new FieldBuilder().label("Update date: ").content(this.dateFormatDisplay(this.record.RNWDT)).build());
-            fieldArray.push(new FieldBuilder().label("Modifying institution: ").content(this.record.RNWFA).link('').build());
-        this.addLine(new FieldBuilder().build(), fieldArray);
-        fieldArray = new Array<FullViewField>();
-            fieldArray.push(new FieldBuilder().content(this.record.HDNGD).build());
-            fieldArray.push(new FieldBuilder().label("|| ").content(this.record.HDNGR).build());
-            fieldArray.push(new FieldBuilder().label("|| ").content(this.record.HDNGVR).build());
-        this.addLine(new FieldBuilder().label("HDNG").build(), fieldArray);
-        fieldArray = new Array<FullViewField>();
-            fieldArray.push(new FieldBuilder().content(this.record.LCAID).build());
-        this.addLine(new FieldBuilder().label("LCAID").build(), fieldArray);
-        fieldArray = new Array<FullViewField>();
-            fieldArray.push(new FieldBuilder().content(this.record.TYPE).build());
-        this.addLine(new FieldBuilder().label("TYPE").build(), fieldArray);
-        fieldArray = new Array<FullViewField>();
-            fieldArray.push(new FieldBuilder().content(this.record.PLACE).build());
-        this.addLine(new FieldBuilder().label("PLACE").build(), fieldArray);
-        fieldArray = new Array<FullViewField>();
-            fieldArray.push(new FieldBuilder().content(this.record.YEAR).build());
-        this.addLine(new FieldBuilder().label("DATE").build(), fieldArray);
+        this.viewLines = new Array<ViewLine>();
+        let fieldsArray = new Array<ViewField>()
+            fieldsArray.push(new ViewFieldBuilder().label("Create date: ").content(this.dateFormatDisplay(this.record.CRTDT)).build());
+            fieldsArray.push(new ViewFieldBuilder().label("Creating institution: ").content(this.record.CRTFA).link(SearchType.Member).build());
+            fieldsArray.push(new ViewFieldBuilder().label("Update date: ").content(this.dateFormatDisplay(this.record.RNWDT)).build());
+            fieldsArray.push(new ViewFieldBuilder().label("Modifying institution: ").content(this.record.RNWFA).link(SearchType.Member).build());
+        this.addLine(new ViewFieldBuilder().build(), fieldsArray);
+        fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.HDNGD).build());
+            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.HDNGR).build());
+            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.HDNGVR).build());
+        this.addLine(new ViewFieldBuilder().label("HDNG").build(), fieldsArray);
+        fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.LCAID).build());
+        this.addLine(new ViewFieldBuilder().label("LCAID").build(), fieldsArray);
+        fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.TYPE).build());
+        this.addLine(new ViewFieldBuilder().label("TYPE").build(), fieldsArray);
+        fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.PLACE).build());
+        this.addLine(new ViewFieldBuilder().label("PLACE").build(), fieldsArray);
+        fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.YEAR).build());
+        this.addLine(new ViewFieldBuilder().label("DATE").build(), fieldsArray);
         this.record.SF?.forEach(sf=>{
-            fieldArray = new Array<FullViewField>();
-                fieldArray.push(new FieldBuilder().content(sf.SFD).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(sf.SFR).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(sf.SFVR).build());
-            this.addLine(new FieldBuilder().label("SF").build(), fieldArray);
+            fieldsArray = new Array<ViewField>();
+                fieldsArray.push(new ViewFieldBuilder().content(sf.SFD).build());
+                fieldsArray.push(new ViewFieldBuilder().content(sf.SFR).build());
+                fieldsArray.push(new ViewFieldBuilder().content(sf.SFVR).build());
+                fieldsArray = this.setMiddleLabel(fieldsArray, "||");
+            this.addLine(new ViewFieldBuilder().label("SF").build(), fieldsArray);
         });
         this.record.SAF?.forEach(saf=>{
-            fieldArray = new Array<FullViewField>();
-                fieldArray.push(new FieldBuilder().content(saf.SAFD).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(saf.SAFR).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(saf.SAFVR).build());
-                fieldArray.push(new FieldBuilder().label("|| ").content(saf.SAFID).link('').build());
-            this.addLine(new FieldBuilder().label("SAF").build(), fieldArray);
+            fieldsArray = new Array<ViewField>();
+                fieldsArray.push(new ViewFieldBuilder().content(saf.SAFD).build());
+                fieldsArray.push(new ViewFieldBuilder().content(saf.SAFR).build());
+                fieldsArray.push(new ViewFieldBuilder().content(saf.SAFVR).build());
+                fieldsArray.push(new ViewFieldBuilder().content(saf.SAFID).link(SearchType.Names).build());
+                fieldsArray = this.setMiddleLabel(fieldsArray, "||");
+            this.addLine(new ViewFieldBuilder().label("SAF").build(), fieldsArray);
         });
         this.record.NOTE?.forEach(note=>{
-            fieldArray = new Array<FullViewField>();
-                fieldArray.push(new FieldBuilder().content(note.NOTE).build());
-            this.addLine(new FieldBuilder().label("NOTE").build(), fieldArray);
+            fieldsArray = new Array<ViewField>();
+                fieldsArray.push(new ViewFieldBuilder().content(note.NOTE).build());
+            this.addLine(new ViewFieldBuilder().label("NOTE").build(), fieldsArray);
         });
 
-        return this.fullViewLines;
+        return this.viewLines;
     }
 
 

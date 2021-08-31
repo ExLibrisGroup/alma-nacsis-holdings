@@ -49,32 +49,32 @@
       <mat-card >
         <form *ngIf="form" [formGroup]="form">
           <div *ngIf="isBook() else serial" class="form">
-            <mat-form-field class="form-card-inputs">
+            <mat-form-field appearance="outline" class="form-card-inputs">
               <mat-label translate>Holdings.Form.Fields.VOL</mat-label>
               <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="VOL">
               </textarea>
             </mat-form-field>
-            <mat-form-field class="form-card-inputs">
+            <mat-form-field appearance="outline" class="form-card-inputs">
               <mat-label translate>Holdings.Form.Fields.CLN</mat-label>
               <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="CLN">
               </textarea>
             </mat-form-field>
-            <mat-form-field class="form-card-inputs">
+            <mat-form-field appearance="outline" class="form-card-inputs">
               <mat-label translate>Holdings.Form.Fields.RGTN</mat-label>
               <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="RGTN">
               </textarea>
             </mat-form-field>
-            <mat-form-field class="form-card-inputs">
+            <mat-form-field appearance="outline" class="form-card-inputs">
               <mat-label translate>Holdings.Form.Fields.CPYR</mat-label>
               <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="CPYR">
               </textarea>
             </mat-form-field>
-            <mat-form-field class="form-card-inputs">
+            <mat-form-field appearance="outline" class="form-card-inputs">
               <mat-label translate>Holdings.Form.Fields.CPYNT</mat-label>
               <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="CPYNT">
               </textarea>
             </mat-form-field>
-            <mat-form-field class="form-card-inputs">
+            <mat-form-field appearance="outline" class="form-card-inputs">
               <mat-label translate>Holdings.Form.Fields.LDF</mat-label>
               <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="LDF">
               </textarea>
@@ -82,34 +82,34 @@
           </div>
           <ng-template #serial >
             <div class="form">
-              <mat-form-field class="form-card-inputs">
+              <mat-form-field appearance="outline" class="form-card-inputs">
                 <mat-label translate>Holdings.Form.Fields.HLYR</mat-label>
                 <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="HLYR" required>
                 </textarea>
                 <mat-error *ngIf="form.controls.HLYR.invalid" translate>Holdings.Form.Errors.HLYR</mat-error>
               </mat-form-field>
-              <mat-form-field class="form-card-inputs">
+              <mat-form-field appearance="outline" class="form-card-inputs">
                 <mat-label translate>Holdings.Form.Fields.HLV</mat-label>
                 <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="HLV" required>
                 </textarea>
                 <mat-error *ngIf="form.controls.HLV.invalid" translate>Holdings.Form.Errors.HLV</mat-error>
               </mat-form-field>
-              <mat-form-field class="form-card-inputs">
+              <mat-form-field appearance="outline" class="form-card-inputs">
                 <mat-label translate>Holdings.Form.Fields.CONT</mat-label>
                 <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="CONT">
                 </textarea>
               </mat-form-field>
-              <mat-form-field class="form-card-inputs">
+              <mat-form-field appearance="outline" class="form-card-inputs">
                 <mat-label translate>Holdings.Form.Fields.CLN</mat-label>
                 <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="CLN">
                 </textarea>
               </mat-form-field>
-              <mat-form-field class="form-card-inputs">
+              <mat-form-field appearance="outline" class="form-card-inputs">
                 <mat-label translate>Holdings.Form.Fields.LDF</mat-label>
                 <textarea cdkTextareaAutosize [readonly]="isReadOnly" matInput formControlName="LDF">
                 </textarea>
               </mat-form-field>
-              <mat-form-field class="form-card-inputs">
+              <mat-form-field appearance="outline" class="form-card-inputs">
                 <mat-label translate>Holdings.Form.Fields.CPYNT</mat-label>
                 <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="CPYNT">
                 </textarea>

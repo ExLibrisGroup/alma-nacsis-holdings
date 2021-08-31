@@ -1,41 +1,10 @@
+import { TranslateService } from '@ngx-translate/core';
 import { SearchType } from "../main/form-utils";
 import { Header } from "../../service/base.service";
 
-export interface IDisplayLinesSummary {
-    getDisplayTitle(): string;
-    initContentDisplay(): Array<string>;
-    getFullRecordData() : BaseResult;
-}
+export const BLANK_SPACE = "&nbsp;";
 
-
-export abstract class IDisplayLinesFull {
-    protected record: any;
-    protected fullViewLines: Array<FullViewLine>;
-
-    constructor(fullViewRecord: any) {
-        this.record = fullViewRecord;
-    }
-
-    initContentDisplay(){};
-
-    protected addLine(header: FullViewField, content: Array<FullViewField>){
-        let filteredArray = content.filter(field => field.hasContent() === true);
-        if(filteredArray.length > 0){
-            this.fullViewLines.push(new FullViewLine(header, filteredArray)); 
-        }
-    }
-
-    protected dateFormatDisplay(field: string) {
-        if(field != "" && field != undefined){
-            return field.substring(0,4) + "/" + field.substring(4,6) + "/" + field.substring(6,8);
-        } else {
-            return "";
-        }
-    }
-
-}
-
-
+//   NacsisCatalogResults contains the Nacsis servlet's response
 export class NacsisCatalogResults {
     header: ResultsHeader;
     results: Array<BaseResult>;
@@ -59,26 +28,34 @@ export class NacsisCatalogResults {
     }
 }
 
+
 export class ResultsHeader extends Header {
     totalRecords: number;
     searchType: SearchType;
 }
 
+// BaseResult a prototype of a Ncsis servlet's result
 export abstract class BaseResult {
-    ID: string = "";
+    id: string = "";
     summaryView: any;
     fullView : any;
     rawData: string = "";
 
-    constructor(record: any){
-        this.ID = record.ID;
+    summaryDisplay: IDisplayLines;
+    fullViewDisplay: IDisplayLines;
+
+    constructor(
+        record: any,
+        protected translate: TranslateService
+    ){
+        this.id = record.id;
         this.summaryView = record.summaryView;
         this.fullView = record.fullView;
         this.rawData = record.rawData;
     }
     
     getID(){
-        return this.ID;
+        return this.id;
     }
 
     getSummaryView(){
@@ -92,18 +69,114 @@ export abstract class BaseResult {
     getRawData(){
         return this.rawData;
     }
+
+    abstract getSummaryDisplay():IDisplayLines;
+
+    abstract getFullViewDisplay():IDisplayLines;
+
 }
 
-export class FullViewField {
+
+export abstract class IDisplayLines {
+    protected fullRecord: BaseResult;
+    protected viewLines: Array<ViewLine>;
+    protected titleLine: ViewLine;
+
+
+    constructor(viewRecord: BaseResult) {
+        this.fullRecord = viewRecord;
+    }
+
+    getFullRecordData() {
+        return this.fullRecord;
+    }
+
+    initTitleDisplay():any{};
+
+    initContentDisplay():any{};
+
+    protected addLine(header: ViewField, content: Array<ViewField>){
+        let filteredArray = content.filter(field => field.hasContent() || field.isOnlyLabel());
+        if(filteredArray.length > 0){
+            this.viewLines.push(new ViewLine(header, filteredArray)); 
+        }
+    }
+
+    protected dateFormatDisplay(field: string) {
+        if(field != "" && field != undefined){
+            return field.substring(0,4) + "/" + field.substring(4,6) + "/" + field.substring(6,8);
+        } else {
+            return "";
+        }
+    }
+
+    isEmpty(str): boolean {
+        return (str == "" || str == undefined || str == null);
+    }
+
+    toStringPairOfFields(fieldA, fieldB, labelB?: string): string {
+        let str = "";
+        if(!this.isEmpty(fieldA)){
+            str = str + fieldA;
+        } if(!this.isEmpty(fieldA) && !this.isEmpty(fieldB)){
+            str = str + labelB;
+        } if(!this.isEmpty(fieldB)){
+            str = str + fieldB;
+        } return str;
+    }
+
+    setMiddleLabel(fieldsArr: Array<ViewField>, label: string): Array<ViewField> {
+        let filteredArray = fieldsArr.filter(field => field.hasContent());
+        let arrWithLabels = new Array<ViewField>();
+        for (let i = 0; i < filteredArray.length; i++) {
+            arrWithLabels.push(filteredArray[i]);
+            if(i != filteredArray.length-1){
+                arrWithLabels.push(new ViewFieldBuilder().label(label).build());
+            }
+        }
+        return arrWithLabels;
+    }
+}
+
+
+export class ViewLine {
+
+    constructor (
+        private header: ViewField,
+        private content:  Array<ViewField>
+    ) { }
+    
+    getHeaderLabel() {
+        return this.header.getLabel();
+    }
+
+    getContent() {
+        return this.content;
+    }
+    
+    public toString(): string{
+        let lines = "";
+        this.content.forEach(field => {
+            lines = lines + field.getLabel() + " ";
+            lines = lines + field.getContent() + " ";
+        });
+        return lines;
+    }  
+}
+
+export class ViewField {
 
     private label: string;
     private content: string;
     private link: string;
+    private onlyLabel: boolean;
 
-    constructor(fieldBuilder: FieldBuilder) {
-        this.label = fieldBuilder.getLabel();
-        this.content = fieldBuilder.getContent();
-        this.link = fieldBuilder.getLink();
+
+    constructor(ViewFieldBuilder: ViewFieldBuilder) {
+        this.label = ViewFieldBuilder.getLabel();
+        this.content = ViewFieldBuilder.getContent();
+        this.link = ViewFieldBuilder.getLink();
+        this.onlyLabel = ViewFieldBuilder.isOnlyLabel()? true : false;
      }
 
     getLabel() {
@@ -118,6 +191,10 @@ export class FullViewField {
         return this.content;
     }
 
+    getLink() {
+        return this.link;
+    }
+
     hasContent() {
         return (this.content != "" && this.content != undefined);
     }
@@ -126,17 +203,17 @@ export class FullViewField {
         return (this.link != null);
     }
 
-    getLink() {
-        return this.link;
+    isOnlyLabel() {
+        return this.onlyLabel;
     }
-
 }
 
-export class FieldBuilder {
+export class ViewFieldBuilder {
 
     private _label: string;
     private _content: string;
     private _link: string;
+    private _onlyLabel: boolean = true;
 
     constructor() { }
 
@@ -153,6 +230,10 @@ export class FieldBuilder {
         return this._link;
     }
 
+    isOnlyLabel() {
+        return this._onlyLabel;
+    }
+
     label(label: string) {
         this._label = label;
         return this;
@@ -160,6 +241,7 @@ export class FieldBuilder {
 
     content(content: string) {
         this._content = content;
+        this._onlyLabel = false;
         return this;
     }
 
@@ -169,24 +251,8 @@ export class FieldBuilder {
     }
 
     build() {
-        return new FullViewField(this);
+        return new ViewField(this);
     }
-    
 }
 
-export class FullViewLine {
 
-    constructor (
-        private header: FullViewField,
-        private content:  Array<FullViewField>
-    ) { }
-    
-    getHeaderLabel() {
-        return this.header.getLabel();
-    }
-
-    getContent() {
-        return this.content;
-    }
-    
-}

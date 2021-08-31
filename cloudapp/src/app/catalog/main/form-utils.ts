@@ -19,7 +19,7 @@ export class SearchField {
     }
 
     getFieldLabel(): string {
-        this.fieldLabel = "Catalog.Form.Fields." + this.key;
+        this.fieldLabel = "UserControls.Fields." + this.key;
         return this.fieldLabel;
     }
 
@@ -45,14 +45,16 @@ export enum SearchType {
     Monographs = "Monographs",
     Serials = "Serials",
     Names = "Names",
-    UniformTitles = "UniformTitles"
+    UniformTitles = "UniformTitles",
+    Member = "Member"
 }
 
 export enum QueryParams {
-    fromIndex = "fromIndex",
-    toIndex = "toIndex",
-    searchType = "searchType",
-    databases = "dataBase"
+    PageIndex = "pageIndex",
+    PageSize = "pageSize",
+    SearchType = "searchType",
+    Databases = "dataBase",
+    ID = "ID"
 }
 
 export enum FieldSize {
