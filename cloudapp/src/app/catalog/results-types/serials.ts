@@ -274,7 +274,7 @@ export class SerialFullDisplay extends IDisplayLines {
             fieldsArray.push(new ViewFieldBuilder().content(this.record.PHYSP).build());
             fieldsArray.push(new ViewFieldBuilder().content(this.record.PHYSI).build());
             fieldsArray.push(new ViewFieldBuilder().content(this.record.PHYSS).build());
-            fieldsArray = this.setMiddleLabel(fieldsArray, ";");
+            fieldsArray = this.setSeparator(fieldsArray, ";");
             fieldsArray.push(new ViewFieldBuilder().label("+").content(this.record.PHYSA).build());
         this.addLine(new ViewFieldBuilder().label("PHYS").build(), fieldsArray);
         this.record.VT?.forEach(vt=>{
@@ -309,7 +309,7 @@ export class SerialFullDisplay extends IDisplayLines {
                 fieldsArray.push(new ViewFieldBuilder().content(al.AHDNG).build());
                 fieldsArray.push(new ViewFieldBuilder().content(al.AHDNGR).build());
                 fieldsArray.push(new ViewFieldBuilder().content(al.AHDNGVR).build());
-                fieldsArray = this.setMiddleLabel(fieldsArray, "||");
+                fieldsArray = this.setSeparator(fieldsArray, "||");
                 fieldsArray.push(new ViewFieldBuilder().content(al.AID).link(SearchType.Names).build());
                 fieldsArray.push(new ViewFieldBuilder().content(al.AF).build());
             this.addLine(new ViewFieldBuilder().label("AL").build(), fieldsArray);

@@ -128,7 +128,7 @@ export class UniformTitleFullDisplay extends IDisplayLines {
                 fieldsArray.push(new ViewFieldBuilder().content(sf.SFD).build());
                 fieldsArray.push(new ViewFieldBuilder().content(sf.SFR).build());
                 fieldsArray.push(new ViewFieldBuilder().content(sf.SFVR).build());
-                fieldsArray = this.setMiddleLabel(fieldsArray, "||");
+                fieldsArray = this.setSeparator(fieldsArray, "||");
             this.addLine(new ViewFieldBuilder().label("SF").build(), fieldsArray);
         });
         this.record.SAF?.forEach(saf=>{
@@ -137,7 +137,7 @@ export class UniformTitleFullDisplay extends IDisplayLines {
                 fieldsArray.push(new ViewFieldBuilder().content(saf.SAFR).build());
                 fieldsArray.push(new ViewFieldBuilder().content(saf.SAFVR).build());
                 fieldsArray.push(new ViewFieldBuilder().content(saf.SAFID).link(SearchType.UniformTitles).build());
-                fieldsArray = this.setMiddleLabel(fieldsArray, "||");
+                fieldsArray = this.setSeparator(fieldsArray, "||");
             this.addLine(new ViewFieldBuilder().label("SAF").build(), fieldsArray);
         });
         this.record.NOTE?.forEach(note=>{

@@ -125,13 +125,13 @@ export abstract class IDisplayLines {
         } return str;
     }
 
-    setMiddleLabel(fieldsArr: Array<ViewField>, label: string): Array<ViewField> {
+    setSeparator(fieldsArr: Array<ViewField>, separator: string): Array<ViewField> {
         let filteredArray = fieldsArr.filter(field => field.hasContent());
         let arrWithLabels = new Array<ViewField>();
         for (let i = 0; i < filteredArray.length; i++) {
             arrWithLabels.push(filteredArray[i]);
             if(i != filteredArray.length-1){
-                arrWithLabels.push(new ViewFieldBuilder().label(label).build());
+                arrWithLabels.push(new ViewFieldBuilder().label(separator).build());
             }
         }
         return arrWithLabels;
