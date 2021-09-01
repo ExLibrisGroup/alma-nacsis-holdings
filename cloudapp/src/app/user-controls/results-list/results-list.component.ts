@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
+import { Component, Input, Output, EventEmitter, ViewChild, AfterViewInit, OnChanges } from '@angular/core';
+import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { IDisplayLines } from '../../catalog/results-types/results-common';
 import { RecordSelection } from '../result-card/result-card.component';
 
@@ -10,7 +10,7 @@ import { RecordSelection } from '../result-card/result-card.component';
     styleUrls: ['./results-list.component.scss']
   })
 
-export class ResultsListComponent {
+export class ResultsListComponent implements OnChanges, AfterViewInit {
 
   @Input() numOfResults: number;
   @Input() resultsSummaryDisplay: Array<IDisplayLines> = new Array();
@@ -18,9 +18,24 @@ export class ResultsListComponent {
   @Output() onActionSelected = new EventEmitter<RecordSelection>();  
   @Output() onTitleSelected = new EventEmitter<number>();  
   @Output() onPageSelected = new EventEmitter<PageEvent>();  
+  
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  private recordIndex: number;
 
 
   constructor() { }
+
+  ngAfterViewInit() {
+    this.setRecordIndex();
+  }
+  
+  ngOnChanges() {
+    this.setRecordIndex();
+  }
+
+  setRecordIndex() {
+    this.recordIndex = this.paginator.pageIndex * this.paginator.pageSize;
+  }
 
   onActionsClick(selection: RecordSelection) {
     this.onActionSelected.emit(selection);
