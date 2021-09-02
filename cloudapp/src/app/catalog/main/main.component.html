@@ -44,9 +44,9 @@
 
 
 <ng-template #searchResults>
-  <results-list [numOfResults]="numOfResults" [resultsSummaryDisplay]="resultsSummaryDisplay"
-    [resultActionList]="resultActionList" (onActionSelected)="onActionsClick($event)"
-    (onTitleSelected)="onTitleClick($event)" (onPageSelected)="onPageAction($event)">
+  <results-list [numOfResults]="numOfResults" [pageIndex]="pageIndex" [pageSize]="pageSize"
+    [resultsSummaryDisplay]="resultsSummaryDisplay" [resultActionList]="resultActionList" 
+    (onActionSelected)="onActionsClick($event)" (onTitleSelected)="onTitleClick($event)" (onPageSelected)="onPageAction($event)">
   </results-list>
 </ng-template>
 

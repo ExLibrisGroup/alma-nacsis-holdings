@@ -8,6 +8,7 @@ export const BLANK_SPACE = "&nbsp;";
 export class NacsisCatalogResults {
     header: ResultsHeader;
     results: Array<BaseResult>;
+    queryParams: string;
 
     constructor(){ }
 
@@ -25,6 +26,14 @@ export class NacsisCatalogResults {
 
     setResults(arr: Array<BaseResult>) {
         this.results = arr;
+    }
+
+    getQueryParams() {
+        return this.queryParams;
+    }
+
+    setQueryParams(urlParams: string) {
+        this.queryParams = urlParams;
     }
 }
 
@@ -154,11 +163,14 @@ export class ViewLine {
         return this.content;
     }
     
-    public toString(): string{
+    protected toStringLine(): string{
         let lines = "";
         this.content.forEach(field => {
-            lines = lines + field.getLabel() + " ";
-            lines = lines + field.getContent() + " ";
+            if(field.getLabel() != undefined){
+                lines = lines + field.getLabel() + " ";
+            } if(field.getContent() != undefined){
+                lines = lines + field.getContent() + " ";
+            } 
         });
         return lines;
     }  

@@ -21,9 +21,7 @@ export class Name extends BaseResult {
 }
 
 export class NameSummary{
-    HDNGD: string = "";
-    HDNGR: string = "";
-    HDNGVR: string = "";
+    HDNG: NameHDNG[];
     ID: string = "";
 }
 
@@ -33,9 +31,7 @@ export class NameFull{
     CRTFA: string = "";
     RNWDT: string = "";
     RNWFA: string = "";
-    HDNGD: string = "";
-    HDNGR: string = "";
-    HDNGVR: string = "";
+    HDNG: NameHDNG[];
     LCAID: string = "";
     TYPE: string = "";
     PLACE: string = "";
@@ -43,6 +39,12 @@ export class NameFull{
     SF: NameSF[];
     SAF: NameSAF[];
     NOTE: NameNOTE[];
+}
+
+export class NameHDNG {
+    HDNGD: string = "";
+    HDNGR: string = "";
+    HDNGVR: string = "";
 }
 
 export class NameSF{
@@ -76,9 +78,9 @@ export class NameSummaryDisplay extends IDisplayLines{
 
     initTitleDisplay(): ViewLine {
         let fieldsArray = new Array<ViewField>();
-            fieldsArray.push(new ViewFieldBuilder().content(this.record.HDNGD).build());
-            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.HDNGR).build());
-            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.HDNGVR).build());
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.HDNG[0].HDNGD).build());
+            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.HDNG[0].HDNGR).build());
+            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.HDNG[0].HDNGVR).build());
         this.titleLine = new ViewLine(new ViewFieldBuilder().build(), fieldsArray.filter(field => field.hasContent() === true));
         return this.titleLine;
     }
@@ -111,9 +113,9 @@ export class NameFullDisplay extends IDisplayLines {
             fieldsArray.push(new ViewFieldBuilder().label("Modifying institution: ").content(this.record.RNWFA).link(SearchType.Member).build());
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
         fieldsArray = new Array<ViewField>();
-            fieldsArray.push(new ViewFieldBuilder().content(this.record.HDNGD).build());
-            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.HDNGR).build());
-            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.HDNGVR).build());
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.HDNG[0].HDNGD).build());
+            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.HDNG[0].HDNGR).build());
+            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.HDNG[0].HDNGVR).build());
         this.addLine(new ViewFieldBuilder().label("HDNG").build(), fieldsArray);
         fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().content(this.record.LCAID).build());

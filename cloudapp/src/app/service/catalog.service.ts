@@ -21,11 +21,8 @@ import { AlmaApiService, IntegrationProfile } from './alma.api.service';
 })
 export class CatalogService extends BaseService {    
 
-    private resultsHeader: ResultsHeader;
     private searchResultsMap: Map<SearchType, NacsisCatalogResults>;
-    private integrationProfile: string;
-
-    public queryParams: string = "";
+    public currentSearchType: SearchType;
 
     constructor(
         protected eventsService: CloudAppEventsService,
@@ -50,8 +47,9 @@ export class CatalogService extends BaseService {
         return this.searchResultsMap.get(type);
     }
 
-    setSearchResultsMap(searchType: SearchType, response: any) {
+    setSearchResultsMap(searchType: SearchType, response: any, urlParams: string) {
         this.searchResultsMap.get(searchType).setHeader(response);
+        this.searchResultsMap.get(searchType).setQueryParams(urlParams);
         this.searchResultsMap.get(searchType).setResults(new Array());
         response.records.forEach(record => {
             this.searchResultsMap.get(searchType).getResults().push(this.resultsTypeFactory(searchType, record));
@@ -61,9 +59,13 @@ export class CatalogService extends BaseService {
     clearAllSearchResults(){
         this.initResultsMap();
     }
+
+    setCurrentSearchType(searchType: SearchType) {
+        this.currentSearchType = searchType;
+    }
     
     getQueryParams() {
-        return this.queryParams;
+        return this.searchResultsMap.get(this.currentSearchType).getQueryParams();
     }
 
     setBaseUrl(initData: InitData) : string {
@@ -72,14 +74,13 @@ export class CatalogService extends BaseService {
         return baseUrl;
     }
 
-    getSearchResultsFromNacsis(queryParams: string, searchType:SearchType){
+    getSearchResultsFromNacsis(queryParams: string){
 
         let fullUrl: string;
-        this.queryParams = queryParams;
         
         return this.getInitData().pipe(
             mergeMap(initData => {
-                fullUrl = this.setBaseUrl(initData) + this.queryParams;
+                fullUrl = this.setBaseUrl(initData) + queryParams;
                 return this.getAuthToken()
              }),
              mergeMap(authToken => {

@@ -13,6 +13,8 @@ import { RecordSelection } from '../result-card/result-card.component';
 export class ResultsListComponent implements OnChanges, AfterViewInit {
 
   @Input() numOfResults: number;
+  @Input() pageIndex: number;
+  @Input() pageSize: number;
   @Input() resultsSummaryDisplay: Array<IDisplayLines> = new Array();
   @Input() resultActionList: Array<string> = new Array();
   @Output() onActionSelected = new EventEmitter<RecordSelection>();  
@@ -26,22 +28,30 @@ export class ResultsListComponent implements OnChanges, AfterViewInit {
   constructor() { }
 
   ngAfterViewInit() {
-    this.setRecordIndex();
+    this.setPageVariables();
   }
   
   ngOnChanges() {
-    this.setRecordIndex();
+    if(this.paginator == undefined) { // For case that ngOnChanges() is called at initialization
+      this.recordIndex = 0;
+    } else{
+      this.setPageVariables();
+    }
   }
 
-  setRecordIndex() {
-    this.recordIndex = this.paginator.pageIndex * this.paginator.pageSize;
+  setPageVariables() {
+    this.paginator.pageIndex = this.pageIndex;
+    this.paginator.pageSize = this.pageSize;
+    this.recordIndex = this.pageIndex * this.pageSize;
   }
 
   onActionsClick(selection: RecordSelection) {
+    selection.recordIndex = selection.recordIndex - this.recordIndex; // Geting omly the for loop's index (i)
     this.onActionSelected.emit(selection);
   }
 
   onTitleClick(recordIndex: number) {
+    recordIndex = recordIndex - this.recordIndex; // Geting omly the for loop's index (i)
     this.onTitleSelected.emit(recordIndex);
   }
 
