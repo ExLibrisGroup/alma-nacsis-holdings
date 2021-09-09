@@ -45,8 +45,9 @@
 
 <ng-template #searchResults>
   <results-list [numOfResults]="numOfResults" [pageIndex]="pageIndex" [pageSize]="pageSize"
-    [resultsSummaryDisplay]="resultsSummaryDisplay" [resultActionList]="resultActionList" 
-    (onActionSelected)="onActionsClick($event)" (onTitleSelected)="onTitleClick($event)" (onPageSelected)="onPageAction($event)">
+    [resultsSummaryDisplay]="resultsSummaryDisplay" [resultActionList]="resultActionList"
+    (onActionSelected)="onActionsClick($event)" (onTitleSelected)="onTitleClick($event)"
+    (onPageSelected)="onPageAction($event)">
   </results-list>
 </ng-template>
 
@@ -80,8 +81,10 @@
       <button class="close-button" (click)="onFullViewLinkClose()">
         <i class="uxf-icon uxf-close eca-button" aria-label="Delete" (click)="delete(i)"></i>
       </button>
-      <full-view-display [resultFullDisplay]="resultFullLinkDisplay">
-      </full-view-display>
+      <div *ngIf="resultFullLinkDisplay != null else noResults">
+        <full-view-display [resultFullDisplay]="resultFullLinkDisplay">
+        </full-view-display>
+      </div>
     </div>
   </div>
 

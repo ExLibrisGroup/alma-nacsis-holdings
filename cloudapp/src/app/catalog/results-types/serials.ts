@@ -228,6 +228,9 @@ export class SerialFullDisplay extends IDisplayLines {
             fieldsArray.push(new ViewFieldBuilder().label("Update date: ").content(this.dateFormatDisplay(this.record.RNWDT)).build());
             fieldsArray.push(new ViewFieldBuilder().label("Modifying institution: ").content(this.record.RNWFA).link(SearchType.Member).build());
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
+        fieldsArray = new Array<ViewField>()
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.ID).build());
+        this.addLine(new ViewFieldBuilder().label("ID").build(), fieldsArray);
         fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().label("ISSN: ").content(this.record.ISSN).build());
             fieldsArray.push(new ViewFieldBuilder().label("XISSN: ").content(this.record.XISSN).build());

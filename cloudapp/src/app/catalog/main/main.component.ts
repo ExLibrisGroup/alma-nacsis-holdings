@@ -8,14 +8,10 @@ import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
 
 import { NacsisCatalogResults, BaseResult, IDisplayLines } from '../results-types/results-common'
-import { MonographSummaryDisplay, MonographFullDisplay } from '../results-types/monographs'
-import { SerialSummaryDisplay, SerialFullDisplay } from '../results-types/serials';
-import { NameSummaryDisplay, NameFullDisplay } from '../results-types/name';
-import { UniformTitleFullDisplay, UniformTitleSummaryDisplay } from '../results-types/uniformTitle';
-import { HoldingsService } from '../../service/holdings.service';
 import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
 import { RecordSelection } from '../../user-controls/result-card/result-card.component';
 import { FullViewLink } from '../full-view-display/full-view-display.component';
+import { HoldingsService } from '../../service/holdings.service';
 
 
 
@@ -54,7 +50,6 @@ export class CatalogMainComponent implements AfterViewInit {
     private isColapsedMode: boolean = true;
 
     // Search variables
-    private urlParams: string = "";
     private catalogResultsData: NacsisCatalogResults;
     private numOfResults: number;
     private pageIndex: number = 0;
@@ -145,16 +140,13 @@ export class CatalogMainComponent implements AfterViewInit {
         let urlParams = "";
         let valuableFields = this.allFieldsMap.get(this.currentSearchType).filter(field => (field.getFormControl().value != null) && (field.getFormControl().value != ""));
         if (valuableFields.length > 0){
-            this.pageIndex = 0;
-            this.pageSize = 20;
-            urlParams = urlParams + this.generatePageParams();
+            urlParams = urlParams + QueryParams.PageIndex + "=0&" + QueryParams.PageSize + "=20";
             urlParams = urlParams + "&" + QueryParams.SearchType + "=" + this.currentSearchType;
             urlParams =  urlParams + "&" + QueryParams.Databases + "=" + this.currentDatabase;
             valuableFields.forEach(field => {
                     urlParams =  urlParams + "&" + field.getKey();
                     urlParams =  urlParams + "=" + field.getFormControl().value;
             });
-            this.urlParams = urlParams;
             this.getResultsFromNacsis(urlParams, false);
         } else {
            return;
@@ -171,16 +163,22 @@ export class CatalogMainComponent implements AfterViewInit {
                     if (catalogResults.status === this.catalogService.OkStatus) {
                         if(!isFullViewLink) {
                             if (catalogResults.totalRecords >= 1) {
-                                this.catalogService.setSearchResultsMap(this.currentSearchType, catalogResults, urlParams)
+                                this.catalogService.setSearchResultsMap(this.currentSearchType, catalogResults, urlParams);
+                                this.setPageIndexAndSize(urlParams);
                                 this.setSearchResultsDisplay();
                             } else {
                                 this.numOfResults = 0;
                                 this.resultsTemplateFactory();
                             }
                         } else {
-                            let baseResult = this.catalogService.resultsTypeFactory(this.currentSearchType, catalogResults.records[0]);
-                            this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
-                            this.isRightTableOpen = true;
+                            if (catalogResults.totalRecords >= 1) {
+                                let baseResult = this.catalogService.resultsTypeFactory(this.currentSearchType, catalogResults.records[0]);
+                                this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
+                                this.isRightTableOpen = true;
+                            } else {
+                                this.resultFullLinkDisplay == null;
+                                this.isRightTableOpen = true;
+                            }
                         }
                     } else {
                         this.alert.error(catalogResults.errorMessage, {keepAfterRouteChange:true});  
@@ -343,16 +341,22 @@ export class CatalogMainComponent implements AfterViewInit {
 
     /***   Pagination    ***/
     
-    generatePageParams(): string {
-        return QueryParams.PageIndex + "=" + this.pageIndex + "&" + QueryParams.PageSize + "=" + this.pageSize;
+    setPageIndexAndSize(urlParams: string) {
+        let pageIndexParam = QueryParams.PageIndex + "=";
+        let pageSizeParam = "&" + QueryParams.PageSize + "=";
+        let searchTypeParam = "&" + QueryParams.SearchType;
+        this.pageIndex = Number(urlParams.split(pageIndexParam).pop().split(pageSizeParam)[0]);
+        this.pageSize = Number(urlParams.split(pageSizeParam).pop().split(searchTypeParam)[0]);
     }
 
     onPageAction(pageEvent: PageEvent) {
-        this.pageIndex = pageEvent.pageIndex;
-        this.pageSize = pageEvent.pageSize;
-        let pageParams = this.generatePageParams();
-        let nextPagrUrlParams = this.urlParams.replace("pageIndex=0&pageSize=20", pageParams);
-        this.getResultsFromNacsis(nextPagrUrlParams, false);
+        let urlParams = this.catalogService.getQueryParams(this.currentSearchType);
+        let newIndexStr = QueryParams.PageIndex + "=" + pageEvent.pageIndex + "&" + QueryParams.PageSize;
+        urlParams = urlParams.replace(/pageIndex=.*pageSize/, newIndexStr);
+        let newSizeStr = QueryParams.PageSize + "=" + pageEvent.pageSize + "&" + QueryParams.SearchType;
+        urlParams = urlParams.replace(/pageSize=.*searchType/, newSizeStr);
+
+        this.getResultsFromNacsis(urlParams, false);
     }
 
 

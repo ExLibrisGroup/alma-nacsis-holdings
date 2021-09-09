@@ -66,7 +66,7 @@ export class AlmaApiService {
     if(this.integrationProfile != null && this.integrationProfile != undefined) {
       return of(this.integrationProfile)
     }
-
+    let libraryID: string = null;
     let repositoryImportProfile: string = null;
     let authorityImportProfileNames: string = null;
     let authorityImportProfileUniformTitles: string = null;
@@ -75,6 +75,7 @@ export class AlmaApiService {
       mergeMap(response => { 
         // extract integration profile
         let nacsisIntegrationProfile = response.integration_profile[0]; // assume can be only one CENTRAL_CATALOG_INTEGRATION
+        libraryID = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_INFORMATION_B" && param.name.value == "nacsisLibraryId")[0].value;
         // extract import profiles
         let ContributionConfigurationParams = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_CONTRIBUTION_CONFIGURATION");
         repositoryImportProfile = ContributionConfigurationParams.filter(param => param.name.value == "repositoryImportProfile")[0].value; 
@@ -92,6 +93,7 @@ export class AlmaApiService {
         
         this.integrationProfile = new IntegrationProfile();
         this.integrationProfile.libraryCode = libraryCode;
+        this.integrationProfile.libraryID = libraryID;
         this.integrationProfile.systemPrefix = systemPrefix;
         this.integrationProfile.repositoryImportProfile = repositoryImportProfile;
         this.integrationProfile.authorityImportProfileNames = authorityImportProfileNames;
@@ -105,6 +107,7 @@ export class AlmaApiService {
 
 export class IntegrationProfile {
     libraryCode: string;
+    libraryID: string;
     systemPrefix: string;
     repositoryImportProfile: string;
     authorityImportProfileNames: string;

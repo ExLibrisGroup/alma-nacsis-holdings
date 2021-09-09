@@ -231,12 +231,14 @@ export class MonographFullDisplay extends IDisplayLines {
     initContentDisplay(){
         this.viewLines = new Array<ViewLine>();
         let fieldsArray = new Array<ViewField>()
-        fieldsArray = new Array<ViewField>()
             fieldsArray.push(new ViewFieldBuilder().label("Create date: ").content(this.dateFormatDisplay(this.record.CRTDT)).build());
             fieldsArray.push(new ViewFieldBuilder().label("Creating institution: ").content(this.record.CRTFA).link(SearchType.Member).build());
             fieldsArray.push(new ViewFieldBuilder().label("Update date: ").content(this.dateFormatDisplay(this.record.RNWDT)).build());
             fieldsArray.push(new ViewFieldBuilder().label("Modifying institution: ").content(this.record.RNWFA).link(SearchType.Member).build());
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
+        fieldsArray = new Array<ViewField>()
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.ID).build());
+        this.addLine(new ViewFieldBuilder().label("ID").build(), fieldsArray);
         fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().label("ISSN: ").content(this.record.ISSN).build());
             fieldsArray.push(new ViewFieldBuilder().label("NBN: ").content(this.record.NBN).build());

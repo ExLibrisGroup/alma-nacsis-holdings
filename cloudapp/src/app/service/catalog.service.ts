@@ -64,8 +64,12 @@ export class CatalogService extends BaseService {
         this.currentSearchType = searchType;
     }
     
-    getQueryParams() {
-        return this.searchResultsMap.get(this.currentSearchType).getQueryParams();
+    getQueryParams(searchType?: SearchType) {
+        if(searchType !== undefined) {
+            return this.searchResultsMap.get(searchType).getQueryParams();
+        } else {
+            return this.searchResultsMap.get(this.currentSearchType).getQueryParams();
+        }
     }
 
     setBaseUrl(initData: InitData) : string {
