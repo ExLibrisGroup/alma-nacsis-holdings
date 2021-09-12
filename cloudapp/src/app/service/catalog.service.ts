@@ -117,9 +117,9 @@ export class CatalogService extends BaseService {
     importRecordToAlma(searchType: SearchType, rawData: string) {
         return this.almaApi.getIntegrationProfile().pipe(                
             mergeMap(integrationProfile => {
-                let integrationProfileID = this.integrationProfileFactory(searchType, integrationProfile);
-                let body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bib><record_format>catp</record_format><record><![CDATA[" + rawData + "]]></record></bib>";
-                return this.http.post<any>("/almaws/v1/bibs?import_profile="+integrationProfileID, body)
+                let factoryValues = this.integrationProfileFactory(searchType, integrationProfile);
+                let body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><" + factoryValues.typeTag + "><record_format>catp</record_format><record><![CDATA[" + rawData + "]]></record></" + factoryValues.typeTag + ">";
+                return this.http.post<any>("/almaws/v1/bibs" + factoryValues.urlType + "?import_profile=" + factoryValues.ID, body)
             }),
             mergeMap(response => {
                 return of(response);
@@ -131,14 +131,22 @@ export class CatalogService extends BaseService {
     integrationProfileFactory(searchType: SearchType, integrationProfile: IntegrationProfile) {
         switch(searchType) {
             case (SearchType.Monographs || SearchType.Serials):
-                return integrationProfile.repositoryImportProfile;
+                return { typeTag: "bib", urlType: "", ID: integrationProfile.repositoryImportProfile };
             case (SearchType.Names):
-                return integrationProfile.authorityImportProfileNames;
+                return { typeTag: "authority", urlType: "/authorities", ID: integrationProfile.authorityImportProfileNames };
             case (SearchType.UniformTitles):
-                return integrationProfile.authorityImportProfileUniformTitles;
+                return { typeTag: "authority", urlType: "/authorities", ID: integrationProfile.authorityImportProfileUniformTitles};
         }
     }
 
 }
 
 
+/* 
+*** BIB ***
+url - /almaws/v1/bibs?
+tags - <bib>
+*** AUTH ***
+url - almaws/v1/bibs/authorities?
+tags - <authority>
+*/
