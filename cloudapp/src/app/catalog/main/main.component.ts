@@ -31,12 +31,18 @@ export class CatalogMainComponent implements AfterViewInit {
         [SearchType.UniformTitles, ['TITLE', 'USMARCT']]
     ]);
     public allFieldsMap = new Map([
-        [SearchType.Monographs, [new SearchField(FieldName.TITLE, FieldSize.large), new SearchField(FieldName.FTITLE), new SearchField(FieldName.PTBL), new SearchField(FieldName.VOL), new SearchField(FieldName.TiPtVo), new SearchField(FieldName.AUTH), new SearchField(FieldName.ISSN), new SearchField(FieldName.ISBN), new SearchField(FieldName.NBN), new SearchField(FieldName.NDLCN), new SearchField(FieldName.PUB), new SearchField(FieldName.YEAR), new SearchField(FieldName.PLACE), new SearchField(FieldName.CNTRY), new SearchField(FieldName.LANG), new SearchField(FieldName.SH), new SearchField(FieldName.AKEY), new SearchField(FieldName.ID), new SearchField(FieldName.PID)]],
-        [SearchType.Serials, [new SearchField(FieldName.TITLE), new SearchField(FieldName.FTITLE), new SearchField(FieldName.AUTH), new SearchField(FieldName.ISSN), new SearchField(FieldName.CODEN), new SearchField(FieldName.NDLPN), new SearchField(FieldName.PUB), new SearchField(FieldName.YEAR), new SearchField(FieldName.PLACE), new SearchField(FieldName.CNTRY), new SearchField(FieldName.LANG), new SearchField(FieldName.SH), new SearchField(FieldName.AKEY), new SearchField(FieldName.ID), new SearchField(FieldName.FID)]],
+        [SearchType.Monographs, [new SearchField(FieldName.TITLE, FieldSize.large), new SearchField(FieldName.FTITLE), new SearchField(FieldName.PTBL), new SearchField(FieldName.VOL), new SearchField(FieldName.AUTH), new SearchField(FieldName.ISSN), new SearchField(FieldName.ISBN), new SearchField(FieldName.NBN), new SearchField(FieldName.NDLCN), new SearchField(FieldName.LCCN), new SearchField(FieldName.PUB), new SearchField(FieldName.YEAR), new SearchField(FieldName.PLACE), new SearchField(FieldName.CNTRY), new SearchField(FieldName.LANG), new SearchField(FieldName.SH), new SearchField(FieldName.AKEY), new SearchField(FieldName.ID), new SearchField(FieldName.PID)]],
+        [SearchType.Serials, [new SearchField(FieldName.TITLE), new SearchField(FieldName.FTITLE), new SearchField(FieldName.AUTH), new SearchField(FieldName.ISSN), new SearchField(FieldName.CODEN), new SearchField(FieldName.NDLPN), new SearchField(FieldName.LCCN), new SearchField(FieldName.PUB), new SearchField(FieldName.YEAR), new SearchField(FieldName.PLACE), new SearchField(FieldName.CNTRY), new SearchField(FieldName.LANG), new SearchField(FieldName.SH), new SearchField(FieldName.AKEY), new SearchField(FieldName.ID), new SearchField(FieldName.FID)]],
         [SearchType.Names, [new SearchField(FieldName.AUTH), new SearchField(FieldName.AKEY), new SearchField(FieldName.PLACE), new SearchField(FieldName.DATE), new SearchField(FieldName.ID), new SearchField(FieldName.SAID)]],
         [SearchType.UniformTitles, [new SearchField(FieldName.TITLE), new SearchField(FieldName.AUTH), new SearchField(FieldName.AKEY), new SearchField(FieldName.ID), new SearchField(FieldName.SAID)]]
     ]);
-    private resultActionList: Array<string> = ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import', 'Catalog.Results.Actions.ViewHoldings']
+    public ACTIONS_MENU_LIST = new Map([
+        [SearchType.Monographs, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import', 'Catalog.Results.Actions.ViewHoldings']],
+        [SearchType.Serials, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import', 'Catalog.Results.Actions.ViewHoldings']],
+        [SearchType.Names, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import']],
+        [SearchType.UniformTitles, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import']]
+    ]);
+    // private resultActionList: Array<string> = ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import', 'Catalog.Results.Actions.ViewHoldings']
 
 
     // Selection variables
@@ -209,6 +215,10 @@ export class CatalogMainComponent implements AfterViewInit {
 
 
     /***  Summary View Section  ***/
+
+    private getActionMenu() {
+        return this.ACTIONS_MENU_LIST.get(this.currentSearchType);
+    }
 
     private setSearchResultsDisplay(){
         this.catalogResultsData = this.catalogService.getSearchResults(this.currentSearchType);

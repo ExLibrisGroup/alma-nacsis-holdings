@@ -91,7 +91,8 @@
       "Errors": {
         "NoNoldings": "No holdings record were found",
         "GetFailed": "Get holdings failed",
-        "DeleteFailed": "Delete holding failed"
+        "DeleteFailed": "Delete holding failed",
+        "Uneditable": "This holding is not a member of +++ therefore can't be edit"
       }
     },
     "Form": {
@@ -146,12 +147,11 @@
       "FTITLE": "FTITLE",
       "PTBL": "PTBL",
       "VOL": "VOL",
-      "TiPtVo": "TITLE / PTBL / VOL",
       "AUTH": "AUTH",
       "ISSN": "ISSN",
       "ISBN": "ISBN",
       "NBN": "NBN",
-      "NDLCN": "NDLCN / LCCN / OTHN",
+      "NDLCN": "NDLCN",
       "PUB": "PUB",
       "YEAR": "YEAR",
       "PLACE": "PLACE",
@@ -162,7 +162,8 @@
       "ID": "ID",
       "PID": "PID",
       "CODEN": "CODEN",
-      "NDLPN": "NDLPN / LCCN",
+      "NDLPN": "NDLPN",
+      "LCCN": "LCCN",
       "FID": "FID",
       "DATE": "DATE",
       "SAID": "SAID"
