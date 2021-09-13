@@ -30,11 +30,11 @@ export class CatalogMainComponent implements AfterViewInit {
         [SearchType.Names, ['NAME', 'JPMARCA', 'USMARCA']],
         [SearchType.UniformTitles, ['TITLE', 'USMARCT']]
     ]);
-    public allFieldsMap = new Map([
-        [SearchType.Monographs, [new SearchField(FieldName.TITLE, FieldSize.large), new SearchField(FieldName.FTITLE), new SearchField(FieldName.PTBL), new SearchField(FieldName.VOL), new SearchField(FieldName.AUTH), new SearchField(FieldName.ISSN), new SearchField(FieldName.ISBN), new SearchField(FieldName.NBN), new SearchField(FieldName.NDLCN), new SearchField(FieldName.LCCN), new SearchField(FieldName.PUB), new SearchField(FieldName.YEAR), new SearchField(FieldName.PLACE), new SearchField(FieldName.CNTRY), new SearchField(FieldName.LANG), new SearchField(FieldName.SH), new SearchField(FieldName.AKEY), new SearchField(FieldName.ID), new SearchField(FieldName.PID)]],
-        [SearchType.Serials, [new SearchField(FieldName.TITLE), new SearchField(FieldName.FTITLE), new SearchField(FieldName.AUTH), new SearchField(FieldName.ISSN), new SearchField(FieldName.CODEN), new SearchField(FieldName.NDLPN), new SearchField(FieldName.LCCN), new SearchField(FieldName.PUB), new SearchField(FieldName.YEAR), new SearchField(FieldName.PLACE), new SearchField(FieldName.CNTRY), new SearchField(FieldName.LANG), new SearchField(FieldName.SH), new SearchField(FieldName.AKEY), new SearchField(FieldName.ID), new SearchField(FieldName.FID)]],
-        [SearchType.Names, [new SearchField(FieldName.AUTH), new SearchField(FieldName.AKEY), new SearchField(FieldName.PLACE), new SearchField(FieldName.DATE), new SearchField(FieldName.ID), new SearchField(FieldName.SAID)]],
-        [SearchType.UniformTitles, [new SearchField(FieldName.TITLE), new SearchField(FieldName.AUTH), new SearchField(FieldName.AKEY), new SearchField(FieldName.ID), new SearchField(FieldName.SAID)]]
+    public ALL_SEARCH_FIELDS_MAP = new Map([
+        [SearchType.Monographs, this.initMonographsSearchFields()],
+        [SearchType.Serials, this.initSerialsSearchFields()], 
+        [SearchType.Names, this.initNamesSearchFields()], 
+        [SearchType.UniformTitles, this.initUniformTitlesSearchFields()] 
     ]);
     public ACTIONS_MENU_LIST = new Map([
         [SearchType.Monographs, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import', 'Catalog.Results.Actions.ViewHoldings']],
@@ -42,7 +42,6 @@ export class CatalogMainComponent implements AfterViewInit {
         [SearchType.Names, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import']],
         [SearchType.UniformTitles, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import']]
     ]);
-    // private resultActionList: Array<string> = ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import', 'Catalog.Results.Actions.ViewHoldings']
 
 
     // Selection variables
@@ -72,7 +71,6 @@ export class CatalogMainComponent implements AfterViewInit {
     @ViewChild('noResults') noResultsTmpl:TemplateRef<any>;
     @ViewChild('fullRecord') fullRecordTmpl:TemplateRef<any>;
     private currentResulsTmpl: TemplateRef<any>;
-
 
 
     constructor(
@@ -112,11 +110,11 @@ export class CatalogMainComponent implements AfterViewInit {
     }
 
     getSearchFields(): Array<SearchField> {
-        return this.allFieldsMap.get(this.currentSearchType);
+        return this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType);
     }
 
     clear() {
-        this.allFieldsMap.get(this.currentSearchType).forEach(searchField => {
+        this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).forEach(searchField => {
             searchField.getFormControl().setValue(null)
         });        
     }
@@ -144,7 +142,7 @@ export class CatalogMainComponent implements AfterViewInit {
     search() {
         // Generating the URL by the fields' Form Control
         let urlParams = "";
-        let valuableFields = this.allFieldsMap.get(this.currentSearchType).filter(field => (field.getFormControl().value != null) && (field.getFormControl().value != ""));
+        let valuableFields = this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).filter(field => (field.getFormControl().value != null) && (field.getFormControl().value != ""));
         if (valuableFields.length > 0){
             urlParams = urlParams + QueryParams.PageIndex + "=0&" + QueryParams.PageSize + "=20";
             urlParams = urlParams + "&" + QueryParams.SearchType + "=" + this.currentSearchType;
@@ -380,7 +378,7 @@ export class CatalogMainComponent implements AfterViewInit {
         this.pageSize = paramsMap.get(QueryParams.PageSize);
         this.currentSearchType = SearchType[paramsMap.get(QueryParams.SearchType)];
         this.currentDatabase = paramsMap.get(QueryParams.Databases);
-        this.allFieldsMap.get(this.currentSearchType).forEach(field => {
+        this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).forEach(field => {
             if(paramsMap.has(field.getKey())){
                 field.setFormControl(paramsMap.get(field.getKey()));
             }
@@ -389,4 +387,62 @@ export class CatalogMainComponent implements AfterViewInit {
 
     
 
+    /***  initsilizeing the search fields   ***/
+
+    initMonographsSearchFields(): Array<SearchField> {
+        return new Array(new SearchField(FieldName.TITLE, FieldSize.fullWidth), 
+            new SearchField(FieldName.FTITLE, FieldSize.fullWidth), 
+            new SearchField(FieldName.PTBL, FieldSize.fullWidth), 
+            new SearchField(FieldName.AUTH, FieldSize.fullWidth), 
+            new SearchField(FieldName.VOL, FieldSize.large), 
+            new SearchField(FieldName.AKEY, FieldSize.large), 
+            new SearchField(FieldName.PUB, FieldSize.large), 
+            new SearchField(FieldName.YEAR, FieldSize.large), 
+            new SearchField(FieldName.PLACE, FieldSize.medium), 
+            new SearchField(FieldName.CNTRY, FieldSize.medium), 
+            new SearchField(FieldName.LANG, FieldSize.medium), 
+            new SearchField(FieldName.SH, FieldSize.medium), 
+            new SearchField(FieldName.ID, FieldSize.medium), 
+            new SearchField(FieldName.PID, FieldSize.medium), 
+            new SearchField(FieldName.ISSN, FieldSize.small), 
+            new SearchField(FieldName.ISBN, FieldSize.small), 
+            new SearchField(FieldName.NBN, FieldSize.small), 
+            new SearchField(FieldName.NDLCN, FieldSize.small), 
+            new SearchField(FieldName.LCCN, FieldSize.small));
+    }
+
+    initSerialsSearchFields(): Array<SearchField> {
+        return new Array(new SearchField(FieldName.TITLE, FieldSize.fullWidth), 
+            new SearchField(FieldName.FTITLE, FieldSize.fullWidth), 
+            new SearchField(FieldName.AUTH, FieldSize.fullWidth), 
+            new SearchField(FieldName.PUB, FieldSize.large), 
+            new SearchField(FieldName.YEAR, FieldSize.large), 
+            new SearchField(FieldName.PLACE, FieldSize.medium), 
+            new SearchField(FieldName.CNTRY, FieldSize.medium), 
+            new SearchField(FieldName.LANG, FieldSize.medium), 
+            new SearchField(FieldName.SH, FieldSize.medium),
+            new SearchField(FieldName.AKEY, FieldSize.medium), 
+            new SearchField(FieldName.ID, FieldSize.medium), 
+            new SearchField(FieldName.FID, FieldSize.small),
+            new SearchField(FieldName.ISSN, FieldSize.small), 
+            new SearchField(FieldName.CODEN, FieldSize.small), 
+            new SearchField(FieldName.NDLPN, FieldSize.small), 
+            new SearchField(FieldName.LCCN, FieldSize.small));
+    }
+    initNamesSearchFields(): Array<SearchField> {
+        return new Array(new SearchField(FieldName.AUTH, FieldSize.fullWidth), 
+            new SearchField(FieldName.ID, FieldSize.large), 
+            new SearchField(FieldName.SAID, FieldSize.large),
+            new SearchField(FieldName.AKEY, FieldSize.medium), 
+            new SearchField(FieldName.PLACE, FieldSize.medium), 
+            new SearchField(FieldName.DATE, FieldSize.medium));
+    }
+
+    initUniformTitlesSearchFields(): Array<SearchField> {
+        return new Array(new SearchField(FieldName.TITLE, FieldSize.fullWidth), 
+            new SearchField(FieldName.AUTH, FieldSize.fullWidth), 
+            new SearchField(FieldName.AKEY, FieldSize.medium), 
+            new SearchField(FieldName.ID, FieldSize.medium), 
+            new SearchField(FieldName.SAID, FieldSize.medium));
+    }
 }

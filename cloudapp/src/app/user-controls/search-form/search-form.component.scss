@@ -3,22 +3,35 @@
 }
 
 .form-card-parent {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  column-gap: 20px;
-  row-gap: 1em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  column-gap: 30px;
   background-color: whitesmoke !important;
   ::ng-deep .mat-form-field-wrapper {
-      padding-bottom: 0px !important;
+    padding-bottom: 5px !important;
   }
 }
 
-.form-card-child-large{
-  display: block;
-  grid-column-start: 1;
-  grid-column-end: -1;
+.form-card-field-full-width {
+  width: 100%;
 }
 
-.form-card-child-regular{
-  display: block;
+.form-card-field-large {
+  width: 45%;
+  flex-grow: 1;
+  min-width: 200px;
 }
+
+.form-card-field-medium {
+  width: 30%;
+  flex-grow: 1;
+  min-width: 200px;
+}
+
+.form-card-field-small {
+  width: 17%;
+  flex-grow: 2;
+  min-width: 100px;
+}
+

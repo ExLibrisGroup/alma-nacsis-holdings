@@ -6,7 +6,7 @@ export class SearchField {
     key: FieldName;
     fieldLabel: string;
     formControl: FormControl;
-    fieldLength: FieldSize = FieldSize.regular;
+    fieldLength: FieldSize;
 
     constructor(key: FieldName, fieldSize?: FieldSize){
         this.key = key;
@@ -58,8 +58,10 @@ export enum QueryParams {
 }
 
 export enum FieldSize {
-    regular = "form-card-child-regular",
-    large = "form-card-child-large"
+    fullWidth = "form-card-field-full-width",
+    large = "form-card-field-large",
+    medium = "form-card-field-medium",
+    small = "form-card-field-small"
 }
 
 export enum FieldName {
