@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { SearchType } from '../main/form-utils';
+import { SearchType } from '../../user-controls/search-form/search-form-utils';
 
 
 @Component({

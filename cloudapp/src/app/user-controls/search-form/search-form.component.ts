@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { SearchField } from '../../catalog/main/form-utils';
+import { SearchField } from './search-form-utils';
 import { MatSelectChange } from '@angular/material/select';
 
 

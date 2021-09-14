@@ -1,5 +1,5 @@
 import { Component, AfterViewInit , ViewChild, TemplateRef } from '@angular/core';
-import { SearchField, SearchType, FieldSize, FieldName, QueryParams } from './form-utils';
+import { SearchType, SearchField, FieldSize, FieldName } from '../../user-controls/search-form/search-form-utils';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { CatalogService } from '../../service/catalog.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
@@ -39,8 +39,8 @@ export class CatalogMainComponent implements AfterViewInit {
     public ACTIONS_MENU_LIST = new Map([
         [SearchType.Monographs, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import', 'Catalog.Results.Actions.ViewHoldings']],
         [SearchType.Serials, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import', 'Catalog.Results.Actions.ViewHoldings']],
-        [SearchType.Names, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import']],
-        [SearchType.UniformTitles, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import']]
+        [SearchType.Names, ['Catalog.Results.Actions.View' /* , 'Catalog.Results.Actions.Import' */]],
+        [SearchType.UniformTitles, ['Catalog.Results.Actions.View'/* , 'Catalog.Results.Actions.Import' */]]
     ]);
 
 
@@ -387,7 +387,7 @@ export class CatalogMainComponent implements AfterViewInit {
 
     
 
-    /***  initsilizeing the search fields   ***/
+    /***  initializing the search fields   ***/
 
     initMonographsSearchFields(): Array<SearchField> {
         return new Array(new SearchField(FieldName.TITLE, FieldSize.fullWidth), 
@@ -415,19 +415,19 @@ export class CatalogMainComponent implements AfterViewInit {
         return new Array(new SearchField(FieldName.TITLE, FieldSize.fullWidth), 
             new SearchField(FieldName.FTITLE, FieldSize.fullWidth), 
             new SearchField(FieldName.AUTH, FieldSize.fullWidth), 
-            new SearchField(FieldName.PUB, FieldSize.large), 
-            new SearchField(FieldName.YEAR, FieldSize.large), 
-            new SearchField(FieldName.PLACE, FieldSize.medium), 
-            new SearchField(FieldName.CNTRY, FieldSize.medium), 
-            new SearchField(FieldName.LANG, FieldSize.medium), 
-            new SearchField(FieldName.SH, FieldSize.medium),
-            new SearchField(FieldName.AKEY, FieldSize.medium), 
-            new SearchField(FieldName.ID, FieldSize.medium), 
-            new SearchField(FieldName.FID, FieldSize.small),
             new SearchField(FieldName.ISSN, FieldSize.small), 
             new SearchField(FieldName.CODEN, FieldSize.small), 
             new SearchField(FieldName.NDLPN, FieldSize.small), 
-            new SearchField(FieldName.LCCN, FieldSize.small));
+            new SearchField(FieldName.LCCN, FieldSize.small),
+            new SearchField(FieldName.PUB, FieldSize.large), 
+            new SearchField(FieldName.YEAR, FieldSize.large), 
+            new SearchField(FieldName.SH, FieldSize.small),
+            new SearchField(FieldName.AKEY, FieldSize.small), 
+            new SearchField(FieldName.ID, FieldSize.small), 
+            new SearchField(FieldName.FID, FieldSize.small),
+            new SearchField(FieldName.PLACE, FieldSize.medium), 
+            new SearchField(FieldName.CNTRY, FieldSize.medium), 
+            new SearchField(FieldName.LANG, FieldSize.medium));
     }
     initNamesSearchFields(): Array<SearchField> {
         return new Array(new SearchField(FieldName.AUTH, FieldSize.fullWidth), 
@@ -445,4 +445,12 @@ export class CatalogMainComponent implements AfterViewInit {
             new SearchField(FieldName.ID, FieldSize.medium), 
             new SearchField(FieldName.SAID, FieldSize.medium));
     }
+}
+
+export enum QueryParams {
+    PageIndex = "pageIndex",
+    PageSize = "pageSize",
+    SearchType = "searchType",
+    Databases = "dataBase",
+    ID = "ID"
 }

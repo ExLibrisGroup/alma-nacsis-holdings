@@ -1,5 +1,5 @@
 import { TranslateService } from '@ngx-translate/core';
-import { SearchType } from "../main/form-utils";
+import { SearchType } from '../../user-controls/search-form/search-form-utils';
 import { Header } from "../../service/base.service";
 
 export const BLANK_SPACE = "&nbsp;";

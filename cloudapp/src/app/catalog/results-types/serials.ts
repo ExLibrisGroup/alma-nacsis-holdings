@@ -1,6 +1,6 @@
 import { TranslateService } from '@ngx-translate/core';
 import { IDisplayLines, BaseResult, ViewField, ViewLine, ViewFieldBuilder } from './results-common';
-import { SearchType } from '../main/form-utils';
+import { SearchType } from '../../user-controls/search-form/search-form-utils';
 
 
 export class Serial extends BaseResult{

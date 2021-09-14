@@ -1,12 +1,20 @@
 import { FormControl } from "@angular/forms";
 
 
+export enum SearchType {
+    Monographs = "Monographs",
+    Serials = "Serials",
+    Names = "Names",
+    UniformTitles = "UniformTitles",
+    Member = "Member"
+}
+
 export class SearchField {
 
     key: FieldName;
     fieldLabel: string;
     formControl: FormControl;
-    fieldLength: FieldSize;
+    fieldLength: FieldSize = FieldSize.fullWidth;
 
     constructor(key: FieldName, fieldSize?: FieldSize){
         this.key = key;
@@ -38,23 +46,6 @@ export class SearchField {
     setFieldLength(size: FieldSize) {
         this.fieldLength = size;
     }
-}
-
-
-export enum SearchType {
-    Monographs = "Monographs",
-    Serials = "Serials",
-    Names = "Names",
-    UniformTitles = "UniformTitles",
-    Member = "Member"
-}
-
-export enum QueryParams {
-    PageIndex = "pageIndex",
-    PageSize = "pageSize",
-    SearchType = "searchType",
-    Databases = "dataBase",
-    ID = "ID"
 }
 
 export enum FieldSize {

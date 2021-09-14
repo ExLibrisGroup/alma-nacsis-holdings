@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 
-import { SearchType } from '../catalog/main/form-utils';
+import { SearchType } from '../user-controls/search-form/search-form-utils';
 import { NacsisCatalogResults, ResultsHeader } from '../catalog/results-types/results-common';
 import { Monograph } from '../catalog/results-types/monographs';
 import { Serial } from '../catalog/results-types/serials';
