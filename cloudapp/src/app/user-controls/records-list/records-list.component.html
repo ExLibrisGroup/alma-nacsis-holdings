@@ -1,0 +1,11 @@
+<mat-list role="list">
+    <mat-list-item class="record-list-item" role="listitem"
+    *ngFor="let record of recordsSummaryDisplay; index as i">
+      <record-card
+        [recordIndex]="recordIndex + i"
+        [record]="record"
+        (onTitleSelected)="onTitleClick($event)"
+        (onRadioSelected)="onRadioClick($event)">
+      </record-card>
+    </mat-list-item>
+  </mat-list>

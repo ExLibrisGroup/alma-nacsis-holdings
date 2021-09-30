@@ -29,8 +29,14 @@ import { FullviewDisplayComponent } from './catalog/full-view-display/full-view-
 import { SearchFormComponent } from './user-controls/search-form/search-form.component';
 import { ResultsListComponent } from './user-controls/results-list/results-list.component';
 import { ResultCardComponent } from './user-controls/result-card/result-card.component';
+import { RecordsListComponent } from './user-controls/records-list/records-list.component';
+import { RecordCardComponent } from './user-controls/record-card/record-card.component';
+import { SelectableResultsListComponent } from './user-controls/selectable-results-list/selectable-results-list.component';
+import { SelectableResultCardComponent } from './user-controls/selectable-result-card/selectable-result-card.component';
 
-
+// ILL
+import { ILLBorrowingMainComponent } from './ILL/main/main.component';
+import { searchRecordComponent } from './ILL/searchRecord/searchRecord.component';
 
 
 export function getToastrModule() {
@@ -56,6 +62,12 @@ export function getToastrModule() {
       ResultsListComponent,
       ResultCardComponent,
       FullviewDisplayComponent,
+      ILLBorrowingMainComponent,
+      RecordsListComponent,
+      RecordCardComponent,
+      searchRecordComponent,
+      SelectableResultsListComponent,
+      SelectableResultCardComponent,
    ],
    entryComponents: [ConfirmationDialog],
    imports: [

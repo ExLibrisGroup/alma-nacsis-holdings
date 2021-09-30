@@ -1,0 +1,53 @@
+<mat-card class="result-card">
+  <div class="card-data" fxLayout="row">
+
+    <div class = "record-card-radio">
+      <mat-radio-button  [value] = "recordIndex" 
+      (change)="onRadioClick(recordIndex)" >
+      </mat-radio-button>
+    </div>
+
+    <div>
+      <mat-card-title fxLayout="row">
+        <div class="card-index">
+          <span><strong>{{recordIndex + 1}}</strong></span>
+        </div>
+        <a class="card-title" (click)="onTitleClick(recordIndex)">
+          <div class="card-title-field" *ngFor="let field of titleDisplay">
+            <div *ngIf="field.hasLabel()"> {{field.getLabel()}} </div>
+            <div> {{field.getContent()}} </div>
+          </div>
+        </a>
+      </mat-card-title>
+      <mat-card-content>
+        <div class="card-content-line" *ngFor="let line of contentDisplay">
+          <div class="card-content-field" *ngFor="let field of line.getContent()">
+            <div class="card-content-field-label" *ngIf="field.hasLabel()"
+            [innerHTML]="field.getLabel() | translate"></div>
+            <a class="card-content-field-content" *ngIf="field.isLinkable() else noLink"
+              (click)="onTitleClick(recordIndex)" 
+              [innerHTML]="field.getContent() | translate"></a>
+            <ng-template #noLink>
+              <div class="card-content-field-content" 
+              [innerHTML]="field.getContent() | translate"></div>
+            </ng-template>
+          </div>
+        </div>
+      </mat-card-content>
+    </div>
+  
+
+    <div class="result-actions">
+      <button mat-button class="result-actions-button" [matMenuTriggerFor]="actionsMenu" color="primary">
+        <mat-icon>more_horiz</mat-icon>
+      </button>
+      <mat-menu #actionsMenu="matMenu">
+        <div *ngFor="let item of resultActionList; index as Actionsindex">
+          <button mat-menu-item type="submit" (click)="onActionsClick(recordIndex, Actionsindex)">
+            {{ item | translate }}
+          </button>
+        </div>
+      </mat-menu>
+    </div>
+  </div>
+</mat-card>

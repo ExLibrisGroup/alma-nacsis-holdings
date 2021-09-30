@@ -86,5 +86,6 @@ export const ROUTING_STATE_KEY = "routingState";
 export enum AppRoutingState {
     MainMenuPage = "",
     HoldingsMainPage = "/holdings",
-    CatalogSearchPage = "/catalog"
+    CatalogSearchPage = "/catalog",
+    ILLBorrowingMainPage = "/ILL"
 }

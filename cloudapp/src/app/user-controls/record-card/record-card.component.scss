@@ -1,0 +1,23 @@
+.record-card{
+  //display: flex;
+  //justify-content: space-between;
+  width: 100%;
+  background-color: whitesmoke !important;
+}
+
+.record-card-index {
+  margin-right: 20px;
+}
+
+ .record-card-content {
+  margin: 0px;
+}
+
+a,
+a label {
+    cursor: pointer;
+}
+
+.record-card-radio {
+  margin:auto 0 ;
+}

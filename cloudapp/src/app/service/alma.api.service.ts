@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
 import { mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-
+import { AlmaRecordInfo } from '../service/ill.service';
+import { BaseService } from "./base.service";
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class AlmaApiService {
   extractNacsisId(stringXml, systemNumberPrefix) : string{
     const doc = new DOMParser().parseFromString(stringXml, "application/xml");
     let datafields = doc.getElementsByTagName("datafield");
-    let subfield_016_a, subfield_016_2;
+    let subfield_016_a, subfield_016_2, subfield_035_a;
 
     for (let index = 0; index < datafields.length; index++) {
       const field = datafields[index];
@@ -53,11 +54,161 @@ export class AlmaApiService {
         if(subfield_016_2 == systemNumberPrefix) {
           return subfield_016_a;
         }
-        return null;
+        return "";
+      }
+
+      if(tag === "035"){
+        subfield_035_a = this.getValueFromDataFields(datafields,"035","a");
+        if(subfield_035_a.indexOf(systemNumberPrefix) != -1){
+          return subfield_035_a.substring(systemNumberPrefix);
+        }else{
+          return "";
+        }
       }
     }
-    return null;
+    return "";
   }
+
+  extractDisplayCardInfoFromRequest(record): AlmaRecordInfo{
+    let recordInfo: AlmaRecordInfo = new AlmaRecordInfo();
+    recordInfo.title = this.isEmpty(record.title)?'':record.title;
+    recordInfo.author = this.isEmpty(record.author)?'':record.author;
+    recordInfo.place_of_pub = this.isEmpty(record.place_of_publication)?'':record.place_of_publication;
+    recordInfo.name_of_pub = this.isEmpty(record.publisher)?'':record.publisher;
+    recordInfo.date_of_pub = this.isEmpty(record.year)?'':record.year;
+    recordInfo.isbn = this.isEmpty(record.isbn)?'':record.isbn;
+    recordInfo.issn = this.isEmpty(record.issn)?'':record.issn;
+    if(!this.isEmpty(record.requested_language)){
+      recordInfo.language = this.isEmpty(record.requested_language.value)?'':record.requested_language.value;
+    }else{
+      recordInfo.language = '';
+    }
+    recordInfo.nacsisId = this.isEmpty(record.other_standard_id)?'':record.other_standard_id;
+
+    return recordInfo;
+  }
+
+
+  extractDisplayCardInfo(stringXml, systemNumberPrefix): AlmaRecordInfo {
+
+    const doc = new DOMParser().parseFromString(stringXml, "application/xml");
+
+    let datafields = doc.getElementsByTagName("datafield");
+    let controlfield = doc.getElementsByTagName("controlfield");
+
+    let recordInfo: AlmaRecordInfo = new AlmaRecordInfo();
+    //Title 
+    let subfield_245_a, subfield_245_b, subfield_245_c;
+    // Author 
+    let subfield_100_a, subfield_110_a, subfield_111_a,
+      subfield_700_a, subfield_720_a, subfield_711_a ;
+    let authorArray = new Array();
+    // Publisher  
+    let subfield_264_a, subfield_264_b, subfield_264_c;
+    // Language   
+    let subfield_008_35_37;
+    // ISBN/ISSN  
+    let subfield_020_a, subfield_022_a;
+    // NACSIS   
+    let nacsisID;
+
+    try {
+
+      subfield_008_35_37 = this.getValueFromControlFields(controlfield, "008").substring(35, 37);
+      recordInfo.language = subfield_008_35_37;
+
+      //NACSIS ID
+      nacsisID = this.extractNacsisId(stringXml, systemNumberPrefix);
+      recordInfo.nacsisId = nacsisID;
+
+      //Title
+      subfield_245_a = this.getValueFromDataFields(datafields, "245", "a");
+      subfield_245_b = this.getValueFromDataFields(datafields, "245", "b");
+      subfield_245_c = this.getValueFromDataFields(datafields, "245", "c");
+      recordInfo.title = subfield_245_a + " " + subfield_245_b + " " + subfield_245_c;
+
+      //Author
+      subfield_100_a = this.getValueFromDataFields(datafields, "100", "a");
+      subfield_110_a = this.getValueFromDataFields(datafields, "110", "a");
+      subfield_111_a = this.getValueFromDataFields(datafields, "111", "a");
+
+      subfield_700_a = this.getValueFromDataFields(datafields, "100", "a");
+      subfield_720_a = this.getValueFromDataFields(datafields, "720", "a");
+      subfield_711_a = this.getValueFromDataFields(datafields, "711", "a");
+
+      authorArray.push(subfield_100_a);
+      authorArray.push(subfield_110_a);
+      authorArray.push(subfield_111_a);
+      authorArray.push(subfield_700_a);
+      authorArray.push(subfield_720_a);
+      authorArray.push(subfield_711_a);
+
+      let str = authorArray.find((e) => !this.isEmpty(e));
+      if(this.isEmpty(str))str = "";
+      recordInfo.author  = str;
+     
+
+      //Publisher
+      subfield_264_a = this.getValueFromDataFields(datafields, "264", "a");
+      subfield_264_b = this.getValueFromDataFields(datafields, "264", "b");
+      subfield_264_c = this.getValueFromDataFields(datafields, "264", "c");
+
+      recordInfo.place_of_pub = subfield_264_a;
+      recordInfo.name_of_pub = subfield_264_b;
+      recordInfo.date_of_pub = subfield_264_c;
+
+      //ISBN/ISSN
+      subfield_020_a = this.getValueFromDataFields(datafields, "020", "a");
+      subfield_022_a = this.getValueFromDataFields(datafields, "022", "a");
+
+      recordInfo.isbn = subfield_020_a;
+      recordInfo.issn = subfield_022_a;
+
+    } catch (error) {
+      return new AlmaRecordInfo();
+    }
+
+    return recordInfo;
+  }
+
+
+  getValueFromDataFields(datafields, tag_send, subfield_send): string {
+
+    let str = "";
+    for (let index = 0; index < datafields.length; index++) {
+      const field = datafields[index];
+      let tag = field.getAttribute("tag").valueOf();
+      if (tag === tag_send) {
+        let subfields = field.getElementsByTagName("subfield");
+        for (let index = 0; index < subfields.length; index++) {
+          const subfield = subfields[index];
+          let tag = subfield.getAttribute("code").valueOf();
+          if (tag === subfield_send) {
+            str = subfield.innerHTML;
+          }
+        }
+      }
+    }
+    return str;
+  }
+
+  getValueFromControlFields(controlfield, tag_send): string {
+
+    let str = "";
+    for (let index = 0; index < controlfield.length; index++) {
+      const field = controlfield[index];
+      let tag = field.getAttribute("tag").valueOf();
+      if (tag === tag_send) {
+        str = field.innerHTML;
+      }
+    }
+    return str;
+  }
+
+  isEmpty(val) {
+    return (val === undefined || val == null || val.length <= 0) ? true : false;
+  }
+ 
 
   getIntegrationProfile() {
 

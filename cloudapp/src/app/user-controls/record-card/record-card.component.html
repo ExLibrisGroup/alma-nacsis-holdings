@@ -1,0 +1,22 @@
+  <mat-card class="record-card" fxLayout="row">
+    <div class = "record-card-radio">
+      <mat-radio-button  [value] = "record.getNacsisID()" 
+      (change)="onRadioClick(record)" [ngStyle] = "record.displayRadioButton()">
+      </mat-radio-button>
+    </div>
+    <div class="record-card-data">
+      <mat-card-title fxLayout="row">
+        <div class="record-card-index">
+          <span><strong>{{recordIndex + 1}}</strong></span>
+        </div>
+        <a (click)="onTitleClick(recordIndex)">
+          {{record.getDisplayTitle()}}
+        </a>
+      </mat-card-title>
+ 
+      <mat-card-content class="record-card-content" *ngFor="let line of record.initContentDisplay()">
+        <span><strong>{{line}}</strong></span>
+      </mat-card-content>
+    </div>
+  </mat-card>
+
