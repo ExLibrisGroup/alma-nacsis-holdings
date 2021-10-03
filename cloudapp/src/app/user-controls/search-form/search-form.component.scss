@@ -6,11 +6,14 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  column-gap: 30px;
+  column-gap: 2%;
   background-color: whitesmoke !important;
   ::ng-deep .mat-form-field-wrapper {
     padding-bottom: 5px !important;
   }
+  // ::ng-deep .mat-form-field-flex {
+  //   height: 45px;
+  // }
 }
 
 .form-card-field-full-width {
@@ -18,21 +21,20 @@
 }
 
 .form-card-field-large {
-  width: 45%;
-  flex-grow: 1;
+  width: 49%;
   min-width: 200px;
+  flex-grow: 1;
 }
 
 .form-card-field-medium {
-  width: 30%;
-  flex-grow: 1;
+  width: 32%;
   min-width: 200px;
+  flex-grow: 1;
 }
 
 .form-card-field-small {
-  width: 17%;
-  // max-width: 130px;
+  width: 18%;
   flex-grow: 1;
-  min-width: 100px;
-}
+  min-width: 130px;
 
+}

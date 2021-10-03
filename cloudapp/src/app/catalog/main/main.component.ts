@@ -171,6 +171,7 @@ export class CatalogMainComponent implements AfterViewInit {
                                 this.setPageIndexAndSize(urlParams);
                                 this.setSearchResultsDisplay();
                             } else {
+                                this.panelState = false;
                                 this.numOfResults = 0;
                                 this.resultsTemplateFactory();
                             }
