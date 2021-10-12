@@ -130,7 +130,9 @@ export class CatalogService extends BaseService {
 
     integrationProfileFactory(searchType: SearchType, integrationProfile: IntegrationProfile) {
         switch(searchType) {
-            case (SearchType.Monographs || SearchType.Serials):
+            case (SearchType.Monographs):
+                return { typeTag: "bib", urlType: "", ID: integrationProfile.repositoryImportProfile };
+            case (SearchType.Serials):
                 return { typeTag: "bib", urlType: "", ID: integrationProfile.repositoryImportProfile };
             case (SearchType.Names):
                 return { typeTag: "authority", urlType: "/authorities", ID: integrationProfile.authorityImportProfileNames };
