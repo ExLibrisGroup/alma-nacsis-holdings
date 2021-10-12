@@ -47,7 +47,8 @@ export class CatalogMainComponent implements AfterViewInit {
     // Selection variables
     public currentSearchType: SearchType = SearchType.Monographs;
     private currentDatabase: string;// = 'BOOK';  // first default selection (since opened with Monographs)
-    
+    private linkSearchType: SearchType;
+
     // UI variables
     private panelState: boolean = true;
     private loading: boolean = false;
@@ -177,7 +178,7 @@ export class CatalogMainComponent implements AfterViewInit {
                             }
                         } else {
                             if (catalogResults.totalRecords >= 1) {
-                                let baseResult = this.catalogService.resultsTypeFactory(this.currentSearchType, catalogResults.records[0]);
+                                let baseResult = this.catalogService.resultsTypeFactory(this.linkSearchType, catalogResults.records[0]);
                                 this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
                                 this.isRightTableOpen = true;
                             } else {
@@ -266,6 +267,7 @@ export class CatalogMainComponent implements AfterViewInit {
     }
     
     onFullViewLink(fullViewLink: FullViewLink) {
+        this.linkSearchType = fullViewLink.searchType;
         let urlParams = "";
         urlParams = urlParams + QueryParams.PageIndex + "=0&" + QueryParams.PageSize + "=20";
         urlParams = urlParams + "&" + QueryParams.SearchType + "=" + fullViewLink.searchType;
