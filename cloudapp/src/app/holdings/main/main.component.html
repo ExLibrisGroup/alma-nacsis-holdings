@@ -1,4 +1,4 @@
-<div *ngIf="bibs.length>0 || loading else nobibs" fxLayout="column">
+<div *ngIf="recordInfoList.length>0 || loading else nobibs" fxLayout="column">
   
   <div class="align-space-between" fxLayout="row">
     <a [routerLink]="['']">
@@ -13,14 +13,13 @@
   </div>
 
   <p translate>Holdings.Main.Intro</p>
-  <mat-form-field>
-    <mat-placeholder translate>Holdings.Main.SelectBib</mat-placeholder>
-    <mat-select panelClass="panel-class" [(value)]="selected">
-      <mat-option *ngFor="let bib of bibs" [value]="bib.id">
-        <span><strong>{{bib.id}}:&emsp;</strong></span>{{bib.description}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+
+  
+  <records-list  [recordsSummaryDisplay]="recordsSummaryDisplay"
+        (onTitleSelected) = "onTitleClick($event)" 
+        (onRadioSelected) = "onRadioClick($event)">
+      </records-list>
+
 
   <div class="loading-shade" *ngIf="loading">
     <mat-progress-spinner mode="indeterminate" diameter="50">

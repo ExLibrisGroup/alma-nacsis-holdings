@@ -7,6 +7,8 @@ import { ConfigurationComponent } from './configuration/configuration.component'
 import { HelpComponent } from './holdings/help/help.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { CatalogMainComponent } from './catalog/main/main.component';
+import { ILLBorrowingMainComponent } from './ILL/main/main.component';
+import { searchRecordComponent } from './ILL/searchRecord/searchRecord.component';
 
 const routes: Routes = [
   { path: '', component: MainMenuComponent },
@@ -17,7 +19,10 @@ const routes: Routes = [
   { path: 'holdings/:mmsId/new/:mmsTitle', component: FormComponent },
   { path: 'holdings/:mmsId/view/:holdingId/:mmsTitle', component: FormComponent },
   { path: 'help', component: HelpComponent },
-  { path: 'catalog', component: CatalogMainComponent }
+  { path: 'catalog', component: CatalogMainComponent },
+  { path: 'ILL', component: ILLBorrowingMainComponent },
+  { path: 'searchRecord', component: searchRecordComponent },
+  { path: 'searchRecord/:nacsisId/:title/:isbn/:issn', component: searchRecordComponent }
 ];
 
 @NgModule({

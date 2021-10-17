@@ -7,6 +7,7 @@
     "OK": "OK",
     "Clear": "???Clear",
     "Search": "???Search",
+    "Next": "Next",
     "Errors": {
       "generalError": "アプリケーションエラー"
     }
@@ -125,6 +126,72 @@
         "LOC": "配置コードの入力は必須です"
       }
     }
+  },
+
+  "ILL": {
+    "Main": {
+      "Intro": "Select a record to Create ILL Borrowing Request:",
+      "NoRecords": "To create ILL Borrowing Request, navigate to a bibliographic record or start a New search",
+      "SelectBib": "Select a title",
+      "NewSearchInNACSIS": "New search",
+      "Next": "Next"
+    },
+    "DisplayCard": {
+      "By":"By",
+      "Language":"Language",
+      "ISBN":"ISBN",
+      "ISSN":"ISSN",
+      "Others":"and others",
+      "NACSIS_ID":"NACSIS ID",
+      "ConfirmDelete": "Are you sure you wish to delete this holding record?",
+      "DeleteTitle": "Delete Holding record",
+      "Deleted": "Record successfully deleted.",
+      "Add": "Add NACSIS Holding",
+      "NoHoldingRecordsExist": "No holding records exist.",
+      "DeleteYesButton": "Yes, delete it",
+      "DeleteNoButton": "No, keep it",
+      "Errors": {
+        "NoNoldings": "No holdings record were found",
+        "GetFailed": "Get holdings failed",
+        "DeleteFailed": "Delete holding failed"
+      }
+    },
+    "Results": {
+      "Title": "Records",
+      "NoRecordsExist": "No records exist.",
+      "By": "By",
+      "Book": "Book",
+      "NACSISID": "NACSIS ID",
+      "ISBN": "ISBN",
+      "ISSN": "ISSN",
+      "Subjects": "Subjects",
+      "Actions" : {
+        "View" : "View",
+        "Import" : "Import",
+        "ViewHoldings" : "View Holdings"
+      }
+    },
+    "Form": {
+      "MainTitle": "Search records in NACSIS ",
+      "RefineSearch": "Refine Search",
+      "SelectSearchType": "Select search type",
+      "SelectDatabase": "Select a database",
+      "EmptyForm": "The search form is empty. Please enter at least one value",
+      "SearchTypes": {
+        "Monographs": "Monographs",
+        "Serials": "Serials",
+        "Names": "Names",
+        "UniformTitles": "Uniform Titles"
+      }
+    },
+      "Errors": {
+        "Id": "ID field is required",
+        "SaveFailed": "Save holding failed",
+        "HLYR": "HLYR field is required",
+        "HLV": "HLV field is required",
+        "LOC": "LOC field is required"
+      }
+    
   },
 
   "Config": {

@@ -10,6 +10,7 @@ import { map, catchError, switchMap, tap } from 'rxjs/operators';
 import { AlmaApiService, IntegrationProfile } from '../../service/alma.api.service';
 import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
 
+import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay} from '../../service/ill.service';
 
 
 @Component({
@@ -23,13 +24,16 @@ export class MainComponent implements OnInit, OnDestroy {
   bibs: Entity[] = [];
   selected: string;
   loading = false;
-
   title: string;
   message: string;
   isErrorMessageVisible: boolean = false;
-
   processed = 0;
   integrationProfile: IntegrationProfile;
+  private recordsSummaryDisplay: Array<IDisplayLines>;
+  private almaResultsData: AlmaRecordsResults;
+  baseRecordInfoList: Array<BaseRecordInfo> = new Array();
+  recordInfoList: AlmaRecordInfo[] = new Array();
+  almaRecord: AlmaRecord = new AlmaRecord('',this.translate,this.illService);
 
   constructor(
     private eventsService: CloudAppEventsService,
@@ -40,7 +44,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
     private restService: CloudAppRestService,
     private almaApiService: AlmaApiService,
-
+    private illService: IllService,
   ) { }
 
   ngOnInit() {
@@ -50,14 +54,13 @@ export class MainComponent implements OnInit, OnDestroy {
     this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => {
 
       this.loading = true;
-
       this.almaApiService.getIntegrationProfile()
         .subscribe(integrationProfile => {
 
           this.integrationProfile = integrationProfile;
 
           let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS);
-          let nacsisBibs: Entity[] = [];
+          let disCards: AlmaRecordInfo[] = new Array(rawBibs.length);     
 
           forkJoin(rawBibs.map(entity => this.getRecord(entity)))
             .subscribe({
@@ -66,13 +69,11 @@ export class MainComponent implements OnInit, OnDestroy {
                 let index: number = 0;
 
                 records.forEach(record => {
-                  // console.log(record);
-                  let nacsisId = this.almaApiService.extractNacsisId(record.anies, this.integrationProfile.libraryCode);
-                  if (nacsisId != null) {
-                    // tweak: override mmsId by nacsisId
-                    let nacsisBib = rawBibs[index];
-                    nacsisBib.id = nacsisId;
-                    nacsisBibs.push(nacsisBib);
+ 
+                  let singleRecordInfo = this.almaApiService.extractDisplayCardInfo(record.anies, this.integrationProfile.libraryCode);
+                  
+                  if (singleRecordInfo != null) {                 
+                    disCards[index]= singleRecordInfo;
                   }
                   index++;
                 })
@@ -84,7 +85,8 @@ export class MainComponent implements OnInit, OnDestroy {
               },
               complete: () => {
                 this.loading = false;
-                this.bibs = nacsisBibs;
+                this.recordInfoList = disCards;
+                this.setSearchResultsDisplay();
               }
             });
         });
@@ -107,13 +109,13 @@ export class MainComponent implements OnInit, OnDestroy {
       this.loading = true;
 
       try {
-        let bib = this.bibs.filter(bib => bib.id == this.selected);
+        let bib = this.recordInfoList.filter(almaRecord => almaRecord.nacsisId ==this.selected );
         this.nacsis.getHoldingsFromNacsis(this.selected, "Mine")
           .subscribe({
             next: (header) => {
               if (header.status === this.nacsis.OkStatus) {
                 sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.HoldingsMainPage);
-                this.router.navigate(['/holdings', this.selected, bib[0].description]);
+                this.router.navigate(['/holdings', this.selected, bib[0].title]);
               } else {
                 this.alert.error(header.errorMessage, { keepAfterRouteChange: true });
               }
@@ -136,5 +138,27 @@ export class MainComponent implements OnInit, OnDestroy {
   onCloseClick() {
     this.isErrorMessageVisible = false;
   }
+
+  private setSearchResultsDisplay(){
+    this.almaResultsData = new AlmaRecordsResults();
+    this.recordInfoList.forEach(record=>{
+      this.almaRecord = new AlmaRecord('',this.translate,this.illService);
+      this.almaRecord.moduleType = "holding";
+      this.illService.recordFillIn(this.almaRecord,record);
+      this.baseRecordInfoList.push(this.almaRecord);
+  });
+
+  this.almaResultsData.setResults(this.baseRecordInfoList);
+
+    this.recordsSummaryDisplay = new Array();
+    this.almaResultsData.getResults()?.forEach(result=>{
+      this.recordsSummaryDisplay.push(result.getSummaryDisplay());
+  });  
+  }
+
+    onRadioClick(item : AlmaRecordDisplay) {
+      this.selected = item.getNacsisID();
+    }
+
 }
 
