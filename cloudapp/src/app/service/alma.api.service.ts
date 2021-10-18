@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
 import { mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { AlmaRecordInfo } from '../service/ill.service';
-import { BaseService } from "./base.service";
+import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay } from '../service/ill.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +11,16 @@ import { BaseService } from "./base.service";
 export class AlmaApiService {
 
   integrationProfile :IntegrationProfile;
+  recordInfoList: AlmaRecordInfo[] = new Array();
+  recordsSummaryDisplay: Array<IDisplayLines>;
+  almaResultsData: AlmaRecordsResults;
+  almaRecord: AlmaRecord = new AlmaRecord('',this.translate,this.illService);
+  baseRecordInfoList: Array<BaseRecordInfo> = new Array();
 
   constructor(
     private restService: CloudAppRestService,
-
+    private translate: TranslateService,
+    private illService: IllService,
   ) {  }
 
   /*
@@ -54,18 +60,24 @@ export class AlmaApiService {
         if(subfield_016_2 == systemNumberPrefix) {
           return subfield_016_a;
         }
-        return "";
       }
 
       if(tag === "035"){
-        subfield_035_a = this.getValueFromDataFields(datafields,"035","a");
-        if(subfield_035_a.indexOf(systemNumberPrefix) != -1){
-          return subfield_035_a.substring(systemNumberPrefix);
-        }else{
-          return "";
+        let subfields = field.getElementsByTagName("subfield");
+        for (let index = 0; index < subfields.length; index++) {
+          const subfield = subfields[index];
+          let tag = subfield.getAttribute("code").valueOf();
+          if(tag === "a") {
+            subfield_035_a = subfield.innerHTML;
+            if(subfield_035_a.indexOf(systemNumberPrefix) != -1){
+              //(NII)BA000111 
+              return subfield_035_a.replace(systemNumberPrefix,"").replace("()","");
+            }
+          }
         }
       }
     }
+
     return "";
   }
 
@@ -253,8 +265,57 @@ export class AlmaApiService {
       })
     );
   }
+
+
+  getAlmaRecodsInfo(records: any[]) {
+    let index: number = 0;
+    let disCards: AlmaRecordInfo[] = new Array();
+    let singleRecordInfo: AlmaRecordInfo;
+
+    records.forEach(record => {
+
+      if(this.isEmpty(record.anies)){
+        singleRecordInfo = this.extractDisplayCardInfoFromRequest(record);
+
+       }else{
+        singleRecordInfo = this.extractDisplayCardInfo(record.anies, this.integrationProfile.libraryCode);                 
+      }
+      if (singleRecordInfo != null) {                 
+        disCards[index]= singleRecordInfo;
+      }
+      index++;
+    })
+
+    return disCards;
+
+  }
+
+   setRecordsSummaryDisplay(recordInfoList: AlmaRecordInfo[],type: string){
+    this.almaResultsData = new AlmaRecordsResults();
+    this.baseRecordInfoList = new Array();
+    recordInfoList.forEach(record=>{
+      this.almaRecord = new AlmaRecord('',this.translate,this.illService);
+      this.almaRecord.moduleType = type;
+      this.illService.recordFillIn(this.almaRecord,record);
+      this.baseRecordInfoList.push(this.almaRecord);
+    });
+    this.almaResultsData.setResults(this.baseRecordInfoList);
+
+    this.recordsSummaryDisplay = new Array();
+    this.almaResultsData.getResults()?.forEach(result=>{
+      this.recordsSummaryDisplay.push(result.getSummaryDisplay());
+    });  
+
+    return this.recordsSummaryDisplay;
+  }
+
+
   
 }
+
+
+
+
 
 export class IntegrationProfile {
     libraryCode: string;

@@ -40,10 +40,6 @@ export class RecordsListComponent implements OnChanges, AfterViewInit{
 
   setPageVariables() {}
 
-  onTitleClick(recordIndex: number) {
-    recordIndex = recordIndex - this.recordIndex; // Geting omly the for loop's index (i)
-    this.onTitleSelected.emit(recordIndex);
-  }
 
   onPageAction(pageEvent: PageEvent) {
     this.onPageSelected.emit(pageEvent);

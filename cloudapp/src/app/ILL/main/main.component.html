@@ -22,7 +22,6 @@
  <div *ngIf="recordInfoList.length>0  || loading  else nobibs" fxLayout="column"> 
     <p translate>ILL.Main.Intro</p>
       <records-list  [recordsSummaryDisplay]="recordsSummaryDisplay"
-        (onTitleSelected)="onTitleClick($event)"
         (onRadioSelected) = "onRadioClick($event)" >
       </records-list>
 </div> 

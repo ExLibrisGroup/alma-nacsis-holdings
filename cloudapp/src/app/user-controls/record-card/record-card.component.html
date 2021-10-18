@@ -9,9 +9,7 @@
         <div class="record-card-index">
           <span><strong>{{recordIndex + 1}}</strong></span>
         </div>
-        <a (click)="onTitleClick(recordIndex)">
-          {{record.getDisplayTitle()}}
-        </a>
+        <span><strong>{{record.getDisplayTitle()}}</strong></span>
       </mat-card-title>
  
       <mat-card-content class="record-card-content" *ngFor="let line of record.initContentDisplay()">

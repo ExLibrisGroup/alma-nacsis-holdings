@@ -19,9 +19,6 @@ export class RecordCardComponent {
 
   ngOnInit() {}
 
-  onTitleClick(recordIndex: number) {
-    this.onTitleSelected.emit(recordIndex);
-  }
 
   onRadioClick(item : IDisplayLines) {
     this.onRadioSelected.emit(item);

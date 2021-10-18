@@ -223,6 +223,7 @@ export class searchRecordComponent implements AfterViewInit {
 
   search() {
     console.log('search');
+    this.isFirstIndex = null;
     // Generating the URL by the fields' Form Control
     let urlParams = "";
     let valuableFields = this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).filter(field => (field.getFormControl().value != null) && (field.getFormControl().value != ""));
@@ -240,7 +241,7 @@ export class searchRecordComponent implements AfterViewInit {
     }
   }
 
-  formF() {
+  next() {
     console.log(this.recordIndexSelected);
     
   }
@@ -250,9 +251,9 @@ export class searchRecordComponent implements AfterViewInit {
     this.recordIndexSelected = this.pageIndex * this.pageSize + recordIndex
     console.log(this.recordIndexSelected);
     // Clicking on title will open the full view 
-    //let record = this.resultsSummaryDisplay[recordIndex];
-    // this.currentResulsTmpl = this.fullRecordTmpl;
-    // this.resultFullDisplay = record.getFullRecordData().getFullViewDisplay().initContentDisplay();
+    let record = this.resultsSummaryDisplay[recordIndex];
+     this.currentResulsTmpl = this.fullRecordTmpl;
+     this.resultFullDisplay = record.getFullRecordData().getFullViewDisplay().initContentDisplay();
   }
 
   // Calling Nacsis servlet

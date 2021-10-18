@@ -253,12 +253,21 @@ export class AlmaRecordDisplay extends IDisplayLines{
 
   initContentDisplay(): Array<string> {
       let summaryLines = new Array<string>();
+      let authorDisPlay = "",publicInfo = "";
+      if(!this.illService.isEmpty(this.record.author)){
+        authorDisPlay = this.translate.instant('ILL.DisplayCard.By') + " " + this.record.author;
+      }
 
-      if(!this.illService.isEmpty(this.record.author) || !this.illService.isEmpty(this.record.place_of_pub) ||
-       !this.illService.isEmpty(this.record.place_of_pub) || !this.illService.isEmpty(this.record.date_of_pub)  )
-       summaryLines.push(this.translate.instant('ILL.DisplayCard.By') + " " + this.record.author 
-       + " ("+ this.record.place_of_pub + ": " + this.record.name_of_pub + ", " + this.record.date_of_pub + ")");
+      if(!this.illService.isEmpty(this.record.place_of_pub) ||
+      !this.illService.isEmpty(this.record.place_of_pub) || !this.illService.isEmpty(this.record.date_of_pub)){
+        publicInfo = " ("+ this.record.place_of_pub + ": " + this.record.name_of_pub + ", " + this.record.date_of_pub + ")";
+      }
 
+      if(!this.illService.isEmpty(authorDisPlay) || !this.illService.isEmpty(publicInfo) )
+        {
+          summaryLines.push(authorDisPlay + publicInfo);
+        }
+       
        summaryLines.push( this.translate.instant("ILL.DisplayCard.Language") + ": " + this.record.language);
       
        if(!this.illService.isEmpty(this.record.isbn))

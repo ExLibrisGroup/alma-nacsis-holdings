@@ -7,6 +7,7 @@ import {  catchError, tap } from 'rxjs/operators';
 import { AlmaApiService, IntegrationProfile } from '../../service/alma.api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 
 @Component({
   selector: 'ILL-main',
@@ -37,6 +38,7 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
     private restService: CloudAppRestService,
     private almaApiService: AlmaApiService,
     private illService: IllService,
+    private alert: AlertService,
     private router: Router,
   ) { }
 
@@ -45,75 +47,35 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
     sessionStorage.clear();
     this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => { 
       this.loading = true;     
-
+      try{
       this.almaApiService.getIntegrationProfile()
         .subscribe(integrationProfile => {
           this.integrationProfile = integrationProfile;    
           let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS || e.type == EntityType.BORROWING_REQUEST );
           let disCards: AlmaRecordInfo[] = new Array(rawBibs.length);
-          
-          //var t0 = performance.now();
+
           forkJoin(rawBibs.map(entity => this.getRecord(entity)))
             .subscribe({
               next: (records: any[]) => {
-
-               // var thttp = performance.now();
-                let index: number = 0;
-
-                records.forEach(record => {
-
-                  if(this.illService.isEmpty(record.anies)){
-                    this.singleRecordInfo = this.almaApiService.extractDisplayCardInfoFromRequest(record);
-
-                   }else{
-                    this.singleRecordInfo = this.almaApiService.extractDisplayCardInfo(record.anies, this.integrationProfile.libraryCode);                 
-                  }
-                  if (this.singleRecordInfo != null) {                 
-                    disCards[index]= this.singleRecordInfo;
-                  }
-                  index++;
-                })
-              //  var tparsing = performance.now();
-               // console.log("Method 1: call to do http took " + (thttp-t0) + " milliseconds.");
-              //  console.log("Method 1: call to do parsing took " + (tparsing-thttp) + " milliseconds.");
+               disCards = this.almaApiService.getAlmaRecodsInfo(records);
               },
               error: e => {
                 this.loading = false;
                 console.log(e.message);
               },
-              complete: () => {
-               // var t1 = performance.now();
-               // console.log("Method 1: call to do All took " + (t1-t0) + " milliseconds.");
-                
+              complete: () => {  
                this.loading = false;
                this.recordInfoList = disCards;
-               this.setSearchResultsDisplay();
+               this.setSearchResultsDisplay(this.recordInfoList,"ill");
               }
             });
-
-
-            // let link_start = '/bibs?mms_id=';
-            // let mmsidConcat = '';
-            // rawBibs.forEach(entity => {
-            //   let mmsid = entity.id;
-            //   mmsidConcat = mmsidConcat.concat(mmsid) + ',';
-            // })
-            // mmsidConcat = mmsidConcat.substring(0,mmsidConcat.length -1 );
-            // console.log(link_start + mmsidConcat);
-
-            // var t2 = performance.now();
-            // this.getRecordByLink(link_start + mmsidConcat).subscribe({
- 
-            //   error: e => {
-            //     console.log(e.message);
-            //   },
-
-            //   complete: () => {
-            //     var t3 = performance.now();
-            //     console.log("Method 2: call to do something took " + (t3-t2) + " milliseconds.");
-            //   }
-            // });
         });
+      }catch(e) {
+        this.loading = false;
+        console.log(e);
+        this.alert.error(this.translate.instant('General.Errors.generalError'), {keepAfterRouteChange:true});      
+      }
+
     });
 
   }
@@ -160,22 +122,9 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
     this.selected = item;
  }
 
- private setSearchResultsDisplay(){
-  this.almaResultsData = new AlmaRecordsResults();
-  this.recordInfoList.forEach(record=>{
-    this.almaRecord = new AlmaRecord('',this.translate,this.illService);
-    this.almaRecord.moduleType = "ill";
-    this.illService.recordFillIn(this.almaRecord,record);
-    this.baseRecordInfoList.push(this.almaRecord);
-  });
-
-  this.almaResultsData.setResults(this.baseRecordInfoList);
-
-  this.recordsSummaryDisplay = new Array();
-  this.almaResultsData.getResults()?.forEach(result=>{
-    this.recordsSummaryDisplay.push(result.getSummaryDisplay());
-});  
-}
+ private setSearchResultsDisplay(recordInfoList: AlmaRecordInfo[], type: string){
+  this.recordsSummaryDisplay = this.almaApiService.setRecordsSummaryDisplay(recordInfoList,type);
+  } 
 
 }
 

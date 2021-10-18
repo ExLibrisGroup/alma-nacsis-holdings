@@ -1,12 +1,11 @@
 <mat-card class="result-card">
-  <div class="card-data" fxLayout="row">
 
+  <div class="card-data" fxLayout="row">
     <div class = "record-card-radio">
       <mat-radio-button  [value] = "recordIndex" 
       (change)="onRadioClick(recordIndex)" >
       </mat-radio-button>
     </div>
-
     <div>
       <mat-card-title fxLayout="row">
         <div class="card-index">
@@ -35,19 +34,20 @@
         </div>
       </mat-card-content>
     </div>
-  
-
-    <div class="result-actions">
-      <button mat-button class="result-actions-button" [matMenuTriggerFor]="actionsMenu" color="primary">
-        <mat-icon>more_horiz</mat-icon>
-      </button>
-      <mat-menu #actionsMenu="matMenu">
-        <div *ngFor="let item of resultActionList; index as Actionsindex">
-          <button mat-menu-item type="submit" (click)="onActionsClick(recordIndex, Actionsindex)">
-            {{ item | translate }}
-          </button>
-        </div>
-      </mat-menu>
-    </div>
   </div>
+
+      
+  <div class="result-actions" >
+    <button mat-button class="result-actions-button" [matMenuTriggerFor]="actionsMenu" color="primary">
+        <mat-icon>more_horiz</mat-icon>
+    </button>
+    <mat-menu #actionsMenu="matMenu" [overlapTrigger]="false">
+        <div *ngFor="let item of resultActionList; index as Actionsindex">
+           <button mat-menu-item type="submit" (click)="onActionsClick(recordIndex, Actionsindex)">
+              {{ item | translate }}
+           </button>
+        </div>
+    </mat-menu>
+  </div>
+
 </mat-card>

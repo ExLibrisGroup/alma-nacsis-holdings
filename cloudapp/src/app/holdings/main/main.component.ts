@@ -50,10 +50,10 @@ export class MainComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     sessionStorage.clear();
-
     this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => {
 
       this.loading = true;
+      try{
       this.almaApiService.getIntegrationProfile()
         .subscribe(integrationProfile => {
 
@@ -65,31 +65,25 @@ export class MainComponent implements OnInit, OnDestroy {
           forkJoin(rawBibs.map(entity => this.getRecord(entity)))
             .subscribe({
               next: (records: any[]) => {
-
-                let index: number = 0;
-
-                records.forEach(record => {
- 
-                  let singleRecordInfo = this.almaApiService.extractDisplayCardInfo(record.anies, this.integrationProfile.libraryCode);
-                  
-                  if (singleRecordInfo != null) {                 
-                    disCards[index]= singleRecordInfo;
-                  }
-                  index++;
-                })
+                disCards = this.almaApiService.getAlmaRecodsInfo(records);
               },
               error: e => {
                 this.loading = false;
                 console.log(e.message);
-                //this.alert.error(e.message, {keepAfterRouteChange:true});
               },
               complete: () => {
                 this.loading = false;
                 this.recordInfoList = disCards;
-                this.setSearchResultsDisplay();
+                this.setSearchResultsDisplay(this.recordInfoList,"holding");
               }
             });
         });
+      }catch(e) {
+        this.loading = false;
+        console.log(e);
+        this.alert.error(this.translate.instant('General.Errors.generalError'), {keepAfterRouteChange:true});      
+      }
+
     });
 
   }
@@ -139,22 +133,9 @@ export class MainComponent implements OnInit, OnDestroy {
     this.isErrorMessageVisible = false;
   }
 
-  private setSearchResultsDisplay(){
-    this.almaResultsData = new AlmaRecordsResults();
-    this.recordInfoList.forEach(record=>{
-      this.almaRecord = new AlmaRecord('',this.translate,this.illService);
-      this.almaRecord.moduleType = "holding";
-      this.illService.recordFillIn(this.almaRecord,record);
-      this.baseRecordInfoList.push(this.almaRecord);
-  });
-
-  this.almaResultsData.setResults(this.baseRecordInfoList);
-
-    this.recordsSummaryDisplay = new Array();
-    this.almaResultsData.getResults()?.forEach(result=>{
-      this.recordsSummaryDisplay.push(result.getSummaryDisplay());
-  });  
-  }
+  private setSearchResultsDisplay(recordInfoList: AlmaRecordInfo[], type: string){
+    this.recordsSummaryDisplay = this.almaApiService.setRecordsSummaryDisplay(recordInfoList,type);
+    } 
 
     onRadioClick(item : AlmaRecordDisplay) {
       this.selected = item.getNacsisID();
