@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, ViewChild, AfterViewInit, OnCha
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { IDisplayLines, ViewLine, ViewField  } from '../../catalog/results-types/results-common';
 import { RecordSelection } from '../selectable-result-card/selectable-result-card.component';
-
+import { AlmaRecordDisplay} from '../../service/ill.service';
 
 @Component({
     selector: 'selectable-results-list',
@@ -20,7 +20,7 @@ export class SelectableResultsListComponent implements OnChanges, AfterViewInit 
   @Output() onActionSelected = new EventEmitter<RecordSelection>();  
   @Output() onTitleSelected = new EventEmitter<number>();  
   @Output() onPageSelected = new EventEmitter<PageEvent>();  
-  @Output() onRadioSelected = new EventEmitter<number>();  
+  @Output() onRadioSelected = new EventEmitter<IDisplayLines>();  
   
   @ViewChild(MatPaginator) paginator: MatPaginator;
   private recordIndex: number;
@@ -60,9 +60,8 @@ export class SelectableResultsListComponent implements OnChanges, AfterViewInit 
     this.onPageSelected.emit(pageEvent);
   }
     
-  onRadioClick(recordIndex : number) {
-    recordIndex = recordIndex - this.recordIndex;
-    this.onRadioSelected.emit(recordIndex);
+  onRadioClick(item : IDisplayLines) {
+    this.onRadioSelected.emit(item);
  }
 
     

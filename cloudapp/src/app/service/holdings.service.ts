@@ -39,6 +39,31 @@ export class HoldingsService extends BaseService {
     return this.getInitData().pipe(
       mergeMap(initData => {
         fullUrl = this.setBaseUrl(initData) + "nacsisId=" + nacsisId + "&owner=" + owner;
+        console.log(fullUrl);
+        return this.getAuthToken()}),
+      mergeMap(authToken => {
+        let headers = this.setAuthHeader(authToken);
+        return this.http.get<any>(fullUrl, { headers })}),
+      mergeMap(response => {
+        console.log(response);
+        this._header = response;
+        this._holdings = response.nacsisRecordList;
+        if (this._header.status === this.OkStatus && !this.isEmpty(this._holdings)) {
+          this.updateHoldingPreview();
+        }
+        return of(this._header);
+      })
+    );
+  }
+
+  getHoldingsForILLFromNacsis(queryParams: String){
+
+    let fullUrl: string;
+    "use strict";
+    return this.getInitData().pipe(
+      mergeMap(initData => {
+        fullUrl = this.setBaseUrl(initData) +  queryParams;
+        console.log(fullUrl);
         return this.getAuthToken()}),
       mergeMap(authToken => {
         let headers = this.setAuthHeader(authToken);
@@ -165,6 +190,7 @@ export class Header {
   FANO: string = "" // library id
   LIBABL: string = "" // library name
   type: string = "" // BOOK/SERIAL
+  nacsisRecordList: any[];
 }
 
 export class Holding {
@@ -199,6 +225,87 @@ export class HoldingsSerial {
   LDF: string = "";
   CPYNT: string = "";
 }
+
+export class HoldingsSearch {
+  nacsisId:string = "";//Nacsis id
+  FANO: string = ""; //Participating organization code
+  VOL: string = ""; //Volume
+  YEAR:string = ""; //Year
+  LOC: string = "";//Location
+  _KENCODE_: string = ""; //Region (prefecture) code
+  _SETCODE_: string = ""; //Establisher type
+  _ORGCODE_: string = ""; //Institution type
+  _GRPCODE_: string = ""; //Offset charge
+  _ILLFLG_: string = ""; //ILL participation type
+  _STAT_: string = ""; //Service status
+  _COPYS_: string = ""; //Copy service type
+  _LOANS_: string = ""; //Lending service type
+  _FAXS_: string = ""; //FAX service type
+  owner: string = ""; //Owner
+}
+
+export class NacsisHoldingRecord{
+  BID: string = "";
+  COPYS: string = "";
+  CRTDT: string = "";
+  FANO: string = "";
+  FAXS: string = "";
+  GRPCODE: string = "";
+  ID: string = "";
+  ILLFLG: string = "";
+  KENCODE: string = "";
+  LIBABL: string = "";
+  LOANS:string = "";
+  LOC: string = "";
+  ORGCODE: string = "";
+  RNWDT: string = "";
+  SETCODE: string = "";
+  STAT:string = "";
+  editable: boolean = false;
+  info: string = "";
+  libraryFullName: string = "";
+  nacsisHoldingsList: any[];
+  type: string = "";
+}
+
+export class nacsisBookHoldingsListDetail {
+  VOL: string = "";
+  CLN: string = "";
+  RGTN: string = "";
+  CPYR: string = "";
+  LDF: string = "";
+  CPYNT: string = "";
+}
+
+export class nacsisSerialHoldingsListDetail {
+  HLYR: string = "";
+  HLV: string = "";
+  CONT: string = "";
+  CLN: string = "";
+  LDF: string = "";
+  CPYNT: string = "";
+}
+
+export class displayHoldingResult{
+  index: number;
+  name: string = "";
+  vol: any[];//book only
+  hlv: any[];//serial only
+  hlyr: string = "";//serial only
+  region: string = "";
+  establisher: string = "";
+  institutionType: string = "";
+  fee: string = "";
+  location : string = "";
+  photoCopy_fee : string = "";
+  ill : string = "";
+  stat : string = "";
+  photoCopy  : string = "";
+  loan : string = "";
+  fax : string = "";
+}
+
+
 
 const HOLDINGS = [
   {

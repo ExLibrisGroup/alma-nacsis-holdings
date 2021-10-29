@@ -44,6 +44,7 @@ export class searchRecordComponent implements AfterViewInit {
   // Selection variables
   public currentSearchType: SearchType = SearchType.Monographs;
   private currentDatabase: string;// = '';  // first default selection (since opened with Monographs)
+  selected: IDisplayLines;
 
   // UI variables
   private panelState: boolean = true;
@@ -168,10 +169,9 @@ export class searchRecordComponent implements AfterViewInit {
     this.currentDatabase = db;
   }
 
-  onRadioClick(recordIndex: number) {
-    this.recordIndexSelected = this.pageIndex * this.pageSize + recordIndex;
-    if(this.recordIndexSelected == 0) 
+  onRadioClick(record: IDisplayLines) {
     this.isFirstIndex = 1;
+    this.selected = record;
   }
 
 
@@ -242,8 +242,12 @@ export class searchRecordComponent implements AfterViewInit {
   }
 
   next() {
-    console.log(this.recordIndexSelected);
-    
+    //console.log(this.recordIndexSelected);
+    sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage);
+    let title = this.selected.getFullRecordData().getSummaryView().TRD;
+    let nacsisID = this.selected.getFullRecordData().getSummaryView().ID;
+    this.loading = true;
+    this.router.navigate(['holdingSearch',nacsisID,title]);
   }
 
 

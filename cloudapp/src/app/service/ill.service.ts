@@ -86,7 +86,6 @@ export class IllService {
     return false;
   }
 
-  
 
 }
 
@@ -291,5 +290,6 @@ export enum QueryParams {
   Databases = "dataBase",
   ID = "ID"
 }
+
 
 

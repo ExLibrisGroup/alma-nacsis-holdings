@@ -9,6 +9,7 @@ import { MainMenuComponent } from './main-menu/main-menu.component';
 import { CatalogMainComponent } from './catalog/main/main.component';
 import { ILLBorrowingMainComponent } from './ILL/main/main.component';
 import { searchRecordComponent } from './ILL/searchRecord/searchRecord.component';
+import { HoldingSearchComponent } from './ILL/holdingSearch/holdingSearch.component';
 
 const routes: Routes = [
   { path: '', component: MainMenuComponent },
@@ -22,7 +23,9 @@ const routes: Routes = [
   { path: 'catalog', component: CatalogMainComponent },
   { path: 'ILL', component: ILLBorrowingMainComponent },
   { path: 'searchRecord', component: searchRecordComponent },
-  { path: 'searchRecord/:nacsisId/:title/:isbn/:issn', component: searchRecordComponent }
+  { path: 'searchRecord/:nacsisId/:title/:isbn/:issn', component: searchRecordComponent },
+  { path: 'holdingSearch', component: HoldingSearchComponent },
+  { path: 'holdingSearch/:nacsisId/:mmsTitle', component: HoldingSearchComponent }
 ];
 
 @NgModule({

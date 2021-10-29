@@ -13,7 +13,7 @@
     <button style="margin-right: 15px" mat-flat-button color="primary" type="submit" (click)="search()">
       {{ 'General.Search' | translate }}
     </button>
-    <button style="margin-right: 15px" mat-flat-button color="primary" type="submit" (click)="next()" [disabled]= "!recordIndexSelected && !isFirstIndex">
+    <button style="margin-right: 15px" mat-flat-button color="primary" type="submit" (click)="next()" [disabled]= "!isFirstIndex">
       {{ 'General.Next' | translate }}
     </button>
   </div>

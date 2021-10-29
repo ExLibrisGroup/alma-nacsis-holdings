@@ -72,7 +72,8 @@
       "Intro": "Select a record to retrieve NACSIS holdings:",
       "NoRecords": "To view NACSIS holdings, navigate to a bibliographic record.",
       "SelectBib": "Select a title",
-      "RetrieveHoldings": "Retrieve NACSIS Holdings"
+      "RetrieveHoldings": "Retrieve NACSIS Holdings",
+      "SerachHoldings":"Search for NACSIS Holdings"
     },
     "ViewHoldings": {
       "Owner": "Owner",
@@ -181,17 +182,57 @@
       "ISSN": "ISSN",
       "Subjects": "Subjects",
       "Actions" : {
-        "View" : "View",
-        "Import" : "Import",
-        "ViewHoldings" : "View Holdings"
-      }
+        "ViewHolding" : "View holding",
+        "ViewMemInfo" : "View member information"
+      },
+      "SelectedLenders":"Selected Lenders"
     },
+    "HoldingSearch":{
+       "ParticipatingOrgCode":"Participating organization code",
+       "Volume":"Volume",
+       "Year":"Year",
+       "Location":"Location",
+       "RegionCode":"Region(prefeture) code",
+       "EstablisherType":"Establisher type",
+       "InstitutionType":"Institution type",
+       "ILLParticipationType":"ILL participation type",
+       "ServiceStatus":"Service status",
+       "OffsetCharge":"Offset charge",
+       "CopyServiceType":"Copy service type",
+       "LendingServiceType":"Lending service type",
+       "FAXServiceType":"FAX service type"
+    },
+    "HoldingSearchResult":{
+      "INDEX":"ID",
+      "CHECKBOX":"check",
+      "NAME":"Name",
+      "BID":"Bibliographic ID",
+      "COPYS":"Photocopy",
+      "CRTDT":"Create date",
+      "FANO":"Member ID",
+      "FAXS":"FAXS",
+      "GRPCODE":"Offset charge",
+      "ILLFLG":"ILL",
+      "KENCODE":"Region",
+      "LIBABL":"Name",
+      "LOC":"Location",
+      "LOANS":"LOANS",
+      "ORGCODE":"Institution type",
+      "RNWDT":"Update date",
+      "SETCODE":"Establisher",
+      "STAT":"STAT",
+      "type":"Type",
+      "SUM":"Photocopy fee"
+   },
       "Errors": {
         "Id": "ID field is required",
         "SaveFailed": "Save holding failed",
         "HLYR": "HLYR field is required",
         "HLV": "HLV field is required",
-        "LOC": "LOC field is required"
+        "LOC": "LOC field is required",
+        "TooMany":  "Too Many Selected",
+        "Maximum": "You can only select a maximum of 5 records",
+        "MaxSelectd": "Maximum selected is 5"
       }
     
   },

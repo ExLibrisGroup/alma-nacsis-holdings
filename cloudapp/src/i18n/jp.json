@@ -72,7 +72,8 @@
       "Intro": "NACSISから所蔵を取得するための書誌レコードを選択してください：",
       "NoRecords": "NACSISの所蔵を閲覧表示するため、該当の書誌レコードに移動します。",
       "SelectBib": "書誌レコードの選択",
-      "RetrieveHoldings": "所蔵の検索"
+      "RetrieveHoldings": "所蔵の検索",
+      "SerachHoldings":"Search for NACSIS Holdings"
     },
     "ViewHoldings": {
       "Owner": "所蔵館",
@@ -166,10 +167,10 @@
       "ISSN": "ISSN",
       "Subjects": "Subjects",
       "Actions" : {
-        "View" : "View",
-        "Import" : "Import",
-        "ViewHoldings" : "View Holdings"
-      }
+        "ViewHolding" : "View holding",
+        "ViewMemInfo" : "View member information"
+      },
+      "SelectedLenders":"Selected Lenders"
     },
     "Form": {
       "MainTitle": "Search records in NACSIS ",
@@ -184,12 +185,51 @@
         "UniformTitles": "Uniform Titles"
       }
     },
+    "HoldingSearch":{
+       "ParticipatingOrgCode":"Participating organization code",
+       "Volume":"Volume",
+       "Year":"Year",
+       "Location":"Location",
+       "RegionCode":"Region(prefeture) code",
+       "EstablisherType":"Establisher type",
+       "InstitutionType":"Institution type",
+       "ILLParticipationType":"ILL participation type",
+       "ServiceStatus":"Service status",
+       "OffsetCharge":"Offset charge",
+       "CopyServiceType":"Copy service type",
+       "LendingServiceType":"Lending service type",
+       "FAXServiceType":"FAX service type"
+    },
+    "HoldingSearchResult":{
+      "INDEX":"ID",
+      "CHECKBOX":"check",
+      "NAME":"Name",
+      "BID":"Bibliographic ID",
+      "COPYS":"Photocopy",
+      "CRTDT":"Create date",
+      "FANO":"Member ID",
+      "FAXS":"FAXS",
+      "GRPCODE":"Offset charge",
+      "ILLFLG":"ILL",
+      "KENCODE":"Region",
+      "LIBABL":"Name",
+      "LOC":"Location",
+      "LOANS":"LOANS",
+      "ORGCODE":"Institution type",
+      "RNWDT":"Update date",
+      "SETCODE":"Establisher",
+      "STAT":"STAT",
+      "type":"Type",
+      "SUM":"Photocopy fee"
+   },
       "Errors": {
         "Id": "ID field is required",
         "SaveFailed": "Save holding failed",
         "HLYR": "HLYR field is required",
         "HLV": "HLV field is required",
-        "LOC": "LOC field is required"
+        "LOC": "LOC field is required",
+        "TooMany":  "Too Many Selected",
+        "Maximum": "You can only select a maximum of 5 records"
       }
     
   },

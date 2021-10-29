@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { IDisplayLines, ViewLine, ViewField } from '../../catalog/results-types/results-common';
-
+import { AlmaRecordDisplay} from '../../service/ill.service';
 
 @Component({
     selector: 'selectable-result-card',
@@ -16,7 +16,7 @@ export class SelectableResultCardComponent implements OnInit {
   @Input() resultActionList: Array<string> = new Array();
   @Output() onActionSelected = new EventEmitter<RecordSelection>();  
   @Output() onTitleSelected = new EventEmitter<number>();  
-  @Output() onRadioSelected = new EventEmitter<number>(); 
+  @Output() onRadioSelected = new EventEmitter<IDisplayLines>(); 
   private titleDisplay: Array<ViewField>;
   private contentDisplay: Array<ViewLine>;
 
@@ -36,8 +36,8 @@ export class SelectableResultCardComponent implements OnInit {
     this.onTitleSelected.emit(recordIndex);
   }
 
-  onRadioClick(recordIndex: number) {
-    this.onRadioSelected.emit(recordIndex);
+  onRadioClick(record: IDisplayLines) {
+    this.onRadioSelected.emit(record);
  }
   
 }

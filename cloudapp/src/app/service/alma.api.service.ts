@@ -223,7 +223,7 @@ export class AlmaApiService {
  
 
   getIntegrationProfile() {
-
+ 
     let url = "/conf/integration-profiles?type=CENTRAL_CATALOG_INTEGRATION";
 
     if(this.integrationProfile != null && this.integrationProfile != undefined) {
