@@ -184,7 +184,7 @@ export class SerialSummaryDisplay extends IDisplayLines{
             fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.NACSISID').content(this.record.ID).build());      
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
         fieldsArray = new Array<ViewField>();
-            fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.ISBN').content(this.record.ISSN).build());      
+            fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.ISSN').content(this.record.ISSN).build());      
             if(this.record.hasMoreThen1ISBN){
                 fieldsArray.push(new ViewFieldBuilder().content(('Catalog.Results.AndOthers')).build());
             }        
@@ -310,9 +310,8 @@ export class SerialFullDisplay extends IDisplayLines {
             fieldsArray = new Array<ViewField>();
                 fieldsArray.push(new ViewFieldBuilder().content(al.AFLG).build());
                 fieldsArray.push(new ViewFieldBuilder().content(al.AHDNG).build());
-                fieldsArray.push(new ViewFieldBuilder().content(al.AHDNGR).build());
-                fieldsArray.push(new ViewFieldBuilder().content(al.AHDNGVR).build());
-                fieldsArray = this.setSeparator(fieldsArray, "||");
+                fieldsArray.push(new ViewFieldBuilder().label("|| ").content(al.AHDNGR).build());
+                fieldsArray.push(new ViewFieldBuilder().label("|| ").content(al.AHDNGVR).build());
                 fieldsArray.push(new ViewFieldBuilder().content(al.AID).link(SearchType.Names).build());
                 fieldsArray.push(new ViewFieldBuilder().content(al.AF).build());
             this.addLine(new ViewFieldBuilder().label("AL").build(), fieldsArray);

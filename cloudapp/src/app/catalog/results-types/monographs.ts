@@ -324,9 +324,8 @@ export class MonographFullDisplay extends IDisplayLines {
             fieldsArray = new Array<ViewField>(); 
                 fieldsArray.push(new ViewFieldBuilder().content(al.AFLG).build());
                 fieldsArray.push(new ViewFieldBuilder().content(al.AHDNG).build());
-                fieldsArray.push(new ViewFieldBuilder().content(al.AHDNGR).build());
-                fieldsArray.push(new ViewFieldBuilder().content(al.AHDNGVR).build());
-                fieldsArray = this.setSeparator(fieldsArray, "||");
+                fieldsArray.push(new ViewFieldBuilder().label("|| ").content(al.AHDNGR).build());
+                fieldsArray.push(new ViewFieldBuilder().label("|| ").content(al.AHDNGVR).build());
                 fieldsArray.push(new ViewFieldBuilder().content(al.AID).link(SearchType.Names).build());
                 fieldsArray.push(new ViewFieldBuilder().content(al.AF).build());
             this.addLine(new ViewFieldBuilder().label("AL").build(), fieldsArray);
