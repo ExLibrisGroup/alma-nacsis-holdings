@@ -35,7 +35,7 @@ export class NameFull{
     LCAID: string = "";
     TYPE: string = "";
     PLACE: string = "";
-    YEAR: string = "";
+    DATE: string = "";
     SF: NameSF[];
     SAF: NameSAF[];
     NOTE: NameNOTE[];
@@ -130,7 +130,7 @@ export class NameFullDisplay extends IDisplayLines {
             fieldsArray.push(new ViewFieldBuilder().content(this.record.PLACE).build());
         this.addLine(new ViewFieldBuilder().label("PLACE").build(), fieldsArray);
         fieldsArray = new Array<ViewField>();
-            fieldsArray.push(new ViewFieldBuilder().content(this.record.YEAR).build());
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.DATE).build());
         this.addLine(new ViewFieldBuilder().label("DATE").build(), fieldsArray);
         this.record.SF?.forEach(sf=>{
             fieldsArray = new Array<ViewField>();
