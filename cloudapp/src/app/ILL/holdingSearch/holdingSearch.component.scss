@@ -2,6 +2,10 @@
     justify-content: space-between;
     margin-bottom: 20px;
   }
+
+  .align-space-between-no-bottom {
+    justify-content: space-between;
+  }
   
   .align-to-left {
     justify-content: flex-start;
@@ -13,6 +17,10 @@
     margin-bottom: 15px;
   }
 
+  .align-to-right-no-bottom {
+    justify-content: flex-end;
+  }
+
   mat-form-field {
     margin-top: 0px;
     margin-bottom: 0px;
@@ -21,8 +29,7 @@
   }
   
   mat-checkbox {
-    margin-bottom: 8px;
-    display: block;
+    margin-left: 15px;
   }
   
   mat-card {
@@ -90,29 +97,23 @@
   }
   
 .holdings-drop-down {
-  display: none;
-  margin-left: 20px;
-  width: 25%;
-  max-width: 200px;
+  width: 100%;
+  background:rgb(238, 238, 238);
+  justify-content: space-between;
   .holdings-mat-drop-down {
+    max-width: 200px;
     width: 100%;
     .mat-select {
       min-width: 0px;
     }
   }
-}
-
-table {
-  width: 100%;
-}
-
-th.mat-sort-header-sorted {
-  color: white;
-}
-
-th.mat-header-cell {
-  background-color: rgb(78, 78, 78);
-  color: white;
+  .align-to-right-no-bottom {
+    justify-content: flex-end;
+    padding: 20px;
+    .align-to-right-space{
+      margin-right: 30px;
+    }
+  }
 }
 
 #emptyList {
@@ -122,12 +123,123 @@ th.mat-header-cell {
   margin-top: 40px;
 }
 
+ ::ng-deep.mat-menu-panel {
+     width: 150px;
+     position:fixed;
+     overflow: hidden;
+   }
+
+// ::ng-deep .mat-menu-content {
+//   width: 200px;
+// }
+
+table {
+  width: 100%;
+}
+
+:host ::ng-deep .mat-sort-header-container { 
+  display: flex;  
+  justify-content: center; 
+}
+
+th.mat-header-cell {
+  background-color: rgb(78, 78, 78);
+  color: white;
+}
+
 .mat-column-select {
   overflow: initial;
 }
 
-::ng-deep .mat-menu-content {
-  width: 200px;
-  padding: 30px;
+td.mat-cell {
+  text-align: center;
+  border-left: 1px solid lightgray;
+  border-right: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 }
+
+td.mat-cell:first-child {
+  padding-left: 0px;
+  border-left: 1px solid lightgray;
+}
+
+td.mat-cell:last-child {
+  padding-right: 0px;
+}
+
+
+th.mat-header-cell:first-child {
+  padding-left: 5px;
+  border-left: 1px solid lightgray;
+}
+
+th.mat-header-cell:last-child {
+  padding-right: 0px;
+}
+
+
+.mat-column-index{
+  width: 3% !important;
+}
+.mat-column-select{
+  margin: 0,auto !important;
+  width: 3% !important;
+}
+.mat-column-ill{
+  width: 3% !important;
+}
+.mat-column-photoCopy_fee{
+  width: 6% !important;
+}
+.mat-column-stat{
+  width: 3% !important;
+}
+.mat-column-photoCopy{
+  width: 3% !important;
+}
+.mat-column-loan{
+  width: 3% !important;
+}
+.mat-column-fax{
+  width: 3% !important;
+}
+
+tr.expand-detail-row {
+  height: 0;
+}
+
+tr.expand-element-row:not(.expand-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.expand-element-row:not(.expand-expanded-row):active {
+  background: #efefef;
+}
+.expand-element-row td {
+  border-bottom-width: 0;
+}
+
+.expand-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.expand-element-diagram {
+  min-width: 80px;
+  border: 1px solid rgb(167, 167, 167);
+  padding: 8px;
+  font-weight: lighter;
+  margin: 8px 0;
+  text-align: left;
+  .expand-left-column{
+    font-weight: bold;
+    background-color: rgb(207, 238, 248);
+    text-align: right;
+  }
+  .expand-middle-column{
+    font-weight: bold;
+  }
+
+}
+
 

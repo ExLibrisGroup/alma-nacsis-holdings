@@ -183,9 +183,12 @@
       "Subjects": "Subjects",
       "Actions" : {
         "ViewHolding" : "View holding",
-        "ViewMemInfo" : "View member information"
+        "ViewMemInfo" : "View member info"
       },
-      "SelectedLenders":"Selected Lenders"
+      "SelectedLenders":"Selected Lenders",
+      "RowSelected":"row(s) selected",
+      "ClearSelection":"Clear Selection",
+      "MaxRowSelected":"Max row selected"
     },
     "HoldingSearch":{
        "ParticipatingOrgCode":"Participating organization code",
@@ -206,6 +209,9 @@
       "INDEX":"ID",
       "CHECKBOX":"check",
       "NAME":"Name",
+      "VOL":"VOL",
+      "HLV":"HLV",
+      "HLYR":"HLYR",
       "BID":"Bibliographic ID",
       "COPYS":"Photocopy",
       "CRTDT":"Create date",
@@ -222,7 +228,10 @@
       "SETCODE":"Establisher",
       "STAT":"STAT",
       "type":"Type",
-      "SUM":"Photocopy fee"
+      "SUM":"Photocopy fee",
+      "Volume":"Volume",
+      "RGNT":"RGNT",
+      "LDF":"LDF"
    },
       "Errors": {
         "Id": "ID field is required",

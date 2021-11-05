@@ -59,7 +59,6 @@ export class HoldingsService extends BaseService {
   getHoldingsForILLFromNacsis(queryParams: String){
 
     let fullUrl: string;
-    "use strict";
     return this.getInitData().pipe(
       mergeMap(initData => {
         fullUrl = this.setBaseUrl(initData) +  queryParams;
@@ -268,7 +267,12 @@ export class NacsisHoldingRecord{
   type: string = "";
 }
 
-export class nacsisBookHoldingsListDetail {
+export class volDetails {
+  
+}
+
+export class NacsisBookHoldingsListDetail {
+  index:number;
   VOL: string = "";
   CLN: string = "";
   RGTN: string = "";
@@ -277,7 +281,8 @@ export class nacsisBookHoldingsListDetail {
   CPYNT: string = "";
 }
 
-export class nacsisSerialHoldingsListDetail {
+export class NacsisSerialHoldingsListDetail {
+  index:number;
   HLYR: string = "";
   HLV: string = "";
   CONT: string = "";
@@ -286,7 +291,7 @@ export class nacsisSerialHoldingsListDetail {
   CPYNT: string = "";
 }
 
-export class displayHoldingResult{
+export class DisplayHoldingResult{
   index: number;
   name: string = "";
   vol: any[];//book only
@@ -303,8 +308,13 @@ export class displayHoldingResult{
   photoCopy  : string = "";
   loan : string = "";
   fax : string = "";
-}
+  isSelected:boolean = false;
+  id: string = "";
+  crtdt: string = "";
+  rnwdt : string = "";
+  fano : string = "";
 
+}
 
 
 const HOLDINGS = [

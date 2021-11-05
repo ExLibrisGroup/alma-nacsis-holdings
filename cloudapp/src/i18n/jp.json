@@ -168,9 +168,12 @@
       "Subjects": "Subjects",
       "Actions" : {
         "ViewHolding" : "View holding",
-        "ViewMemInfo" : "View member information"
+        "ViewMemInfo" : "View member info"
       },
-      "SelectedLenders":"Selected Lenders"
+      "SelectedLenders":"Selected Lenders",
+      "RowSelected":"row(s) selected",
+      "ClearSelection":"Clear Selection",
+      "MaxRowSelected":"Max row selected"
     },
     "Form": {
       "MainTitle": "Search records in NACSIS ",

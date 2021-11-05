@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, ViewChild, OnInit,OnChanges } from '@angular/core';
+import { AfterViewInit, Component, ViewChild, OnInit,OnChanges,ViewChildren,QueryList } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 //import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
-import { HoldingsService, Holding, Header,HoldingsSearch,NacsisHoldingRecord,displayHoldingResult,nacsisBookHoldingsListDetail,nacsisSerialHoldingsListDetail } from '../../service/holdings.service';
+import { HoldingsService, Holding, Header,HoldingsSearch,NacsisHoldingRecord,DisplayHoldingResult,NacsisBookHoldingsListDetail,NacsisSerialHoldingsListDetail } from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../../dialog/confirmation-dialog.component';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
@@ -13,15 +13,23 @@ import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl,Validators,FormArray } from '@angular/forms';
 import { IllService, AlmaRecordsResults, BaseRecordInfo, AlmaRecordInfo, AlmaRecord, AlmaRecordDisplay } from '../../service/ill.service';
 import { holdingFormGroup ,FieldName} from './holdingSearch-utils';
-
+import { MatCheckbox } from '@angular/material/checkbox';
 import {MatSort, Sort} from '@angular/material/sort';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
 import { WarningDialogComponent } from '../warningDialog/warningDialog';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
 @Component({
     selector: 'ILL-holdingSearch',
     templateUrl: './holdingSearch.component.html',
-    styleUrls: ['./holdingSearch.component.scss']
+    styleUrls: ['./holdingSearch.component.scss'],
+    animations: [
+      trigger('detailExpand', [
+        state('collapsed', style({height: '0px', minHeight: '0'})),
+        state('expanded', style({height: '*'})),
+        transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+      ]),
+    ],
   })
 
   export class HoldingSearchComponent implements OnInit,OnChanges{
@@ -123,25 +131,29 @@ import { WarningDialogComponent } from '../warningDialog/warningDialog';
       ];
 
       //result view
-      displayedColumns: string[] = [ 'index', 'select','name', /*'vol','hlv','hlyr',*/'region', 
+      displayedColumns: string[] = [ 'index', 'select','name', 'vol','region', 
       'establisher','institutionType','location','photoCopy_fee','ill','stat',
        'photoCopy','loan','fax','actionsColumn'];
-      displayHoldingResult = new MatTableDataSource<displayHoldingResult>();
+
+      displayHoldingResult = new MatTableDataSource<DisplayHoldingResult>();
       @ViewChild(MatSort) sort: MatSort;
-   
+      @ViewChildren('myCheckbox') private myCheckboxes : QueryList<any>;
 
       nacsisHoldingsResultList:  Array<NacsisHoldingRecord> = new Array();
-      holdings: displayHoldingResult[];
+      holdings: DisplayHoldingResult[];
       noHoldingRecords: boolean = false;
       isBook: boolean = false;
       numOfResults: number;
-      selection = new SelectionModel<displayHoldingResult>(true, []);
+      selection = new SelectionModel<DisplayHoldingResult>(true, []);
       selecedData: any = [];
       public ACTIONS_MENU_LIST: string[] =[
         'ILL.Results.Actions.ViewHolding','ILL.Results.Actions.ViewMemInfo'
       ];
       selectedIndex: any = [];
       
+      selectedVol:string;
+      isMaxRowSelected:boolean = false;
+      expandedElement:DisplayHoldingResult | null;
 
     constructor(
         private route: ActivatedRoute,
@@ -154,7 +166,12 @@ import { WarningDialogComponent } from '../warningDialog/warningDialog';
         private alert: AlertService,
         private _liveAnnouncer: LiveAnnouncer
         
-    ){}
+    ){
+      this.owners = [
+        { id: "0", name: this.translate.instant('Holdings.ViewHoldings.All') },
+        { id: "1", name: this.translate.instant('Holdings.ViewHoldings.Mine') }
+      ];
+    }
 
 
     ngOnInit() {
@@ -162,11 +179,12 @@ import { WarningDialogComponent } from '../warningDialog/warningDialog';
       this.mmsTitle = this.route.snapshot.params['mmsTitle'];
       this.backSession = sessionStorage.getItem(ROUTING_STATE_KEY);
       this.form = holdingFormGroup(null);
-      this.selection = new SelectionModel<displayHoldingResult>(true, []);     
+      this.selection = new SelectionModel<DisplayHoldingResult>(true, []);
+      this.isMaxRowSelected = false;     
     }
 
     ngOnChanges(holdings) {
-      this.displayHoldingResult = new MatTableDataSource<displayHoldingResult>(holdings);
+      this.displayHoldingResult = new MatTableDataSource<DisplayHoldingResult>(holdings);
       this.displayHoldingResult.sort = this.sort;
 
     }
@@ -188,6 +206,7 @@ import { WarningDialogComponent } from '../warningDialog/warningDialog';
                   this.ngOnChanges(this.holdings);
                 } 
               } else {
+                this.holdings = new Array();
                 this.noHoldingRecords = true;
                 this.numOfResults = 0;
               }
@@ -298,6 +317,19 @@ import { WarningDialogComponent } from '../warningDialog/warningDialog';
       return (this.holdings && this.holdings.length > 0);
     }
 
+
+    getDisplayedColumns():string[]{
+      if(this.isBook){
+        return  [ 'index', 'select','name', 'vol','region', 
+        'establisher','institutionType','location','photoCopy_fee','ill','stat',
+         'photoCopy','loan','fax','actionsColumn'];
+      }else{
+        return  [ 'index', 'select','name', 'hlv','hlyr','region', 
+        'establisher','institutionType','location','photoCopy_fee','ill','stat',
+         'photoCopy','loan','fax','actionsColumn'];
+      }
+    }
+
     announceSortChange(sortState: Sort) {
 
       if (sortState.direction) {
@@ -313,7 +345,7 @@ import { WarningDialogComponent } from '../warningDialog/warningDialog';
 
       nacsisHoldingsResultList.forEach(nacsisHoldingsResult => {
         
-        let holding:displayHoldingResult = new displayHoldingResult();
+        let holding:DisplayHoldingResult = new DisplayHoldingResult();
         let nacsisHoldingsList = new Array();
 
         index++;
@@ -324,10 +356,9 @@ import { WarningDialogComponent } from '../warningDialog/warningDialog';
         nacsisHoldingsList = nacsisHoldingsResult.nacsisHoldingsList;
         if(nacsisHoldingsList!=null && nacsisHoldingsList.length > 0){
           if(this.isBook){
-            holding.vol = this.extractVolFromHoldingList(nacsisHoldingsList,'VOL');
+            holding.vol = this.extractVolFromHoldingList(nacsisHoldingsList,'book');
           }else{
-            holding.hlv = this.extractVolFromHoldingList(nacsisHoldingsList,'HLV');
-            holding.hlyr = this.extractFieldFromHoldingList(nacsisHoldingsList,'HLYR');
+            holding.hlv = this.extractVolFromHoldingList(nacsisHoldingsList,'serial');
           }
         }
 
@@ -342,13 +373,19 @@ import { WarningDialogComponent } from '../warningDialog/warningDialog';
         holding.photoCopy =  nacsisHoldingsResult.COPYS;
         holding.loan =  nacsisHoldingsResult.LOANS;
         holding.fax = nacsisHoldingsResult.FAXS;
+        //extend data
+        holding.id = nacsisHoldingsResult.ID;
+        holding.crtdt = this.formatDate(nacsisHoldingsResult.CRTDT);
+        holding.rnwdt = this.formatDate(nacsisHoldingsResult.RNWDT);
+        holding.fano = nacsisHoldingsResult.FANO;
 
-        
+
+        holding.isSelected = false;
 
         this.holdings.push(holding);
       });
       this.numOfResults = index;
-
+      console.log(this.holdings);
       return this.holdings;
     }
 
@@ -378,29 +415,40 @@ import { WarningDialogComponent } from '../warningDialog/warningDialog';
     }
 
     extractVolFromHoldingList(nacsisHoldingsList: any[],tag: string){
-      let fieldArr = new Array();
+      
+      let fieldArr = [];
+      let fieldArrHlv = new Array();
+      let indexVol:number = 0;
       nacsisHoldingsList.forEach(nacsisHolding => {
-        let field = '';
+        
+        let bookHolDetail:NacsisBookHoldingsListDetail = new NacsisBookHoldingsListDetail();
+        let serailHolDetail:NacsisSerialHoldingsListDetail = new NacsisSerialHoldingsListDetail();
         switch(tag){
-          case 'VOL':
-            field = nacsisHolding.VOL;
-            if(!this.illService.isEmpty(field)){
-              fieldArr.push(field);
-            }
+          case 'book':
+              bookHolDetail.index =  indexVol;
+              bookHolDetail.VOL = this.illService.isEmpty(nacsisHolding.VOL)?'-' : nacsisHolding.VOL;
+              bookHolDetail.RGTN = this.illService.isEmpty(nacsisHolding.RGTN)?'-' : nacsisHolding.RGTN;
+              bookHolDetail.LDF = this.illService.isEmpty(nacsisHolding.LDF)?'-' : nacsisHolding.LDF;
+              fieldArr.push(bookHolDetail);
             break;
-          case 'HLV':
-            field = nacsisHolding.HLV;
-            if(!this.illService.isEmpty(field)){
-              fieldArr = field.split(",");
-            }
+
+          case 'serial':
+              serailHolDetail.index =  indexVol;
+              serailHolDetail.HLV = this.illService.isEmpty(nacsisHolding.HLV)?'-' : nacsisHolding.HLV;;
+              serailHolDetail.HLYR = this.illService.isEmpty(nacsisHolding.HLYR)?'-' : nacsisHolding.HLYR;;
+              serailHolDetail.CLN = this.illService.isEmpty(nacsisHolding.CLN)?'-' : nacsisHolding.CLN;;
+              fieldArr.push(serailHolDetail);
+             
             break;
         }
+        indexVol++;
         //let cln = nacsisHolding.CLN;
         //let rgtn = nacsisHolding.RGTN;
         //let cpyr = nacsisHolding.CPYR;
         //let ldf = nacsisHolding.LDF;
         //let cpynt = nacsisHolding.CPYNT;
       });
+  
       return fieldArr;
     }
 
@@ -424,19 +472,21 @@ import { WarningDialogComponent } from '../warningDialog/warningDialog';
     getCheckboxesData(row) {
       if (row.checked === true) {
         if (!this.maxReached()) {
+          this.isMaxRowSelected = false;
           this.selecedData.push(row);
           this.fillIndexIntoArray(this.selecedData);
         } else {
-        
-          setTimeout(() => {
-            row.checked = false;
-            this.dialog.open(
-              WarningDialogComponent,
-              {width:'400px'});
-          });
+          
+           setTimeout(() => {
+             row.checked = false;
+             this.isMaxRowSelected = true;
+             //this.dialog.open(
+            //   WarningDialogComponent,
+            //   {width:'400px'});
+           });
         }
       } else if (row.checked === false) {
-        
+        this.isMaxRowSelected = false;
         this.selecedData = this.selecedData.filter(el => {
           return el.index !== row.index;
         });
@@ -461,10 +511,49 @@ import { WarningDialogComponent } from '../warningDialog/warningDialog';
       return this.ACTIONS_MENU_LIST;
     }
 
-    onActionsClick(row,actionIndex){
-        console.log(row);
-        console.log(actionIndex);
+    onActionsClick(expandedElement,element,actionIndex){
+        
+        switch (actionIndex) {
+          case 0: // view holding
+              return expandedElement === element ? null : element
+              break;
+          case 1: // view member info
+            console.log(element);
+            console.log(actionIndex);
+              break;
+          }
     }
+
+    onVolSelected(vol){
+      console.log(this);
+      console.log(vol);
+    }
+
+    
+  onOwnerSelected() {
+    
+    sessionStorage.setItem(this.nacsis.OwnerKey, this.selected);
+    console.log(this.selected);
+    
+   }
+
+   clearSelection(){
+      let myCheckboxes = this.myCheckboxes.toArray();
+      myCheckboxes.forEach(myCheckbox => {
+        myCheckbox.checked = false;
+      });
+      this.selection.clear();
+      this.selecedData = new Array();
+      this.fillIndexIntoArray(this.selecedData);
+      this.isMaxRowSelected = false;
+   }
+
+   formatDate(dateTime:string){
+      if(!this.illService.isEmpty(dateTime) && dateTime.length == 8 ){
+        return dateTime.substring(0,4) + "/" + dateTime.substring(4,6) + "/" + dateTime.substring(6,8);
+      }
+      return dateTime;
+   }
 
   }
 
@@ -510,4 +599,5 @@ interface FAXServiceType {
   value: string;
   viewValue: string;
 }
+
 
