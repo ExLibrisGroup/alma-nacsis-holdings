@@ -82,6 +82,7 @@ export class Header {
   }
 
 export const ROUTING_STATE_KEY = "routingState";
+export const LIBRARY_ID_KEY = "libraryIDKey";
 
 export enum AppRoutingState {
     MainMenuPage = "",

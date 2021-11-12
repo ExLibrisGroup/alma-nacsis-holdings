@@ -295,8 +295,10 @@ export class DisplayHoldingResult{
   index: number;
   name: string = "";
   vol: any[];//book only
-  hlv: any[];//serial only
+  hlv: string = "";//serial only
   hlyr: string = "";//serial only
+  cln: string = "";//serial only
+  ldf: string = "";//serial only
   region: string = "";
   establisher: string = "";
   institutionType: string = "";

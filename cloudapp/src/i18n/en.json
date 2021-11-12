@@ -231,7 +231,8 @@
       "SUM":"Photocopy fee",
       "Volume":"Volume",
       "RGNT":"RGNT",
-      "LDF":"LDF"
+      "LDF":"LDF",
+      "CLN":"CLN"
    },
       "Errors": {
         "Id": "ID field is required",

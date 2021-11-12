@@ -6,8 +6,9 @@ import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordI
 import {  catchError, tap } from 'rxjs/operators';
 import { AlmaApiService, IntegrationProfile } from '../../service/alma.api.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY,LIBRARY_ID_KEY } from '../../service/base.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+
 
 @Component({
   selector: 'ILL-main',
@@ -51,6 +52,7 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
       this.almaApiService.getIntegrationProfile()
         .subscribe(integrationProfile => {
           this.integrationProfile = integrationProfile;    
+          sessionStorage.setItem(LIBRARY_ID_KEY,integrationProfile.libraryID);
           let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS || e.type == EntityType.BORROWING_REQUEST );
           let disCards: AlmaRecordInfo[] = new Array(rawBibs.length);
 
@@ -67,6 +69,7 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
                this.loading = false;
                this.recordInfoList = disCards;
                this.setSearchResultsDisplay(this.recordInfoList,"ill");
+               console.log(this);
               }
             });
         });

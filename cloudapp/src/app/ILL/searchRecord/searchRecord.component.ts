@@ -3,11 +3,11 @@ import { Component, OnInit, AfterViewInit, ViewChild, TemplateRef } from '@angul
 import { SearchType, SearchField, FieldSize, FieldName } from '../../user-controls/search-form/search-form-utils';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { CatalogService } from '../../service/catalog.service';
-import { AlertService,Entity,CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService, Entity, CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
-import { NacsisCatalogResults, BaseResult, IDisplayLines, ViewLine, ViewField } from '../../catalog/results-types/results-common'
+import { NacsisCatalogResults, BaseResult, IDisplayLines, ViewLine, ViewField } from '../../catalog/results-types/results-common';
 import { IllService, AlmaRecordsResults, BaseRecordInfo, AlmaRecordInfo, AlmaRecord, AlmaRecordDisplay } from '../../service/ill.service';
 import { FullViewLink } from '../../catalog/full-view-display/full-view-display.component';
 import { RecordSelection } from '../../user-controls/selectable-result-card/selectable-result-card.component';
@@ -30,8 +30,15 @@ export class searchRecordComponent implements AfterViewInit {
   ]);
 
   public ALL_DATABASES_MAP = new Map([
-    [SearchType.Monographs, [ 'BOOK', 'PREBOOK', 'JPMARC', 'TRCMARC', 'USMARC', 'USMARCX', 'GPOMARC', 'UKMARC', 'REMARC', 'DNMARC', 'CHMARC', 'KORMARC', 'RECON', 'HBZBKS', 'SPABKS', 'ITABKS', 'KERISB', 'KERISX', 'BNFBKS']],
+    [SearchType.Monographs, ['BOOK', 'PREBOOK', 'JPMARC', 'TRCMARC', 'USMARC', 'USMARCX', 'GPOMARC', 'UKMARC', 'REMARC', 'DNMARC', 'CHMARC', 'KORMARC', 'RECON', 'HBZBKS', 'SPABKS', 'ITABKS', 'KERISB', 'KERISX', 'BNFBKS']],
     [SearchType.Serials, ['SERIAL', 'JPMARCS', 'USMARCS', 'SPASER', 'ITASER', 'KERISS', 'BNFSER']],
+  ]);
+
+  public ALL_DATABASES_MAP_SEARCH = new Map([
+    [SearchType.Monographs, ['BOOK', 'PREBOOK', 'JPMARC', 'TRCMARC', 'USMARC', 'USMARCX', 'GPOMARC', 'UKMARC', 'REMARC', 'DNMARC', 'CHMARC', 'KORMARC', 'RECON', 'HBZBKS', 'SPABKS', 'ITABKS', 'KERISB', 'KERISX', 'BNFBKS']],
+    [SearchType.Serials, ['SERIAL', 'JPMARCS', 'USMARCS', 'SPASER', 'ITASER', 'KERISS', 'BNFSER']],
+    [SearchType.Names, ['NAME', 'JPMARCA', 'USMARCA']],
+    [SearchType.UniformTitles, ['TITLE', 'USMARCT']]
   ]);
 
   public ACTIONS_MENU_LIST = new Map([
@@ -72,8 +79,8 @@ export class searchRecordComponent implements AfterViewInit {
   private issn: string;
   private itemRecord: AlmaRecord = new AlmaRecord('', this.translate, this.illService);
   private itemRecordDisplay: AlmaRecordDisplay = new AlmaRecordDisplay(this.translate, this.itemRecord, this.illService, 'holding');
-  
-  ArrayEntity :  Array<string> = new Array();
+
+  ArrayEntity: Array<string> = new Array();
   processed = 0;
 
   // Templates
@@ -247,7 +254,7 @@ export class searchRecordComponent implements AfterViewInit {
     let title = this.selected.getFullRecordData().getSummaryView().TRD;
     let nacsisID = this.selected.getFullRecordData().getSummaryView().ID;
     this.loading = true;
-    this.router.navigate(['holdingSearch',nacsisID,title]);
+    this.router.navigate(['holdingSearch', nacsisID, title, this.currentSearchType]);
   }
 
 
@@ -256,8 +263,8 @@ export class searchRecordComponent implements AfterViewInit {
     console.log(this.recordIndexSelected);
     // Clicking on title will open the full view 
     let record = this.resultsSummaryDisplay[recordIndex];
-     this.currentResulsTmpl = this.fullRecordTmpl;
-     this.resultFullDisplay = record.getFullRecordData().getFullViewDisplay().initContentDisplay();
+    this.currentResulsTmpl = this.fullRecordTmpl;
+    this.resultFullDisplay = record.getFullRecordData().getFullViewDisplay().initContentDisplay();
   }
 
   // Calling Nacsis servlet
@@ -391,6 +398,7 @@ export class searchRecordComponent implements AfterViewInit {
     let record = this.resultsSummaryDisplay[selection.recordIndex];
     switch (selection.actionIndex) {
       case 0: // Full view
+        console.log(this);
         this.currentResulsTmpl = this.fullRecordTmpl;
         this.resultFullDisplay = record.getFullRecordData().getFullViewDisplay().initContentDisplay();
         break;
@@ -410,7 +418,7 @@ export class searchRecordComponent implements AfterViewInit {
     let urlParams = "";
     urlParams = urlParams + QueryParams.PageIndex + "=0&" + QueryParams.PageSize + "=20";
     urlParams = urlParams + "&" + QueryParams.SearchType + "=" + fullViewLink.searchType;
-    urlParams = urlParams + "&" + QueryParams.Databases + "=" + this.ALL_DATABASES_MAP.get(fullViewLink.searchType)[0];
+    urlParams = urlParams + "&" + QueryParams.Databases + "=" + this.ALL_DATABASES_MAP_SEARCH.get(fullViewLink.searchType)[0];
     urlParams = urlParams + "&" + QueryParams.ID + "=" + fullViewLink.linkID;
 
     this.getResultsFromNacsis(urlParams, true);

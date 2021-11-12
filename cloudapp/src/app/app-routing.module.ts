@@ -25,7 +25,8 @@ const routes: Routes = [
   { path: 'searchRecord', component: searchRecordComponent },
   { path: 'searchRecord/:nacsisId/:title/:isbn/:issn', component: searchRecordComponent },
   { path: 'holdingSearch', component: HoldingSearchComponent },
-  { path: 'holdingSearch/:nacsisId/:mmsTitle', component: HoldingSearchComponent }
+  { path: 'holdingSearch/:nacsisId/:mmsTitle', component: HoldingSearchComponent },
+  { path: 'holdingSearch/:nacsisId/:mmsTitle/:searchType', component: HoldingSearchComponent }
 ];
 
 @NgModule({
