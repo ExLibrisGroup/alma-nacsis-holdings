@@ -89,5 +89,6 @@ export enum AppRoutingState {
     HoldingsMainPage = "/holdings",
     CatalogSearchPage = "/catalog",
     ILLBorrowingMainPage = "/ILL",
-    SearchRecordMainPage = "/searchRecord"
+    SearchRecordMainPage = "/searchRecord",
+    HoldingSearchMainPage = "/holdingSearch"
 }

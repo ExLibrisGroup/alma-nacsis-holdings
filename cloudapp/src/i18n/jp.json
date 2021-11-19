@@ -8,6 +8,7 @@
     "Clear": "???Clear",
     "Search": "???Search",
     "Next": "Next",
+    "Order": "Order",
     "Errors": {
       "generalError": "アプリケーションエラー"
     }
@@ -131,11 +132,10 @@
 
   "ILL": {
     "Main": {
-      "Intro": "Select a record to Create ILL Borrowing Request:",
-      "NoRecords": "To create ILL Borrowing Request, navigate to a bibliographic record or start a New search",
+      "Intro": "Select a record to create ILL borrowing request:",
+      "NoRecords": "To create ILL borrowing request, navigate to a bibliographic record or start a new search.",
       "SelectBib": "Select a title",
-      "NewSearchInNACSIS": "New search",
-      "Next": "Next"
+      "NewSearchInNACSIS": "New search"
     },
     "DisplayCard": {
       "By":"By",
@@ -207,6 +207,9 @@
       "INDEX":"ID",
       "CHECKBOX":"check",
       "NAME":"Name",
+      "VOL":"VOL",
+      "HLV":"HLV",
+      "HLYR":"HLYR",
       "BID":"Bibliographic ID",
       "COPYS":"Photocopy",
       "CRTDT":"Create date",
@@ -223,8 +226,75 @@
       "SETCODE":"Establisher",
       "STAT":"STAT",
       "type":"Type",
-      "SUM":"Photocopy fee"
+      "SUM":"Photocopy fee",
+      "Volume":"Volume",
+      "RGNT":"RGNT",
+      "LDF":"LDF",
+      "CLN":"CLN",
+      "CallNumber":"Call Number",
+      "RegistrationNumber":"Registration Number"
    },
+   "RequestForm":{
+    "ResourceInformation":"Resource Information",
+    "Rota":"Rota",
+    "RequestInformation":"Request Information",
+    "RequestType":"Request Type",
+    "PayClass":"Payment classification",
+    "CopyType":"Copy type",
+    "SendingMethod":"Sending Method",
+    "ExternalRequestID":"External request ID",
+    "DefermentPermitNumber":"Deferment permit number",
+    "NACSISBibliographicID":"NACSIS Bibliographic ID",
+    "StandardNumber":"Standard number",
+    "Volume":"Volume",
+    "Page":"Page",
+    "Year":"Year",
+    "BibliographicMetadata":"Bibliographic metadata",
+    "TreatiseRelatedMatters":"Treatise-related matters",
+    "BibliographicAuthority":"Bibliographic authority",
+    "CollectionAuthority":"Collection authority",
+    "ApplicantName":"Applicant name",
+    "ApplicantAffiliation":"Applicant affiliation",
+    "DateNeededBy":"Date Needed By",
+    "Comments":"Comments",
+    "RequesterStaff":"Requester staff",
+    "RequesterAddress":"Requester address",
+    "LocalData":"Local data",
+    "LocalAccountingData":"Local accounting data",
+    "ElectronicShippingAddress":"Electronic shipping address"
+    },
+    "MemberInfo":{
+      "MemberID":"Member ID",
+      "CreateDate":"Create date",
+      "UpdateDate":"Update date",
+      "ParticipatingOrganizationName":"Participating organization name",
+      "ParticipatingOrganizationAbbreviation":"Participating organization abbreviation",
+      "Address":"Address",
+      "ILLDepartment":"ILL department",
+      "ILLPersonInCharge":"ILL person in charge",
+      "PhoneNumber":"Phone number",
+      "Ext":"Ext.",
+      "Fax":"Fax",
+      "EstablisherType":"EstablisherType",
+      "InstitutionType":"Institution type",
+      "CATParticipationType":"CAT participation type",
+      "ILLParticipationType":"ILL participation type",
+      "CopyServiceType":"Copy service type",
+      "LendingServiceType":"Lending service type",
+      "FAXServiceType":"FAX service type",
+      "ServiceStatus":"Service status",
+      "CopyReceptionHallCode":"Copy reception hall code",
+      "RentalAndBorrowingCenterCode":"Rental and borrowing center code",
+      "LendingPeriod":"Lending period",
+      "RegionPrefectureCode":"Region (prefecture) code",
+      "CatalogingDepartment":"Cataloging department",
+      "PhoneNum":"Phone num. (Ext.)",
+      "SystemDepartment":"System department",
+      "Email":"Email",
+      "ILLPolicy":"ILL policy",
+      "LocationCode":"Location code",
+      "OffsetCode":"Offset code"
+    },
       "Errors": {
         "Id": "ID field is required",
         "SaveFailed": "Save holding failed",
@@ -232,7 +302,9 @@
         "HLV": "HLV field is required",
         "LOC": "LOC field is required",
         "TooMany":  "Too Many Selected",
-        "Maximum": "You can only select a maximum of 5 records"
+        "Maximum": "You can only select a maximum of 5 records",
+        "warningSelectValue":"Please choose an option",
+        "warningInputValue":"Please input a value"
       }
     
   },

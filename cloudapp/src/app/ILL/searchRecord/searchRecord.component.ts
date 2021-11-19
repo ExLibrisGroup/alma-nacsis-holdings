@@ -179,6 +179,7 @@ export class searchRecordComponent implements AfterViewInit {
   onRadioClick(record: IDisplayLines) {
     this.isFirstIndex = 1;
     this.selected = record;
+    console.log(this.selected);
   }
 
 
@@ -253,6 +254,9 @@ export class searchRecordComponent implements AfterViewInit {
     sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage);
     let title = this.selected.getFullRecordData().getSummaryView().TRD;
     let nacsisID = this.selected.getFullRecordData().getSummaryView().ID;
+    let rawData = this.selected.getFullRecordData().getFullView();
+    let object = JSON.stringify(rawData);
+    sessionStorage.setItem('selecedFullRecordData', object);
     this.loading = true;
     this.router.navigate(['holdingSearch', nacsisID, title, this.currentSearchType]);
   }

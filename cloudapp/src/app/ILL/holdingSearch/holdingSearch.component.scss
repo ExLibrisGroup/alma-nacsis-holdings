@@ -1,6 +1,6 @@
 .align-space-between {
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
   }
 
   .align-space-between-no-bottom {
@@ -40,14 +40,15 @@
     padding: 0px;
     background: whitesmoke !important;
   }
+
   
   .form-wrapper {
     flex-direction: column;
     display: flex;
   
     .form-cards {
-      overflow: auto;
-      padding-top: 10px;
+      overflow: hidden;
+      padding-top: 0px;
       padding-bottom: 10px;
       padding-left: 0px;
       padding-right: 0px;
@@ -64,13 +65,7 @@
       margin-right: 15px;
     }
   
-    .form-input-location {
-      margin-right: 0px;
-      margin-left: 0px;
-      margin-bottom: 0px;
-      width: 15%;
-      min-width: 250px;
-    }
+ 
   
     .align-to-right {
       justify-content: flex-end;
@@ -142,6 +137,15 @@ table {
   justify-content: center; 
 }
 
+:host ::ng-deep .hide-arrow .mat-sort-header-arrow {
+  color: #fff;
+  opacity: 0.54 !important;
+}
+
+th.mat-sort-header-sorted {
+  color: #fff;
+}
+
 th.mat-header-cell {
   background-color: rgb(78, 78, 78);
   color: white;
@@ -186,22 +190,22 @@ th.mat-header-cell:last-child {
   width: 3% !important;
 }
 .mat-column-ill{
-  width: 3% !important;
+  flex: 0 0 5%;
 }
 .mat-column-photoCopy_fee{
-  width: 6% !important;
+  flex: 0 0 5%;
 }
 .mat-column-stat{
-  width: 3% !important;
+  flex: 0 0 5%;
 }
 .mat-column-photoCopy{
-  width: 3% !important;
+  flex: 0 0 5%;
 }
 .mat-column-loan{
-  width: 3% !important;
+  flex: 0 0 5%;
 }
 .mat-column-fax{
-  width: 3% !important;
+  flex: 0 0 5%;
 }
 
 tr.expand-detail-row {
@@ -294,6 +298,16 @@ tr.expand-element-row:not(.expand-expanded-row):active {
 a,
 a label {
     cursor: pointer;
+}
+
+.top-title{
+  width: 100%;
+  background: rgb(240, 240, 240);
+}
+
+.selectedLenders{
+  width:98%;
+  margin-right: 8px;
 }
 
 

@@ -26,6 +26,40 @@ export const holdingFormGroup = (holdingVolume): FormGroup =>{
 
 }
 
+export const initResourceInformationFormGroup = (): FormGroup =>{ 
+  return new FormGroup ({
+    ONO:new FormControl(),
+    PRMT:new FormControl(),
+    BIBID:new FormControl('', [Validators.required]),
+    STDNO:new FormControl('', [Validators.required]),
+    VOL:new FormControl(),
+    PAGE:new FormControl(),
+    YEAR:new FormControl(),
+    BIBNT:new FormControl('', [Validators.required]),
+    ARTCL:new FormControl()
+  })
+}
+
+export const initRequesterInformationFormGroup = (): FormGroup =>{ 
+  return new FormGroup ({
+    BVRFY:new FormControl(),
+    HVRFY:new FormControl(),
+    CLNT:new FormControl(),
+    CLNTP:new FormControl(),
+    ODATE:new FormControl(new Date().toISOString()),
+
+    SENDCMNT:new FormControl(),
+    OSTAF:new FormControl('', [Validators.required]),
+    OADRS:new FormControl('', [Validators.required]),
+    OLDF:new FormControl(),
+    OLDAF:new FormControl(),
+
+    OEDA:new FormControl()
+  })
+}
+
+
+
 export enum FieldName {
     FANO = "FANO",
     VOL = "VOL",

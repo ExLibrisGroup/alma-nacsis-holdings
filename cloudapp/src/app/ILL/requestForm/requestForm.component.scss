@@ -1,0 +1,182 @@
+.align-space-between {
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .align-space-between-no-bottom {
+    justify-content: space-between;
+  }
+  
+  .align-to-left {
+    justify-content: flex-start;
+    margin-bottom: 15px;
+  }
+  
+  .align-to-right {
+    justify-content: flex-end;
+    margin-bottom: 15px;
+  }
+
+  .align-to-right-no-bottom {
+    justify-content: flex-end;
+  }
+
+  .top-title{
+    width: 100%;
+    background: rgb(240, 240, 240);
+  }
+
+  mat-form-field {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-right: 20px;
+    margin-left: 20px;
+  }
+
+  mat-card {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    margin-left: 0;
+    padding: 0px;
+    background: whitesmoke !important;
+  }
+
+
+
+  .form-wrapper {
+    flex-direction: column;
+    display: flex;
+  
+    .form-cards {
+      overflow: hidden;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-left: 0px;
+      padding-right: 0px;
+      margin-bottom: 40px;
+       .form-card-inputs {
+         padding-top: 10px;
+         ::ng-deep .mat-form-field-wrapper {
+          padding-bottom: 10px !important;
+        }
+      }
+      .form-card-input-full-width {
+        width: 96%;
+        padding-top: 10px;
+        min-width: 277px;
+        ::ng-deep .mat-form-field-wrapper {
+         padding-bottom: 10px !important;
+       }
+      }
+      .form-card-inputs-large {
+        padding-top: 10px;
+        width: 46%;
+        min-width: 277px;
+        flex-grow: 1;
+        ::ng-deep .mat-form-field-wrapper {
+         padding-bottom: 10px !important;
+        }
+      }
+      .form-card-inputs-medium {
+        padding-top: 10px;
+        width: 29.5%;
+        min-width: 277px;
+        flex-grow: 1;
+        ::ng-deep .mat-form-field-wrapper {
+        padding-bottom: 10px !important;
+        }
+      }
+      .form-card-inputs-small {
+        padding-top: 10px;
+        width: 17%;
+          flex-grow: 1;
+          min-width: 130px;
+        ::ng-deep .mat-form-field-wrapper {
+        padding-bottom: 10px !important;
+        }
+      }
+
+    }
+  
+    .form-commands {
+      margin-right: 15px;
+    }
+  
+
+    .align-to-right {
+      justify-content: flex-end;
+      margin-bottom: 20px;
+    }
+
+  
+    div.form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      column-gap: 1em;
+    }
+  
+    mat-list-item {
+      i.eca-button,
+      i.cloudapp-button {
+        visibility: visible !important;
+      }
+      &:hover i.eca-button,
+      &:hover i.cloudapp-button {
+        visibility: visible;
+      }
+    }
+  }
+
+  table {
+    width: 100%;
+  }
+  
+  :host ::ng-deep .mat-sort-header-container { 
+    display: flex;  
+    justify-content: center; 
+  }
+  
+  th.mat-header-cell {
+    background-color: rgb(78, 78, 78);
+    color: white;
+    text-align: center;
+  }
+  
+  .mat-column-select {
+    overflow: initial;
+  }
+  
+  td.mat-cell {
+    text-align: center;
+    border-left: 1px solid lightgray;
+    border-right: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+  }
+  
+  td.mat-cell:first-child {
+    width: 3%;
+    padding-left: 0px;
+    border-left: 1px solid lightgray;
+  }
+  
+  td.mat-cell:last-child {
+    padding-right: 0px;
+  }
+  
+  
+  th.mat-header-cell:first-child {
+    padding-left: 5px;
+    border-left: 1px solid lightgray;
+  }
+  
+  th.mat-header-cell:last-child {
+    padding-right: 0px;
+  }
+
+  .mat-column-id{
+    background-color: rgb(236, 236, 236);
+  }
+  .mat-column-index{
+    background-color: rgb(236, 236, 236);
+  }

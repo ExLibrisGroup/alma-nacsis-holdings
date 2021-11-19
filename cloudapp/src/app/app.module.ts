@@ -39,6 +39,7 @@ import { ILLBorrowingMainComponent } from './ILL/main/main.component';
 import { searchRecordComponent } from './ILL/searchRecord/searchRecord.component';
 import { HoldingSearchComponent } from './ILL/holdingSearch/holdingSearch.component';
 import { WarningDialogComponent } from './ILL/warningDialog/warningDialog';
+import { RequestFormComponent } from './ILL/requestForm/requestForm.component';
 
 export function getToastrModule() {
   return ToastrModule.forRoot({
@@ -70,7 +71,8 @@ export function getToastrModule() {
       SelectableResultsListComponent,
       SelectableResultCardComponent,
       HoldingSearchComponent,
-      WarningDialogComponent
+      WarningDialogComponent,
+      RequestFormComponent
    ],
    entryComponents: [ConfirmationDialog,WarningDialogComponent],
    imports: [

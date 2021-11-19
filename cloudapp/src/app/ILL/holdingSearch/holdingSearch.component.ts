@@ -1,10 +1,10 @@
-import {  Component, ViewChild, OnInit, OnChanges, ViewChildren, QueryList } from '@angular/core';
+import { Component, ViewChild, OnInit, OnChanges, ViewChildren, QueryList } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, HoldingsSearch, NacsisHoldingRecord, DisplayHoldingResult, NacsisBookHoldingsListDetail, NacsisSerialHoldingsListDetail } from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { ROUTING_STATE_KEY,LIBRARY_ID_KEY } from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY, LIBRARY_ID_KEY } from '../../service/base.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl } from '@angular/forms';
@@ -46,6 +46,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   form: FormGroup;
   holdingSearch: HoldingsSearch;
   localLibraryID: string;
+  rawData: string;
 
   // UI variables
   private panelState: boolean = true;
@@ -133,9 +134,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   ];
 
   //result view
-  displayedColumns: string[] = ['index', 'select', 'name', 'vol', 'region',
-    'establisher', 'institutionType', 'location', 'photoCopy_fee', 'ill', 'stat',
-    'photoCopy', 'loan', 'fax', 'actionsColumn'];
 
   displayHoldingResult = new MatTableDataSource<DisplayHoldingResult>();
   @ViewChild(MatSort) sort: MatSort;
@@ -151,11 +149,12 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   //selection box
   selectedIndex: any = [];
-  selectedVol: string;
   isMaxRowSelected: boolean = false;
   numOfResults: number;
   selection = new SelectionModel<DisplayHoldingResult>(true, []);
   selecedData: any = [];
+  selectedVolMap = new Map();
+  
 
   //expand details
   expandedElement: DisplayHoldingResult | null;
@@ -196,21 +195,25 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.nacsisId = this.route.snapshot.params['nacsisId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
     this.currentSearchType = this.route.snapshot.params['searchType'];
+    
     this.backSession = sessionStorage.getItem(ROUTING_STATE_KEY);
+    sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage);
     this.form = holdingFormGroup(null);
     this.selection = new SelectionModel<DisplayHoldingResult>(true, []);
     this.isMaxRowSelected = false;
+
   }
 
   ngOnChanges(holdings) {
     this.displayHoldingResult = new MatTableDataSource<DisplayHoldingResult>(holdings);
     this.displayHoldingResult.sort = this.sort;
-
+    this.selectedVolMap = new Map();
   }
 
   search() {
     this.loading = true;
     let queryParams = this.buildQueryUrl();
+    this.clearSelection();
     try {
       this.nacsis.getHoldingsForILLFromNacsis(queryParams)
         .subscribe({
@@ -308,6 +311,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.holdings = new Array();
     this.panelState = true;
     this.selected = "";
+    this.selectedVolMap = new Map();
   }
 
   panelOpenState() {
@@ -435,10 +439,12 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       switch (tag) {
         case 'vol':
           bookHolDetail.index = indexVol;
-          bookHolDetail.VOL = this.illService.isEmpty(nacsisHolding.VOL) ? '-' : nacsisHolding.VOL;
-          bookHolDetail.RGTN = this.illService.isEmpty(nacsisHolding.RGTN) ? '-' : nacsisHolding.RGTN;
-          bookHolDetail.LDF = this.illService.isEmpty(nacsisHolding.LDF) ? '-' : nacsisHolding.LDF;
-          fieldArr.push(bookHolDetail);
+          bookHolDetail.VOL = this.illService.isEmpty(nacsisHolding.VOL) ? '' : nacsisHolding.VOL;
+          bookHolDetail.RGTN = this.illService.isEmpty(nacsisHolding.RGTN) ? '' : nacsisHolding.RGTN;
+          bookHolDetail.LDF = this.illService.isEmpty(nacsisHolding.LDF) ? '' : nacsisHolding.LDF;
+          if(!this.illService.isEmpty(bookHolDetail.VOL)){
+            fieldArr.push(bookHolDetail);
+          }
           break;
       }
       indexVol++;
@@ -452,16 +458,16 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
       switch (tag) {
         case 'hlv':
-          fieldValue = this.illService.isEmpty(nacsisHolding.HLV) ? '-' : nacsisHolding.HLV;
+          fieldValue = this.illService.isEmpty(nacsisHolding.HLV) ? '' : nacsisHolding.HLV;
           break;
         case 'hlyr':
-          fieldValue = this.illService.isEmpty(nacsisHolding.HLYR) ? '-' : nacsisHolding.HLYR;
+          fieldValue = this.illService.isEmpty(nacsisHolding.HLYR) ? '' : nacsisHolding.HLYR;
           break;
         case 'cln':
-          fieldValue = this.illService.isEmpty(nacsisHolding.CLN) ? '-' : nacsisHolding.CLN;
+          fieldValue = this.illService.isEmpty(nacsisHolding.CLN) ? '' : nacsisHolding.CLN;
           break;
         case 'ldf':
-          fieldValue = this.illService.isEmpty(nacsisHolding.LDF) ? '-' : nacsisHolding.LDF;
+          fieldValue = this.illService.isEmpty(nacsisHolding.LDF) ? '' : nacsisHolding.LDF;
           break;
       }
     });
@@ -470,22 +476,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   }
 
 
-  extractFieldFromHoldingList(nacsisHoldingsList: any[], tag: string) {
-    let fieldValue = '';
-    nacsisHoldingsList.forEach(nacsisHolding => {
-      let field = '';
-      switch (tag) {
-        case 'HLYR':
-          field = nacsisHolding.HLYR;
-          if (this.illService.isEmpty(field)) {
-            fieldValue = field;
-          }
-          break;
-      }
-
-    });
-    return fieldValue;
-  }
 
   getCheckboxesData(row) {
     if (row.checked === true) {
@@ -510,7 +500,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       });
       this.fillIndexIntoArray(this.selecedData);
     }
-    //console.log('selected', this.selecedData);
+    console.log('selected', this.selecedData);
   }
 
   fillIndexIntoArray(selecedData) {
@@ -518,6 +508,26 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     selecedData.forEach(element => {
       this.selectedIndex.push(element.index);
     });
+  }
+
+  filterSelectVol(rows) {
+    let newIndex:number = 1;
+    rows.forEach(row => {
+      let rowIndex = row.index;
+      let volIndexSelected = this.selectedVolMap.get(rowIndex);
+      if (!this.illService.isEmpty(volIndexSelected)) {
+        let vol = new Array();
+        vol = row.vol;
+        row.vol = vol.filter(obj => {
+          return obj.index == volIndexSelected;
+        })
+      }else{
+        row.vol = new Array();
+      }
+      row.index = newIndex;
+      newIndex++;
+    });
+    return rows;
   }
 
   maxReached(): boolean {
@@ -546,29 +556,52 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     }
   }
 
-  onVolSelected(vol) {
-    console.log(this);
-    console.log(vol);
+  onVolSelected(vol, element) {
+    let selectedVolIndex = vol.value;
+    let selectedEleIndex = element.index;
+    this.selectedVolMap.set(selectedEleIndex, selectedVolIndex);
   }
+
+  isShowVolValue(element){
+    if(this.illService.isEmpty(element.vol)){
+      return false;
+    }else{
+      if(element.vol.length > 0){
+        return true;
+      }else{
+        return false;
+      } 
+    }
+  }
+
+  setVolValue(element){
+    if(element!=null && element!=undefined && element.vol != null && element.vol != undefined){
+      if(element.vol.length == 1){
+        let selectedEleIndex = element.index;
+        this.selectedVolMap.set(selectedEleIndex, element.vol[0].index);
+        return element.vol[0].index;
+      }
+    }
+  }
+
 
   onOwnerSelected() {
     this.localLibraryID = sessionStorage.getItem(LIBRARY_ID_KEY);
     sessionStorage.setItem(this.nacsis.OwnerKey, this.selected);
     // just set this.nacsisHoldingsResultList to this.holdings.
 
-    if(this.selected === '0'){
+    if (this.selected === '0') {
       this.noHoldingRecords = false;
       this.holdings = this.setDisplayDetails(this.nacsisHoldingsResultList);
-      
-    }else if(this.selected === '1'){
+
+    } else if (this.selected === '1') {
       let localnacsisHoldingsResultList = this.nacsisHoldingsResultList.filter(e => e.FANO === this.localLibraryID);
       this.holdings = this.setDisplayDetails(localnacsisHoldingsResultList);
-      if(this.holdings.length == 0){
+      if (this.holdings.length == 0) {
         this.noHoldingRecords = true;
       }
     }
-    console.log(this);
-    this.numOfResults = this.nacsisHoldingsResultList.length;
+    this.numOfResults = this.holdings.length;
     this.ngOnChanges(this.holdings);
   }
 
@@ -581,6 +614,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.selecedData = new Array();
     this.fillIndexIntoArray(this.selecedData);
     this.isMaxRowSelected = false;
+    this.selectedVolMap = new Map();
   }
 
   formatDate(dateTime: string) {
@@ -623,11 +657,11 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
               if (!isFullViewLink) {
                 if (catalogResults.totalRecords >= 1) {
                   this.catalogService.setSearchResultsMap(this.currentSearchType, catalogResults, urlParams);
-                  
+
                   this.setSearchResultsDisplay();
                 } else {
                   this.numOfResults = 0;
-                  
+
                 }
               } else {
                 if (catalogResults.totalRecords >= 1) {
@@ -661,6 +695,16 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     if (i % 2 != 0) {
       return "expand-tr";
     }
+  }
+
+
+  next() {
+    console.log(this.selecedData);
+    this.filterSelectVol(this.selecedData);
+    let object = JSON.stringify(this.selecedData);
+    sessionStorage.setItem('selecedData', object);
+    sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.HoldingSearchMainPage);
+    this.router.navigate(['requestForm', this.nacsisId, this.mmsTitle, this.currentSearchType]);
   }
 
 }

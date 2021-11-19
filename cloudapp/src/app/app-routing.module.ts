@@ -10,6 +10,7 @@ import { CatalogMainComponent } from './catalog/main/main.component';
 import { ILLBorrowingMainComponent } from './ILL/main/main.component';
 import { searchRecordComponent } from './ILL/searchRecord/searchRecord.component';
 import { HoldingSearchComponent } from './ILL/holdingSearch/holdingSearch.component';
+import { RequestFormComponent } from './ILL/requestForm/requestForm.component';
 
 const routes: Routes = [
   { path: '', component: MainMenuComponent },
@@ -26,7 +27,9 @@ const routes: Routes = [
   { path: 'searchRecord/:nacsisId/:title/:isbn/:issn', component: searchRecordComponent },
   { path: 'holdingSearch', component: HoldingSearchComponent },
   { path: 'holdingSearch/:nacsisId/:mmsTitle', component: HoldingSearchComponent },
-  { path: 'holdingSearch/:nacsisId/:mmsTitle/:searchType', component: HoldingSearchComponent }
+  { path: 'holdingSearch/:nacsisId/:mmsTitle/:searchType', component: HoldingSearchComponent },
+  { path: 'requestForm', component: RequestFormComponent },
+  { path: 'requestForm/:nacsisId/:mmsTitle/:searchType', component: RequestFormComponent },
 ];
 
 @NgModule({
