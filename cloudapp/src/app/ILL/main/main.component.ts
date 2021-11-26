@@ -59,6 +59,7 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
           forkJoin(rawBibs.map(entity => this.getRecord(entity)))
             .subscribe({
               next: (records: any[]) => {
+                console.log(records);
                disCards = this.almaApiService.getAlmaRecodsInfo(records);
               },
               error: e => {

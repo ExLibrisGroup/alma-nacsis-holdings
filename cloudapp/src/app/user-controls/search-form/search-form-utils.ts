@@ -6,7 +6,7 @@ export enum SearchType {
     Serials = "Serials",
     Names = "Names",
     UniformTitles = "UniformTitles",
-    Member = "Member"
+    Members = "Members"
 }
 
 export class SearchField {

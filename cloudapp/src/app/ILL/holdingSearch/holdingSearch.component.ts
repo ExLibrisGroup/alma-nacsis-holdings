@@ -12,9 +12,8 @@ import { IllService } from '../../service/ill.service';
 import { holdingFormGroup, FieldName } from './holdingSearch-utils';
 import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { WarningDialogComponent } from '../warningDialog/warningDialog';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { NacsisCatalogResults, BaseResult, IDisplayLines, ViewLine, ViewField } from '../../catalog/results-types/results-common'
+import { NacsisCatalogResults, IDisplayLines} from '../../catalog/results-types/results-common'
 import { CatalogService } from '../../service/catalog.service';
 import { SearchType } from '../../user-controls/search-form/search-form-utils';
 import { FullViewLink } from '../../catalog/full-view-display/full-view-display.component';
@@ -159,7 +158,8 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   //expand details
   expandedElement: DisplayHoldingResult | null;
   isViewHolding: boolean = true;
-  public currentSearchType: SearchType = SearchType.Monographs;
+  public currentSearchType: SearchType = SearchType.Members;
+  public routerSearchType: SearchType = SearchType.Monographs;
   private catalogResultsData: NacsisCatalogResults;
   private resultsSummaryDisplay: Array<IDisplayLines>;
   private resultFullDisplay;
@@ -194,7 +194,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.nacsisId = this.route.snapshot.params['nacsisId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
-    this.currentSearchType = this.route.snapshot.params['searchType'];
+    this.routerSearchType = this.route.snapshot.params['searchType'];
     
     this.backSession = sessionStorage.getItem(ROUTING_STATE_KEY);
     sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage);
@@ -224,6 +224,10 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
               if (this.nacsisHoldingsResultList != null && this.nacsisHoldingsResultList.length > 0) {
                 this.holdings = this.setDisplayDetails(this.nacsisHoldingsResultList);
                 this.ngOnChanges(this.holdings);
+              }else {
+                this.holdings = new Array();
+                this.noHoldingRecords = true;
+                this.numOfResults = 0;
               }
             } else {
               this.holdings = new Array();
@@ -400,7 +404,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       this.holdings.push(holding);
     });
     this.numOfResults = index;
-    console.log(this.holdings);
     return this.holdings;
   }
 
@@ -488,9 +491,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
         setTimeout(() => {
           row.checked = false;
           this.isMaxRowSelected = true;
-          //this.dialog.open(
-          //   WarningDialogComponent,
-          //   {width:'400px'});
         });
       }
     } else if (row.checked === false) {
@@ -500,7 +500,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       });
       this.fillIndexIntoArray(this.selecedData);
     }
-    console.log('selected', this.selecedData);
   }
 
   fillIndexIntoArray(selecedData) {
@@ -547,12 +546,42 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
         return expandedElement === element ? null : element;
 
       case 1: // view member info
+        console.log(element);
+        this.getMemberInfoByFanoID(element.fano);
         this.isViewHolding = false;
-        this.setSearchResultsDisplay();
-        let record = this.resultsSummaryDisplay[element.index - 1];
-        this.resultFullDisplay = record.getFullRecordData().getFullViewDisplay().initContentDisplay();
-        return expandedElement === element ? null : element;
+       return expandedElement === element ? null : element;
 
+    }
+  }
+
+  getMemberInfoByFanoID(fano){
+    this.loading = true;
+    let queryParams = "";
+    queryParams = "ID=" + fano;
+    try {
+      this.nacsis.getMemberForILLFromNacsis(queryParams)
+        .subscribe({
+          next: (header) => {
+            if (header.status === this.nacsis.OkStatus) {
+              this.catalogService.setSearchResultsMapOfMemberDB(this.currentSearchType, header, queryParams);
+              this.setSearchResultsDisplay();
+            } else {
+              console.log('header' + header);
+              
+            }
+          },
+          error: e => {
+            this.loading = false;
+            console.log(e.message);
+            this.alert.error(e.message, { keepAfterRouteChange: true });
+          },
+          complete: () => {
+            this.loading = false;
+          }
+        });
+    } catch (e) {
+      this.loading = false;
+      this.alert.error(this.translate.instant('General.Errors.generalError'), { keepAfterRouteChange: true });
     }
   }
 
@@ -630,6 +659,11 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.catalogResultsData.getResults()?.forEach(result => {
       this.resultsSummaryDisplay.push(result.getSummaryDisplay());
     });
+           
+    if(this.resultsSummaryDisplay.length > 0){
+      let record = this.resultsSummaryDisplay[0];
+      this.resultFullDisplay = record.getFullRecordData().getFullViewDisplay().initContentDisplay();
+    }
   }
 
   onFullViewLink(fullViewLink: FullViewLink) {
@@ -657,7 +691,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
               if (!isFullViewLink) {
                 if (catalogResults.totalRecords >= 1) {
                   this.catalogService.setSearchResultsMap(this.currentSearchType, catalogResults, urlParams);
-
                   this.setSearchResultsDisplay();
                 } else {
                   this.numOfResults = 0;
@@ -704,7 +737,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     let object = JSON.stringify(this.selecedData);
     sessionStorage.setItem('selecedData', object);
     sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.HoldingSearchMainPage);
-    this.router.navigate(['requestForm', this.nacsisId, this.mmsTitle, this.currentSearchType]);
+    this.router.navigate(['requestForm', this.nacsisId, this.mmsTitle, this.routerSearchType]);
   }
 
 }

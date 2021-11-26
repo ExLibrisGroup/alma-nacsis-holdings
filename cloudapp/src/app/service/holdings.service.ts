@@ -28,6 +28,12 @@ export class HoldingsService extends BaseService {
     return baseUrl;
   }
 
+  setMemberBaseUrl(initData: InitData) : string {
+    let baseUrl = super.setBaseUrl(initData);
+    baseUrl = baseUrl + "member?";
+    return baseUrl;
+  }
+
   getHeader(): Header {
     return this._header;
   }
@@ -74,6 +80,24 @@ export class HoldingsService extends BaseService {
         if (this._header.status === this.OkStatus && !this.isEmpty(this._holdings)) {
           this.updateHoldingPreview();
         }
+        return of(this._header);
+      })
+    );
+  }
+
+  
+  getMemberForILLFromNacsis(queryParams: String){
+
+    let fullUrl: string;
+    return this.getInitData().pipe(
+      mergeMap(initData => {
+        fullUrl = this.setMemberBaseUrl(initData) +  queryParams;
+        return this.getAuthToken()}),
+      mergeMap(authToken => {
+        let headers = this.setAuthHeader(authToken);
+        return this.http.get<any>(fullUrl, { headers })}),
+      mergeMap(response => {
+        this._header = response;
         return of(this._header);
       })
     );

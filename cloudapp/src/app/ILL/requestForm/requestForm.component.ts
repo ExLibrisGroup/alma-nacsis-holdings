@@ -1,19 +1,19 @@
-import { Component, ViewChild, OnInit, OnChanges, ViewChildren, QueryList } from '@angular/core';
+import { Component,  OnInit, OnChanges} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { HoldingsService, HoldingsSearch, NacsisHoldingRecord, DisplayHoldingResult, NacsisBookHoldingsListDetail, NacsisSerialHoldingsListDetail } from '../../service/holdings.service';
+import { HoldingsService, DisplayHoldingResult} from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, ROUTING_STATE_KEY, LIBRARY_ID_KEY } from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
-import { IllService } from '../../service/ill.service';
+import { IllService, RequestFields, Bibg, HMLG } from '../../service/ill.service';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { CatalogService } from '../../service/catalog.service';
 import { SearchType } from '../../user-controls/search-form/search-form-utils';
-import { FullViewLink } from '../../catalog/full-view-display/full-view-display.component';
-import { initResourceInformationFormGroup, initRequesterInformationFormGroup, FieldName } from '../holdingSearch/holdingSearch-utils';
+import { initResourceInformationFormGroup, initRequesterInformationFormGroup, initRotaFormGroup, FieldName } from '../holdingSearch/holdingSearch-utils';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'ILL-requestForm',
@@ -36,6 +36,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   panelStateRequestInformation: boolean = true;
   formResourceInformation: FormGroup;
   formRequesterInformation: FormGroup;
+  formRotamation: FormGroup;
   selecedData: any = [];
   fullRecordData: any = [];
 
@@ -54,8 +55,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
   requestType = new FormControl();
   requestTypeList: RequestType[] = [
-    { value: '0', viewValue: 'Copy' },
-    { value: '1', viewValue: 'Loan' }
+    { value: 'COPYO', viewValue: 'Copy' },
+    { value: 'LOANO', viewValue: 'Loan' }
   ];
 
   commentsType = new FormControl();
@@ -107,6 +108,10 @@ export class RequestFormComponent implements OnInit, OnChanges {
   STDNO = new FormControl('', [Validators.required]);
   ODATE = new FormControl(new Date().toISOString());
 
+  requestBody = new Array();
+  rotaFormControlName = ['HMLID', 'HMLNM', 'LOC', 'VOL', 'CLN', 'RGTN'];
+  isAllFieldsFilled: boolean = true;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -136,10 +141,12 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.ngOnChanges(this.selecedData);
     this.formResourceInformation = initResourceInformationFormGroup();
     this.formRequesterInformation = initRequesterInformationFormGroup();
+    this.formRotamation = initRotaFormGroup();
     this.panelStateResourceInformation = false;
     this.panelStateRota = true;
     this.panelStateRequestInformation = false;
     this.extractFullData(this.fullRecordData);
+    this.extractSelectedData();
   }
 
   extractFullData(fullRecordData) {
@@ -163,8 +170,46 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
     this.formResourceInformation.controls.BIBNT.setValue(this.buildBibMetadata());
     this.formResourceInformation.controls.STDNO.setValue(this.isbnAuto);
-    console.log(this);
   }
+
+  extractSelectedData() {
+    this.rotaFormControlName.forEach(conrtolName => {
+      for (let i = 1; i <= this.selecedData.length; i++) {
+        let tag = conrtolName + i;
+        this.setValueForFormRota(tag);
+      }
+    })
+  }
+
+  setValueForFormRota(tag) {
+    let tagName = tag.substr(0, tag.length - 1);
+    let tagSequence = tag.substr(tag.length - 1, tag.length);
+
+    switch (tagName) {
+      case 'HMLID':
+        this.formRotamation.get(tag).setValue(this.selecedData[tagSequence - 1].fano);
+        break;
+      case 'HMLNM':
+        this.formRotamation.get(tag).setValue(this.selecedData[tagSequence - 1].name);
+        break;
+      case 'LOC':
+        this.formRotamation.get(tag).setValue(this.selecedData[tagSequence - 1].location);
+        break;
+      case 'VOL':
+        if (!this.illService.isEmpty(this.selecedData[tagSequence - 1].vol))
+          this.formRotamation.get(tag).setValue(this.selecedData[tagSequence - 1].vol[0].VOL);
+        break;
+      case 'CLN':
+        if (!this.illService.isEmpty(this.selecedData[tagSequence - 1].vol))
+          this.formRotamation.get(tag).setValue(this.selecedData[tagSequence - 1].vol[0].CLN);
+        break;
+      case 'RGTN':
+        if (!this.illService.isEmpty(this.selecedData[tagSequence - 1].vol))
+          this.formRotamation.get(tag).setValue(this.selecedData[tagSequence - 1].vol[0].RGTN);
+        break;
+    }
+  }
+
 
   buildBibMetadata() {
     let bibMetadata = "";
@@ -241,6 +286,131 @@ export class RequestFormComponent implements OnInit, OnChanges {
     }
     return str;
   }
+
+  order() {
+    //check required fields
+    this.setFormGroupTouched(this.formResourceInformation);
+    this.setFormGroupTouched(this.formRequesterInformation);
+    this.requestType.markAsTouched({ onlySelf: true });
+    this.payClass.markAsTouched({ onlySelf: true });
+    this.copyType.markAsTouched({ onlySelf: true });
+    this.checkFieldRequired();
+
+    if (this.isAllFieldsFilled) {
+      this.buildRequestBody();
+      this.sendToIllCreateRequest(this.requestBody);
+    } else {
+      this.panelStateRequestInformation = true;
+      this.panelStateResourceInformation = true;
+    }
+  }
+
+
+  setFormGroupTouched(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      control.markAsTouched({ onlySelf: true });
+    });
+  }
+
+  buildRequestBody() {
+
+    this.requestBody = new Array();
+    let item = new RequestFields;
+    // formResourceInformation
+    item.database = this.requestType.value;
+    item.ACCT = this.payClass.value;
+    item.TYPE = this.copyType.value;
+    item.SPVIA = this.illService.isEmpty(this.sendingMethod.value) ? "" : this.sendingMethod.value;
+    item.ONO = this.illService.isEmpty(this.formResourceInformation.value.ONO) ? "" : this.formResourceInformation.value.ONO;
+    item.PRMT = this.illService.isEmpty(this.formResourceInformation.value.PRMT) ? "" : this.formResourceInformation.value.PRMT;
+
+    let bibg = new Bibg();
+  
+    bibg.BIBID = this.formResourceInformation.value.BIBID;
+    bibg.BIBNT = this.formResourceInformation.value.BIBNT;
+    bibg.STDNO = this.formResourceInformation.value.STDNO;
+    item.BIBG = bibg;
+
+    item.VOL = this.illService.isEmpty(this.formResourceInformation.value.VOL) ? "" : this.formResourceInformation.value.VOL;
+    item.PAGE = this.illService.isEmpty(this.formResourceInformation.value.PAGE) ? "" : this.formResourceInformation.value.PAGE;
+    item.YEAR = this.illService.isEmpty(this.formResourceInformation.value.YEAR) ? "" : this.formResourceInformation.value.YEAR;
+    item.ARTCL = this.illService.isEmpty(this.formResourceInformation.value.ARTCL) ? "" : this.formResourceInformation.value.ARTCL;
+
+    //formRotamation
+    item.HMLG = new Array();
+
+    for (let i = 1; i <= this.selecedData.length; i++) {
+      let hmlgs = new HMLG();
+      this.rotaFormControlName.forEach(controlName => {
+        hmlgs[controlName] = this.illService.isEmpty(this.formRotamation.get(controlName + i).value) ? "" : this.formRotamation.get(controlName + i).value;
+      })
+      item.HMLG.push(hmlgs);
+    }
+
+    //formRequesterInformation
+    item.BVRFY = this.illService.isEmpty(this.formRequesterInformation.value.BVRFY) ? "" : this.formRequesterInformation.value.BVRFY;
+    item.HVRFY = this.illService.isEmpty(this.formRequesterInformation.value.HVRFY) ? "" : this.formRequesterInformation.value.HVRFY;
+    item.CLNT = this.illService.isEmpty(this.formRequesterInformation.value.CLNT) ? "" : this.formRequesterInformation.value.CLNT;
+    item.CLNTP = this.illService.isEmpty(this.formRequesterInformation.value.CLNTP) ? "" : this.formRequesterInformation.value.CLNTP;
+    item.ODATE = new DatePipe('en').transform(this.ODATE.value, 'yyyyMMdd');
+    item.SENDCMNT = this.illService.isEmpty(this.formRequesterInformation.value.SENDCMNT) ? "" : this.formRequesterInformation.value.SENDCMNT;
+    item.OSTAF = this.formRequesterInformation.value.OSTAF;
+    item.OADRS = this.formRequesterInformation.value.OADRS;
+    item.OLDF = this.illService.isEmpty(this.formRequesterInformation.value.OLDF) ? "" : this.formRequesterInformation.value.OLDF;
+    item.OLDAF = this.illService.isEmpty(this.formRequesterInformation.value.OLDAF) ? "" : this.formRequesterInformation.value.OLDAF;
+    item.OEDA = this.illService.isEmpty(this.formRequesterInformation.value.OEDA) ? "" : this.formRequesterInformation.value.OEDA;
+
+    this.requestBody.push(item);
+
+  }
+
+  checkFieldRequired() {
+    let needToCheckFields = [this.requestType.value, this.payClass.value, this.copyType.value, this.formResourceInformation.value.BIBID,
+    this.formResourceInformation.value.BIBNT, this.formResourceInformation.value.STDNO, this.formRequesterInformation.value.OSTAF,
+    this.formRequesterInformation.value.OADRS];
+    this.isAllFieldsFilled = true;
+    needToCheckFields.forEach(fieldValue => {
+      if (this.isAllFieldsFilled) {
+        if (this.illService.isEmpty(fieldValue)) {
+          this.isAllFieldsFilled = false;
+        }
+      }
+    })
+    return this.isAllFieldsFilled;
+  }
+
+  sendToIllCreateRequest(requestBody) {
+    this.loading = true;
+
+    try {
+      console.log('send!!!');
+      this.illService.createILLrequest(requestBody)
+      .subscribe({
+        next: (header) => {
+          console.log(header);
+          if (header.status === this.nacsis.OkStatus) {
+            let requestID = header.requestId;
+            this.alert.success(this.translate.instant('ILL.Main.CreateILLSuccess') + requestID, {keepAfterRouteChange:true});  
+          } else {
+            this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
+          }
+        },
+        error: e => {
+          this.loading = false;
+          console.log(e.message);
+          this.alert.error(e.message, {keepAfterRouteChange:true});
+        },
+        complete: () => this.loading = false
+      });
+
+    } catch (e) {
+      this.loading = false;
+      console.log(e);
+      this.alert.error(this.translate.instant('General.Errors.generalError'), { keepAfterRouteChange: true });
+    }
+  }
+
 }
 
 

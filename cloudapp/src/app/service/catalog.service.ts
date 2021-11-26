@@ -14,6 +14,7 @@ import { Serial } from '../catalog/results-types/serials';
 import { Name } from '../catalog/results-types/name';
 import { UniformTitle } from '../catalog/results-types/uniformTitle';
 import { AlmaApiService, IntegrationProfile } from './alma.api.service';
+import { Member } from '../catalog/results-types/member';
 
 
 @Injectable({
@@ -39,7 +40,8 @@ export class CatalogService extends BaseService {
             [SearchType.Monographs, new NacsisCatalogResults()],
             [SearchType.Serials, new NacsisCatalogResults()],
             [SearchType.Names, new NacsisCatalogResults()],
-            [SearchType.UniformTitles, new NacsisCatalogResults()]
+            [SearchType.UniformTitles, new NacsisCatalogResults()],
+            [SearchType.Members, new NacsisCatalogResults()]
         ]);
     }
 
@@ -97,6 +99,15 @@ export class CatalogService extends BaseService {
         );
     }
 
+    setSearchResultsMapOfMemberDB(searchType: SearchType, response: any, urlParams: string) {
+        this.searchResultsMap.get(searchType).setHeader(response);
+        this.searchResultsMap.get(searchType).setQueryParams(urlParams);
+        this.searchResultsMap.get(searchType).setResults(new Array());
+        response.members.forEach(record => {
+            this.searchResultsMap.get(searchType).getResults().push(this.resultsTypeFactory(searchType, record));
+        });   
+    }   
+
     
     resultsTypeFactory(type: SearchType, record: any){
         switch (type){
@@ -108,6 +119,8 @@ export class CatalogService extends BaseService {
                     return new Name(record, this.translate);
             case SearchType.UniformTitles:
                 return new UniformTitle(record, this.translate);
+            case SearchType.Members:
+                return new Member(record, this.translate);
             default:
                 return null;
 

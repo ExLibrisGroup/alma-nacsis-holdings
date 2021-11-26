@@ -1,11 +1,17 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SearchType, SearchField, FieldSize, FieldName } from '../user-controls/search-form/search-form-utils';
+import { HttpClient } from "@angular/common/http";
+import { mergeMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { CloudAppEventsService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
+
+import { BaseService } from "./base.service";
 
 @Injectable({
     providedIn: 'root'
   })
-export class IllService {
+export class IllService extends BaseService {
 
   recordInfoList: AlmaRecordInfo[] = new Array();
   recordsSummaryDisplay: Array<IDisplayLines>;
@@ -24,8 +30,10 @@ export class IllService {
   constructor(
     private translate: TranslateService,
     private illService: IllService,
+    protected eventsService: CloudAppEventsService,
+    protected http: HttpClient
     ) {
-    
+      super(eventsService, http);
   }
 
   isEmpty(val) {
@@ -84,6 +92,30 @@ export class IllService {
       }
     }
     return false;
+  }
+
+  setBaseUrl(initData: InitData) : string {
+    let baseUrl = super.setBaseUrl(initData);
+    baseUrl = baseUrl + "createIllRequest?";
+    return baseUrl;
+  }
+  
+  createILLrequest(requestBody) {
+    let fullUrl: string;
+    let body = JSON.stringify(requestBody);
+    //remove outer parenthesis 
+    body = body.substring(1);
+    body = body.substring(0,body.length-1);
+    let database = requestBody[0].database;
+    return this.getInitData().pipe(
+      mergeMap(initData => {
+        fullUrl = this.setBaseUrl(initData) + "database=" + database;
+        return this.getAuthToken()}),
+      mergeMap(authToken => {
+        let headers = this.setAuthHeader(authToken);
+        return this.http.post<any>(fullUrl, body, { headers });
+      })
+    );
   }
 
 }
@@ -265,7 +297,8 @@ export class AlmaRecordDisplay extends IDisplayLines{
         {
           summaryLines.push(authorDisPlay + publicInfo);
         }
-       
+
+      if(!this.illService.isEmpty(this.record.language))
        summaryLines.push( this.translate.instant("ILL.DisplayCard.Language") + ": " + this.record.language);
       
        if(!this.illService.isEmpty(this.record.isbn))
@@ -290,5 +323,46 @@ export enum QueryParams {
   ID = "ID"
 }
 
+export class RequestFields{
+  database: string = "";
+  ACCT: string = "";
+  TYPE: string = "";
+  SPVIA: string = "";
+  ONO: string = "";
+  PRMT: string = "";
+  BIBG: Bibg;
+  VOL: string = "";
+  PAGE: string = "";
+  YEAR: string = "";
+  ARTCL: string = "";
+  HMLG: HMLG[];
+  BVRFY: string = "";
+  HVRFY: string = "";
+  CLNT: string = "";
+  CLNTP: string = "";
+  ODATE: string = "";
+  SENDCMNT: string = "";
+  CMMNT: string = "";
+  OSTAF: string = "";
+  OADRS: string = "";
+  OLDF: string = "";
+  OLDAF: string = "";
+  OEDA: string = "";
+}
+
+export class Bibg {
+  BIBID: string = "";
+  BIBNT: string = "";
+  STDNO: string = "";
+}
+
+export class HMLG{
+  HMLID: string = "";
+  HMLNM: string = "";
+  LOC: string = "";
+  VOL: string = "";
+  CLN: string = "";
+  RGTN: string = "";
+}
 
 

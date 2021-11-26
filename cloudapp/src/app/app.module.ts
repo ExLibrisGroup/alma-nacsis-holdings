@@ -38,7 +38,6 @@ import { SelectableResultCardComponent } from './user-controls/selectable-result
 import { ILLBorrowingMainComponent } from './ILL/main/main.component';
 import { searchRecordComponent } from './ILL/searchRecord/searchRecord.component';
 import { HoldingSearchComponent } from './ILL/holdingSearch/holdingSearch.component';
-import { WarningDialogComponent } from './ILL/warningDialog/warningDialog';
 import { RequestFormComponent } from './ILL/requestForm/requestForm.component';
 
 export function getToastrModule() {
@@ -71,10 +70,9 @@ export function getToastrModule() {
       SelectableResultsListComponent,
       SelectableResultCardComponent,
       HoldingSearchComponent,
-      WarningDialogComponent,
       RequestFormComponent
    ],
-   entryComponents: [ConfirmationDialog,WarningDialogComponent],
+   entryComponents: [ConfirmationDialog],
    imports: [
       MaterialModule,
       MatDialogModule,

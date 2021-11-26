@@ -58,6 +58,47 @@ export const initRequesterInformationFormGroup = (): FormGroup =>{
   })
 }
 
+export const initRotaFormGroup = (): FormGroup =>{ 
+  return new FormGroup ({
+    HMLID1:new FormControl(),
+    HMLID2:new FormControl(),
+    HMLID3:new FormControl(),
+    HMLID4:new FormControl(),
+    HMLID5:new FormControl(),
+
+    HMLNM1:new FormControl(),
+    HMLNM2:new FormControl(),
+    HMLNM3:new FormControl(),
+    HMLNM4:new FormControl(),
+    HMLNM5:new FormControl(),
+
+    LOC1:new FormControl(),
+    LOC2:new FormControl(),
+    LOC3:new FormControl(),
+    LOC4:new FormControl(),
+    LOC5:new FormControl(),
+    
+    
+    VOL1:new FormControl(),
+    VOL2:new FormControl(),
+    VOL3:new FormControl(),
+    VOL4:new FormControl(),
+    VOL5:new FormControl(),
+
+    CLN1:new FormControl(),
+    CLN2:new FormControl(),
+    CLN3:new FormControl(),
+    CLN4:new FormControl(),
+    CLN5:new FormControl(),
+
+    RGTN1:new FormControl(),
+    RGTN2:new FormControl(),
+    RGTN3:new FormControl(),
+    RGTN4:new FormControl(),
+    RGTN5:new FormControl()
+  })
+}
+
 
 
 export enum FieldName {

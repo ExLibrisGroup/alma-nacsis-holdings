@@ -6,7 +6,7 @@
         </button>
     </a>
     <div class="align-to-right" fxLayout="row">
-        <button mat-flat-button color="primary" aria-label="search" (click)="Order()" [disabled]="">
+        <button mat-flat-button color="primary" aria-label="search" (click)="order()" [disabled]="">
             {{ 'General.Order' | translate }}
         </button>
     </div>
@@ -21,7 +21,7 @@
     </mat-progress-spinner>
 </div>
 
-<mat-accordion>
+<mat-accordion multi>
     <mat-expansion-panel (opened)="panelOpenStateResourceInformation()" (closed)="panelCloseStateResourceInformation()"
         [expanded]="panelStateResourceInformation">
         <mat-expansion-panel-header>
@@ -30,11 +30,11 @@
 
         <div class="form-wrapper">
             <div class="form-cards">
-                <mat-card >
-                    <form [formGroup]="formResourceInformation">
+                <mat-card>
+                    <form [formGroup]="formResourceInformation" >
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.RequestType</mat-label>
-                            <mat-select [formControl]="requestType">
+                            <mat-select [formControl]="requestType" required>
                                 <mat-option *ngFor="let requestType of requestTypeList" [value]="requestType.value">
                                     {{requestType.viewValue}}
                                 </mat-option>
@@ -87,18 +87,20 @@
 
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.NACSISBibliographicID</mat-label>
-                            <input cdkTextareaAutosize matInput formControlName="BIBID" [errorStateMatcher]="matcher" required>
+                            <input cdkTextareaAutosize matInput formControlName="BIBID" [errorStateMatcher]="matcher"
+                                required>
                             <mat-error *ngIf="BIBID.hasError('required')">
                                 {{'ILL.Errors.warningInputValue' | translate}}
-                              </mat-error>
+                            </mat-error>
                         </mat-form-field>
 
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.StandardNumber</mat-label>
-                            <input cdkTextareaAutosize matInput formControlName="STDNO" [errorStateMatcher]="matcher" required>
+                            <input cdkTextareaAutosize matInput formControlName="STDNO" [errorStateMatcher]="matcher"
+                                required>
                             <mat-error *ngIf="STDNO.hasError('required')">
                                 {{'ILL.Errors.warningInputValue' | translate}}
-                              </mat-error>
+                            </mat-error>
                         </mat-form-field>
 
 
@@ -119,10 +121,11 @@
 
                         <mat-form-field class="form-card-input-full-width" appearance="outline">
                             <mat-label translate>ILL.RequestForm.BibliographicMetadata</mat-label>
-                            <input cdkTextareaAutosize matInput formControlName="BIBNT" [errorStateMatcher]="matcher" required>
+                            <input cdkTextareaAutosize matInput formControlName="BIBNT" [errorStateMatcher]="matcher"
+                                required>
                             <mat-error *ngIf="BIBNT.hasError('required')">
                                 {{'ILL.Errors.warningInputValue' | translate}}
-                              </mat-error>
+                            </mat-error>
                         </mat-form-field>
 
                         <mat-form-field class="form-card-input-full-width" appearance="outline">
@@ -143,66 +146,88 @@
         <mat-expansion-panel-header>
             <mat-panel-title>{{ 'ILL.RequestForm.Rota' | translate }}</mat-panel-title>
         </mat-expansion-panel-header>
+        <form [formGroup]="formRotamation">
+            <table mat-table [dataSource]="dataSourceRota">
 
-        <table mat-table [dataSource]="dataSourceRota">
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef>
+                    </th>
+                    <td mat-cell *matCellDef="let element">{{element.index}} </td>
+                </ng-container>
 
-            <ng-container matColumnDef="id">
-                <th mat-header-cell *matHeaderCellDef>
-                     </th>
-                <td mat-cell *matCellDef="let element">{{element.index}} </td>
-            </ng-container>
+                <ng-container matColumnDef="index">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.HoldingSearchResult.Lender' | translate}}</th>
+                    <td mat-cell *matCellDef="let element">{{'ILL.HoldingSearchResult.Lender' | translate}}
+                        #{{element.index}} </td>
+                </ng-container>
 
-            <ng-container matColumnDef="index">
-                <th mat-header-cell *matHeaderCellDef>
-                    {{'ILL.HoldingSearchResult.Lender' | translate}}</th>
-                <td mat-cell *matCellDef="let element">{{'ILL.HoldingSearchResult.Lender' | translate}} #{{element.index}} </td>
-            </ng-container>
+                <ng-container matColumnDef="fano">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.HoldingSearchResult.FANO' | translate}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <input cdkTextareaAutosize matInput value="{{element.fano}}"
+                            formControlName="HMLID{{element.index}}">
+                    </td>
+                </ng-container>
 
-            <ng-container matColumnDef="fano">
-                <th mat-header-cell *matHeaderCellDef>
-                    {{'ILL.HoldingSearchResult.FANO' | translate}} </th>
-                <td mat-cell *matCellDef="let element" contenteditable="true"> {{element.fano}} </td>
-            </ng-container>
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.HoldingSearchResult.NAME' | translate}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <input cdkTextareaAutosize matInput value="{{element.name}}"
+                            formControlName="HMLNM{{element.index}}">
+                    </td>
+                </ng-container>
 
-            <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>
-                    {{'ILL.HoldingSearchResult.NAME' | translate}} </th>
-                <td mat-cell *matCellDef="let element" contenteditable="true"> {{element.name}} </td>
-            </ng-container>
+                <ng-container matColumnDef="location">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.HoldingSearchResult.LOC' | translate}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <input cdkTextareaAutosize matInput value=" {{element.location}}"
+                            formControlName="LOC{{element.index}}">
+                    </td>
+                </ng-container>
 
-            <ng-container matColumnDef="location">
-                <th mat-header-cell *matHeaderCellDef>
-                    {{'ILL.HoldingSearchResult.LOC' | translate}} </th>
-                <td mat-cell *matCellDef="let element" contenteditable="true"> {{element.location}} </td>
-            </ng-container>
+                <ng-container matColumnDef="vol">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.HoldingSearchResult.Volume' | translate}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <input cdkTextareaAutosize matInput value="{{showVolDetal(element,'VOL')}}"
+                            formControlName="VOL{{element.index}}">
+                    </td>
+                </ng-container>
 
-            <ng-container matColumnDef="vol">
-                <th mat-header-cell *matHeaderCellDef>
-                    {{'ILL.HoldingSearchResult.Volume' | translate}} </th>
-                <td mat-cell *matCellDef="let element" contenteditable="true">{{showVolDetal(element,'VOL')}}  </td>
-            </ng-container>
+                <ng-container matColumnDef="callNumber">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.HoldingSearchResult.CallNumber' | translate}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <input cdkTextareaAutosize matInput value="{{showVolDetal(element,'CLN')}}"
+                            formControlName="CLN{{element.index}}">
+                    </td>
+                </ng-container>
 
-            <ng-container matColumnDef="callNumber">
-                <th mat-header-cell *matHeaderCellDef>
-                    {{'ILL.HoldingSearchResult.CallNumber' | translate}} </th>
-                <td mat-cell *matCellDef="let element" contenteditable="true">{{showVolDetal(element,'CLN')}}  </td>
-            </ng-container>
+                <ng-container matColumnDef="registrationNumber">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.HoldingSearchResult.RegistrationNumber' | translate}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <input cdkTextareaAutosize matInput value="{{showVolDetal(element,'RGTN')}}"
+                            formControlName="RGTN{{element.index}}">
+                    </td>
+                </ng-container>
 
-            <ng-container matColumnDef="registrationNumber">
-                <th mat-header-cell *matHeaderCellDef>
-                    {{'ILL.HoldingSearchResult.RegistrationNumber' | translate}} </th>
-                <td mat-cell *matCellDef="let element" contenteditable="true"> {{showVolDetal(element,'RGTN')}} </td>
-            </ng-container>
+                <ng-container matColumnDef="bid">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.HoldingSearchResult.BID' | translate}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <input cdkTextareaAutosize matInput value="{{nacsisId}}">
+                    </td>
+                </ng-container>
 
-            <ng-container matColumnDef="bid">
-                <th mat-header-cell *matHeaderCellDef>
-                    {{'ILL.HoldingSearchResult.BID' | translate}} </th>
-                <td mat-cell *matCellDef="let element" contenteditable="true"> {{nacsisId}} </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="getDisplayedColumns()"></tr>
-            <tr mat-row *matRowDef="let element; columns: getDisplayedColumns();" class="expand-element-row"></tr>
-        </table>
+                <tr mat-header-row *matHeaderRowDef="getDisplayedColumns()"></tr>
+                <tr mat-row *matRowDef="let element; columns: getDisplayedColumns();" class="expand-element-row"></tr>
+            </table>
+        </form>
     </mat-expansion-panel>
     <br>
 
@@ -238,39 +263,41 @@
 
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.DateNeededBy</mat-label>
-                            <input matInput [matDatepicker]="picker"
-                            [formControl]="ODATE">
+                            <input matInput [matDatepicker]="picker" [formControl]="ODATE">
                             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                             <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
 
-                        <mat-form-field class="form-card-input-full-width" appearance="outline">
+                        <!-- <mat-form-field class="form-card-input-full-width" appearance="outline">
                             <mat-label translate>ILL.RequestForm.Comments</mat-label>
                             <mat-select [formControl]="commentsType">
                                 <mat-option *ngFor="let commentsType of commentsTypeList" [value]="commentsType.value">
                                     {{commentsType.viewValue}}
                                 </mat-option>
                             </mat-select>
-                        </mat-form-field>
+                        </mat-form-field> -->
 
                         <mat-form-field class="form-card-input-full-width" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.Comments</mat-label>
                             <input matInput formControlName="SENDCMNT">
                         </mat-form-field>
 
                         <mat-form-field class="form-card-inputs-large" appearance="outline">
                             <mat-label translate>ILL.RequestForm.RequesterStaff</mat-label>
-                            <input cdkTextareaAutosize matInput formControlName="OSTAF" [errorStateMatcher]="matcher" required>
+                            <input cdkTextareaAutosize matInput formControlName="OSTAF" [errorStateMatcher]="matcher"
+                                required>
                             <mat-error *ngIf="OSTAF.hasError('required')">
                                 {{'ILL.Errors.warningInputValue' | translate}}
-                              </mat-error>
+                            </mat-error>
                         </mat-form-field>
 
                         <mat-form-field class="form-card-inputs-large" appearance="outline">
                             <mat-label translate>ILL.RequestForm.RequesterAddress</mat-label>
-                            <input cdkTextareaAutosize matInput formControlName="OADRS" [errorStateMatcher]="matcher" required>
+                            <input cdkTextareaAutosize matInput formControlName="OADRS" [errorStateMatcher]="matcher"
+                                required>
                             <mat-error *ngIf="OADRS.hasError('required')">
                                 {{'ILL.Errors.warningInputValue' | translate}}
-                              </mat-error>
+                            </mat-error>
                         </mat-form-field>
 
                         <mat-form-field class="form-card-input-full-width" appearance="outline">

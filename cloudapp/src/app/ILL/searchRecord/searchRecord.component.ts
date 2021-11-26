@@ -7,13 +7,12 @@ import { AlertService, Entity, CloudAppRestService } from '@exlibris/exl-cloudap
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
-import { NacsisCatalogResults, BaseResult, IDisplayLines, ViewLine, ViewField } from '../../catalog/results-types/results-common';
-import { IllService, AlmaRecordsResults, BaseRecordInfo, AlmaRecordInfo, AlmaRecord, AlmaRecordDisplay } from '../../service/ill.service';
+import { NacsisCatalogResults, IDisplayLines} from '../../catalog/results-types/results-common';
+import { IllService, AlmaRecord, AlmaRecordDisplay } from '../../service/ill.service';
 import { FullViewLink } from '../../catalog/full-view-display/full-view-display.component';
 import { RecordSelection } from '../../user-controls/selectable-result-card/selectable-result-card.component';
 import { HoldingsService } from '../../service/holdings.service';
-import { map, catchError, switchMap, tap } from 'rxjs/operators';
-import { Subscription, of, forkJoin } from 'rxjs';
+
 
 @Component({
   selector: 'ILL-searchRecord',

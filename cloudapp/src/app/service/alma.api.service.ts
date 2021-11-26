@@ -273,13 +273,17 @@ export class AlmaApiService {
     let singleRecordInfo: AlmaRecordInfo;
 
     records.forEach(record => {
-
-      if(this.isEmpty(record.anies)){
-        singleRecordInfo = this.extractDisplayCardInfoFromRequest(record);
-
-       }else{
-        singleRecordInfo = this.extractDisplayCardInfo(record.anies, this.integrationProfile.libraryCode);                 
+      if(!this.isEmpty(record.bib)){
+        singleRecordInfo = this.extractDisplayCardInfo(record.bib.anies, this.integrationProfile.libraryCode);
+      }else{
+        if(this.isEmpty(record.anies)){
+          singleRecordInfo = this.extractDisplayCardInfoFromRequest(record);
+  
+         }else{
+          singleRecordInfo = this.extractDisplayCardInfo(record.anies, this.integrationProfile.libraryCode);                 
+        }
       }
+      
       if (singleRecordInfo != null) {                 
         disCards[index]= singleRecordInfo;
       }
