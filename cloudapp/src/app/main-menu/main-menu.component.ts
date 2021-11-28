@@ -41,12 +41,12 @@ import { ROUTING_STATE_KEY, AppRoutingState } from '../service/base.service';
                 // icon:   'uxf-icon uxf-switch',
                 // link:   'main'
             // },
-            {
-                title:  'MainMenu.ILL.Title',
-                text:   'MainMenu.ILL.Text',
-                icon:   'uxf-icon uxf-external-link',
-                link:   'ILL'
-            },
+            // {
+                // title:  'MainMenu.ILL.Title',
+                // text:   'MainMenu.ILL.Text',
+                // icon:   'uxf-icon uxf-external-link',
+                // link:   'ILL'
+            // },
         );
     }
 
