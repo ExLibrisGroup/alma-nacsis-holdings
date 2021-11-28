@@ -13,27 +13,27 @@
    "subtitle": [
       {
          "lang": "jp",
-         "text": "NACSIS-CATの所蔵記録を更新する"
+         "text": "Integrate with the NACSIS central catalog and ILL system"
       },
       {
          "lang": "en",
-         "text": "Update holdings records in NACSIS-CAT"
+         "text": "Integrate with the NACSIS central catalog and ILL system"
       }
    ],
    "author": "Ex Libris",
    "description": [
       {
          "lang": "jp",
-         "text": "アルマの特定の書誌レコードのNII NACSIS-CATからの所蔵レコードを表示、編集、および更新します。"
+         "text": "This app is used for integrating Alma with the NACSIS central catalog. The app support the followings: Manage holding records from the NACSIS-CAT for a given Bibliographic record in Alma. Copy cataloging of NACSIS-CAT Bibliographic and Authority records to Alma. Contribution of new or edited Bibliographic and Authority records to NACSIS-CAT. This app is supported by Ex Libris. Currently available for beta testing."
       },
       {
          "lang": "en",
-         "text": "Display, edit, and update holdings records from the NII NACSIS-CAT for a given Bibliographic record in Alma. This app is supported by Ex Libris. Currently available for beta testing."
+         "text": "This app is used for integrating Alma with the NACSIS central catalog. The app support the followings: Manage holding records from the NACSIS-CAT for a given Bibliographic record in Alma. Copy cataloging of NACSIS-CAT Bibliographic and Authority records to Alma. Contribution of new or edited Bibliographic and Authority records to NACSIS-CAT. This app is supported by Ex Libris. Currently available for beta testing."
       }
    ],
    "icon": {
       "type": "url",
-      "value": "/assets/nacsis-logo.png"
+      "value": "/assets/nacsis-new-logo.png"
    },
    "contentSecurity": {
       "sandbox": {
