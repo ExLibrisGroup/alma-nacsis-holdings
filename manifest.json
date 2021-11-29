@@ -13,7 +13,7 @@
    "subtitle": [
       {
          "lang": "jp",
-         "text": "Integrate with the NACSIS central catalog and ILL system"
+         "text": "NACSIS総合目録データベース・相互貸借サービスとの統合"
       },
       {
          "lang": "en",
@@ -24,7 +24,7 @@
    "description": [
       {
          "lang": "jp",
-         "text": "This app is used for integrating Alma with the NACSIS central catalog. The app support the followings: Manage holding records from the NACSIS-CAT for a given Bibliographic record in Alma. Copy cataloging of NACSIS-CAT Bibliographic and Authority records to Alma. Contribution of new or edited Bibliographic and Authority records to NACSIS-CAT. This app is supported by Ex Libris. Currently available for beta testing."
+         S"text": "このアップは、AlmaをNACSIS総合目録データベースと統合する-ために使用できます。次の機能を提供します：Almaのローカル書誌レコードに関連するNACSIS-CAT所蔵レコードを管理する、NACSIS-CATの書誌・典拠レコードをローカルにダウウンロードする、作成・更新されたローカルレコードをNACSIS-CATにアップロードする。このアップは、Ex Librisサポートに対象内になります。現在、ベータテストの目標で提供されています。"
       },
       {
          "lang": "en",
