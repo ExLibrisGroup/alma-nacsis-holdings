@@ -1,68 +1,68 @@
 {
   "General": {
     "Back": "戻る",
-    "BackToMenu": "???Back to menu",
+    "BackToMenu": "メニューに戻る",
     "Cancel": "キャンセル",
     "Save": "保存",
     "OK": "OK",
-    "Clear": "???Clear",
-    "Search": "???Search",
+    "Clear": "クリア",
+    "Search": "検索",
     "Errors": {
       "generalError": "アプリケーションエラー"
     }
   },
-  
+
   "MainMenu": {
-    "Intro": "???This app includes all functionalities within NACSIS-CAT/ILL",
+    "Intro": "このアップはNACSIS-CAT/ILLの対象機能をすべて提供します",
     "Holdings": {
-      "Title": "タイトル",
-      "Text": "??? NACSIS holding ???"
+      "Title": "所蔵",
+      "Text": "NACSIS所蔵レコードを管理する"
     },
     "Catalog": {
-      "Title": "Copy Catalog12 345 ???",
-      "Text": "??? Search and Copy cataloging ???"
+      "Title": "目録",
+      "Text": "NACSISの書誌・典拠レコードを検索・ダウウンロードする"
     },
     "ILL": {
-      "Title": "ILL Borrowing ??? Requests",
-      "Text": "NACSIS borrowing request creation???"
+      "Title": "ILL依頼",
+      "Text": "新規ILL依頼を作成する"
     },
     "Members": {
-      "Title": "Members??",
-      "Text": "NACSIS members information management???"
+      "Title": "参加組織",
+      "Text": "NACSISの参加組織情報を管理する"
     }
   },
 
   "Catalog": {
     "Form": {
-      "MainTitle": "Search records ???",
-      "RefineSearch": "Refine Search???",
-      "SelectSearchType": "Select search ???",
-      "SelectDatabase": "Select a ???",
-      "EmptyForm": "The search form is empty. ???",
+      "MainTitle": "NACSIS総合目録データベースでレコード検索する",
+      "RefineSearch": "検索条件を絞り込む",
+      "SelectSearchType": "レコード種別を選択する",
+      "SelectDatabase": "ファイルを選択する",
+      "EmptyForm": "検索フォームが空です。条件を入力してください",
       "SearchTypes": {
-        "Monographs": "Monographs???",
-        "Serials": "Serials???",
-        "Names": "Names???",
-        "UniformTitles": "Uniform Titles???"
+        "Monographs": "図書書誌",
+        "Serials": "雑誌書誌",
+        "Names": "著者名典拠",
+        "UniformTitles": "統一書名典拠"
       }
     },
     "Results": {
-      "Title": "???Records",
-      "NoRecordsExist": "???No records exist.",
-      "By": "???By",
-      "Book": "???(Book",
-      "Journal": "???(Journal",
-      "NACSISID": "???NACSIS ID:",
-      "ISBN": "???ISBN:",
-      "ISSN": "???ISSN:",
-      "Subjects": "???Subjects:",
-      "AndOthers": "???and others",
+      "Title": "レコード件数",
+      "NoRecordsExist": "レコードがありません",
+      "By": "",
+      "Book": "(図書",
+      "Journal": "(雑誌",
+      "NACSISID": "NACSIS ID:",
+      "ISBN": "ISBN:",
+      "ISSN": "ISSN:",
+      "Subjects": "件名：",
+      "AndOthers": "その他",
       "Actions" : {
-        "View" : "???View",
-        "Import" : "???Import",
-        "ViewHoldings" : "???View Holdings"
+        "View" : "プレビュー",
+        "Import" : "ダウウンロード",
+        "ViewHoldings" : "所蔵を確認する"
       },
-      "ImportSucceeded": "The record was successfully imported ???"
+      "ImportSucceeded": "レコードがダウウンロードされました"
     }
   },
 
@@ -81,17 +81,18 @@
       "Title": "タイトル",
       "Library": "図書館",
       "Location": "配置場所",
-      "ConfirmDelete": "このレコードを本当に削除しますか？",
-      "DeleteTitle": "???Delete Holding record",
+      "ConfirmDelete": "このレコードを本当に削除しますか",
+      "DeleteTitle": "所蔵レコードを削除する",
       "Deleted": "レコードが削除されました.",
       "Add": "所蔵レコードの追加",
       "NoHoldingRecordsExist": "所蔵レコードがありません。",
-      "DeleteYesButton": "???Yes, delete it",
-      "DeleteNoButton": "???No, keep it",
+      "DeleteYesButton": "削除する",
+      "DeleteNoButton": "削除しない",
       "Errors": {
         "NoNoldings": "所蔵レコードが見つかりません。",
         "GetFailed": "所蔵レコードの取得ができませんでした。",
-        "DeleteFailed": "所蔵レコードの削除ができませんでした。"
+        "DeleteFailed": "所蔵レコードの削除ができませんでした。",
+        "Uneditable": "This holding is not a member of +++ therefore can't be edit"
       }
     },
     "Form": {
@@ -140,18 +141,17 @@
     "OLH": "オンラインヘルプへ" 
   },
 
-  "UserControls": {
+"UserControls": {
     "Fields": {
-      "TITLE": "TITLE???",
-      "FTITLE": "FTITLE???",
-      "PTBL": "PTBL???",
-      "VOL": "VOL???",
-      "TiPtVo": "TITLE / PTBL / VOL???",
-      "AUTH": "AUTH???",
+      "TITLE": "TITLE",
+      "FTITLE": "FTITLE",
+      "PTBL": "PTBL",
+      "VOL": "VOL",
+      "AUTH": "AUTH",
       "ISSN": "ISSN",
       "ISBN": "ISBN",
       "NBN": "NBN",
-      "NDLCN": "NDLCN / LCCN / OTHN",
+      "NDLCN": "NDLCN",
       "PUB": "PUB",
       "YEAR": "YEAR",
       "PLACE": "PLACE",
@@ -162,8 +162,11 @@
       "ID": "ID",
       "PID": "PID",
       "CODEN": "CODEN",
-      "NDLPN": "NDLPN / LCCN",
-      "FID": "FID"
+      "NDLPN": "NDLPN",
+      "LCCN": "LCCN",
+      "FID": "FID",
+      "DATE": "DATE",
+      "SAID": "SAID"
     }
   }
 }

@@ -50,45 +50,51 @@ export class MainComponent implements OnInit, OnDestroy {
     this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => {
 
       this.loading = true;
+      try{
+        this.almaApiService.getIntegrationProfile()
+          .subscribe(integrationProfile => {
 
-      this.almaApiService.getIntegrationProfile()
-        .subscribe(integrationProfile => {
+            this.integrationProfile = integrationProfile;
 
-          this.integrationProfile = integrationProfile;
+            let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS);
+            let nacsisBibs: Entity[] = [];
 
-          let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS);
-          let nacsisBibs: Entity[] = [];
+            forkJoin(rawBibs.map(entity => this.getRecord(entity)))
+              .subscribe({
+                next: (records: any[]) => {
 
-          forkJoin(rawBibs.map(entity => this.getRecord(entity)))
-            .subscribe({
-              next: (records: any[]) => {
+                  let index: number = 0;
 
-                let index: number = 0;
-
-                records.forEach(record => {
-                  // console.log(record);
-                  let nacsisId = this.almaApiService.extractNacsisId(record.anies, this.integrationProfile.libraryCode);
-                  if (nacsisId != null) {
-                    // tweak: override mmsId by nacsisId
-                    let nacsisBib = rawBibs[index];
-                    nacsisBib.id = nacsisId;
-                    nacsisBibs.push(nacsisBib);
-                  }
-                  index++;
-                })
-              },
-              error: e => {
-                this.loading = false;
-                console.log(e.message);
-                //this.alert.error(e.message, {keepAfterRouteChange:true});
-              },
-              complete: () => {
-                this.loading = false;
-                this.bibs = nacsisBibs;
-              }
-            });
-        });
+                  records.forEach(record => {
+                    // console.log(record);
+                    let nacsisId = this.almaApiService.extractNacsisId(record.anies, this.integrationProfile.libraryCode);
+                    if (nacsisId != null) {
+                      // tweak: override mmsId by nacsisId
+                      let nacsisBib = rawBibs[index];
+                      nacsisBib.id = nacsisId;
+                      nacsisBibs.push(nacsisBib);
+                    }
+                    index++;
+                  })
+                },
+                error: e => {
+                  this.loading = false;
+                  console.log(e.message);
+                  //this.alert.error(e.message, {keepAfterRouteChange:true});
+                },
+                complete: () => {
+                  this.loading = false;
+                  this.bibs = nacsisBibs;
+                }
+              });
+          });
+      } catch(e) {
+        this.loading = false;
+        console.log(e);
+        this.alert.error(this.translate.instant('General.Errors.generalError'), {keepAfterRouteChange:true});      
+      }
     });
+
 
   }
   ngOnDestroy(): void {
