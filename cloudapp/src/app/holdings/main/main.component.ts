@@ -55,28 +55,34 @@ export class MainComponent implements OnInit, OnDestroy {
       this.loading = true;
       try{
       this.almaApiService.getIntegrationProfile()
-        .subscribe(integrationProfile => {
+        .subscribe( {
+            next : integrationProfile => {
+                this.integrationProfile = integrationProfile;
 
-          this.integrationProfile = integrationProfile;
+                let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS);
+                let disCards: AlmaRecordInfo[] = new Array(rawBibs.length);     
 
-          let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS);
-          let disCards: AlmaRecordInfo[] = new Array(rawBibs.length);     
-
-          forkJoin(rawBibs.map(entity => this.getRecord(entity)))
-            .subscribe({
-              next: (records: any[]) => {
-                disCards = this.almaApiService.getAlmaRecodsInfo(records);
-              },
-              error: e => {
+                forkJoin(rawBibs.map(entity => this.getRecord(entity)))
+                    .subscribe({
+                        next: (records: any[]) => {
+                            disCards = this.almaApiService.getAlmaRecodsInfo(records);
+                        },
+                        error: e => {
+                            this.loading = false;
+                            console.log(e.message);
+                        },
+                        complete: () => {
+                            this.loading = false;
+                            this.recordInfoList = disCards;
+                            this.setSearchResultsDisplay(this.recordInfoList,"holding");
+                        }
+                    });
+            },
+            error: e => {
                 this.loading = false;
                 console.log(e.message);
-              },
-              complete: () => {
-                this.loading = false;
-                this.recordInfoList = disCards;
-                this.setSearchResultsDisplay(this.recordInfoList,"holding");
-              }
-            });
+                this.alert.error(this.translate.instant('General.Errors.generalError'), {keepAfterRouteChange:true});      
+            }
         });
       }catch(e) {
         this.loading = false;
