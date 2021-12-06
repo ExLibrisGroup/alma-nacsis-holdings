@@ -111,9 +111,7 @@
 
   
     div.form {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      column-gap: 1em;
+      column-gap: 2%;
     }
   
     mat-list-item {

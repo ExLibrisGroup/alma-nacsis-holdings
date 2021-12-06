@@ -45,27 +45,27 @@
         <mat-card>
           <form [formGroup]="form">
             <div class="form">
-              <mat-form-field class="form-card-inputs" appearance="outline">
+              <mat-form-field class="form-card-inputs-small" appearance="outline">
                 <mat-label translate>ILL.HoldingSearch.ParticipatingOrgCode</mat-label>
                 <input cdkTextareaAutosize matInput formControlName="FANO">
               </mat-form-field>
 
-              <mat-form-field class="form-card-inputs" appearance="outline">
+              <mat-form-field class="form-card-inputs-small" appearance="outline">
                 <mat-label translate>ILL.HoldingSearch.Volume</mat-label>
                 <input cdkTextareaAutosize matInput formControlName="VOL_HLV">
               </mat-form-field>
 
-              <mat-form-field class="form-card-inputs" appearance="outline">
+              <mat-form-field class="form-card-inputs-small" appearance="outline">
                 <mat-label translate>ILL.HoldingSearch.Year</mat-label>
                 <input cdkTextareaAutosize matInput formControlName="CPYR_HLYR">
               </mat-form-field>
 
-              <mat-form-field class="form-card-inputs" appearance="outline">
+              <mat-form-field class="form-card-inputs-small" appearance="outline">
                 <mat-label translate>ILL.HoldingSearch.Location</mat-label>
                 <input cdkTextareaAutosize matInput formControlName="LOC">
               </mat-form-field>
 
-              <mat-form-field class="form-card-inputs" appearance="outline">
+              <mat-form-field class="form-card-inputs-medium" appearance="outline">
                 <mat-label translate>ILL.HoldingSearch.RegionCode</mat-label>
                 <mat-select [formControl]="regionCode" multiple>
                   <mat-option *ngFor="let regionCode of regionCodeList" [value]="regionCode">{{regionCode}}
@@ -73,7 +73,7 @@
                 </mat-select>
               </mat-form-field>
 
-              <mat-form-field class="form-card-inputs" appearance="outline">
+              <mat-form-field class="form-card-inputs-medium" appearance="outline">
                 <mat-label translate>ILL.HoldingSearch.EstablisherType</mat-label>
                 <mat-select [formControl]="establisherType" multiple>
                   <mat-option *ngFor="let establisherType of establisherTypeList" [value]="establisherType.value">
@@ -82,7 +82,7 @@
                 </mat-select>
               </mat-form-field>
 
-              <mat-form-field class="form-card-inputs" appearance="outline">
+              <mat-form-field class="form-card-inputs-medium" appearance="outline">
                 <mat-label translate>ILL.HoldingSearch.InstitutionType</mat-label>
                 <mat-select [formControl]="institutionType" multiple>
                   <mat-option *ngFor="let institutionType of institutionTypeList" [value]="institutionType.value">
@@ -91,7 +91,7 @@
                 </mat-select>
               </mat-form-field>
 
-              <mat-form-field class="form-card-inputs" appearance="outline">
+              <mat-form-field class="form-card-inputs-medium" appearance="outline">
                 <mat-label translate>ILL.HoldingSearch.ILLParticipationType</mat-label>
                 <mat-select [formControl]="iLLParticipationType">
                   <mat-option *ngFor="let iLLParticipationType of iLLParticipationTypeList"
@@ -101,7 +101,7 @@
                 </mat-select>
               </mat-form-field>
 
-              <mat-form-field class="form-card-inputs" appearance="outline">
+              <mat-form-field class="form-card-inputs-medium" appearance="outline">
                 <mat-label translate>ILL.HoldingSearch.ServiceStatus</mat-label>
                 <mat-select [formControl]="serviceStatus">
                   <mat-option *ngFor="let serviceStatus of serviceStatusList" [value]="serviceStatus.value">
@@ -110,7 +110,7 @@
                 </mat-select>
               </mat-form-field>
 
-              <mat-form-field class="form-card-inputs" appearance="outline">
+              <mat-form-field class="form-card-inputs-medium" appearance="outline">
                 <mat-label translate>ILL.HoldingSearch.OffsetCharge</mat-label>
                 <mat-select [formControl]="offsetCharge">
                   <mat-option *ngFor="let offsetCharge of offsetChargeList" [value]="offsetCharge.value">
@@ -119,7 +119,7 @@
                 </mat-select>
               </mat-form-field>
 
-              <mat-form-field class="form-card-inputs" appearance="outline">
+              <mat-form-field class="form-card-inputs-medium" appearance="outline">
                 <mat-label translate>ILL.HoldingSearch.CopyServiceType</mat-label>
                 <mat-select [formControl]="copyServiceType" multiple>
                   <mat-option *ngFor="let copyServiceType of copyServiceTypeList" [value]="copyServiceType.value">
@@ -128,7 +128,7 @@
                 </mat-select>
               </mat-form-field>
 
-              <mat-form-field class="form-card-inputs" appearance="outline">
+              <mat-form-field class="form-card-inputs-medium" appearance="outline">
                 <mat-label translate>ILL.HoldingSearch.LendingServiceType</mat-label>
                 <mat-select [formControl]="lendingServiceType" multiple>
                   <mat-option *ngFor="let lendingServiceType of lendingServiceTypeList"
@@ -138,7 +138,7 @@
                 </mat-select>
               </mat-form-field>
 
-              <mat-form-field class="form-card-inputs" appearance="outline">
+              <mat-form-field class="form-card-inputs-medium" appearance="outline">
                 <mat-label translate>ILL.HoldingSearch.FAXServiceType</mat-label>
                 <mat-select [formControl]="fAXServiceType" multiple>
                   <mat-option *ngFor="let fAXServiceType of fAXServiceTypeList" [value]="fAXServiceType.value">
@@ -408,16 +408,15 @@
                   <td></td>
                 </tr>
 
-                <tr *ngIf="!isBook">
+                <tr *ngIf="!isBook && element.hlyr">
                   <td class="expand-left-column">
                     {{'ILL.HoldingSearchResult.HLYR' | translate}}:
                   </td>
                   <td>
                     {{element.hlyr}}
                   </td>
-
                 </tr>
-                <tr *ngIf="!isBook" class="expand-tr">
+                <tr *ngIf="!isBook && element.hlv" class="expand-tr">
                   <td class="expand-left-column">
                     {{'ILL.HoldingSearchResult.HLV' | translate}}:
                   </td>
@@ -430,7 +429,7 @@
                   <td></td>
                   <td></td>
                 </tr>
-                <tr *ngIf="!isBook">
+                <tr *ngIf="!isBook && element.cln">
                   <td class="expand-left-column">
                     {{'ILL.HoldingSearchResult.CLN' | translate}}:
                   </td>
@@ -439,7 +438,7 @@
                   </td>
 
                 </tr>
-                <tr *ngIf="!isBook" class="expand-tr">
+                <tr *ngIf="!isBook && element.ldf" class="expand-tr">
                   <td class="expand-left-column">
                     {{'ILL.HoldingSearchResult.LDF' | translate}}:
                   </td>
@@ -470,18 +469,9 @@
               </div>
               <div class="full-view">
                 <div class="full-view-left-table" *ngIf="!(isColapsedMode && isRightTableOpen)">
-                  <full-view-display [resultFullDisplay]="resultFullDisplay"
+                  <full-view-display-member [resultFullDisplay]="resultFullDisplay"
                     (onFullViewLinkSelected)="onFullViewLink($event)">
-                  </full-view-display>
-                </div>
-                <div class="full-view-right-table" (window:resize)="onResize($event)" *ngIf="isRightTableOpen">
-                  <button class="close-button" (click)="onFullViewLinkClose()">
-                    <i class="uxf-icon uxf-close eca-button" aria-label="Delete" (click)="delete(i)"></i>
-                  </button>
-                  <div *ngIf="resultFullLinkDisplay != null else noResults">
-                    <full-view-display [resultFullDisplay]="resultFullLinkDisplay">
-                    </full-view-display>
-                  </div>
+                  </full-view-display-member>
                 </div>
               </div>
             </div>

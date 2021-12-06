@@ -6,9 +6,9 @@ import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordI
 import {  catchError, tap } from 'rxjs/operators';
 import { AlmaApiService, IntegrationProfile } from '../../service/alma.api.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AppRoutingState, ROUTING_STATE_KEY,LIBRARY_ID_KEY } from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY,LIBRARY_ID_KEY ,LIBRARY_MEMBERINFO_KEY} from '../../service/base.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-
+import { HoldingsService} from '../../service/holdings.service';
 
 @Component({
   selector: 'ILL-main',
@@ -33,6 +33,7 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
   
   singleRecordInfo: AlmaRecordInfo;
 
+
   constructor(
     private eventsService: CloudAppEventsService,
     private translate: TranslateService,
@@ -41,6 +42,7 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
     private illService: IllService,
     private alert: AlertService,
     private router: Router,
+    private nacsis: HoldingsService,
   ) { }
 
   ngOnInit() {
@@ -59,7 +61,6 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
           forkJoin(rawBibs.map(entity => this.getRecord(entity)))
             .subscribe({
               next: (records: any[]) => {
-                console.log(records);
                disCards = this.almaApiService.getAlmaRecodsInfo(records);
               },
               error: e => {
@@ -67,10 +68,11 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
                 console.log(e.message);
               },
               complete: () => {  
-               this.loading = false;
                this.recordInfoList = disCards;
                this.setSearchResultsDisplay(this.recordInfoList,"ill");
+               this.setMemberInfo(this.integrationProfile.libraryID);
                console.log(this);
+               this.loading = false;
               }
             });
         });
@@ -81,7 +83,48 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
       }
 
     });
+  }
 
+  setMemberInfo(fano){
+    let obj:[];
+    let queryParams = "";
+    queryParams = "ID=" + fano;
+    try {
+      this.loading = true;
+      this.nacsis.getMemberForILLFromNacsis(queryParams)
+        .subscribe({
+          next: (header) => {
+            if (header.status === this.nacsis.OkStatus) {
+              obj = this.convertMemberInfo(header, obj);
+            } else {
+              this.loading = false;
+              console.log('header' + header);
+              this.alert.error(header.errorMessage, { keepAfterRouteChange: true });
+            }
+          },
+          error: e => {
+            this.loading = false;
+            console.log(e.message);
+            this.alert.error(e.message, { keepAfterRouteChange: true });
+          },
+          complete: () => {
+            sessionStorage.setItem(LIBRARY_MEMBERINFO_KEY, JSON.stringify(obj));
+            this.loading = false;
+            console.log(this);
+          }
+        });
+    } catch (e) {
+      this.loading = false;
+      this.alert.error(this.translate.instant('General.Errors.generalError'), { keepAfterRouteChange: true });
+    }
+  }
+
+  convertMemberInfo(header,obj){
+    obj = new Array();
+    header.records.forEach(record => {
+      obj.push(record);
+    });
+    return obj;
   }
   
    ngOnDestroy(): void {

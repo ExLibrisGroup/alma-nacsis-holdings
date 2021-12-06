@@ -241,7 +241,7 @@
    "RequestForm":{
     "ResourceInformation":"Resource Information",
     "Rota":"Rota",
-    "RequestInformation":"Request Information",
+    "RequesterInformation":"Requester Information",
     "RequestType":"Request Type",
     "PayClass":"Payment classification",
     "CopyType":"Copy type",
@@ -268,9 +268,9 @@
     "ElectronicShippingAddress":"Electronic shipping address"
     },
     "MemberInfo":{
-      "MemberID":"Member ID",
-      "CreateDate":"Create date",
-      "UpdateDate":"Update date",
+      "MemberID":"Member ID:",
+      "CreateDate":"Create date:",
+      "UpdateDate":"Update date:",
       "ParticipatingOrganizationName":"Participating organization name",
       "ParticipatingOrganizationAbbreviation":"Participating organization abbreviation",
       "Address":"Address",

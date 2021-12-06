@@ -238,7 +238,7 @@
    "RequestForm":{
     "ResourceInformation":"Resource Information",
     "Rota":"Rota",
-    "RequestInformation":"Request Information",
+    "RequesterInformation":"Requester Information",
     "RequestType":"Request Type",
     "PayClass":"Payment classification",
     "CopyType":"Copy type",

@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, HoldingsSearch, NacsisHoldingRecord, DisplayHoldingResult, NacsisBookHoldingsListDetail, NacsisSerialHoldingsListDetail } from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, ROUTING_STATE_KEY, LIBRARY_ID_KEY } from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY, LIBRARY_ID_KEY ,LIBRARY_MEMBERINFO_KEY} from '../../service/base.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl } from '@angular/forms';
@@ -13,10 +13,11 @@ import { holdingFormGroup, FieldName } from './holdingSearch-utils';
 import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { NacsisCatalogResults, IDisplayLines} from '../../catalog/results-types/results-common'
+import { NacsisCatalogResults, IDisplayLines } from '../../catalog/results-types/results-common'
 import { CatalogService } from '../../service/catalog.service';
 import { SearchType } from '../../user-controls/search-form/search-form-utils';
-import { FullViewLink } from '../../catalog/full-view-display/full-view-display.component';
+import { FullViewLink } from '../full-view-display-member/full-view-display-member.component';
+import { Subscription, of, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'ILL-holdingSearch',
@@ -46,6 +47,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   holdingSearch: HoldingsSearch;
   localLibraryID: string;
   rawData: string;
+  localMemberInfo:any[];
 
   // UI variables
   private panelState: boolean = true;
@@ -70,10 +72,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     { value: '8', viewValue: 'Training/testing' },
     { value: '9', viewValue: 'Other' }
   ];
-  establisherTypeResult: string[] = [
-    '1 国立', '2 公立', '3 私立', '4 特殊法人', '5 海外', '8 研修・テスト用', '9 その他'
-  ];
-
 
   institutionType = new FormControl();
   institutionTypeList: InstitutionType[] = [
@@ -85,9 +83,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     { value: '8', viewValue: 'Training/testing' },
     { value: '9', viewValue: 'Other' }
   ];
-  institutionTypeResult: string[] = [
-    '1 大学', '2 短期大学', '3 高等専門学校', '4 大学共同利用機関等', '5 他省庁の施設機関等', '8 研修・テスト用', '9 その他'
-  ];
 
   iLLParticipationType = new FormControl();
   iLLParticipationTypeList: ILLParticipationType[] = [
@@ -96,14 +91,12 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     { value: '', viewValue: 'None' }
   ];
 
-
   serviceStatus = new FormControl();
   serviceStatusList: ServiceStatus[] = [
     { value: 'A', viewValue: 'Available' },//Default
     { value: 'N', viewValue: 'Not available' },
     { value: '', viewValue: 'None' }
   ];
-
 
   offsetCharge = new FormControl();
   offsetChargeList: OffsetCharge[] = [
@@ -133,7 +126,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   ];
 
   //result view
-
   displayHoldingResult = new MatTableDataSource<DisplayHoldingResult>();
   @ViewChild(MatSort) sort: MatSort;
   @ViewChildren('myCheckbox') private myCheckboxes: QueryList<any>;
@@ -153,7 +145,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   selection = new SelectionModel<DisplayHoldingResult>(true, []);
   selecedData: any = [];
   selectedVolMap = new Map();
-  
 
   //expand details
   expandedElement: DisplayHoldingResult | null;
@@ -195,7 +186,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.nacsisId = this.route.snapshot.params['nacsisId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
     this.routerSearchType = this.route.snapshot.params['searchType'];
-    
     this.backSession = sessionStorage.getItem(ROUTING_STATE_KEY);
     sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage);
     this.form = holdingFormGroup(null);
@@ -224,7 +214,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
               if (this.nacsisHoldingsResultList != null && this.nacsisHoldingsResultList.length > 0) {
                 this.holdings = this.setDisplayDetails(this.nacsisHoldingsResultList);
                 this.ngOnChanges(this.holdings);
-              }else {
+              } else {
                 this.holdings = new Array();
                 this.noHoldingRecords = true;
                 this.numOfResults = 0;
@@ -243,6 +233,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
           complete: () => {
             this.loading = false;
             this.panelState = false;
+
           }
         });
     } catch (e) {
@@ -400,7 +391,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       holding.fano = nacsisHoldingsResult.FANO;
 
       holding.isSelected = false;
-
+      holding.memberinfo = [];
       this.holdings.push(holding);
     });
     this.numOfResults = index;
@@ -415,11 +406,27 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
         paramsMap = this.fillParamMapWithTypeList(paramsMap, this.regionCodeList);
         break;
       case 'SETCODE':
-        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.establisherTypeResult);
+        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illService.establisherTypeResult);
         break;
       case 'ORGCODE':
-        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.institutionTypeResult);
+        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illService.institutionTypeResult);
         break;
+      case 'CATFLG':
+        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illService.iLLParticipationTypeResult);
+        break;
+
+      case 'COPYS':
+        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illService.copyServiceTypeResult);
+        break;
+
+      case 'FAXS':
+        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illService.fAXServiceTypeResult);
+        break;
+
+      case 'GRPCODE':
+        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illService.offsetCodeTypeResult);
+        break;
+
     }
     name = paramsMap.get(code);
     return name;
@@ -445,7 +452,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
           bookHolDetail.VOL = this.illService.isEmpty(nacsisHolding.VOL) ? '' : nacsisHolding.VOL;
           bookHolDetail.RGTN = this.illService.isEmpty(nacsisHolding.RGTN) ? '' : nacsisHolding.RGTN;
           bookHolDetail.LDF = this.illService.isEmpty(nacsisHolding.LDF) ? '' : nacsisHolding.LDF;
-          if(!this.illService.isEmpty(bookHolDetail.VOL)){
+          if (!this.illService.isEmpty(bookHolDetail.VOL)) {
             fieldArr.push(bookHolDetail);
           }
           break;
@@ -478,8 +485,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     return fieldValue;
   }
 
-
-
   getCheckboxesData(row) {
     if (row.checked === true) {
       if (!this.maxReached()) {
@@ -510,7 +515,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   }
 
   filterSelectVol(rows) {
-    let newIndex:number = 1;
+    let newIndex: number = 1;
     rows.forEach(row => {
       let rowIndex = row.index;
       let volIndexSelected = this.selectedVolMap.get(rowIndex);
@@ -520,7 +525,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
         row.vol = vol.filter(obj => {
           return obj.index == volIndexSelected;
         })
-      }else{
+      } else {
         row.vol = new Array();
       }
       row.index = newIndex;
@@ -547,27 +552,29 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
       case 1: // view member info
         console.log(element);
-        this.getMemberInfoByFanoID(element.fano);
+        this.setMemberInfo(element.fano);
         this.isViewHolding = false;
-       return expandedElement === element ? null : element;
-
+        return expandedElement === element ? null : element;
     }
   }
 
-  getMemberInfoByFanoID(fano){
-    this.loading = true;
+  setMemberInfo(fano) {
+
+    let obj = [];
+    this.setSearchResultsDisplay(obj);
     let queryParams = "";
     queryParams = "ID=" + fano;
     try {
+      this.loading = true;
       this.nacsis.getMemberForILLFromNacsis(queryParams)
         .subscribe({
           next: (header) => {
             if (header.status === this.nacsis.OkStatus) {
-              this.catalogService.setSearchResultsMapOfMemberDB(this.currentSearchType, header, queryParams);
-              this.setSearchResultsDisplay();
+              obj = this.convertMemberInfo(header, obj);
             } else {
+              this.loading = false;
               console.log('header' + header);
-              
+              this.alert.error(header.errorMessage, { keepAfterRouteChange: true });
             }
           },
           error: e => {
@@ -577,6 +584,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
           },
           complete: () => {
             this.loading = false;
+            this.setSearchResultsDisplay(obj);
           }
         });
     } catch (e) {
@@ -585,27 +593,45 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     }
   }
 
+  convertMemberInfo(header, obj) {
+    header.records.forEach(record => {
+
+      record.KENCODE = this.convertMapping(record.KENCODE, "KENCODE") + "(" + record.KENCODE + ")";
+      record.SETCODE = this.convertMapping(record.SETCODE, "SETCODE") + "(" + record.SETCODE + ")";
+      record.ORGCODE = this.convertMapping(record.ORGCODE, "ORGCODE") + "(" + record.ORGCODE + ")";
+      record.CATFLG = this.convertMapping(record.CATFLG, "CATFLG") + "(" + record.CATFLG + ")";
+      record.ILLFLG = this.convertMapping(record.ILLFLG, "CATFLG") + "(" + record.ILLFLG + ")";
+      record.COPYS = this.convertMapping(record.COPYS, "COPYS") + "(" + record.COPYS + ")";
+      record.LOANS = this.convertMapping(record.LOANS, "COPYS") + "(" + record.LOANS + ")";
+      record.FAXS = this.convertMapping(record.FAXS, "FAXS") + "(" + record.FAXS + ")";
+      record.STAT = this.convertMapping(record.STAT, "FAXS") + "(" + record.STAT + ")";
+      record.GRPCODE = this.convertMapping(record.GRPCODE, "GRPCODE") + "(" + record.GRPCODE + ")";
+      obj.push(record);
+    });
+    return obj;
+  }
+
   onVolSelected(vol, element) {
     let selectedVolIndex = vol.value;
     let selectedEleIndex = element.index;
     this.selectedVolMap.set(selectedEleIndex, selectedVolIndex);
   }
 
-  isShowVolValue(element){
-    if(this.illService.isEmpty(element.vol)){
+  isShowVolValue(element) {
+    if (this.illService.isEmpty(element.vol)) {
       return false;
-    }else{
-      if(element.vol.length > 0){
+    } else {
+      if (element.vol.length > 0) {
         return true;
-      }else{
+      } else {
         return false;
-      } 
+      }
     }
   }
 
-  setVolValue(element){
-    if(element!=null && element!=undefined && element.vol != null && element.vol != undefined){
-      if(element.vol.length == 1){
+  setVolValue(element) {
+    if (element != null && element != undefined && element.vol != null && element.vol != undefined) {
+      if (element.vol.length == 1) {
         let selectedEleIndex = element.index;
         this.selectedVolMap.set(selectedEleIndex, element.vol[0].index);
         return element.vol[0].index;
@@ -615,7 +641,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
 
   onOwnerSelected() {
-    this.localLibraryID = sessionStorage.getItem(LIBRARY_ID_KEY);
+    
     sessionStorage.setItem(this.nacsis.OwnerKey, this.selected);
     // just set this.nacsisHoldingsResultList to this.holdings.
 
@@ -653,76 +679,24 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     return dateTime;
   }
 
-  private setSearchResultsDisplay() {
+  private setSearchResultsDisplay(memberinfo) {
+
+    this.catalogService.setSearchMemberDBResultsMap(this.currentSearchType, memberinfo);
+
     this.catalogResultsData = this.catalogService.getSearchResults(this.currentSearchType);
     this.resultsSummaryDisplay = new Array();
     this.catalogResultsData.getResults()?.forEach(result => {
       this.resultsSummaryDisplay.push(result.getSummaryDisplay());
     });
-           
-    if(this.resultsSummaryDisplay.length > 0){
+
+    if (this.resultsSummaryDisplay.length > 0) {
       let record = this.resultsSummaryDisplay[0];
       this.resultFullDisplay = record.getFullRecordData().getFullViewDisplay().initContentDisplay();
+    } else {
+      this.resultFullDisplay = null;
     }
   }
 
-  onFullViewLink(fullViewLink: FullViewLink) {
-    let urlParams = "";
-    urlParams = urlParams + QueryParams.PageIndex + "=0&" + QueryParams.PageSize + "=20";
-    urlParams = urlParams + "&" + QueryParams.SearchType + "=" + fullViewLink.searchType;
-    urlParams = urlParams + "&" + QueryParams.Databases + "=" + this.ALL_DATABASES_MAP_SEARCH.get(fullViewLink.searchType)[0];
-    urlParams = urlParams + "&" + QueryParams.ID + "=" + fullViewLink.linkID;
-    this.getResultsFromNacsis(urlParams, true);
-    this.isColapsedMode = (window.innerWidth <= 600) ? true : false;
-  }
-
-  onFullViewLinkClose() {
-    this.isRightTableOpen = false;
-    this.resultFullLinkDisplay = null;
-  }
-
-  getResultsFromNacsis(urlParams: string, isFullViewLink: boolean) {
-    this.loading = true;
-    try {
-      this.catalogService.getSearchResultsFromNacsis(urlParams)
-        .subscribe({
-          next: (catalogResults) => {
-            if (catalogResults.status === this.catalogService.OkStatus) {
-              if (!isFullViewLink) {
-                if (catalogResults.totalRecords >= 1) {
-                  this.catalogService.setSearchResultsMap(this.currentSearchType, catalogResults, urlParams);
-                  this.setSearchResultsDisplay();
-                } else {
-                  this.numOfResults = 0;
-
-                }
-              } else {
-                if (catalogResults.totalRecords >= 1) {
-                  let baseResult = this.catalogService.resultsTypeFactory(this.currentSearchType, catalogResults.records[0]);
-                  this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
-                  this.isRightTableOpen = true;
-                } else {
-                  this.resultFullLinkDisplay == null;
-                  this.isRightTableOpen = true;
-                }
-              }
-            } else {
-              this.alert.error(catalogResults.errorMessage, { keepAfterRouteChange: true });
-            }
-          },
-          error: e => {
-            this.loading = false;
-            console.log(e.message);
-            this.alert.error(e.message, { keepAfterRouteChange: true });
-          },
-          complete: () => this.loading = false
-        });
-    } catch (e) {
-      this.loading = false;
-      console.log(e);
-      this.alert.error(this.translate.instant('General.Errors.generalError'), { keepAfterRouteChange: true });
-    }
-  }
 
   isEvenRow(i: number) {
     if (i % 2 != 0) {
@@ -792,3 +766,5 @@ export enum QueryParams {
   Databases = "dataBase",
   ID = "ID"
 }
+
+

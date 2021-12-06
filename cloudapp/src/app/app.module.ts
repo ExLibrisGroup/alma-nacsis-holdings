@@ -39,6 +39,7 @@ import { ILLBorrowingMainComponent } from './ILL/main/main.component';
 import { searchRecordComponent } from './ILL/searchRecord/searchRecord.component';
 import { HoldingSearchComponent } from './ILL/holdingSearch/holdingSearch.component';
 import { RequestFormComponent } from './ILL/requestForm/requestForm.component';
+import { FullviewDisplayOfMemComponent } from './ILL/full-view-display-member/full-view-display-member.component';
 
 export function getToastrModule() {
   return ToastrModule.forRoot({
@@ -70,7 +71,8 @@ export function getToastrModule() {
       SelectableResultsListComponent,
       SelectableResultCardComponent,
       HoldingSearchComponent,
-      RequestFormComponent
+      RequestFormComponent,
+      FullviewDisplayOfMemComponent
    ],
    entryComponents: [ConfirmationDialog],
    imports: [

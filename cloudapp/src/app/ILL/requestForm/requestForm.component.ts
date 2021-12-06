@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, DisplayHoldingResult} from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY } from '../../service/base.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { IllService, RequestFields, Bibg, HMLG } from '../../service/ill.service';
@@ -39,6 +39,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   formRotamation: FormGroup;
   selecedData: any = [];
   fullRecordData: any = [];
+  localMemberInfo: any = [];
 
   //autofill fields
   titleAuto: string;
@@ -48,10 +49,19 @@ export class RequestFormComponent implements OnInit, OnChanges {
   sizeAuto: string;
   volFirstAuto: string;
   volLastAuto: string;
+  vlyrAuto:string;
   isbnAuto: string;
   issnAuto: string;
   dataPubArrayAuto: any[];
   dataVolArrayAuto: any[];
+
+  illStaffAuto:string;
+  illTelAuto:string;
+  illFaxAuto:string;
+  illZipAuto:string;
+  illNameAuto:string;
+  illDeptAuto:string;
+  illAddrAuto:string;
 
   requestType = new FormControl();
   requestTypeList: RequestType[] = [
@@ -74,17 +84,17 @@ export class RequestFormComponent implements OnInit, OnChanges {
     { value: 're', viewValue: 'Laboratory ' }
   ];
 
-  copyType = new FormControl('', Validators.required);
+  copyType = new FormControl();
   copyTypeList: CopyType[] = [
-    { value: 'Electronic_copy', viewValue: 'Electronic copy' },
+    { value: 'Electronic copy', viewValue: 'Electronic copy' },
     { value: 'FAX', viewValue: 'FAX' },
     { value: 'eDDS', viewValue: 'eDDS' },
     { value: 'Stretch', viewValue: 'Stretch' },
     { value: 'Microfitsyu', viewValue: 'Microfitsyu' },
     { value: 'Microfilm', viewValue: 'Microfilm' },
-    { value: 'Reader_printer ', viewValue: 'Reader printer' },
+    { value: 'Reader printer ', viewValue: 'Reader printer' },
     { value: 'Slide', viewValue: 'Slide' },
-    { value: 'Copy_order', viewValue: 'Copy order' }
+    { value: 'Copy order', viewValue: 'Copy order' }
   ];
 
   sendingMethod = new FormControl();
@@ -138,6 +148,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.currentSearchType = this.route.snapshot.params['searchType'];
     this.fullRecordData = JSON.parse(sessionStorage.getItem("selecedFullRecordData"));
     this.selecedData = JSON.parse(sessionStorage.getItem("selecedData"));
+    this.localMemberInfo = JSON.parse(sessionStorage.getItem(LIBRARY_MEMBERINFO_KEY));
     this.ngOnChanges(this.selecedData);
     this.formResourceInformation = initResourceInformationFormGroup();
     this.formRequesterInformation = initRequesterInformationFormGroup();
@@ -147,6 +158,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.panelStateRequestInformation = false;
     this.extractFullData(this.fullRecordData);
     this.extractSelectedData();
+    this.extractLocalMemberInfo(this.localMemberInfo);
+    console.log(this);
   }
 
   extractFullData(fullRecordData) {
@@ -160,13 +173,14 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.quantityAuto = fullRecordData.PHYSP;
     this.sizeAuto = fullRecordData.PHYSS;
     this.dataVolArrayAuto = fullRecordData.VOLG;
-    if (this.dataVolArrayAuto.length > 0) {
+    if (this.dataVolArrayAuto != null && this.dataVolArrayAuto.length > 0) {
       this.isbnAuto = this.dataVolArrayAuto[0].ISBN;
       this.volFirstAuto = this.dataVolArrayAuto[0].VOL;
       if (this.dataVolArrayAuto.length > 1) {
         this.volLastAuto = this.dataVolArrayAuto[this.dataVolArrayAuto.length - 1].VOL;
       }
     }
+    this.vlyrAuto = fullRecordData.VLYR;
 
     this.formResourceInformation.controls.BIBNT.setValue(this.buildBibMetadata());
     this.formResourceInformation.controls.STDNO.setValue(this.isbnAuto);
@@ -180,6 +194,22 @@ export class RequestFormComponent implements OnInit, OnChanges {
       }
     })
   }
+
+  extractLocalMemberInfo(localMemberInfo){
+    if(localMemberInfo.length > 0 ){
+      this.illStaffAuto = localMemberInfo[0].ILLSTAFF;
+      this.illDeptAuto = localMemberInfo[0].ILLDEPT;
+      this.illFaxAuto = localMemberInfo[0].FAX;
+      this.illZipAuto = localMemberInfo[0].ZIP;
+      this.illAddrAuto = localMemberInfo[0].ADDRESS;
+      this.illNameAuto = localMemberInfo[0].NAME;
+      this.illTelAuto = localMemberInfo[0].TEL;
+
+      this.formRequesterInformation.controls.OSTAF.setValue(this.buildRequesterStaff());
+      this.formRequesterInformation.controls.OADRS.setValue(this.buildRequesterAddress());
+    }
+  }
+
 
   setValueForFormRota(tag) {
     let tagName = tag.substr(0, tag.length - 1);
@@ -215,14 +245,34 @@ export class RequestFormComponent implements OnInit, OnChanges {
     let bibMetadata = "";
     bibMetadata = bibMetadata + (this.illService.isEmpty(this.titleAuto) ? "" : this.titleAuto + ";");
     bibMetadata = bibMetadata + (this.illService.isEmpty(this.volFirstAuto) ? "" : this.volFirstAuto);
-    bibMetadata = bibMetadata + (this.illService.isEmpty(this.volLastAuto) ? "" : " - " + this.volLastAuto);
-    bibMetadata = bibMetadata + ((this.illService.isEmpty(this.volLastAuto) && this.illService.isEmpty(this.volLastAuto)) ? "" : " -- ");
+    bibMetadata = bibMetadata + (this.illService.isEmpty(this.volLastAuto) ? "" : " - " + this.volLastAuto + ".");
+    bibMetadata = bibMetadata + ((this.illService.isEmpty(this.volFirstAuto) && this.illService.isEmpty(this.volLastAuto)) ? "" : " -- ");
+    
+    bibMetadata = bibMetadata + (this.illService.isEmpty(this.vlyrAuto) ? "" : this.vlyrAuto + " .-- ");
     bibMetadata = bibMetadata + (this.illService.isEmpty(this.publicationAuto) ? "" : this.publicationAuto + ", ");
     bibMetadata = bibMetadata + (this.illService.isEmpty(this.pub_yearAuto) ? "" : this.pub_yearAuto + ". ");
     bibMetadata = bibMetadata + ((this.illService.isEmpty(this.quantityAuto) && this.illService.isEmpty(this.sizeAuto)) ? "" : " -- ");
     bibMetadata = bibMetadata + (this.illService.isEmpty(this.quantityAuto) ? "" : this.quantityAuto + "; ");
     bibMetadata = bibMetadata + (this.illService.isEmpty(this.sizeAuto) ? "" : this.sizeAuto + ". ");
     return bibMetadata;
+  }
+
+  buildRequesterStaff(){
+    let requesterStaff = "";
+    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illStaffAuto) ? "" : this.illStaffAuto + " ");
+    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illDeptAuto) ? "" : this.illDeptAuto + " ");
+    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illTelAuto) ? "" : "TEL=" + this.illTelAuto + " ");
+    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illFaxAuto) ? "" : "FAX=" + this.illFaxAuto);
+    return requesterStaff;
+  }
+
+  buildRequesterAddress(){
+    let requesterAddress = "";
+    requesterAddress = requesterAddress + (this.illService.isEmpty(this.illZipAuto) ? "" : "〒" + this.illZipAuto + " ");
+    requesterAddress = requesterAddress + (this.illService.isEmpty(this.illAddrAuto) ? "" : this.illAddrAuto + " ");
+    requesterAddress = requesterAddress + (this.illService.isEmpty(this.illNameAuto) ? "" : this.illNameAuto + " ");
+    requesterAddress = requesterAddress + (this.illService.isEmpty(this.illDeptAuto) ? "" : this.illDeptAuto);
+    return requesterAddress;
   }
 
 
@@ -366,7 +416,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   }
 
   checkFieldRequired() {
-    let needToCheckFields = [this.requestType.value, this.payClass.value, this.copyType.value, this.formResourceInformation.value.BIBID,
+    let needToCheckFields = [this.requestType.value, this.payClass.value,this.formResourceInformation.value.BIBID,
     this.formResourceInformation.value.BIBNT, this.formResourceInformation.value.STDNO, this.formRequesterInformation.value.OSTAF,
     this.formRequesterInformation.value.OADRS];
     this.isAllFieldsFilled = true;
@@ -385,6 +435,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
     try {
       console.log('send!!!');
+
       this.illService.createILLrequest(requestBody)
       .subscribe({
         next: (header) => {
@@ -408,6 +459,13 @@ export class RequestFormComponent implements OnInit, OnChanges {
       this.loading = false;
       console.log(e);
       this.alert.error(this.translate.instant('General.Errors.generalError'), { keepAfterRouteChange: true });
+    }
+  }
+
+  onRequestTypeSelected(){
+    console.log(this.requestType.value);
+    if(this.requestType.value === 'COPYO'){
+      this.copyType.setValue('Electronic copy');
     }
   }
 

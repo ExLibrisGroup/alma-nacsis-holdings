@@ -5,7 +5,7 @@ import { HttpClient } from "@angular/common/http";
 import { mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { CloudAppEventsService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
-
+import { HoldingsService} from '../service/holdings.service';
 import { BaseService } from "./base.service";
 
 @Injectable({
@@ -18,8 +18,31 @@ export class IllService extends BaseService {
   almaResultsData: AlmaRecordsResults;
   almaRecord: AlmaRecord = new AlmaRecord('',this.translate,this.illService);
   baseRecordInfoList: Array<BaseRecordInfo> = new Array();
+  localMemberInfo:any[];
 
   public currentSearchType: SearchType = SearchType.Monographs;
+
+  establisherTypeResult: string[] = [
+    '1 国立', '2 公立', '3 私立', '4 特殊法人', '5 海外', '8 研修・テスト用', '9 その他'
+  ];
+  institutionTypeResult: string[] = [
+    '1 大学', '2 短期大学', '3 高等専門学校', '4 大学共同利用機関等', '5 他省庁の施設機関等', '8 研修・テスト用', '9 その他'
+  ];
+  iLLParticipationTypeResult: string[] = [
+    'A 参加', 'N 未参加'
+  ];
+
+  copyServiceTypeResult: string[] = [
+    'A 受け付ける', 'N 受け付けない','C 他の窓口で受け付ける'
+  ];
+
+  fAXServiceTypeResult: string[] = [
+    'A サービス可', 'N サービス不可','C 条件付でサービス可'
+  ];
+
+  offsetCodeTypeResult: string[] = [
+    'N ILL文献複写等料金相殺サービス参加'
+  ];
 
 
   getPageInfoResult(recordInfos: AlmaRecordInfo[]) {
@@ -31,7 +54,8 @@ export class IllService extends BaseService {
     private translate: TranslateService,
     private illService: IllService,
     protected eventsService: CloudAppEventsService,
-    protected http: HttpClient
+    protected http: HttpClient,
+    private nacsis: HoldingsService,
     ) {
       super(eventsService, http);
   }
@@ -104,9 +128,10 @@ export class IllService extends BaseService {
     let fullUrl: string;
     let body = JSON.stringify(requestBody);
     //remove outer parenthesis 
-    body = body.substring(1);
-    body = body.substring(0,body.length-1);
+    //body = body.substring(1);
+    //body = body.substring(0,body.length-1);
     let database = requestBody[0].database;
+    console.log(body);
     return this.getInitData().pipe(
       mergeMap(initData => {
         fullUrl = this.setBaseUrl(initData) + "database=" + database;
@@ -342,7 +367,6 @@ export class RequestFields{
   CLNTP: string = "";
   ODATE: string = "";
   SENDCMNT: string = "";
-  CMMNT: string = "";
   OSTAF: string = "";
   OADRS: string = "";
   OLDF: string = "";

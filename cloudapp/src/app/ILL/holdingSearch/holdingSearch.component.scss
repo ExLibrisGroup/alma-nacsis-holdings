@@ -59,6 +59,37 @@
           padding-bottom: 10px !important;
       }
       }
+      .form-card-input-full-width {
+        width: 96%;
+        padding-top: 10px;
+        min-width: 277px;
+        ::ng-deep .mat-form-field-wrapper {
+         padding-bottom: 10px !important;
+       }
+      }
+      .form-card-inputs-large {
+        padding-top: 10px;
+        width: 46%;
+        min-width: 277px;
+        flex-grow: 1;
+        ::ng-deep .mat-form-field-wrapper {
+         padding-bottom: 10px !important;
+        }
+      }
+      .form-card-inputs-medium {
+        padding-top: 10px;
+        width: 29.5%;
+        min-width: 277px;
+        flex-grow: 1;
+
+      }
+      .form-card-inputs-small {
+        padding-top: 10px;
+        width: 21%;
+        flex-grow: 1;
+        min-width: 220px;
+
+      }
     }
   
     .form-commands {
@@ -70,13 +101,6 @@
     .align-to-right {
       justify-content: flex-end;
       margin-bottom: 20px;
-    }
-
-  
-    div.form {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      column-gap: 1em;
     }
   
     mat-list-item {
@@ -283,6 +307,16 @@ tr.expand-element-row:not(.expand-expanded-row):active {
   display: flex;
   flex-direction: row;
 
+}
+
+.full-view-line {
+  display: grid;
+  grid-template-columns: 250px auto;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  &:first-child {
+    padding-right: 12px;
+  }
 }
 
 .full-view-left-table {

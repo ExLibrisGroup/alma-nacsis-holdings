@@ -280,6 +280,7 @@ export class NacsisHoldingRecord{
   LIBABL: string = "";
   LOANS:string = "";
   LOC: string = "";
+  SUM:string="";
   ORGCODE: string = "";
   RNWDT: string = "";
   SETCODE: string = "";
@@ -339,7 +340,7 @@ export class DisplayHoldingResult{
   crtdt: string = "";
   rnwdt : string = "";
   fano : string = "";
-
+  memberinfo:any[];
 }
 
 
