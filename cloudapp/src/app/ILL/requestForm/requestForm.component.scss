@@ -29,8 +29,8 @@
   mat-form-field {
     margin-top: 0px;
     margin-bottom: 0px;
-    margin-right: 20px;
-    margin-left: 20px;
+    margin-right: 5px;
+    margin-left: 5px;
   }
 
   mat-card {
@@ -62,17 +62,17 @@
         }
       }
       .form-card-input-full-width {
-        width: 96%;
+        width: 98%;
         padding-top: 10px;
-        min-width: 277px;
+        min-width: 285px;
         ::ng-deep .mat-form-field-wrapper {
          padding-bottom: 10px !important;
        }
       }
       .form-card-inputs-large {
         padding-top: 10px;
-        width: 46%;
-        min-width: 277px;
+        width: 48%;
+        min-width: 285px;
         flex-grow: 1;
         ::ng-deep .mat-form-field-wrapper {
          padding-bottom: 10px !important;
@@ -80,8 +80,8 @@
       }
       .form-card-inputs-medium {
         padding-top: 10px;
-        width: 29.5%;
-        min-width: 277px;
+        width: 32.3%;
+        min-width: 285px;
         flex-grow: 1;
         ::ng-deep .mat-form-field-wrapper {
         padding-bottom: 10px !important;
@@ -89,9 +89,9 @@
       }
       .form-card-inputs-small {
         padding-top: 10px;
-        width: 17%;
+        width: 24%;
           flex-grow: 1;
-          min-width: 130px;
+          min-width: 140px;
         ::ng-deep .mat-form-field-wrapper {
         padding-bottom: 10px !important;
         }

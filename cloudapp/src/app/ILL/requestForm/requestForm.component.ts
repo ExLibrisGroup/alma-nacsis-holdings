@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, DisplayHoldingResult} from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY } from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL } from '../../service/base.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { IllService, RequestFields, Bibg, HMLG } from '../../service/ill.service';
@@ -54,6 +54,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   issnAuto: string;
   dataPubArrayAuto: any[];
   dataVolArrayAuto: any[];
+  bibIDAuto: string;
 
   illStaffAuto:string;
   illTelAuto:string;
@@ -113,9 +114,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   matcher = new MyErrorStateMatcher();
   OADRS = new FormControl('', [Validators.required]);
   OSTAF = new FormControl('', [Validators.required]);
-  BIBID = new FormControl('', [Validators.required]);
   BIBNT = new FormControl('', [Validators.required]);
-  STDNO = new FormControl('', [Validators.required]);
   ODATE = new FormControl(new Date().toISOString());
 
   requestBody = new Array();
@@ -146,8 +145,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.nacsisId = this.route.snapshot.params['nacsisId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
     this.currentSearchType = this.route.snapshot.params['searchType'];
-    this.fullRecordData = JSON.parse(sessionStorage.getItem("selecedFullRecordData"));
-    this.selecedData = JSON.parse(sessionStorage.getItem("selecedData"));
+    this.fullRecordData = JSON.parse(sessionStorage.getItem(SELECTED_RECORD_ILL));
+    this.selecedData = JSON.parse(sessionStorage.getItem(SELECTED_RECORD_LIST_ILL));
     this.localMemberInfo = JSON.parse(sessionStorage.getItem(LIBRARY_MEMBERINFO_KEY));
     this.ngOnChanges(this.selecedData);
     this.formResourceInformation = initResourceInformationFormGroup();
@@ -159,7 +158,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.extractFullData(this.fullRecordData);
     this.extractSelectedData();
     this.extractLocalMemberInfo(this.localMemberInfo);
-    console.log(this);
+
   }
 
   extractFullData(fullRecordData) {
@@ -181,9 +180,11 @@ export class RequestFormComponent implements OnInit, OnChanges {
       }
     }
     this.vlyrAuto = fullRecordData.VLYR;
+    this.bibIDAuto = this.nacsisId;
 
+    this.formResourceInformation.controls.BIBID.setValue(this.bibIDAuto);
     this.formResourceInformation.controls.BIBNT.setValue(this.buildBibMetadata());
-    this.formResourceInformation.controls.STDNO.setValue(this.isbnAuto);
+    this.formResourceInformation.controls.STDNO.setValue('LCCN=' + this.isbnAuto);
   }
 
   extractSelectedData() {
@@ -377,7 +378,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
     let bibg = new Bibg();
   
-    bibg.BIBID = this.formResourceInformation.value.BIBID;
+    bibg.BIBID = this.illService.isEmpty(this.formResourceInformation.value.BIBID)? this.nacsisId: this.formResourceInformation.value.BIBID;
     bibg.BIBNT = this.formResourceInformation.value.BIBNT;
     bibg.STDNO = this.formResourceInformation.value.STDNO;
     item.BIBG = bibg;
@@ -398,6 +399,10 @@ export class RequestFormComponent implements OnInit, OnChanges {
       item.HMLG.push(hmlgs);
     }
 
+    item.HMLG = item.HMLG.filter(hmlg=>{
+        return !this.illService.isEmpty(hmlg.HMLID + hmlg.HMLNM + hmlg.LOC + hmlg.VOL + hmlg.CLN + hmlg.RGTN);
+    })
+
     //formRequesterInformation
     item.BVRFY = this.illService.isEmpty(this.formRequesterInformation.value.BVRFY) ? "" : this.formRequesterInformation.value.BVRFY;
     item.HVRFY = this.illService.isEmpty(this.formRequesterInformation.value.HVRFY) ? "" : this.formRequesterInformation.value.HVRFY;
@@ -412,12 +417,11 @@ export class RequestFormComponent implements OnInit, OnChanges {
     item.OEDA = this.illService.isEmpty(this.formRequesterInformation.value.OEDA) ? "" : this.formRequesterInformation.value.OEDA;
 
     this.requestBody.push(item);
-
   }
 
   checkFieldRequired() {
-    let needToCheckFields = [this.requestType.value, this.payClass.value,this.formResourceInformation.value.BIBID,
-    this.formResourceInformation.value.BIBNT, this.formResourceInformation.value.STDNO, this.formRequesterInformation.value.OSTAF,
+    let needToCheckFields = [this.requestType.value, this.payClass.value,
+    this.formResourceInformation.value.BIBNT,  this.formRequesterInformation.value.OSTAF,
     this.formRequesterInformation.value.OADRS];
     this.isAllFieldsFilled = true;
     needToCheckFields.forEach(fieldValue => {
@@ -434,7 +438,6 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.loading = true;
 
     try {
-      console.log('send!!!');
 
       this.illService.createILLrequest(requestBody)
       .subscribe({
@@ -442,7 +445,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
           console.log(header);
           if (header.status === this.nacsis.OkStatus) {
             let requestID = header.requestId;
-            this.alert.success(this.translate.instant('ILL.Main.CreateILLSuccess') + requestID, {keepAfterRouteChange:true});  
+            console.log(requestID);
+            this.alert.success(this.translate.instant('ILL.Main.CreateILLSuccess') + requestID, {keepAfterRouteChange:true,delay:10000});  
+            this.router.navigate(['/ILL']);
           } else {
             this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
           }
@@ -463,7 +468,6 @@ export class RequestFormComponent implements OnInit, OnChanges {
   }
 
   onRequestTypeSelected(){
-    console.log(this.requestType.value);
     if(this.requestType.value === 'COPYO'){
       this.copyType.setValue('Electronic copy');
     }

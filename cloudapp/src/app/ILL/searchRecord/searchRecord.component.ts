@@ -1,4 +1,4 @@
-import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY,RESULT_RECORD_LIST_ILL,SELECTED_RECORD_ILL } from '../../service/base.service';
 import { Component, OnInit, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
 import { SearchType, SearchField, FieldSize, FieldName } from '../../user-controls/search-form/search-form-utils';
 import { MatTabChangeEvent } from '@angular/material/tabs';
@@ -178,7 +178,6 @@ export class searchRecordComponent implements AfterViewInit {
   onRadioClick(record: IDisplayLines) {
     this.isFirstIndex = 1;
     this.selected = record;
-    console.log(this.selected);
   }
 
 
@@ -229,7 +228,7 @@ export class searchRecordComponent implements AfterViewInit {
   }
 
   search() {
-    console.log('search');
+
     this.isFirstIndex = null;
     // Generating the URL by the fields' Form Control
     let urlParams = "";
@@ -249,13 +248,14 @@ export class searchRecordComponent implements AfterViewInit {
   }
 
   next() {
-    //console.log(this.recordIndexSelected);
+
     sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage);
     let title = this.selected.getFullRecordData().getSummaryView().TRD;
     let nacsisID = this.selected.getFullRecordData().getSummaryView().ID;
     let rawData = this.selected.getFullRecordData().getFullView();
     let object = JSON.stringify(rawData);
-    sessionStorage.setItem('selecedFullRecordData', object);
+    sessionStorage.setItem(SELECTED_RECORD_ILL, object);
+    sessionStorage.setItem(RESULT_RECORD_LIST_ILL, '');
     this.loading = true;
     this.router.navigate(['holdingSearch', nacsisID, title, this.currentSearchType]);
   }
@@ -263,7 +263,6 @@ export class searchRecordComponent implements AfterViewInit {
 
   onTitleClick(recordIndex: number) {
     this.recordIndexSelected = this.pageIndex * this.pageSize + recordIndex
-    console.log(this.recordIndexSelected);
     // Clicking on title will open the full view 
     let record = this.resultsSummaryDisplay[recordIndex];
     this.currentResulsTmpl = this.fullRecordTmpl;
@@ -401,7 +400,6 @@ export class searchRecordComponent implements AfterViewInit {
     let record = this.resultsSummaryDisplay[selection.recordIndex];
     switch (selection.actionIndex) {
       case 0: // Full view
-        console.log(this);
         this.currentResulsTmpl = this.fullRecordTmpl;
         this.resultFullDisplay = record.getFullRecordData().getFullViewDisplay().initContentDisplay();
         break;

@@ -135,13 +135,14 @@
   "ILL": {
     "Main": {
       "Intro": "Select a record to create ILL borrowing request:",
-      "NoRecords": "To create ILL borrowing request, navigate to a bibliographic record or start a new search.",
+      "NoRecords": "To create ILL borrowing request, navigate to a borrowing request list, bibliographic record or start a new search.",
       "SelectBib": "Select a title",
       "NewSearchInNACSIS": "New search",
       "CreateILLSuccess":"Create ILL request successfully.Request ID is:"
     },
     "DisplayCard": {
       "By":"By",
+      "Title":"Title",
       "Language":"Language",
       "ISBN":"ISBN",
       "ISSN":"ISSN",

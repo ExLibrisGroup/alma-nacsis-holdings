@@ -87,20 +87,14 @@
 
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.NACSISBibliographicID</mat-label>
-                            <input cdkTextareaAutosize matInput formControlName="BIBID" [errorStateMatcher]="matcher"
-                                required>
-                            <mat-error *ngIf="BIBID.hasError('required')">
-                                {{'ILL.Errors.warningInputValue' | translate}}
-                            </mat-error>
+                            <input cdkTextareaAutosize matInput formControlName="BIBID" 
+                                >
                         </mat-form-field>
 
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.StandardNumber</mat-label>
-                            <input cdkTextareaAutosize matInput formControlName="STDNO" [errorStateMatcher]="matcher"
-                                required>
-                            <mat-error *ngIf="STDNO.hasError('required')">
-                                {{'ILL.Errors.warningInputValue' | translate}}
-                            </mat-error>
+                            <input cdkTextareaAutosize matInput formControlName="STDNO"
+                                >
                         </mat-form-field>
 
 

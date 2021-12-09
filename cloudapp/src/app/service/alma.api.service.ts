@@ -44,7 +44,7 @@ export class AlmaApiService {
     for (let index = 0; index < datafields.length; index++) {
       const field = datafields[index];
       let tag = field.getAttribute("tag").valueOf();
-      // console.log(tag);
+      
       if(tag === "016") {
         let subfields = field.getElementsByTagName("subfield");
         for (let index = 0; index < subfields.length; index++) {
@@ -116,13 +116,16 @@ export class AlmaApiService {
       subfield_700_a, subfield_720_a, subfield_711_a ;
     let authorArray = new Array();
     // Publisher  
-    let subfield_264_a, subfield_264_b, subfield_264_c;
+    let subfield_260_a, subfield_260_b, subfield_260_c;
     // Language   
     let subfield_008_35_37;
     // ISBN/ISSN  
     let subfield_020_a, subfield_022_a;
     // NACSIS   
     let nacsisID;
+
+    //490 all subfield
+    let seriesSummary;
 
     try {
 
@@ -138,6 +141,7 @@ export class AlmaApiService {
       subfield_245_b = this.getValueFromDataFields(datafields, "245", "b");
       subfield_245_c = this.getValueFromDataFields(datafields, "245", "c");
       recordInfo.title = subfield_245_a + " " + subfield_245_b + " " + subfield_245_c;
+
 
       //Author
       subfield_100_a = this.getValueFromDataFields(datafields, "100", "a");
@@ -161,13 +165,14 @@ export class AlmaApiService {
      
 
       //Publisher
-      subfield_264_a = this.getValueFromDataFields(datafields, "264", "a");
-      subfield_264_b = this.getValueFromDataFields(datafields, "264", "b");
-      subfield_264_c = this.getValueFromDataFields(datafields, "264", "c");
+      subfield_260_a = this.getValueFromDataFields(datafields, "260", "a");
+      subfield_260_b = this.getValueFromDataFields(datafields, "260", "b");
+      subfield_260_c = this.getValueFromDataFields(datafields, "260", "c");
 
-      recordInfo.place_of_pub = subfield_264_a;
-      recordInfo.name_of_pub = subfield_264_b;
-      recordInfo.date_of_pub = subfield_264_c;
+      recordInfo.place_of_pub = subfield_260_a;
+      recordInfo.name_of_pub = subfield_260_b;
+      recordInfo.date_of_pub = subfield_260_c;
+
 
       //ISBN/ISSN
       subfield_020_a = this.getValueFromDataFields(datafields, "020", "a");
@@ -175,6 +180,10 @@ export class AlmaApiService {
 
       recordInfo.isbn = subfield_020_a;
       recordInfo.issn = subfield_022_a;
+
+      //seriesSummary
+      seriesSummary =  this.getAllSubfieldValueFromDataFields(datafields, "490");
+      recordInfo.seriesSummaryAll = seriesSummary;
 
     } catch (error) {
       return new AlmaRecordInfo();
@@ -198,6 +207,22 @@ export class AlmaApiService {
           if (tag === subfield_send) {
             str = subfield.innerHTML;
           }
+        }
+      }
+    }
+    return str;
+  }
+
+  getAllSubfieldValueFromDataFields(datafields, tag_send): string {
+    let str = "";
+    for (let index = 0; index < datafields.length; index++) {
+      const field = datafields[index];
+      let tag = field.getAttribute("tag").valueOf();
+      if (tag === tag_send) {
+        let subfields = field.getElementsByTagName("subfield");
+        for (let index = 0; index < subfields.length; index++) {
+          const subfield = subfields[index];
+          str = str.concat(subfield.innerHTML);
         }
       }
     }

@@ -133,7 +133,7 @@
   "ILL": {
     "Main": {
       "Intro": "Select a record to create ILL borrowing request:",
-      "NoRecords": "To create ILL borrowing request, navigate to a bibliographic record or start a new search.",
+      "NoRecords": "To create ILL borrowing request, navigate to a borrowing request list, bibliographic record or start a new search.",
       "SelectBib": "Select a title",
       "NewSearchInNACSIS": "New search",
       "CreateILLSuccess":"Create ILL request successfully.Request ID is:"
@@ -158,6 +158,19 @@
         "DeleteFailed": "Delete holding failed"
       }
     },
+    "Form": {
+      "MainTitle": "Search records in NACSIS ",
+      "RefineSearch": "Refine Search",
+      "SelectSearchType": "Select search type",
+      "SelectDatabase": "Select a database",
+      "EmptyForm": "The search form is empty. Please enter at least one value",
+      "SearchTypes": {
+        "Monographs": "Monographs",
+        "Serials": "Serials",
+        "Names": "Names",
+        "UniformTitles": "Uniform Titles"
+      }
+    },
     "Results": {
       "Title": "Records",
       "NoRecordsExist": "No records exist.",
@@ -175,19 +188,6 @@
       "RowSelected":"row(s) selected",
       "ClearSelection":"Clear Selection",
       "MaxRowSelected":"Max row selected"
-    },
-    "Form": {
-      "MainTitle": "Search records in NACSIS ",
-      "RefineSearch": "Refine Search",
-      "SelectSearchType": "Select search type",
-      "SelectDatabase": "Select a database",
-      "EmptyForm": "The search form is empty. Please enter at least one value",
-      "SearchTypes": {
-        "Monographs": "Monographs",
-        "Serials": "Serials",
-        "Names": "Names",
-        "UniformTitles": "Uniform Titles"
-      }
     },
     "HoldingSearch":{
        "ParticipatingOrgCode":"Participating organization code",
@@ -233,7 +233,8 @@
       "LDF":"LDF",
       "CLN":"CLN",
       "CallNumber":"Call Number",
-      "RegistrationNumber":"Registration Number"
+      "RegistrationNumber":"Registration Number",
+      "Lender":"Lender"
    },
    "RequestForm":{
     "ResourceInformation":"Resource Information",
@@ -265,12 +266,14 @@
     "ElectronicShippingAddress":"Electronic shipping address"
     },
     "MemberInfo":{
-      "MemberID":"Member ID",
-      "CreateDate":"Create date",
-      "UpdateDate":"Update date",
+      "MemberID":"Member ID:",
+      "CreateDate":"Create date:",
+      "UpdateDate":"Update date:",
       "ParticipatingOrganizationName":"Participating organization name",
       "ParticipatingOrganizationAbbreviation":"Participating organization abbreviation",
       "Address":"Address",
+      "PostalCode":"Postal Code:",
+      "StreetAddress":"Street Address:",
       "ILLDepartment":"ILL department",
       "ILLPersonInCharge":"ILL person in charge",
       "PhoneNumber":"Phone number",
@@ -289,7 +292,7 @@
       "LendingPeriod":"Lending period",
       "RegionPrefectureCode":"Region (prefecture) code",
       "CatalogingDepartment":"Cataloging department",
-      "PhoneNum":"Phone num. (Ext.)",
+      "PhoneNum":"Phone num.:",
       "SystemDepartment":"System department",
       "Email":"Email",
       "ILLPolicy":"ILL policy",
@@ -304,6 +307,7 @@
         "LOC": "LOC field is required",
         "TooMany":  "Too Many Selected",
         "Maximum": "You can only select a maximum of 5 records",
+        "MaxSelectd": "Maximum selected is 5",
         "warningSelectValue":"Please choose an option",
         "warningInputValue":"Please input a value"
       }

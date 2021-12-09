@@ -30,8 +30,8 @@ export const initResourceInformationFormGroup = (): FormGroup =>{
   return new FormGroup ({
     ONO:new FormControl(),
     PRMT:new FormControl(),
-    BIBID:new FormControl('', [Validators.required]),
-    STDNO:new FormControl('', [Validators.required]),
+    BIBID:new FormControl(),
+    STDNO:new FormControl(),
     VOL:new FormControl(),
     PAGE:new FormControl(),
     YEAR:new FormControl(),

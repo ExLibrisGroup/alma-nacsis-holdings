@@ -24,8 +24,8 @@
   mat-form-field {
     margin-top: 0px;
     margin-bottom: 0px;
-    margin-right: 20px;
-    margin-left: 20px;
+    margin-right: 5px;
+    margin-left: 5px;
   }
   
   mat-checkbox {
@@ -62,15 +62,15 @@
       .form-card-input-full-width {
         width: 96%;
         padding-top: 10px;
-        min-width: 277px;
+        min-width: 285px;
         ::ng-deep .mat-form-field-wrapper {
          padding-bottom: 10px !important;
        }
       }
       .form-card-inputs-large {
         padding-top: 10px;
-        width: 46%;
-        min-width: 277px;
+        width: 49%;
+        min-width: 285px;
         flex-grow: 1;
         ::ng-deep .mat-form-field-wrapper {
          padding-bottom: 10px !important;
@@ -78,16 +78,16 @@
       }
       .form-card-inputs-medium {
         padding-top: 10px;
-        width: 29.5%;
-        min-width: 277px;
+        width: 32.3%;
+        min-width: 285px;
         flex-grow: 1;
 
       }
       .form-card-inputs-small {
         padding-top: 10px;
-        width: 21%;
+        width: 24%;
         flex-grow: 1;
-        min-width: 220px;
+        min-width: 140px;
 
       }
     }
@@ -341,7 +341,8 @@ a label {
 
 .selectedLenders{
   width:98%;
-  margin-right: 8px;
+  min-width: 250px;
+  margin-right: 17px;
 }
 
 

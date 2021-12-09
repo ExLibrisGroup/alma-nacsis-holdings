@@ -215,7 +215,11 @@
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.NAME' | translate}} </th>
-        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        <td mat-cell *matCellDef="let element"> 
+          <a (click)="expandedElement = onActionsClick(expandedElement,element, 1)">
+              {{element.name}}
+          </a> 
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="vol">

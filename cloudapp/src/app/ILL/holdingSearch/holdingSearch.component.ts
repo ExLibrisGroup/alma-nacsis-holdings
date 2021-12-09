@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, HoldingsSearch, NacsisHoldingRecord, DisplayHoldingResult, NacsisBookHoldingsListDetail, NacsisSerialHoldingsListDetail } from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, ROUTING_STATE_KEY, LIBRARY_ID_KEY ,LIBRARY_MEMBERINFO_KEY} from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL,SELECTED_RECORD_LIST_ILL} from '../../service/base.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl } from '@angular/forms';
@@ -17,7 +17,7 @@ import { NacsisCatalogResults, IDisplayLines } from '../../catalog/results-types
 import { CatalogService } from '../../service/catalog.service';
 import { SearchType } from '../../user-controls/search-form/search-form-utils';
 import { FullViewLink } from '../full-view-display-member/full-view-display-member.component';
-import { Subscription, of, forkJoin } from 'rxjs';
+
 
 @Component({
   selector: 'ILL-holdingSearch',
@@ -60,7 +60,8 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     '25 滋賀', '26 京都', '27 大阪', '28 兵庫', '29 奈良', '30 和歌山',
     '31 鳥取', '32 島根', '33 岡山', '34 広島', '35 山口', '36 徳島',
     '37 香川', '38 愛媛', '39 高知', '40 福岡', '41 佐賀', '42 長崎',
-    '43 熊本', '44 大分', '45 宮崎', '46 鹿児島', '47 沖縄', 'なし 全国'];
+    '43 熊本', '44 大分', '45 宮崎', '46 鹿児島', '47 沖縄', 'なし 全国'
+  ];
 
   establisherType = new FormControl();
   establisherTypeList: EstablisherType[] = [
@@ -86,16 +87,16 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   iLLParticipationType = new FormControl();
   iLLParticipationTypeList: ILLParticipationType[] = [
-    { value: 'A', viewValue: 'Participate' },//Default
-    { value: 'N', viewValue: 'Do not participate' },
-    { value: '', viewValue: 'None' }
+    { value: '', viewValue: 'None' },
+    { value: 'A', viewValue: 'Participate' },
+    { value: 'N', viewValue: 'Do not participate' }
   ];
 
   serviceStatus = new FormControl();
   serviceStatusList: ServiceStatus[] = [
-    { value: 'A', viewValue: 'Available' },//Default
-    { value: 'N', viewValue: 'Not available' },
-    { value: '', viewValue: 'None' }
+    { value: '', viewValue: 'None' },
+    { value: 'A', viewValue: 'Available' },
+    { value: 'N', viewValue: 'Not available' }
   ];
 
   offsetCharge = new FormControl();
@@ -167,10 +168,8 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     private router: Router,
     private illService: IllService,
     private catalogService: CatalogService,
-    //private http: HttpClient,
     private translate: TranslateService,
     private nacsis: HoldingsService,
-    private dialog: MatDialog,
     private alert: AlertService,
     private _liveAnnouncer: LiveAnnouncer
 
@@ -191,13 +190,20 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.form = holdingFormGroup(null);
     this.selection = new SelectionModel<DisplayHoldingResult>(true, []);
     this.isMaxRowSelected = false;
-
+    let lastResult = sessionStorage.getItem(RESULT_RECORD_LIST_ILL);
+    this.selected = "0";
+    if(!this.illService.isEmpty(lastResult)){
+      this.holdings =  JSON.parse(lastResult);
+      this.ngOnChanges(this.holdings);
+      this.panelState = false;
+    }
   }
 
   ngOnChanges(holdings) {
     this.displayHoldingResult = new MatTableDataSource<DisplayHoldingResult>(holdings);
     this.displayHoldingResult.sort = this.sort;
     this.selectedVolMap = new Map();
+    this.numOfResults = holdings.length;
   }
 
   search() {
@@ -210,10 +216,13 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
           next: (header) => {
             if (header.status === this.nacsis.OkStatus) {
               this.nacsisHoldingsResultList = header.nacsisRecordList;
+              this.localLibraryID = header.FANO;
               this.isBook = (header.type == 'BOOK') ? true : false;
               if (this.nacsisHoldingsResultList != null && this.nacsisHoldingsResultList.length > 0) {
                 this.holdings = this.setDisplayDetails(this.nacsisHoldingsResultList);
                 this.ngOnChanges(this.holdings);
+                sessionStorage.setItem(RESULT_RECORD_LIST_ILL, JSON.stringify(this.holdings));
+                
               } else {
                 this.holdings = new Array();
                 this.noHoldingRecords = true;
@@ -305,8 +314,9 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.iLLParticipationType = new FormControl();
     this.holdings = new Array();
     this.panelState = true;
-    this.selected = "";
+    this.selected = "0";
     this.selectedVolMap = new Map();
+    this.holdings = new Array();
   }
 
   panelOpenState() {
@@ -394,7 +404,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       holding.memberinfo = [];
       this.holdings.push(holding);
     });
-    this.numOfResults = index;
+    
     return this.holdings;
   }
 
@@ -551,7 +561,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
         return expandedElement === element ? null : element;
 
       case 1: // view member info
-        console.log(element);
         this.setMemberInfo(element.fano);
         this.isViewHolding = false;
         return expandedElement === element ? null : element;
@@ -573,7 +582,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
               obj = this.convertMemberInfo(header, obj);
             } else {
               this.loading = false;
-              console.log('header' + header);
+              //console.log('header' + header);
               this.alert.error(header.errorMessage, { keepAfterRouteChange: true });
             }
           },
@@ -595,16 +604,25 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   convertMemberInfo(header, obj) {
     header.records.forEach(record => {
-
+      if(!this.illService.isEmpty(record.KENCODE))
       record.KENCODE = this.convertMapping(record.KENCODE, "KENCODE") + "(" + record.KENCODE + ")";
+      if(!this.illService.isEmpty(record.SETCODE))
       record.SETCODE = this.convertMapping(record.SETCODE, "SETCODE") + "(" + record.SETCODE + ")";
+      if(!this.illService.isEmpty(record.ORGCODE))
       record.ORGCODE = this.convertMapping(record.ORGCODE, "ORGCODE") + "(" + record.ORGCODE + ")";
+      if(!this.illService.isEmpty(record.CATFLG))
       record.CATFLG = this.convertMapping(record.CATFLG, "CATFLG") + "(" + record.CATFLG + ")";
+      if(!this.illService.isEmpty(record.ILLFLG))
       record.ILLFLG = this.convertMapping(record.ILLFLG, "CATFLG") + "(" + record.ILLFLG + ")";
+      if(!this.illService.isEmpty(record.COPYS))
       record.COPYS = this.convertMapping(record.COPYS, "COPYS") + "(" + record.COPYS + ")";
+      if(!this.illService.isEmpty(record.LOANS))
       record.LOANS = this.convertMapping(record.LOANS, "COPYS") + "(" + record.LOANS + ")";
+      if(!this.illService.isEmpty(record.FAXS))
       record.FAXS = this.convertMapping(record.FAXS, "FAXS") + "(" + record.FAXS + ")";
+      if(!this.illService.isEmpty(record.STAT))
       record.STAT = this.convertMapping(record.STAT, "FAXS") + "(" + record.STAT + ")";
+      if(!this.illService.isEmpty(record.GRPCODE))
       record.GRPCODE = this.convertMapping(record.GRPCODE, "GRPCODE") + "(" + record.GRPCODE + ")";
       obj.push(record);
     });
@@ -641,23 +659,36 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
 
   onOwnerSelected() {
-    
+    this.clearSelection();
     sessionStorage.setItem(this.nacsis.OwnerKey, this.selected);
-    // just set this.nacsisHoldingsResultList to this.holdings.
 
     if (this.selected === '0') {
+      
       this.noHoldingRecords = false;
-      this.holdings = this.setDisplayDetails(this.nacsisHoldingsResultList);
-
+      if(!this.illService.isEmpty(sessionStorage.getItem(RESULT_RECORD_LIST_ILL))){
+        this.holdings =  JSON.parse(sessionStorage.getItem(RESULT_RECORD_LIST_ILL));
+      }else{
+        this.holdings = this.setDisplayDetails(this.nacsisHoldingsResultList);
+      }
+      
+      this.ngOnChanges(this.holdings);
     } else if (this.selected === '1') {
-      let localnacsisHoldingsResultList = this.nacsisHoldingsResultList.filter(e => e.FANO === this.localLibraryID);
-      this.holdings = this.setDisplayDetails(localnacsisHoldingsResultList);
-      if (this.holdings.length == 0) {
+
+      if(!this.illService.isEmpty(sessionStorage.getItem(RESULT_RECORD_LIST_ILL))){
+        this.holdings =  JSON.parse(sessionStorage.getItem(RESULT_RECORD_LIST_ILL));
+      }else{
+        this.holdings = this.setDisplayDetails(this.nacsisHoldingsResultList);
+      }
+
+      let localnacsisHoldingsResultList = this.holdings.filter(e => e.fano === this.localLibraryID);
+      this.holdings = localnacsisHoldingsResultList;
+      if (localnacsisHoldingsResultList.length == 0) {
         this.noHoldingRecords = true;
+      }else{
+        this.ngOnChanges(localnacsisHoldingsResultList);
       }
     }
-    this.numOfResults = this.holdings.length;
-    this.ngOnChanges(this.holdings);
+
   }
 
   clearSelection() {
@@ -704,12 +735,29 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     }
   }
 
+  fillRowsTillFive(rows){
+    if(rows.length == 5){
+      return rows;
+    }else{
+      console.log(rows);
+      let maxIndex = rows.length;
+      while(maxIndex < 5){
+        let emptyRow = new DisplayHoldingResult();
+        emptyRow.index = maxIndex+1;
+        rows.push(emptyRow);
+        maxIndex++;
+      }
+      console.log(rows);
+      return rows;
+    }
+  }
+
 
   next() {
-    console.log(this.selecedData);
     this.filterSelectVol(this.selecedData);
+    this.fillRowsTillFive(this.selecedData);
     let object = JSON.stringify(this.selecedData);
-    sessionStorage.setItem('selecedData', object);
+    sessionStorage.setItem(SELECTED_RECORD_LIST_ILL, object);
     sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.HoldingSearchMainPage);
     this.router.navigate(['requestForm', this.nacsisId, this.mmsTitle, this.routerSearchType]);
   }

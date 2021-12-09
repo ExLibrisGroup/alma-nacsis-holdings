@@ -52,8 +52,10 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
       this.loading = true;     
       try{
       this.almaApiService.getIntegrationProfile()
-        .subscribe(integrationProfile => {
-          this.integrationProfile = integrationProfile;    
+      .subscribe( {
+        next : integrationProfile => {
+            this.integrationProfile = integrationProfile;
+
           sessionStorage.setItem(LIBRARY_ID_KEY,integrationProfile.libraryID);
           let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS || e.type == EntityType.BORROWING_REQUEST );
           let disCards: AlmaRecordInfo[] = new Array(rawBibs.length);
@@ -71,10 +73,15 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
                this.recordInfoList = disCards;
                this.setSearchResultsDisplay(this.recordInfoList,"ill");
                this.setMemberInfo(this.integrationProfile.libraryID);
-               console.log(this);
                this.loading = false;
               }
             });
+          },
+          error: e => {
+              this.loading = false;
+              console.log(e.message);
+              this.alert.error(this.translate.instant('General.Errors.generalError'), {keepAfterRouteChange:true});      
+          }
         });
       }catch(e) {
         this.loading = false;
@@ -98,7 +105,7 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
               obj = this.convertMemberInfo(header, obj);
             } else {
               this.loading = false;
-              console.log('header' + header);
+              //console.log('header' + header);
               this.alert.error(header.errorMessage, { keepAfterRouteChange: true });
             }
           },
@@ -110,7 +117,6 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
           complete: () => {
             sessionStorage.setItem(LIBRARY_MEMBERINFO_KEY, JSON.stringify(obj));
             this.loading = false;
-            console.log(this);
           }
         });
     } catch (e) {
