@@ -185,7 +185,7 @@ export class SerialSummaryDisplay extends IDisplayLines{
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
         fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.ISSN').content(this.record.ISSN).build());      
-            if(this.record.hasMoreThen1ISBN){
+            if(this.record.hasMoreThen1ISBN && !this.isEmpty(this.record.ISSN)){
                 fieldsArray.push(new ViewFieldBuilder().content(('Catalog.Results.AndOthers')).build());
             }        
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);

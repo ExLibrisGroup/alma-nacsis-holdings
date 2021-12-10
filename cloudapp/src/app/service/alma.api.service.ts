@@ -180,6 +180,7 @@ export class AlmaApiService {
 
       recordInfo.isbn = subfield_020_a;
       recordInfo.issn = subfield_022_a;
+     
 
       //seriesSummary
       seriesSummary =  this.getAllSubfieldValueFromDataFields(datafields, "490");
@@ -212,6 +213,7 @@ export class AlmaApiService {
     }
     return str;
   }
+
 
   getAllSubfieldValueFromDataFields(datafields, tag_send): string {
     let str = "";

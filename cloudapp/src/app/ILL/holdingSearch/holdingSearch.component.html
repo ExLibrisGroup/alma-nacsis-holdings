@@ -1,6 +1,6 @@
 <div class="align-space-between" fxLayout="row">
-  <a [routerLink]="backSession">
-    <button mat-flat-button color="secondary">
+  <a>
+    <button mat-flat-button color="secondary" (click)="backToSearchRecord()">
       <mat-icon>arrow_back_ios</mat-icon>
       {{'General.Back' | translate}}
     </button>

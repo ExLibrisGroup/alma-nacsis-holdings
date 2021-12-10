@@ -195,7 +195,7 @@ export class MonographSummaryDisplay extends IDisplayLines{
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
         fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.ISBN').content(this.record.ISBN).build());      
-            if(this.record.hasMoreThen1ISBN){
+            if(this.record.hasMoreThen1ISBN && !this.isEmpty(this.record.ISBN)){
                 fieldsArray.push(new ViewFieldBuilder().content(('Catalog.Results.AndOthers')).build());
             }
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);

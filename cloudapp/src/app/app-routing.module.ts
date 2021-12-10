@@ -24,6 +24,7 @@ const routes: Routes = [
   { path: 'catalog', component: CatalogMainComponent },
   { path: 'ILL', component: ILLBorrowingMainComponent },
   { path: 'searchRecord', component: searchRecordComponent },
+  { path: 'searchRecord/:flagBack', component: searchRecordComponent },
   { path: 'searchRecord/:nacsisId/:title/:isbn/:issn', component: searchRecordComponent },
   { path: 'holdingSearch', component: HoldingSearchComponent },
   { path: 'holdingSearch/:nacsisId/:mmsTitle', component: HoldingSearchComponent },

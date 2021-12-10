@@ -42,7 +42,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   private isRightTableOpen: boolean = false;
   private isColapsedMode: boolean = true;
 
-  backSession;
   form: FormGroup;
   holdingSearch: HoldingsSearch;
   localLibraryID: string;
@@ -185,8 +184,8 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.nacsisId = this.route.snapshot.params['nacsisId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
     this.routerSearchType = this.route.snapshot.params['searchType'];
-    this.backSession = sessionStorage.getItem(ROUTING_STATE_KEY);
-    sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage);
+    
+
     this.form = holdingFormGroup(null);
     this.selection = new SelectionModel<DisplayHoldingResult>(true, []);
     this.isMaxRowSelected = false;
@@ -760,6 +759,11 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     sessionStorage.setItem(SELECTED_RECORD_LIST_ILL, object);
     sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.HoldingSearchMainPage);
     this.router.navigate(['requestForm', this.nacsisId, this.mmsTitle, this.routerSearchType]);
+  }
+
+  backToSearchRecord() {
+    sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage);
+    this.router.navigate(['searchRecord', 'back']);
   }
 
 }

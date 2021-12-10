@@ -198,7 +198,6 @@ export abstract class BaseRecordInfo {
     this.nacsisId = record.nacsisId;
     this.isbn = record.isbn;
     this.issn = record.issn;
-
     this.seriesSummaryAll = record.seriesSummaryAll;
   }
 
@@ -238,7 +237,6 @@ export abstract class BaseRecordInfo {
   getIssn() {
     return this.issn;
   }
-
 
 
   getSeriesSummaryAll() {

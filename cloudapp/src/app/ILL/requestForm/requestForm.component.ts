@@ -50,8 +50,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   volFirstAuto: string;
   volLastAuto: string;
   vlyrAuto:string;
-  isbnAuto: string;
-  issnAuto: string;
+  lccnAuto: string;
   dataPubArrayAuto: any[];
   dataVolArrayAuto: any[];
   bibIDAuto: string;
@@ -171,9 +170,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.pub_yearAuto = fullRecordData.PUBDT;
     this.quantityAuto = fullRecordData.PHYSP;
     this.sizeAuto = fullRecordData.PHYSS;
+    this.lccnAuto = fullRecordData.LCCN;
     this.dataVolArrayAuto = fullRecordData.VOLG;
     if (this.dataVolArrayAuto != null && this.dataVolArrayAuto.length > 0) {
-      this.isbnAuto = this.dataVolArrayAuto[0].ISBN;
       this.volFirstAuto = this.dataVolArrayAuto[0].VOL;
       if (this.dataVolArrayAuto.length > 1) {
         this.volLastAuto = this.dataVolArrayAuto[this.dataVolArrayAuto.length - 1].VOL;
@@ -184,7 +183,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
     this.formResourceInformation.controls.BIBID.setValue(this.bibIDAuto);
     this.formResourceInformation.controls.BIBNT.setValue(this.buildBibMetadata());
-    this.formResourceInformation.controls.STDNO.setValue('LCCN=' + this.isbnAuto);
+    if(!this.illService.isEmpty(this.lccnAuto))
+    this.formResourceInformation.controls.STDNO.setValue('LCCN=' + this.lccnAuto);
   }
 
   extractSelectedData() {
