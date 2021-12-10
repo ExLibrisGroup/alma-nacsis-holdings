@@ -131,7 +131,6 @@
       }
     }
   },
-
   "ILL": {
     "Main": {
       "Intro": "Select a record to create ILL borrowing request:",
@@ -314,7 +313,6 @@
         "warningSelectValue":"Please choose an option",
         "warningInputValue":"Please input a value"
       }
-    
   },
   
   "Config": {

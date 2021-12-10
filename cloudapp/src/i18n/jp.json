@@ -91,10 +91,12 @@
       "NoHoldingRecordsExist": "所蔵レコードがありません。",
       "DeleteYesButton": "???Yes, delete it",
       "DeleteNoButton": "???No, keep it",
+      "NacsisID":"NACSIS ID",
       "Errors": {
         "NoNoldings": "所蔵レコードが見つかりません。",
         "GetFailed": "所蔵レコードの取得ができませんでした。",
-        "DeleteFailed": "所蔵レコードの削除ができませんでした。"
+        "DeleteFailed": "所蔵レコードの削除ができませんでした。",
+        "Uneditable": "This holding is not a member of +++ therefore can't be edit"
       }
     },
     "Form": {
@@ -129,7 +131,6 @@
       }
     }
   },
-
   "ILL": {
     "Main": {
       "Intro": "Select a record to create ILL borrowing request:",
@@ -140,6 +141,7 @@
     },
     "DisplayCard": {
       "By":"By",
+      "Title":"Title",
       "Language":"Language",
       "ISBN":"ISBN",
       "ISSN":"ISSN",
@@ -311,7 +313,6 @@
         "warningSelectValue":"Please choose an option",
         "warningInputValue":"Please input a value"
       }
-    
   },
 
   "Config": {
