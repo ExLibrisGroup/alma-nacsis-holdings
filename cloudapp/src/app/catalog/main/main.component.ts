@@ -50,28 +50,28 @@ export class CatalogMainComponent implements AfterViewInit {
     private linkSearchType: SearchType;
 
     // UI variables
-    private panelState: boolean = true;
-    private loading: boolean = false;
-    private isRightTableOpen: boolean = false;
-    private isColapsedMode: boolean = true;
+    public panelState: boolean = true;
+    public loading: boolean = false;
+    public isRightTableOpen: boolean = false;
+    public isColapsedMode: boolean = true;
 
     // Search variables
     private catalogResultsData: NacsisCatalogResults;
-    private numOfResults: number;
-    private pageIndex: number = 0;
-    private pageSize: number = 20;
+    public numOfResults: number;
+    public pageIndex: number = 0;
+    public pageSize: number = 20;
 
     // Display variables
-    private resultsSummaryDisplay: Array<IDisplayLines>;
-    private resultFullDisplay;
-    private resultFullLinkDisplay;
+    public resultsSummaryDisplay: Array<IDisplayLines>;
+    public resultFullDisplay;
+    public resultFullLinkDisplay;
 
     // Templates
     @ViewChild('notSearched') notSearchedTmpl:TemplateRef<any>;
     @ViewChild('searchResults') searchResultsTmpl:TemplateRef<any>;
     @ViewChild('noResults') noResultsTmpl:TemplateRef<any>;
     @ViewChild('fullRecord') fullRecordTmpl:TemplateRef<any>;
-    private currentResulsTmpl: TemplateRef<any>;
+    public currentResulsTmpl: TemplateRef<any>;
 
 
     constructor(
@@ -216,7 +216,7 @@ export class CatalogMainComponent implements AfterViewInit {
 
     /***  Summary View Section  ***/
 
-    private getActionMenu() {
+    public getActionMenu() {
         return this.ACTIONS_MENU_LIST.get(this.currentSearchType);
     }
 

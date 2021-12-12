@@ -14,7 +14,7 @@ export class SearchFormComponent implements OnChanges {
     @Input() databasesList: Array<string> = new Array();
     @Input() fieldsList: Array<SearchField> = new Array();
     @Output() selectedDatabase = new EventEmitter<string>();  
-    private defaultDatabase ;
+    public defaultDatabase ;
 
     constructor() { }
     
