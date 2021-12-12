@@ -1,0 +1,40 @@
+.mat-form-field {
+  display: contents;
+}
+
+.form-card-parent {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  column-gap: 2%;
+  background-color: whitesmoke !important;
+  ::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 5px !important;
+  }
+  // ::ng-deep .mat-form-field-flex {
+  //   height: 45px;
+  // }
+}
+
+.form-card-field-full-width {
+  width: 100%;
+}
+
+.form-card-field-large {
+  width: 49%;
+  min-width: 200px;
+  flex-grow: 1;
+}
+
+.form-card-field-medium {
+  width: 32%;
+  min-width: 200px;
+  flex-grow: 1;
+}
+
+.form-card-field-small {
+  width: 18%;
+  flex-grow: 1;
+  min-width: 130px;
+
+}

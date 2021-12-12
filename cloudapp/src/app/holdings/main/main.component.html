@@ -1,0 +1,41 @@
+<div *ngIf="bibs.length>0 || loading else nobibs" fxLayout="column">
+  
+  <div class="align-space-between" fxLayout="row">
+    <a [routerLink]="['']">
+      <button mat-flat-button color="secondary">
+        <mat-icon>arrow_back_ios</mat-icon>
+        {{'General.Back' | translate}}
+      </button>
+    </a>
+    <button mat-flat-button color="primary" aria-label="search" (click)="search()" [disabled]="!selected">
+      {{ 'Holdings.Main.RetrieveHoldings' | translate }}
+    </button>
+  </div>
+
+  <p translate>Holdings.Main.Intro</p>
+  <mat-form-field>
+    <mat-placeholder translate>Holdings.Main.SelectBib</mat-placeholder>
+    <mat-select panelClass="panel-class" [(value)]="selected">
+      <mat-option *ngFor="let bib of bibs" [value]="bib.id">
+        <span><strong>{{bib.id}}:&emsp;</strong></span>{{bib.description}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="loading-shade" *ngIf="loading">
+    <mat-progress-spinner mode="indeterminate" diameter="50">
+    </mat-progress-spinner>
+  </div>
+</div>
+
+<ng-template #nobibs>
+  <div class="align-to-left" fxLayout="row">
+    <a [routerLink]="['']">
+      <button mat-flat-button color="secondary">
+        <mat-icon>arrow_back_ios</mat-icon>
+        {{'General.Back' | translate}}
+      </button>
+    </a>
+  </div>
+  <p translate>Holdings.Main.NoRecords</p>
+</ng-template>

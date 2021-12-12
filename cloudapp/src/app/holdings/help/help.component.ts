@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
   template: `
   <div class="cloudapp-actions">
     <button mat-flat-button color="secondary" [routerLink]="['/']">
-      {{'Back' | translate}}
+      {{'General.Back' | translate}}
     </button>
   </div>
   <p translate>Help.Text</p>

@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { CloudAppConfigService } from '@exlibris/exl-cloudapp-angular-lib';
 //import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
-import { NacsisService } from '../nacsis.service';
+import { HoldingsService } from '../service/holdings.service';
+import { ConfigurationService } from '../service/configuration.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 
 
@@ -21,7 +22,7 @@ export class ConfigurationComponent implements OnInit {
     private configService: CloudAppConfigService,
     //private toastr: ToastrService,
     private translate: TranslateService,
-    private nacsis: NacsisService,
+    private nacsis: ConfigurationService,
     private alert: AlertService
 
   ) { }

@@ -1,0 +1,6 @@
+<section>
+  <p>{{ 'MainMenu.Intro' | translate }}</p>
+  <eca-menu>
+    <eca-menu-item *ngFor="let item of menu" [title]="item.title | translate" [routerLink]="item.link" [icon]="item.icon">{{item.text | translate}}</eca-menu-item>
+  </eca-menu>
+</section>

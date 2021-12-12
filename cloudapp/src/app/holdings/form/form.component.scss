@@ -30,10 +30,12 @@ mat-card {
     padding-left: 0px;
     padding-right: 0px;
     margin-bottom: 40px;
-
      .form-card-inputs {
        padding-top: 10px;
-     }
+       ::ng-deep .mat-form-field-wrapper {
+        padding-bottom: 0px !important;
+    }
+    }
   }
 
   .form-commands {

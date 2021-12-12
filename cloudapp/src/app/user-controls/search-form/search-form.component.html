@@ -1,0 +1,17 @@
+<mat-form-field>
+  <mat-label>{{'Catalog.Form.SelectDatabase' | translate}}</mat-label>
+  <mat-select (selectionChange)="selectDatabase($event)" [(value)]="defaultDatabase"> 
+    <mat-option *ngFor="let database of databasesList" value="{{database}}">
+      {{ database }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-card class="form-card-parent" color="secondary">
+  <form *ngFor="let field of fieldsList" class="{{field.getFieldLength()}}">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ field.getFieldLabel() | translate }}</mat-label>
+        <input matInput [formControl]="field.getFormControl()">
+    </mat-form-field>
+  </form>
+</mat-card>

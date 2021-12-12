@@ -1,50 +1,44 @@
 import { HttpClient } from "@angular/common/http";
 import { mergeMap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { CloudAppConfigService, CloudAppEventsService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
-import jwt_decode from "jwt-decode";
-import {JwtPayload} from "jwt-decode";
+import { CloudAppEventsService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
+
+import { BaseService } from "./base.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class NacsisService {
+export class HoldingsService extends BaseService {
   private _holdings: Holding[];
   private _header: Header;
-  private _config;
-  private _url: string;
-  private _initData: InitData;
-  private _authToken: string;
-  private _exp: number;
-  public OkStatus: string = 'OK';
   public OwnerKey: string = 'OWNER_KEY';
   private PREVIEW_MAX_LENGTH: number = 30;
 
   constructor(
-    private http: HttpClient,
-    private configService: CloudAppConfigService,
-    private eventsService: CloudAppEventsService
-
+    protected eventsService: CloudAppEventsService,
+    protected http: HttpClient
   ) {
-    this.configService.get().subscribe(resp => this._config = resp);
+    super(eventsService, http);
   }
 
-  isEmpty(val) {
-    return (val === undefined || val == null || val.length <= 0) ? true : false;
+  setBaseUrl(initData: InitData) : string {
+    let baseUrl = super.setBaseUrl(initData);
+    baseUrl = baseUrl + "holdings?";
+    return baseUrl;
   }
 
   getHeader(): Header {
     return this._header;
   }
 
-  getHoldingsFromNacsis(mmsId: any, owner: String){
+  getHoldingsFromNacsis(nacsisId: any, owner: String){
 
     let fullUrl: string;
     
     return this.getInitData().pipe(
       mergeMap(initData => {
-        fullUrl = this.setBaseUrl(initData) + mmsId + "?owner=" + owner;
+        fullUrl = this.setBaseUrl(initData) + "nacsisId=" + nacsisId + "&owner=" + owner;
         return this.getAuthToken()}),
       mergeMap(authToken => {
         let headers = this.setAuthHeader(authToken);
@@ -105,52 +99,13 @@ export class NacsisService {
     });
   }
 
-  getInitData(): Observable<InitData> {
-    if(this.isEmpty(this._initData))
-      return this.eventsService.getInitData();
-    return of(this._initData);
-  }
-
-  setBaseUrl(initData: InitData) : string {
-    if(this.isEmpty(this._url)) {
-      console.log(initData);
-      this._initData = initData;
-      this._url = this._initData.urls['alma'];
-      this._url = this._url + 'view/nacsis/';
-      this._url = this._url + this._initData.instCode + '/';
-      console.log(this._url);
-    }
-    return this._url;
-  }
-
-  getAuthToken(): Observable<string> {
-
-    const now = Date.now(); // Unix timestamp in milliseconds
-
-    if (this.isEmpty(this._exp) || now >= this._exp) {
-      return this.eventsService.getAuthToken();
-    }
-    return of(this._authToken);
-  }
-
-  setAuthHeader(authToken: string) {
-    if(this._authToken !== authToken) {
-      console.log("JWT = " + authToken);
-      this._authToken = authToken;
-      let decoded = jwt_decode(this._authToken) as JwtPayload;
-      console.log(decoded);
-      this._exp = decoded.exp;
-    }
-    return { 'Authorization': `Bearer ${this._authToken}` };
-  }
-
-  deleteHoldingFromNacsis(mmsId: string, holdingsId: string) {
+  deleteHoldingFromNacsis(nacsisId: string, holdingsId: string) {
     
     let fullUrl: string;
-    
+
     return this.getInitData().pipe(
       mergeMap(initData => {
-        fullUrl = this.setBaseUrl(initData) + mmsId + '/' + holdingsId;
+        fullUrl = this.setBaseUrl(initData) + "nacsisId=" + nacsisId + '&holdingId=' + holdingsId;
         return this.getAuthToken()}),
       mergeMap(authToken => {
         let headers = this.setAuthHeader(authToken);
@@ -167,21 +122,21 @@ export class NacsisService {
     }
   }
 
-  saveHoldingToNacsis(mmsId: string, holding: Holding) {
+  saveHoldingToNacsis(nacsisId: string, holding: Holding) {
   
     let fullUrl: string;
     let body = JSON.stringify(holding);
 
     return this.getInitData().pipe(
       mergeMap(initData => {
-        fullUrl = this.setBaseUrl(initData) + mmsId;
+        fullUrl = this.setBaseUrl(initData) + "nacsisId=" + nacsisId;
         return this.getAuthToken()}),
       mergeMap(authToken => {
         let headers = this.setAuthHeader(authToken);
         if (this.isEmpty(holding.ID)) { // create/POST
           return this.http.post<any>(fullUrl, body, { headers });
         } else { // update/PUT 
-          fullUrl = fullUrl + '/' + holding.ID;
+          fullUrl = fullUrl + '&holdingId=' + holding.ID;
           return this.http.put<any>(fullUrl, body, { headers });
         }
       })
@@ -200,22 +155,6 @@ export class NacsisService {
     }
     this.updateHoldingPreview();
   }
-
-  set config(config: any) {
-    this._config = config;
-  }
-
-  clearSessionStorage() {
-    sessionStorage.clear();
-  }
-
-  getSessionStorageItem(key: string) : string {
-    return sessionStorage.getItem(key);
-  }  
-
-  setSessionStorageItem(key: string, value: string) {
-    sessionStorage.setItem(key, value);
-  }  
 }
 
 export class Header {

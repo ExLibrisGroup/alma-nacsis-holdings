@@ -13,6 +13,7 @@ export class FooterComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.translate.use('jp');
   }
 
   setLang(lang: string) {
