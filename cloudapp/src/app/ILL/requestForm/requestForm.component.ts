@@ -65,8 +65,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
   requestType = new FormControl();
   requestTypeList: RequestType[] = [
-    { value: 'COPYO', viewValue: 'Copy' },
-    { value: 'LOANO', viewValue: 'Loan' }
+    { value: 'COPYO', viewValue: 'ILL.OptionViewValue.requestTypeList.Copy' },
+    { value: 'LOANO', viewValue: 'ILL.OptionViewValue.requestTypeList.Loan' }
   ];
 
   commentsType = new FormControl();
@@ -77,36 +77,36 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
   payClass = new FormControl('', Validators.required);
   payClassList: PayClass[] = [
-    { value: 'co', viewValue: 'Research expenses' },
-    { value: 'ho', viewValue: 'University hospital' },
-    { value: 'pb', viewValue: 'National school' },
-    { value: 'pr', viewValue: 'Private expense' },
-    { value: 're', viewValue: 'Laboratory ' }
+    { value: 'co', viewValue: 'ILL.OptionViewValue.payClassList.ResearchExpenses' },
+    { value: 'ho', viewValue: 'ILL.OptionViewValue.payClassList.UniversityHospital' },
+    { value: 'pb', viewValue: 'ILL.OptionViewValue.payClassList.NationalSchool' },
+    { value: 'pr', viewValue: 'ILL.OptionViewValue.payClassList.PrivateExpense' },
+    { value: 're', viewValue: 'ILL.OptionViewValue.payClassList.Laboratory' }
   ];
 
   copyType = new FormControl();
   copyTypeList: CopyType[] = [
-    { value: 'Electronic copy', viewValue: 'Electronic copy' },
-    { value: 'FAX', viewValue: 'FAX' },
-    { value: 'eDDS', viewValue: 'eDDS' },
-    { value: 'Stretch', viewValue: 'Stretch' },
-    { value: 'Microfitsyu', viewValue: 'Microfitsyu' },
-    { value: 'Microfilm', viewValue: 'Microfilm' },
-    { value: 'Reader printer ', viewValue: 'Reader printer' },
-    { value: 'Slide', viewValue: 'Slide' },
-    { value: 'Copy order', viewValue: 'Copy order' }
+    { value: 'Electronic copy', viewValue: 'ILL.OptionViewValue.copyTypeList.ElectronicCopy' },
+    { value: 'FAX', viewValue: 'ILL.OptionViewValue.copyTypeList.FAX' },
+    { value: 'eDDS', viewValue: 'ILL.OptionViewValue.copyTypeList.eDDS' },
+    { value: 'Stretch', viewValue: 'ILL.OptionViewValue.copyTypeList.Stretch' },
+    { value: 'Microfitsyu', viewValue: 'ILL.OptionViewValue.copyTypeList.Microfitsyu' },
+    { value: 'Microfilm', viewValue: 'ILL.OptionViewValue.copyTypeList.Microfilm' },
+    { value: 'Reader printer ', viewValue: 'ILL.OptionViewValue.copyTypeList.ReaderPrinter' },
+    { value: 'Slide', viewValue: 'ILL.OptionViewValue.copyTypeList.Slide' },
+    { value: 'Copy order', viewValue: 'ILL.OptionViewValue.copyTypeList.CopyOrder' }
   ];
 
   sendingMethod = new FormControl();
   sendingMethodList: SendingMethod[] = [
-    { value: 'Regular', viewValue: 'Regular' },
-    { value: 'Express', viewValue: 'Express' },
-    { value: 'DDS', viewValue: 'DDS' },
-    { value: 'FAX', viewValue: 'FAX' },
-    { value: 'Registered_mail', viewValue: 'Registered mail' },
-    { value: 'Regular_mail', viewValue: 'Regular mail' },
-    { value: 'Mail ', viewValue: 'Mail' },
-    { value: 'eDDS', viewValue: 'eDDS' }
+    { value: 'Regular', viewValue: 'ILL.OptionViewValue.sendingMethodList.Regular' },
+    { value: 'Express', viewValue: 'ILL.OptionViewValue.sendingMethodList.Express' },
+    { value: 'DDS', viewValue: 'ILL.OptionViewValue.sendingMethodList.DDS' },
+    { value: 'FAX', viewValue: 'ILL.OptionViewValue.sendingMethodList.FAX' },
+    { value: 'Registered_mail', viewValue: 'ILL.OptionViewValue.sendingMethodList.RegisteredMail' },
+    { value: 'Regular_mail', viewValue: 'ILL.OptionViewValue.sendingMethodList.RegularMail' },
+    { value: 'Mail ', viewValue: 'ILL.OptionViewValue.sendingMethodList.Mail' },
+    { value: 'eDDS', viewValue: 'ILL.OptionViewValue.sendingMethodList.eDDS' }
   ];
 
   dataSourceRota = new MatTableDataSource<DisplayHoldingResult>();

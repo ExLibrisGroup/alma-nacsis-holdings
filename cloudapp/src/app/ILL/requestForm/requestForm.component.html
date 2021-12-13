@@ -36,7 +36,7 @@
                             <mat-label translate>ILL.RequestForm.RequestType</mat-label>
                             <mat-select [formControl]="requestType" required (selectionChange)=onRequestTypeSelected()>
                                 <mat-option *ngFor="let requestType of requestTypeList" [value]="requestType.value">
-                                    {{requestType.viewValue}}
+                                    {{requestType.viewValue | translate}}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -45,7 +45,7 @@
                             <mat-label translate>ILL.RequestForm.PayClass</mat-label>
                             <mat-select [formControl]="payClass" required>
                                 <mat-option *ngFor="let payClass of payClassList" [value]="payClass.value">
-                                    {{payClass.viewValue}}
+                                    {{payClass.viewValue | translate}}
                                 </mat-option>
                             </mat-select>
                             <mat-error *ngIf="payClass.hasError('required')">
@@ -57,7 +57,7 @@
                             <mat-label translate>ILL.RequestForm.CopyType</mat-label>
                             <mat-select [formControl]="copyType" >
                                 <mat-option *ngFor="let copyType of copyTypeList" [value]="copyType.value">
-                                    {{copyType.viewValue}}
+                                    {{copyType.viewValue | translate}}
                                 </mat-option>
                             </mat-select>
                             <mat-error *ngIf="copyType.hasError('required')">
@@ -70,7 +70,7 @@
                             <mat-select [formControl]="sendingMethod">
                                 <mat-option *ngFor="let sendingMethod of sendingMethodList"
                                     [value]="sendingMethod.value">
-                                    {{sendingMethod.viewValue}}
+                                    {{sendingMethod.viewValue | translate}}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -158,7 +158,7 @@
 
                 <ng-container matColumnDef="fano">
                     <th mat-header-cell *matHeaderCellDef>
-                        {{'ILL.HoldingSearchResult.FANO' | translate}} </th>
+                        {{'ILL.RequestForm.FANO' | translate}} </th>
                     <td mat-cell *matCellDef="let element">
                         <input cdkTextareaAutosize matInput value="{{element.fano}}"
                             formControlName="HMLID{{element.index}}">
@@ -167,7 +167,7 @@
 
                 <ng-container matColumnDef="name">
                     <th mat-header-cell *matHeaderCellDef>
-                        {{'ILL.HoldingSearchResult.NAME' | translate}} </th>
+                        {{'ILL.RequestForm.NAME' | translate}} </th>
                     <td mat-cell *matCellDef="let element">
                         <input cdkTextareaAutosize matInput value="{{element.name}}"
                             formControlName="HMLNM{{element.index}}">

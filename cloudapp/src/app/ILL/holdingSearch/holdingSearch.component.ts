@@ -64,65 +64,65 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   establisherType = new FormControl();
   establisherTypeList: EstablisherType[] = [
-    { value: '1', viewValue: 'National' },
-    { value: '2', viewValue: 'Public' },
-    { value: '3', viewValue: 'Private' },
-    { value: '4', viewValue: 'Special public corporation' },
-    { value: '5', viewValue: 'Overseas' },
-    { value: '8', viewValue: 'Training/testing' },
-    { value: '9', viewValue: 'Other' }
+    { value: '1', viewValue: 'ILL.OptionViewValue.SETCODE.National' },
+    { value: '2', viewValue: 'ILL.OptionViewValue.SETCODE.Public' },
+    { value: '3', viewValue: 'ILL.OptionViewValue.SETCODE.Private' },
+    { value: '4', viewValue: 'ILL.OptionViewValue.SETCODE.SpecialPublicCorporation' },
+    { value: '5', viewValue: 'ILL.OptionViewValue.SETCODE.Overseas' },
+    { value: '8', viewValue: 'ILL.OptionViewValue.SETCODE.TrainingTesting' },
+    { value: '9', viewValue: 'ILL.OptionViewValue.SETCODE.Other' }
   ];
 
   institutionType = new FormControl();
   institutionTypeList: InstitutionType[] = [
-    { value: '1', viewValue: 'University' },
-    { value: '2', viewValue: 'Junior college' },
-    { value: '3', viewValue: 'College of technology' },
-    { value: '4', viewValue: 'Inter-university research institutes' },
-    { value: '5', viewValue: 'Facilities of other ministries' },
-    { value: '8', viewValue: 'Training/testing' },
-    { value: '9', viewValue: 'Other' }
+    { value: '1', viewValue: 'ILL.OptionViewValue.ORGCODE.University' },
+    { value: '2', viewValue: 'ILL.OptionViewValue.ORGCODE.JuniorCollege' },
+    { value: '3', viewValue: 'ILL.OptionViewValue.ORGCODE.CollegeOfTechnology' },
+    { value: '4', viewValue: 'ILL.OptionViewValue.ORGCODE.InterResearchInstitutes' },
+    { value: '5', viewValue: 'ILL.OptionViewValue.ORGCODE.FacilitiesOfOtherMinistries' },
+    { value: '8', viewValue: 'ILL.OptionViewValue.ORGCODE.TrainingTesting' },
+    { value: '9', viewValue: 'ILL.OptionViewValue.ORGCODE.Other' }
   ];
 
   iLLParticipationType = new FormControl();
   iLLParticipationTypeList: ILLParticipationType[] = [
-    { value: '', viewValue: 'None' },
-    { value: 'A', viewValue: 'Participate' },
-    { value: 'N', viewValue: 'Do not participate' }
+    { value: '', viewValue: 'ILL.OptionViewValue.ILLFLG.None' },
+    { value: 'A', viewValue: 'ILL.OptionViewValue.ILLFLG.Participate' },
+    { value: 'N', viewValue: 'ILL.OptionViewValue.ILLFLG.DoNotParticipate' }
   ];
 
   serviceStatus = new FormControl();
   serviceStatusList: ServiceStatus[] = [
-    { value: '', viewValue: 'None' },
-    { value: 'A', viewValue: 'Available' },
-    { value: 'N', viewValue: 'Not available' }
+    { value: '', viewValue: 'ILL.OptionViewValue.STAT.None' },
+    { value: 'A', viewValue: 'ILL.OptionViewValue.STAT.Available' },
+    { value: 'N', viewValue: 'ILL.OptionViewValue.STAT.NotAvailable' }
   ];
 
   offsetCharge = new FormControl();
   offsetChargeList: OffsetCharge[] = [
-    { value: '', viewValue: 'None' },
-    { value: 'N', viewValue: 'Participate in ILL offset service' }
+    { value: '', viewValue: 'ILL.OptionViewValue.GRPCODE.None' },
+    { value: 'N', viewValue: 'ILL.OptionViewValue.GRPCODE.ParticipateILLOffsetService' }
   ];
 
   copyServiceType = new FormControl();
   copyServiceTypeList: CopyServiceType[] = [
-    { value: 'A', viewValue: 'Accept' },
-    { value: 'C', viewValue: 'Accept at other counters' },
-    { value: 'N', viewValue: 'Not accepted' }
+    { value: 'A', viewValue: 'ILL.OptionViewValue.COPYS.Accept' },
+    { value: 'C', viewValue: 'ILL.OptionViewValue.COPYS.AcceptAtOtherCounters' },
+    { value: 'N', viewValue: 'ILL.OptionViewValue.COPYS.NotAccepted' }
   ];
 
   lendingServiceType = new FormControl();
   lendingServiceTypeList: LendingServiceType[] = [
-    { value: 'A', viewValue: 'Accept' },
-    { value: 'C', viewValue: 'Accept at other counters' },
-    { value: 'N', viewValue: 'Not accepted' }
+    { value: 'A', viewValue: 'ILL.OptionViewValue.LOANS.Accept' },
+    { value: 'C', viewValue: 'ILL.OptionViewValue.LOANS.AcceptAtOtherCounters' },
+    { value: 'N', viewValue: 'ILL.OptionViewValue.LOANS.NotAccepted' }
   ];
 
   fAXServiceType = new FormControl();
   fAXServiceTypeList: FAXServiceType[] = [
-    { value: 'A', viewValue: 'Accept' },
-    { value: 'C', viewValue: 'Conditionally available' },
-    { value: 'N', viewValue: 'Not accepted' }
+    { value: 'A', viewValue: 'ILL.OptionViewValue.FAXS.Available' },
+    { value: 'C', viewValue: 'ILL.OptionViewValue.FAXS.ConditionallyAvailable' },
+    { value: 'N', viewValue: 'ILL.OptionViewValue.FAXS.NotAvailable' }
   ];
 
   //result view

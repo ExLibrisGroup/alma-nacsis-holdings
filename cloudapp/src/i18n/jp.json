@@ -1,12 +1,12 @@
 {
   "General": {
     "Back": "戻る",
-    "BackToMenu": "???Back to menu",
+    "BackToMenu": "メニューに戻る",
     "Cancel": "キャンセル",
     "Save": "保存",
     "OK": "OK",
-    "Clear": "???Clear",
-    "Search": "???Search",
+    "Clear": "クリア",
+    "Search": "検索",
     "Next": "Next",
     "Order": "Order",
     "Errors": {
@@ -15,62 +15,62 @@
   },
   
   "MainMenu": {
-    "Intro": "???This app includes all functionalities within NACSIS-CAT/ILL",
+    "Intro": "このアップはNACSIS-CAT/ILLの対象機能をすべて提供します",
     "Holdings": {
-      "Title": "タイトル",
-      "Text": "??? NACSIS holding ???"
+      "Title": "所蔵",
+      "Text": "NACSIS所蔵レコードを管理する"
     },
     "Catalog": {
-      "Title": "Copy Catalog12 345 ???",
-      "Text": "??? Search and Copy cataloging ???"
+      "Title": "目録",
+      "Text": "NACSISの書誌・典拠レコードを検索・ダウウンロードする"
     },
     "ILL": {
-      "Title": "ILL Borrowing ??? Requests",
-      "Text": "NACSIS borrowing request creation???"
+      "Title": "ILL依頼",
+      "Text": "新規ILL依頼を作成する"
     },
     "Members": {
-      "Title": "Members??",
-      "Text": "NACSIS members information management???"
+      "Title": "参加組織",
+      "Text": "NACSISの参加組織情報を管理する"
     }
   },
 
   "Catalog": {
     "Form": {
-      "MainTitle": "Search records ???",
-      "RefineSearch": "Refine Search???",
-      "SelectSearchType": "Select search ???",
-      "SelectDatabase": "Select a ???",
-      "EmptyForm": "The search form is empty. ???",
+      "MainTitle": "NACSIS総合目録データベースでレコード検索する",
+      "RefineSearch": "検索条件を絞り込む",
+      "SelectSearchType": "レコード種別を選択する",
+      "SelectDatabase": "ファイルを選択する",
+      "EmptyForm": "検索フォームが空です。条件を入力してください",
       "SearchTypes": {
-        "Monographs": "Monographs???",
-        "Serials": "Serials???",
-        "Names": "Names???",
-        "UniformTitles": "Uniform Titles???"
+        "Monographs": "図書書誌",
+        "Serials": "雑誌書誌",
+        "Names": "著者名典拠",
+        "UniformTitles": "統一書名典拠"
       }
     },
     "Results": {
-      "Title": "???Records",
-      "NoRecordsExist": "???No records exist.",
-      "By": "???By",
-      "Book": "???(Book",
-      "Journal": "???(Journal",
-      "NACSISID": "???NACSIS ID:",
-      "ISBN": "???ISBN:",
-      "ISSN": "???ISSN:",
-      "Subjects": "???Subjects:",
-      "AndOthers": "???and others",
+      "Title": "レコード件数",
+      "NoRecordsExist": "レコードがありません",
+      "By": "",
+      "Book": "(図書",
+      "Journal": "(雑誌",
+      "NACSISID": "NACSIS ID:",
+      "ISBN": "ISBN:",
+      "ISSN": "ISSN:",
+      "Subjects": "件名:",
+      "AndOthers": "その他",
       "Actions" : {
-        "View" : "???View",
-        "Import" : "???Import",
-        "ViewHoldings" : "???View Holdings"
+        "View" : "プレビュー",
+        "Import" : "ダウウンロード",
+        "ViewHoldings" : "所蔵を確認する"
       },
-      "ImportSucceeded": "The record was successfully imported ???"
+      "ImportSucceeded": "レコードがダウウンロードされました"
     }
   },
 
   "Holdings": {
     "Main": {
-      "Intro": "NACSISから所蔵を取得するための書誌レコードを選択してください：",
+      "Intro": "NACSISから所蔵を取得するための書誌レコードを選択してください:",
       "NoRecords": "NACSISの所蔵を閲覧表示するため、該当の書誌レコードに移動します。",
       "SelectBib": "書誌レコードの選択",
       "RetrieveHoldings": "所蔵の検索",
@@ -84,13 +84,13 @@
       "Title": "タイトル",
       "Library": "図書館",
       "Location": "配置場所",
-      "ConfirmDelete": "このレコードを本当に削除しますか？",
-      "DeleteTitle": "???Delete Holding record",
+      "ConfirmDelete": "このレコードを本当に削除しますか",
+      "DeleteTitle": "所蔵レコードを削除する",
       "Deleted": "レコードが削除されました.",
       "Add": "所蔵レコードの追加",
       "NoHoldingRecordsExist": "所蔵レコードがありません。",
-      "DeleteYesButton": "???Yes, delete it",
-      "DeleteNoButton": "???No, keep it",
+      "DeleteYesButton": "削除する",
+      "DeleteNoButton": "削除しない",
       "NacsisID":"NACSIS ID",
       "Errors": {
         "NoNoldings": "所蔵レコードが見つかりません。",
@@ -141,37 +141,12 @@
     },
     "DisplayCard": {
       "By":"By",
-      "Title":"Title",
+      "Title":"タイトル",
       "Language":"Language",
       "ISBN":"ISBN",
       "ISSN":"ISSN",
-      "Others":"and others",
-      "NACSIS_ID":"NACSIS ID",
-      "ConfirmDelete": "Are you sure you wish to delete this holding record?",
-      "DeleteTitle": "Delete Holding record",
-      "Deleted": "Record successfully deleted.",
-      "Add": "Add NACSIS Holding",
-      "NoHoldingRecordsExist": "No holding records exist.",
-      "DeleteYesButton": "Yes, delete it",
-      "DeleteNoButton": "No, keep it",
-      "Errors": {
-        "NoNoldings": "No holdings record were found",
-        "GetFailed": "Get holdings failed",
-        "DeleteFailed": "Delete holding failed"
-      }
-    },
-    "Form": {
-      "MainTitle": "Search records in NACSIS ",
-      "RefineSearch": "Refine Search",
-      "SelectSearchType": "Select search type",
-      "SelectDatabase": "Select a database",
-      "EmptyForm": "The search form is empty. Please enter at least one value",
-      "SearchTypes": {
-        "Monographs": "Monographs",
-        "Serials": "Serials",
-        "Names": "Names",
-        "UniformTitles": "Uniform Titles"
-      }
+      "Others":"その他",
+      "NACSIS_ID":"NACSIS ID"
     },
     "Results": {
       "Title": "Records",
@@ -192,19 +167,19 @@
       "MaxRowSelected":"Max row selected"
     },
     "HoldingSearch":{
-       "ParticipatingOrgCode":"Participating organization code",
-       "Volume":"Volume",
+       "ParticipatingOrgCode":"参加組織コード",
+       "Volume":"巻冊次等",
        "Year":"Year",
-       "Location":"Location",
-       "RegionCode":"Region(prefeture) code",
-       "EstablisherType":"Establisher type",
-       "InstitutionType":"Institution type",
-       "ILLParticipationType":"ILL participation type",
-       "ServiceStatus":"Service status",
-       "OffsetCharge":"Offset charge",
-       "CopyServiceType":"Copy service type",
-       "LendingServiceType":"Lending service type",
-       "FAXServiceType":"FAX service type"
+       "Location":"配置コード",
+       "RegionCode":"地域(県)コード",
+       "EstablisherType":"設置者種別",
+       "InstitutionType":"機関種別",
+       "ILLParticipationType":"ILL参加種別",
+       "ServiceStatus":"サービスステータス",
+       "OffsetCharge":"料金相殺グループ",
+       "CopyServiceType":"複写サービス種別",
+       "LendingServiceType":"貸借サービス種別",
+       "FAXServiceType":"FAXサービス種別"
     },
     "HoldingSearchResult":{
       "INDEX":"ID",
@@ -213,7 +188,7 @@
       "VOL":"VOL",
       "HLV":"HLV",
       "HLYR":"HLYR",
-      "BID":"Bibliographic ID",
+      "BID":"BID",
       "COPYS":"Photocopy",
       "CRTDT":"Create date",
       "FANO":"Member ID",
@@ -222,7 +197,7 @@
       "ILLFLG":"ILL",
       "KENCODE":"Region",
       "LIBABL":"Name",
-      "LOC":"Location",
+      "LOC":"LOC",
       "LOANS":"LOANS",
       "ORGCODE":"Institution type",
       "RNWDT":"Update date",
@@ -230,42 +205,44 @@
       "STAT":"STAT",
       "type":"Type",
       "SUM":"Photocopy fee",
-      "Volume":"Volume",
+      "Volume":"VOL",
       "RGNT":"RGNT",
       "LDF":"LDF",
       "CLN":"CLN",
-      "CallNumber":"Call Number",
-      "RegistrationNumber":"Registration Number",
+      "CallNumber":"CLN",
+      "RegistrationNumber":"RGTN",
       "Lender":"Lender"
    },
    "RequestForm":{
-    "ResourceInformation":"Resource Information",
+    "ResourceInformation":"リソース情報",
     "Rota":"Rota",
-    "RequesterInformation":"Requester Information",
+    "RequesterInformation":"リクエスター情報",
     "RequestType":"Request Type",
-    "PayClass":"Payment classification",
-    "CopyType":"Copy type",
-    "SendingMethod":"Sending Method",
-    "ExternalRequestID":"External request ID",
-    "DefermentPermitNumber":"Deferment permit number",
-    "NACSISBibliographicID":"NACSIS Bibliographic ID",
-    "StandardNumber":"Standard number",
-    "Volume":"Volume",
+    "PayClass":"支払区分",
+    "CopyType":"複写種別",
+    "SendingMethod":"送付方法",
+    "ExternalRequestID":"依頼番号",
+    "DefermentPermitNumber":"徴収猶予許可番号",
+    "NACSISBibliographicID":"NC書誌ID",
+    "StandardNumber":"標準番号",
+    "Volume":"巻冊次等",
     "Page":"Page",
     "Year":"Year",
-    "BibliographicMetadata":"Bibliographic metadata",
-    "TreatiseRelatedMatters":"Treatise-related matters",
-    "BibliographicAuthority":"Bibliographic authority",
-    "CollectionAuthority":"Collection authority",
-    "ApplicantName":"Applicant name",
-    "ApplicantAffiliation":"Applicant affiliation",
-    "DateNeededBy":"Date Needed By",
-    "Comments":"Comments",
-    "RequesterStaff":"Requester staff",
-    "RequesterAddress":"Requester address",
-    "LocalData":"Local data",
-    "LocalAccountingData":"Local accounting data",
-    "ElectronicShippingAddress":"Electronic shipping address"
+    "BibliographicMetadata":"書誌事項",
+    "TreatiseRelatedMatters":"論文関係事項",
+    "FANO":"所蔵館コード",
+    "NAME":"所蔵館略称",
+    "BibliographicAuthority":"書誌典拠",
+    "CollectionAuthority":"所蔵典拠",
+    "ApplicantName":"申込者氏名",
+    "ApplicantAffiliation":"申込者所属",
+    "DateNeededBy":"依頼日",
+    "Comments":"コメント",
+    "RequesterStaff":"依頼館担当者",
+    "RequesterAddress":"依頼館宛名",
+    "LocalData":"ローカルデータ",
+    "LocalAccountingData":"ローカル会計データ",
+    "ElectronicShippingAddress":"電子的配送先アドレス"
     },
     "MemberInfo":{
       "MemberID":"Member ID:",
@@ -301,6 +278,87 @@
       "LocationCode":"Location code",
       "OffsetCode":"Offset code"
     },
+    "OptionViewValue": {
+      "SETCODE" : {
+        "National" : "国立",
+        "Public" : "公立",
+        "Private" : "私立",
+        "SpecialPublicCorporation" : "特殊法人",
+        "Overseas" : "海外",
+        "TrainingTesting" : "研修・テスト用",
+        "Other":"その他"
+      },
+      "ORGCODE" : {
+        "University" : "大学",
+        "JuniorCollege" : "短期大学",
+        "CollegeOfTechnology" : "高等専門学校",
+        "InterResearchInstitutes" : "大学共同利用機関等",
+        "FacilitiesOfOtherMinistries" : "他省庁の施設機関等",
+        "TrainingTesting" : "研修・テスト用",
+        "Other":"その他"
+      },
+      "GRPCODE" : {
+        "None":"None",
+        "ParticipateILLOffsetService" : "相殺"
+      },
+      "ILLFLG" : {
+        "None":"None",
+        "Participate" : "参加",
+        "DoNotParticipate" : "未参加"
+      },
+      "STAT" : {
+        "None":"None",
+        "Available" : "サービス可",
+        "NotAvailable" : "サービス不可"
+      },
+      "COPYS" : {
+        "Accept" : "受け付ける",
+        "AcceptAtOtherCounters" : "他の窓口で受け付ける",
+        "NotAccepted":"受け付けない"
+      },
+      "LOANS" : {
+        "Accept" : "受け付ける",
+        "AcceptAtOtherCounters" : "他の窓口で受け付ける",
+        "NotAccepted":"受け付けない"
+      },
+      "FAXS" : {
+        "Available" : "サービス可",
+        "ConditionallyAvailable" : "条件付でサービス可",
+        "NotAvailable":"サービス不可"
+      },
+      "requestTypeList" : {
+        "Copy" : "複写",
+        "Loan" : "貸出"
+      },
+      "payClassList" : {
+        "ResearchExpenses" : "産学連携等研究費",
+        "UniversityHospital" : "大学附属病院",
+        "NationalSchool" : "国立学校",
+        "PrivateExpense" : "私費",
+        "Laboratory" : "研究所"
+      },
+      "copyTypeList" : {
+        "ElectronicCopy" : "電子複写",
+        "FAX" : "FAX",
+        "eDDS" : "eDDS",
+        "Stretch" : "引き伸ばし",
+        "Microfitsyu" : "マイクロフイツシユ",
+        "Microfilm" : "マイクロフイルム",
+        "ReaderPrinter" : "リーダプリンタ",
+        "Slide" : "スライド",
+        "CopyOrder" : "複写取寄"
+      },
+      "sendingMethodList" : {
+        "Regular" : "普通",
+        "Express" : "速達",
+        "DDS" : "DDS",
+        "FAX" : "FAX",
+        "RegisteredMail" : "書留",
+        "RegularMail" : "普通郵便",
+        "Mail" : "郵送",
+        "eDDS" : "eDDS"
+      }
+    },
       "Errors": {
         "Id": "ID field is required",
         "SaveFailed": "Save holding failed",
@@ -330,16 +388,15 @@
 
   "UserControls": {
     "Fields": {
-      "TITLE": "TITLE???",
-      "FTITLE": "FTITLE???",
-      "PTBL": "PTBL???",
-      "VOL": "VOL???",
-      "TiPtVo": "TITLE / PTBL / VOL???",
-      "AUTH": "AUTH???",
+      "TITLE": "TITLE",
+      "FTITLE": "FTITLE",
+      "PTBL": "PTBL",
+      "VOL": "VOL",
+      "AUTH": "AUTH",
       "ISSN": "ISSN",
       "ISBN": "ISBN",
       "NBN": "NBN",
-      "NDLCN": "NDLCN / LCCN / OTHN",
+      "NDLCN": "NDLCN",
       "PUB": "PUB",
       "YEAR": "YEAR",
       "PLACE": "PLACE",
@@ -350,8 +407,11 @@
       "ID": "ID",
       "PID": "PID",
       "CODEN": "CODEN",
-      "NDLPN": "NDLPN / LCCN",
-      "FID": "FID"
+      "NDLPN": "NDLPN",
+      "LCCN": "LCCN",
+      "FID": "FID",
+      "DATE": "DATE",
+      "SAID": "SAID"
     }
   }
 }
