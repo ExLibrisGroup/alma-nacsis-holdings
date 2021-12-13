@@ -360,14 +360,6 @@
       }
     },
       "Errors": {
-        "Id": "ID field is required",
-        "SaveFailed": "Save holding failed",
-        "HLYR": "HLYR field is required",
-        "HLV": "HLV field is required",
-        "LOC": "LOC field is required",
-        "TooMany":  "Too Many Selected",
-        "Maximum": "You can only select a maximum of 5 records",
-        "MaxSelectd": "Maximum selected is 5",
         "warningSelectValue":"Please choose an option",
         "warningInputValue":"Please input a value"
       }
@@ -414,5 +406,4 @@
       "SAID": "SAID"
     }
   }
-  
 }
