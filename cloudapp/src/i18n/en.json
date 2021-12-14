@@ -258,7 +258,7 @@
       "PhoneNumber":"Phone number",
       "Ext":"Ext.",
       "Fax":"Fax",
-      "EstablisherType":"EstablisherType",
+      "EstablisherType":"Establisher Type",
       "InstitutionType":"Institution type",
       "CATParticipationType":"CAT participation type",
       "ILLParticipationType":"ILL participation type",
@@ -271,8 +271,12 @@
       "LendingPeriod":"Lending period",
       "RegionPrefectureCode":"Region (prefecture) code",
       "CatalogingDepartment":"Cataloging department",
-      "PhoneNum":"Phone num.:",
+      "CatPhoneNumFirst":"Phone num. (Ext.)",
+      "CatPhoneNum":"Phone num.:",
+      "CatFax":"Fax",
       "SystemDepartment":"System department",
+      "SystemPhoneNum":"Phone num.",
+      "SystemFax":"Fax",
       "Email":"Email",
       "ILLPolicy":"ILL policy",
       "LocationCode":"Location code",
@@ -298,16 +302,16 @@
         "Other":"Other"
       },
       "GRPCODE" : {
-        "None":"None",
+        "None":"",
         "ParticipateILLOffsetService" : "Participate in ILL offset service"
       },
       "ILLFLG" : {
-        "None":"None",
+        "None":"",
         "Participate" : "Participate",
         "DoNotParticipate" : "Do not participate"
       },
       "STAT" : {
-        "None":"None",
+        "None":"",
         "Available" : "Available",
         "NotAvailable" : "Not available"
       },

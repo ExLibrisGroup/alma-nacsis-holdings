@@ -1,12 +1,12 @@
 <div class="full-view-record">
   <div *ngFor="let line of resultFullDisplay;index as i" class="full-view-line {{isEvenRow(i)}}">
     <div class="full-view-line-header">
-      {{line.getHeaderLabel()}}
+      {{line.getHeaderLabel() | translate}}
     </div>
     <div class="full-view-line-content">
       <div class="full-view-line-field" *ngFor="let field of line.getContent()">
         <div class="full-view-line-field-label" *ngIf="field.hasLabel()">
-          {{field.getLabel()}}
+          {{ field.getLabel() | translate}}
         </div>
         <a *ngIf="field.isLinkable() else noLink" (click)="onFullViewLink(field.getLink(), field.getContent())">
           {{field.getContent()}}
