@@ -45,7 +45,7 @@
 
 <ng-template #searchResults>
   <results-list [numOfResults]="numOfResults" [pageIndex]="pageIndex" [pageSize]="pageSize"
-    [resultsSummaryDisplay]="resultsSummaryDisplay" [resultActionList]="getActionMenu()"
+    [resultsSummaryDisplay]="resultsSummaryDisplay" [resultActionList]="actionMenuEnteries"
     (onActionSelected)="onActionsClick($event)" (onTitleSelected)="onTitleClick($event)"
     (onPageSelected)="onPageAction($event)">
   </results-list>
@@ -79,7 +79,7 @@
     </div>
     <div class="full-view-right-table" (window:resize)="onResize($event)" *ngIf="isRightTableOpen">
       <button class="close-button" (click)="onFullViewLinkClose()">
-        <i class="uxf-icon uxf-close eca-button" aria-label="Delete" (click)="delete(i)"></i>
+        <i class="uxf-icon uxf-close eca-button"></i> 
       </button>
       <div *ngIf="resultFullLinkDisplay != null else noResults">
         <full-view-display [resultFullDisplay]="resultFullLinkDisplay">
