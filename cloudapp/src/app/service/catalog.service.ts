@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { CloudAppEventsService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppEventsService, InitData, CloudAppRestService, HttpMethod } from '@exlibris/exl-cloudapp-angular-lib';
 import { BaseService, Header } from "./base.service";
 import { mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -28,6 +28,7 @@ export class CatalogService extends BaseService {
         protected eventsService: CloudAppEventsService,
         protected http: HttpClient,
         protected almaApi: AlmaApiService,
+        private restService: CloudAppRestService,
         protected translate: TranslateService
       ) {
         super(eventsService, http);
@@ -90,9 +91,6 @@ export class CatalogService extends BaseService {
              mergeMap(authToken => {
                 let headers = this.setAuthHeader(authToken);
                 return this.http.get<any>(fullUrl, { headers })
-            }),
-            mergeMap(response => {
-                return of(response);
             })
         );
     }
@@ -115,28 +113,37 @@ export class CatalogService extends BaseService {
     }
 
     importRecordToAlma(searchType: SearchType, rawData: string) {
-        return this.almaApi.getIntegrationProfile().pipe(                
+        return this.almaApi.getIntegrationProfile().pipe(
             mergeMap(integrationProfile => {
                 let factoryValues = this.integrationProfileFactory(searchType, integrationProfile);
                 let body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><" + factoryValues.typeTag + "><record_format>catp</record_format><record><![CDATA[" + rawData + "]]></record></" + factoryValues.typeTag + ">";
-                return this.http.post<any>("/almaws/v1/bibs" + factoryValues.urlType + "?import_profile=" + factoryValues.ID, body)
-            }),
-            mergeMap(response => {
-                return of(response);
-                // return of(response.warnings, response.mms_id);                    
+                let Request = {
+                    url: "/almaws/v1/bibs" + factoryValues.urlType + "?import_profile=" + factoryValues.ID,
+                    method: HttpMethod.POST,
+                    requestBody: body
+                  };
+                return this.restService.call(Request);
             })
-        ); 
-    }
+            );
+        }
 
     integrationProfileFactory(searchType: SearchType, integrationProfile: IntegrationProfile) {
         switch(searchType) {
             case (SearchType.Monographs):
-                return { typeTag: "bib", urlType: "", ID: integrationProfile.repositoryImportProfile };
             case (SearchType.Serials):
+                if(this.isEmpty(integrationProfile.repositoryImportProfile)){
+                    throw "The Repository Import Profile is not configured correctly";
+                }
                 return { typeTag: "bib", urlType: "", ID: integrationProfile.repositoryImportProfile };
             case (SearchType.Names):
+                if(this.isEmpty(integrationProfile.authorityImportProfileNames)){
+                    throw "The Authority Import Profile Names is not configured correctly";
+                }
                 return { typeTag: "authority", urlType: "/authorities", ID: integrationProfile.authorityImportProfileNames };
             case (SearchType.UniformTitles):
+                if(this.isEmpty(integrationProfile.authorityImportProfileUniformTitles)){
+                    throw "The Authority Import Profile Uniform Titles is not configured correctly";
+                }
                 return { typeTag: "authority", urlType: "/authorities", ID: integrationProfile.authorityImportProfileUniformTitles};
         }
     }

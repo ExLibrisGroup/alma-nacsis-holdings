@@ -37,8 +37,8 @@ export class CatalogMainComponent implements AfterViewInit {
         [SearchType.UniformTitles, this.initUniformTitlesSearchFields()] 
     ]);
     public ACTIONS_MENU_LIST = new Map([
-        [SearchType.Monographs, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import', 'Catalog.Results.Actions.ViewHoldings']],
-        [SearchType.Serials, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import', 'Catalog.Results.Actions.ViewHoldings']],
+        [SearchType.Monographs, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import']],
+        [SearchType.Serials, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import']],
         [SearchType.Names, ['Catalog.Results.Actions.View' /* , 'Catalog.Results.Actions.Import' */]],
         [SearchType.UniformTitles, ['Catalog.Results.Actions.View'/* , 'Catalog.Results.Actions.Import' */]]
     ]);
@@ -46,8 +46,9 @@ export class CatalogMainComponent implements AfterViewInit {
 
     // Selection variables
     public currentSearchType: SearchType = SearchType.Monographs;
-    private currentDatabase: string;// = 'BOOK';  // first default selection (since opened with Monographs)
-    private linkSearchType: SearchType;
+    currentDatabase: string;// = 'BOOK';  // first default selection (since opened with Monographs)
+    linkSearchType: SearchType;
+    actionMenuEnteries: Array<string>;
 
     // UI variables
     public panelState: boolean = true;
@@ -216,13 +217,23 @@ export class CatalogMainComponent implements AfterViewInit {
 
     /***  Summary View Section  ***/
 
-    public getActionMenu() {
-        return this.ACTIONS_MENU_LIST.get(this.currentSearchType);
+    getActionMenu() {
+        let searchedDBName =  this.getParamsFromSearchQuery(this.currentSearchType).get(QueryParams.Databases);
+        // For searches inside BOOK or SERIAL DB, return the full option
+        if (searchedDBName === "BOOK" || searchedDBName === "SERIAL") {
+            let additionalMenu = [...this.ACTIONS_MENU_LIST.get(this.currentSearchType)];
+            additionalMenu.push('Catalog.Results.Actions.ViewHoldings');
+            return additionalMenu;
+        } else {
+            return this.ACTIONS_MENU_LIST.get(this.currentSearchType);
+        }
     }
 
     private setSearchResultsDisplay(){
         this.catalogResultsData = this.catalogService.getSearchResults(this.currentSearchType);
         this.numOfResults = this.catalogResultsData.getHeader().totalRecords;
+        this.actionMenuEnteries = new Array();
+        this.actionMenuEnteries = this.getActionMenu();
         this.resultsSummaryDisplay = new Array();
         this.catalogResultsData.getResults()?.forEach(result=>{
             this.resultsSummaryDisplay.push(result.getSummaryDisplay());
@@ -329,16 +340,15 @@ export class CatalogMainComponent implements AfterViewInit {
     onImportRecord(rawData: string) {
         this.loading = true;
         try {
-            this.catalogService.importRecordToAlma(this.currentSearchType, rawData)
-            .subscribe({
+            this.catalogService.importRecordToAlma(this.currentSearchType, rawData).subscribe({
                 next: (importedRecord) => {
                     let mmsIdText = " (" + importedRecord.mms_id + ")";
                     this.alert.success(this.translate.instant('Catalog.Results.ImportSucceeded') + mmsIdText, {autoClose: false, keepAfterRouteChange:true});  
                 },
                 error: e => {
                     this.loading = false;
-                    console.log(e.message);
-                    this.alert.error(e.message, {keepAfterRouteChange:true});
+                    console.log(e);
+                    this.alert.error(e, {keepAfterRouteChange:true});
                 },
                 complete: () => this.loading = false
                 });
@@ -372,11 +382,7 @@ export class CatalogMainComponent implements AfterViewInit {
 
 
     searchFormRefill() { 
-        let paramsMap = new Map();
-        this.catalogService.getQueryParams().split("&").forEach(param => {
-            let paramAsKeyValue = param.split("=");
-            paramsMap.set(paramAsKeyValue[0],paramAsKeyValue[1]);
-        });
+        let paramsMap = this.getParamsFromSearchQuery();
         this.pageIndex = paramsMap.get(QueryParams.PageIndex);
         this.pageSize = paramsMap.get(QueryParams.PageSize);
         this.currentSearchType = SearchType[paramsMap.get(QueryParams.SearchType)];
@@ -386,6 +392,15 @@ export class CatalogMainComponent implements AfterViewInit {
                 field.setFormControl(paramsMap.get(field.getKey()));
             }
         });
+    }
+
+    getParamsFromSearchQuery(searchType?: SearchType) {
+        let paramsMap = new Map();
+        this.catalogService.getQueryParams(searchType).split("&").forEach(param => {
+            let paramAsKeyValue = param.split("=");
+            paramsMap.set(paramAsKeyValue[0],paramAsKeyValue[1]);
+        });
+        return paramsMap;
     }
 
     

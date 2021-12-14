@@ -52,9 +52,12 @@ export class MainComponent implements OnInit, OnDestroy {
       this.loading = true;
       try{
         this.almaApiService.getIntegrationProfile()
-          .subscribe(integrationProfile => {
-
-            this.integrationProfile = integrationProfile;
+        .subscribe( {
+          next : integrationProfile => {
+            if(this.isEmpty(integrationProfile.libraryCode) || this.isEmpty(integrationProfile.libraryID) || this.isEmpty(integrationProfile.systemPrefix)){
+              this.alert.error("The integration profile for NACSIS does not exist", {keepAfterRouteChange:true});
+            } else {
+              this.integrationProfile = integrationProfile;
 
             let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS);
             let nacsisBibs: Entity[] = [];
@@ -80,14 +83,25 @@ export class MainComponent implements OnInit, OnDestroy {
                 error: e => {
                   this.loading = false;
                   console.log(e.message);
-                  //this.alert.error(e.message, {keepAfterRouteChange:true});
+                  this.alert.error(e.message, {keepAfterRouteChange:true});
                 },
                 complete: () => {
                   this.loading = false;
                   this.bibs = nacsisBibs;
                 }
               });
-          });
+            }
+        
+          },
+          error: e => {
+            this.loading = false;
+            console.log(e);
+            this.alert.error(e, {keepAfterRouteChange:true});      
+          },
+          complete: () => {
+            this.loading = false;
+          }
+        });
       } catch(e) {
         this.loading = false;
         console.log(e);
@@ -142,5 +156,9 @@ export class MainComponent implements OnInit, OnDestroy {
   onCloseClick() {
     this.isErrorMessageVisible = false;
   }
+
+  isEmpty(val) {
+    return (val === undefined || val == null || val.length <= 0) ? true : false;
+}
 }
 
