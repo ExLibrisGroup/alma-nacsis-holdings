@@ -41,6 +41,11 @@ import { HoldingSearchComponent } from './ILL/holdingSearch/holdingSearch.compon
 import { RequestFormComponent } from './ILL/requestForm/requestForm.component';
 import { FullviewDisplayOfMemComponent } from './ILL/full-view-display-member/full-view-display-member.component';
 
+//Paginator
+import {MatPaginatorModule, MatPaginatorIntl } from '@angular/material/paginator';
+import { TranslateService } from '@ngx-translate/core';
+import { PaginatorIntlService } from './service/paginator.translate';
+
 export function getToastrModule() {
   return ToastrModule.forRoot({
     positionClass: 'toast-top-right',
@@ -90,7 +95,12 @@ export function getToastrModule() {
       AlertModule,
       MenuModule,
    ],
-   providers: [],
+   providers: [
+      {
+         provide: MatPaginatorIntl,
+         useClass: PaginatorIntlService,
+       },
+   ],
    bootstrap: [
       AppComponent
    ]

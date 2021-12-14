@@ -377,6 +377,14 @@
     }
   },
 
+  "PagePaginator": {
+    "itemsPerPageLabel": "Items per page(JAP):",
+    "firstPageLabel": "first page(JAP)",
+    "nextPageLabel": "next page(JAP)",
+    "previousPageLabel": "previous page(JAP)",
+    "lastPageLabel": "last page(JAP)"
+  },
+
   "Help": {
     "Text": "このアプリはEx Librisでサポートされています。 ドキュメントを表示するには、下のリンクをクリックしてください。 さらにヘルプが必要な場合や問題を報告するには、SalesForceケースを開いてください。",
     "OLH": "オンラインヘルプへ" 
