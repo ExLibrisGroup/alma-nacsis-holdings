@@ -132,17 +132,17 @@ export class CatalogService extends BaseService {
             case (SearchType.Monographs):
             case (SearchType.Serials):
                 if(this.isEmpty(integrationProfile.repositoryImportProfile)){
-                    throw "The Repository Import Profile is not configured correctly";
+                    throw new Error("The Repository Import Profile is not configured correctly");
                 }
                 return { typeTag: "bib", urlType: "", ID: integrationProfile.repositoryImportProfile };
             case (SearchType.Names):
                 if(this.isEmpty(integrationProfile.authorityImportProfileNames)){
-                    throw "The Authority Import Profile Names is not configured correctly";
+                    throw new Error("The Authority Import Profile Names is not configured correctly");
                 }
                 return { typeTag: "authority", urlType: "/authorities", ID: integrationProfile.authorityImportProfileNames };
             case (SearchType.UniformTitles):
                 if(this.isEmpty(integrationProfile.authorityImportProfileUniformTitles)){
-                    throw "The Authority Import Profile Uniform Titles is not configured correctly";
+                    throw new Error("The Authority Import Profile Uniform Titles is not configured correctly");
                 }
                 return { typeTag: "authority", urlType: "/authorities", ID: integrationProfile.authorityImportProfileUniformTitles};
         }

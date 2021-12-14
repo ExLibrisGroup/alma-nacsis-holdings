@@ -97,7 +97,7 @@ export class HoldingsComponent implements OnInit {
             },
             error: e => {
               this.loading = false;
-              console.log(e.message);
+              console.log(e);
               this.alert.error(e.message, {keepAfterRouteChange:true});
             },
             complete: () => this.loading = false
@@ -177,7 +177,7 @@ export class HoldingsComponent implements OnInit {
               },
               error: e => {
                 this.loading = false;
-                console.log(e.message);
+                console.log(e);
                 this.alert.error(e.message, {keepAfterRouteChange:true});
               },
               complete: () => this.loading = false

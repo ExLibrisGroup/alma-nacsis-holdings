@@ -192,7 +192,7 @@ export class CatalogMainComponent implements AfterViewInit {
                     } },
                 error: e => {
                     this.loading = false;
-                    console.log(e.message);
+                    console.log(e);
                     this.alert.error(e.message, {keepAfterRouteChange:true});
                 },
                 complete: () => this.loading = false
@@ -318,7 +318,7 @@ export class CatalogMainComponent implements AfterViewInit {
             },
             error: e => {
                 this.loading = false;
-                console.log(e.message);
+                console.log(e);
                 this.alert.error(e.message, {keepAfterRouteChange:true});
             },
             complete: () => this.loading = false
@@ -348,7 +348,7 @@ export class CatalogMainComponent implements AfterViewInit {
                 error: e => {
                     this.loading = false;
                     console.log(e);
-                    this.alert.error(e, {keepAfterRouteChange:true});
+                    this.alert.error(e.message, {keepAfterRouteChange:true});
                 },
                 complete: () => this.loading = false
                 });
