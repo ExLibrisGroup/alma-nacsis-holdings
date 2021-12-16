@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { SearchType } from '../../user-controls/search-form/search-form-utils';
+import { LinkState } from '../results-types/results-common';
 
 
 @Component({
@@ -13,6 +14,7 @@ export class FullviewDisplayComponent {
   @Input() resultFullDisplay;
   @Output() onFullViewLinkSelected = new EventEmitter<FullViewLink>();
 
+  linkState: typeof LinkState = LinkState;
 
   constructor() { }
 

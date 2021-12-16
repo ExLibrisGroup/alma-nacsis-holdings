@@ -296,8 +296,16 @@ export class SerialFullDisplay extends IDisplayLines {
         fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().content(this.record.PRICE).build());
         this.addLine(new ViewFieldBuilder().label("PRICE").build(), fieldsArray);
+
+        // FID external link
+        let externalLink = "https://mokuren.nii.ac.jp/cgi-bin/map/map-frame.cgi?encode=UTF-8";
+        externalLink += "&ncid=" + this.record.ID;
+        externalLink += "&fid=" + this.record.FID;
+        externalLink += "&cgi=http://ci.nii.ac.jp/ncid/";
+      
         fieldsArray = new Array<ViewField>();
-            fieldsArray.push(new ViewFieldBuilder().content(this.record.FID).build());
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.FID).externalLink(externalLink).build());
+  
         this.addLine(new ViewFieldBuilder().label("FID").build(), fieldsArray);
         this.record.BHNT?.forEach(bhnt=>{
             fieldsArray = new Array<ViewField>();

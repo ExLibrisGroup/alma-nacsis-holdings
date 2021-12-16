@@ -16,7 +16,7 @@
         <div class="card-content-field" *ngFor="let field of line.getContent()">
           <div class="card-content-field-label" *ngIf="field.hasLabel()"
           [innerHTML]="field.getLabel() | translate"></div>
-          <a class="card-content-field-content" *ngIf="field.isLinkable() else noLink"
+          <a class="card-content-field-content" *ngIf="field.isInternalLink() else noLink"
             (click)="onTitleClick(recordIndex)" 
             [innerHTML]="field.getContent() | translate"></a>
           <ng-template #noLink>

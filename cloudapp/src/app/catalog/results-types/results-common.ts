@@ -176,19 +176,26 @@ export class ViewLine {
     }  
 }
 
+export enum LinkState {
+    NoLink,
+    InternalLink,
+    ExternalLink
+}
+
 export class ViewField {
 
     private label: string;
     private content: string;
     private link: string;
     private onlyLabel: boolean;
-
+    private externalLink: string;
 
     constructor(ViewFieldBuilder: ViewFieldBuilder) {
         this.label = ViewFieldBuilder.getLabel();
         this.content = ViewFieldBuilder.getContent();
         this.link = ViewFieldBuilder.getLink();
         this.onlyLabel = ViewFieldBuilder.isOnlyLabel()? true : false;
+        this.externalLink = ViewFieldBuilder.getExternalLink();
      }
 
     getLabel() {
@@ -207,16 +214,29 @@ export class ViewField {
         return this.link;
     }
 
+    getExternalLink() {
+        return this.externalLink;
+    }
+
     hasContent() {
         return (this.content != "" && this.content != undefined);
     }
 
-    isLinkable() {
+    isInternalLink() {
         return (this.link != null);
     }
 
     isOnlyLabel() {
         return this.onlyLabel;
+    }
+
+    getLinkState() : LinkState {
+
+        if(this.link != null)
+            return LinkState.InternalLink;
+        if(this.externalLink != null)
+            return LinkState.ExternalLink;
+        return LinkState.NoLink;    
     }
 }
 
@@ -226,9 +246,9 @@ export class ViewFieldBuilder {
     private _content: string;
     private _link: string;
     private _onlyLabel: boolean = true;
+    private _externalLink: string;
 
     constructor() { }
-
 
     getLabel() {
         return this._label;
@@ -260,6 +280,15 @@ export class ViewFieldBuilder {
     link(link: string) {
         this._link = link;
         return this;
+    }
+
+    externalLink(externalLink: string) {
+        this._externalLink = externalLink;
+        return this;
+    }
+
+    getExternalLink() {
+        return this._externalLink;
     }
 
     build() {
