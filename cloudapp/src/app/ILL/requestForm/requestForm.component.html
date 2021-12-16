@@ -28,9 +28,8 @@
             <mat-panel-title>{{ 'ILL.RequestForm.ResourceInformation' | translate }}</mat-panel-title>
         </mat-expansion-panel-header>
 
-        <div class="form-wrapper">
-            <div class="form-cards">
-                <mat-card>
+        
+                <mat-card class="form-card-parent">
                     <form [formGroup]="formResourceInformation" >
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.RequestType</mat-label>
@@ -130,8 +129,7 @@
                     </form>
 
                 </mat-card>
-            </div>
-        </div>
+      
 
     </mat-expansion-panel>
     <br>

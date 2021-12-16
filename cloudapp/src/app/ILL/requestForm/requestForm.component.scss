@@ -44,65 +44,38 @@
 
 
 
-  .form-wrapper {
-    flex-direction: column;
+  .form-card-parent {
     display: flex;
-  
-    .form-cards {
-      overflow: hidden;
-      padding-top: 10px;
-      padding-bottom: 10px;
-      padding-left: 0px;
-      padding-right: 0px;
-      margin-bottom: 40px;
-       .form-card-inputs {
-         padding-top: 10px;
-         ::ng-deep .mat-form-field-wrapper {
-          padding-bottom: 10px !important;
-        }
-      }
+    flex-wrap: wrap;
+    justify-content: space-between;
+    column-gap: 2%;
+    background-color: whitesmoke !important;
+    ::ng-deep .mat-form-field-wrapper {
+      padding-bottom: 5px !important;
+    }
+    // ::ng-deep .mat-form-field-flex {
+    //   height: 45px;
+    // }
+  }
       .form-card-input-full-width {
-        width: 98%;
         padding-top: 10px;
+        width: 98.4%;
         min-width: 285px;
-        ::ng-deep .mat-form-field-wrapper {
-         padding-bottom: 10px !important;
-       }
       }
       .form-card-inputs-large {
         padding-top: 10px;
-        width: 48%;
+        width: 48.8%;
         min-width: 285px;
         flex-grow: 1;
-        ::ng-deep .mat-form-field-wrapper {
-         padding-bottom: 10px !important;
-        }
       }
       .form-card-inputs-medium {
         padding-top: 10px;
         width: 32.3%;
         min-width: 285px;
         flex-grow: 1;
-        ::ng-deep .mat-form-field-wrapper {
-        padding-bottom: 10px !important;
-        }
       }
-      .form-card-inputs-small {
-        padding-top: 10px;
-        width: 24%;
-          flex-grow: 1;
-          min-width: 140px;
-        ::ng-deep .mat-form-field-wrapper {
-        padding-bottom: 10px !important;
-        }
-      }
+    
 
-    }
-  
-    .form-commands {
-      margin-right: 15px;
-    }
-  
 
     .align-to-right {
       justify-content: flex-end;
@@ -124,7 +97,7 @@
         visibility: visible;
       }
     }
-  }
+  
 
   table {
     width: 100%;

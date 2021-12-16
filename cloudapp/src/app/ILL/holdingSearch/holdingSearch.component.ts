@@ -221,7 +221,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
                 this.holdings = this.setDisplayDetails(this.nacsisHoldingsResultList);
                 this.ngOnChanges(this.holdings);
                 sessionStorage.setItem(RESULT_RECORD_LIST_ILL, JSON.stringify(this.holdings));
-                
+                this.noHoldingRecords = false;
               } else {
                 this.holdings = new Array();
                 this.noHoldingRecords = true;

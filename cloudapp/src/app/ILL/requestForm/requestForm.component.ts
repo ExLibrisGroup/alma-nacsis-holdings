@@ -446,7 +446,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
           if (header.status === this.nacsis.OkStatus) {
             let requestID = header.requestId;
             console.log(requestID);
-            this.alert.success(this.translate.instant('ILL.Main.CreateILLSuccess') + requestID, {keepAfterRouteChange:true,delay:10000});  
+            this.alert.success(this.translate.instant('ILL.Main.CreateILLSuccess') + requestID, {autoClose:false,keepAfterRouteChange:true,delay:10000});  
             this.router.navigate(['/ILL']);
           } else {
             this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
