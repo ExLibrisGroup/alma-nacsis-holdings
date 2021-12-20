@@ -133,11 +133,11 @@
   },
   "ILL": {
     "Main": {
-      "Intro": "Select a record to create ILL borrowing request:",
-      "NoRecords": "To create ILL borrowing request, navigate to a borrowing request list, bibliographic record or start a new search.",
-      "SelectBib": "Select a title",
+      "Intro": "依頼するレコードを選択してください:",
+      "NoRecords": "新規ILL依頼を作成するために、依頼一覧や書誌レコードを開いて、または検索してください.",
+      "SelectBib": "タイトルを選択してください",
       "NewSearchInNACSIS": "新しい検索",
-      "CreateILLSuccess":"Create ILL request successfully.Request ID is:"
+      "CreateILLSuccess":"ILL依頼が作成されました。依頼番号:"
     },
     "DisplayCard": {
       "By":"By",
@@ -158,13 +158,13 @@
       "ISSN": "ISSN",
       "Subjects": "Subjects",
       "Actions" : {
-        "ViewHolding" : "View holding",
-        "ViewMemInfo" : "View member info"
+        "ViewHolding" : "所蔵を見る",
+        "ViewMemInfo" : "参加組織の詳細を見る"
       },
-      "SelectedLenders":"Selected Lenders",
-      "RowSelected":"row(s) selected",
-      "ClearSelection":"Clear Selection",
-      "MaxRowSelected":"Max row selected"
+      "SelectedLenders":"選択された受付館",
+      "RowSelected":"行が選択されました",
+      "ClearSelection":"クリア",
+      "MaxRowSelected":"最大数に達しています"
     },
     "HoldingSearch":{
        "ParticipatingOrgCode":"参加組織コード",
@@ -217,7 +217,7 @@
     "ResourceInformation":"リソース情報",
     "Rota":"ロタ",
     "RequesterInformation":"リクエスター情報",
-    "RequestType":"Request Type",
+    "RequestType":"依頼種別",
     "PayClass":"支払区分",
     "CopyType":"複写種別",
     "SendingMethod":"送付方法",
@@ -364,8 +364,8 @@
       }
     },
       "Errors": {
-        "warningSelectValue":"Please choose an option",
-        "warningInputValue":"Please input a value"
+        "warningSelectValue":"値を選択してください",
+        "warningInputValue":"値を入力してください"
       }
   },
 
@@ -378,11 +378,11 @@
   },
 
   "PagePaginator": {
-    "itemsPerPageLabel": "Items per page(JAP):",
-    "firstPageLabel": "first page(JAP)",
-    "nextPageLabel": "next page(JAP)",
-    "previousPageLabel": "previous page(JAP)",
-    "lastPageLabel": "last page(JAP)"
+    "itemsPerPageLabel": "表示行数:",
+    "firstPageLabel": "最初のページ",
+    "nextPageLabel": "次のページ",
+    "previousPageLabel": "前のページ",
+    "lastPageLabel": "最終のページ"
   },
 
   "Help": {
