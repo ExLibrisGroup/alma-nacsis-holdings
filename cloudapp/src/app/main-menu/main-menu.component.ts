@@ -35,12 +35,12 @@ import { ROUTING_STATE_KEY, AppRoutingState } from '../service/base.service';
                 icon:   'uxf-icon uxf-background-color',
                 link:   'catalog'
             },
-            // {
-                // title:  'MainMenu.Member.Title',
-                // text:   'MainMenu.Member.Text',
-                // icon:   'uxf-icon uxf-switch',
-                // link:   'main'
-            // },
+            {
+                title:  'MainMenu.Members.Title',
+                text:   'MainMenu.Members.Text',
+                icon:   'uxf-icon uxf-switch',
+                link:   'main'
+            },
             {
                 title:  'MainMenu.ILL.Title',
                 text:   'MainMenu.ILL.Text',
