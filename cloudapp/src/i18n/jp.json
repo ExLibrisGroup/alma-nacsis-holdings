@@ -20,7 +20,7 @@
     },
     "Catalog": {
       "Title": "目録",
-      "Text": "NACSISの書誌・典拠レコードを検索・ダウウンロードする"
+      "Text": "NACSISの書誌・典拠レコードを検索・ダウンロードする"
     },
     "ILL": {
       "Title": "ILL依頼",
@@ -59,10 +59,10 @@
       "AndOthers": "その他",
       "Actions" : {
         "View" : "プレビュー",
-        "Import" : "ダウウンロード",
+        "Import" : "ダウンロード",
         "ViewHoldings" : "所蔵を確認する"
       },
-      "ImportSucceeded": "レコードがダウウンロードされました"
+      "ImportSucceeded": "レコードがダウンロードされました"
     }
   },
 
