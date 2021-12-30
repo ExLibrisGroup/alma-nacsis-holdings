@@ -110,10 +110,6 @@ export class CatalogMainComponent implements AfterViewInit {
         this.currentDatabase = db;
     }
 
-    getPrimaryDatabase(searchType: SearchType) {
-        return this.ALL_DATABASES_MAP.get(searchType)[0];
-    }
-
     getSearchFields(): Array<SearchField> {
         return this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType);
     }
@@ -156,28 +152,39 @@ export class CatalogMainComponent implements AfterViewInit {
                     urlParams =  urlParams + "&" + field.getKey();
                     urlParams =  urlParams + "=" + field.getFormControl().value;
             });
-            this.getSearchResultsFromNacsis(urlParams);
+            this.getResultsFromNacsis(urlParams, false);
         } else {
            return;
         }
     } 
     
     // Calling Nacsis servlet
-    getSearchResultsFromNacsis(urlParams:string) {
+    getResultsFromNacsis(urlParams:string, isFullViewLink: boolean) {
         this.loading = true;
         try{
             this.catalogService.getSearchResultsFromNacsis(urlParams)
             .subscribe({
                 next: (catalogResults) => {
                     if (catalogResults.status === this.catalogService.OkStatus) {
-                        if (catalogResults.totalRecords >= 1) {
-                            this.catalogService.setSearchResultsMap(this.currentSearchType, catalogResults, urlParams);
-                            this.setPageIndexAndSize(urlParams);
-                            this.setSearchResultsDisplay();
+                        if(!isFullViewLink) {
+                            if (catalogResults.totalRecords >= 1) {
+                                this.catalogService.setSearchResultsMap(this.currentSearchType, catalogResults, urlParams);
+                                this.setPageIndexAndSize(urlParams);
+                                this.setSearchResultsDisplay();
+                            } else {
+                                this.panelState = false;
+                                this.numOfResults = 0;
+                                this.resultsTemplateFactory();
+                            }
                         } else {
-                            this.panelState = false;
-                            this.numOfResults = 0;
-                            this.resultsTemplateFactory();
+                            if (catalogResults.totalRecords >= 1) {
+                                let baseResult = this.catalogService.resultsTypeFactory(this.linkSearchType, catalogResults.records[0]);
+                                this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
+                                this.isRightTableOpen = true;
+                            } else {
+                                this.resultFullLinkDisplay == null;
+                                this.isRightTableOpen = true;
+                            }
                         }
                     } else {
                         this.alert.error(catalogResults.errorMessage, {keepAfterRouteChange:true});  
@@ -259,44 +266,16 @@ export class CatalogMainComponent implements AfterViewInit {
         this.isRightTableOpen = false;
     }
     
-    onFullViewInternalLinkClick(fullViewLink: FullViewLink) {
+    onFullViewLink(fullViewLink: FullViewLink) {
         this.linkSearchType = fullViewLink.searchType;
-        let urlParams = QueryParams.PageIndex + "=0&" + QueryParams.PageSize + "=20";
+        let urlParams = "";
+        urlParams = urlParams + QueryParams.PageIndex + "=0&" + QueryParams.PageSize + "=20";
         urlParams = urlParams + "&" + QueryParams.SearchType + "=" + fullViewLink.searchType;
-        urlParams =  urlParams + "&" + QueryParams.Databases + "=" + this.getPrimaryDatabase(fullViewLink.searchType);
+        urlParams =  urlParams + "&" + QueryParams.Databases + "=" + this.ALL_DATABASES_MAP.get(fullViewLink.searchType)[0];
         urlParams =  urlParams + "&" + QueryParams.ID + "=" + fullViewLink.linkID;
         
+        this.getResultsFromNacsis(urlParams, true);
         this.isColapsedMode = (window.innerWidth <= 600) ? true : false;
-
-        this.loading = true;
-        try{
-            this.catalogService.getSearchResultsFromNacsis(urlParams)
-            .subscribe({
-                next: (catalogResults) => {
-                    if (catalogResults.status === this.catalogService.OkStatus) {
-                        if (catalogResults.totalRecords == 1) {
-                            let baseResult = this.catalogService.resultsTypeFactory(this.linkSearchType, catalogResults.records[0]);
-                            this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
-                            this.isRightTableOpen = true;
-                        } else {
-                            this.resultFullLinkDisplay == null;
-                            this.isRightTableOpen = true;
-                        }
-                    } else {
-                        this.alert.error(catalogResults.errorMessage, {keepAfterRouteChange:true});  
-                    } },
-                error: e => {
-                    this.loading = false;
-                    console.log(e.message);
-                    this.alert.error(e.message, {keepAfterRouteChange:true});
-                },
-                complete: () => this.loading = false
-            });
-        } catch (e) {
-            this.loading = false;
-            console.log(e);
-            this.alert.error(this.translate.instant('General.Errors.generalError'), {keepAfterRouteChange:true});      
-        }
 
     }
 
@@ -388,7 +367,7 @@ export class CatalogMainComponent implements AfterViewInit {
         let newSizeStr = QueryParams.PageSize + "=" + pageEvent.pageSize + "&" + QueryParams.SearchType;
         urlParams = urlParams.replace(/pageSize=.*searchType/, newSizeStr);
 
-        this.getSearchResultsFromNacsis(urlParams);
+        this.getResultsFromNacsis(urlParams, false);
     }
 
 
