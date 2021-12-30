@@ -74,7 +74,7 @@
   <br><br><br>
   <div class="full-view">
     <div class="full-view-left-table" *ngIf="!(isColapsedMode && isRightTableOpen)">
-      <full-view-display [resultFullDisplay]="resultFullDisplay" (onFullViewLinkSelected)="onFullViewLink($event)">
+      <full-view-display [resultFullDisplay]="resultFullDisplay" (onFullViewLinkSelected)="onFullViewInternalLinkClick($event)">
       </full-view-display>
     </div>
     <div class="full-view-right-table" (window:resize)="onResize($event)" *ngIf="isRightTableOpen">
