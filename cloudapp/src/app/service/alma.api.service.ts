@@ -72,8 +72,8 @@ export class AlmaApiService {
           // extract import profiles
           let contributionConfigurationParams = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_CONTRIBUTION_CONFIGURATION");
           integrationProfile.repositoryImportProfile = contributionConfigurationParams.filter(param => param.name.value == "repositoryImportProfile")[0].value; 
-          // integrationProfile.authorityImportProfileNames = ContributionConfigurationParams.filter(param => param.name.value == "authNames")[0].value;
-          // integrationProfile.authorityImportProfileUniformTitles = ContributionConfigurationParams.filter(param => param.name.value == "authUniformTitle")[0].value;
+          integrationProfile.authorityImportProfileNames = contributionConfigurationParams.filter(param => param.name.value == "authNames")[0].value;
+          integrationProfile.authorityImportProfileUniformTitles = contributionConfigurationParams.filter(param => param.name.value == "authUniformTitle")[0].value;
         } catch (e) {
           console.log(e);
         }
