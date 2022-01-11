@@ -39,7 +39,7 @@ import { ROUTING_STATE_KEY, AppRoutingState } from '../service/base.service';
                 title:  'MainMenu.Members.Title',
                 text:   'MainMenu.Members.Text',
                 icon:   'uxf-icon uxf-switch',
-                link:   'main'
+                link:   'members'
             },
             {
                 title:  'MainMenu.ILL.Title',
@@ -47,7 +47,7 @@ import { ROUTING_STATE_KEY, AppRoutingState } from '../service/base.service';
                 icon:   'uxf-icon uxf-external-link',
                 link:   'ILL'
             },
-        );
+            );
     }
 
   }

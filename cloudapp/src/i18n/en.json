@@ -131,6 +131,14 @@
       }
     }
   },
+  "Members" : {
+    "Main" : {
+      "SerachMembers":"Search for NACSIS member information"
+    },
+    "MembersSearch" : {
+      "Name" : "Participating organization name"
+    }
+  },
   "ILL": {
     "Main": {
       "Intro": "Select a record to create ILL borrowing request:",
@@ -415,7 +423,20 @@
       "LCCN": "LCCN",
       "FID": "FID",
       "DATE": "DATE",
-      "SAID": "SAID"
+      "SAID": "SAID",
+      "FANO": "Participating organization code",
+      "NAME": "Participating organization name",
+      "LOC": "Location",
+      "KENCODE": "Region(prefeture) code",
+      "SETCODE" : "Establisher type",
+      "ORGCODE" : "Institution type",
+      "ILLFLG" : "ILL participation type",
+      "STAT" : "Service status",
+      "GRPCODE":"Offset charge",
+      "CATFLG" : "Cataloging participation type",
+      "COPYS":"Copy service type",
+      "LOANS":"Lending service type",
+      "FAXS":"FAX service type"
     }
   }
 }

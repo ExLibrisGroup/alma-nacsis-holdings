@@ -1,6 +1,5 @@
 import { TranslateService } from '@ngx-translate/core';
 import { IDisplayLines, BaseResult, ViewField, ViewLine, ViewFieldBuilder, BLANK_SPACE } from './results-common';
-import { SearchType } from '../../user-controls/search-form/search-form-utils';
 
 export class Member extends BaseResult {
     summaryView: MemberSummary;
@@ -8,6 +7,14 @@ export class Member extends BaseResult {
 
     constructor(record: any, translate: TranslateService) {
         super(record, translate);
+        /*
+        The JSON file of members doesn't contain the summaryView and the fullView
+        so after the super is called the summaryView and fullView are still empty
+        and we need to populate them
+        */
+        this.summaryView = record;
+        this.fullView = record;
+
     }
 
     getSummaryDisplay() {
@@ -35,12 +42,17 @@ export class MemberSummaryDisplay extends IDisplayLines {
 
     initTitleDisplay(): ViewLine {
         let fieldsArray = new Array<ViewField>();
-        fieldsArray.push(new ViewFieldBuilder().content(this.record.CRTDT).build());
+        fieldsArray.push(new ViewFieldBuilder().content(this.record.ID).build());
         this.titleLine = new ViewLine(new ViewFieldBuilder().build(), fieldsArray);
         return this.titleLine;
     }
 
     initContentDisplay(): Array<ViewLine> {
+
+        this.viewLines = new Array<ViewLine>();
+        let fieldsArray = new Array<ViewField>();
+        fieldsArray.push(new ViewFieldBuilder().content(this.record.NAME).build());      
+        this.addLine(new ViewFieldBuilder().build(), fieldsArray);
 
         return this.viewLines;
     }
@@ -207,7 +219,7 @@ export class MemberFullDisplay extends IDisplayLines {
 
 export class MemberSummary {
     ID: string;
-    CRTDT: string;
+    NAME: string;
 }
 
 

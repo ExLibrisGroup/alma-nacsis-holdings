@@ -11,6 +11,8 @@ import { ILLBorrowingMainComponent } from './ILL/main/main.component';
 import { searchRecordComponent } from './ILL/searchRecord/searchRecord.component';
 import { HoldingSearchComponent } from './ILL/holdingSearch/holdingSearch.component';
 import { RequestFormComponent } from './ILL/requestForm/requestForm.component';
+import { MembersSearchComponent } from './members/main/main.component';
+
 
 const routes: Routes = [
   { path: '', component: MainMenuComponent },
@@ -23,6 +25,7 @@ const routes: Routes = [
   { path: 'help', component: HelpComponent },
   { path: 'catalog', component: CatalogMainComponent },
   { path: 'ILL', component: ILLBorrowingMainComponent },
+  { path: 'members', component: MembersSearchComponent },
   { path: 'searchRecord', component: searchRecordComponent },
   { path: 'searchRecord/:flagBack', component: searchRecordComponent },
   { path: 'searchRecord/:nacsisId/:title/:isbn/:issn', component: searchRecordComponent },

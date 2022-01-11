@@ -28,7 +28,7 @@ export abstract class BaseService {
         this.eventsService = eventsService;
     }
 
-    isEmpty(val) {
+    isEmpty(val : any) {
         return (val === undefined || val == null || val.length <= 0) ? true : false;
     }
 
@@ -94,5 +94,6 @@ export enum AppRoutingState {
     CatalogSearchPage = "/catalog",
     ILLBorrowingMainPage = "/ILL",
     SearchRecordMainPage = "/searchRecord",
-    HoldingSearchMainPage = "/holdingSearch"
+    HoldingSearchMainPage = "/holdingSearch",
+    MembersMainPage = "/members",
 }

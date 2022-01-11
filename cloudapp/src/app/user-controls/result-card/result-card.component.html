@@ -28,7 +28,8 @@
     </mat-card-content>
   </div>
 
-  <div class="result-actions">
+  <div class="result-actions" *ngIf="actionsMenu != undefined">
+    
     <button mat-button class="result-actions-button" [matMenuTriggerFor]="actionsMenu" color="primary">
       <mat-icon>more_horiz</mat-icon>
     </button>

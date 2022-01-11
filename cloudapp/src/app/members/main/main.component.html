@@ -1,0 +1,53 @@
+<div class="align-space-between" fxLayout="row">
+  <a>
+    <button mat-flat-button color="secondary" [routerLink]="['']">
+      <mat-icon>arrow_back_ios</mat-icon>
+      {{ 'General.BackToMenu' | translate }}
+    </button>
+  </a>
+</div>
+
+
+<div class="align-space-between" fxLayout="row">
+  <h1>{{'Members.Main.SerachMembers' | translate}}</h1>
+  <div class="align-to-right" fxLayout="row">
+    <button style="margin-right: 15px" mat-flat-button color="secondary" (click)="clear()">
+      {{ 'General.Clear' | translate }}
+    </button>
+    <button mat-flat-button color="primary" aria-label="search" (click)="search()">
+      {{ 'General.Search' | translate }}
+    </button>
+  </div>
+</div>
+
+<div class="loading-shade" *ngIf="loading">
+  <mat-progress-spinner mode="indeterminate" diameter="50">
+  </mat-progress-spinner>
+</div>
+
+<mat-accordion>
+  <mat-expansion-panel (opened)="panelOpenState()" (closed)="panelCloseState()" [expanded]="panelState">
+    <mat-expansion-panel-header collapsedHeight="35px" expandedHeight="35px">
+      <mat-panel-title *ngIf="!panelState">{{ 'Catalog.Form.RefineSearch' | translate }}</mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="form-wrapper">
+      <div class="form-cards">
+        <mat-card>
+          <div class="form">
+            <search-form [fieldsList]="getFieldsList()"></search-form>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
+
+  <results-list [numOfResults]="numOfResults" [pageIndex]="pageIndex" [pageSize]="pageSize"
+    [resultsSummaryDisplay]="resultsSummaryDisplay" (onTitleSelected)="onTitleClick($event)" (onPageSelected)="onPageAction($event)">
+  </results-list>
+
+<div *ngIf="resultExists()">
+  <span class="uxf-icon uxf-list" style="font-size: 3em;"></span>
+  <h2>{{'Catalog.Results.NoRecordsExist' | translate}}</h2>
+</div>
+<br><br><br>

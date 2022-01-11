@@ -41,6 +41,9 @@ import { HoldingSearchComponent } from './ILL/holdingSearch/holdingSearch.compon
 import { RequestFormComponent } from './ILL/requestForm/requestForm.component';
 import { FullviewDisplayOfMemComponent } from './ILL/full-view-display-member/full-view-display-member.component';
 
+// Members 
+import { MembersSearchComponent } from './members/main/main.component';
+
 //Paginator
 import {MatPaginatorModule, MatPaginatorIntl } from '@angular/material/paginator';
 import { TranslateService } from '@ngx-translate/core';
@@ -77,7 +80,9 @@ export function getToastrModule() {
       SelectableResultCardComponent,
       HoldingSearchComponent,
       RequestFormComponent,
-      FullviewDisplayOfMemComponent
+      FullviewDisplayOfMemComponent,
+      MembersSearchComponent
+
    ],
    entryComponents: [ConfirmationDialog],
    imports: [

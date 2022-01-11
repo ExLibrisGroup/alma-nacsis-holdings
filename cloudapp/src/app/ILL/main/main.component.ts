@@ -95,7 +95,9 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
   setMemberInfo(fano){
     let obj:[];
     let queryParams = "";
+    //TODO: send the DB also
     queryParams = "ID=" + fano;
+
     try {
       this.loading = true;
       this.nacsis.getMemberForILLFromNacsis(queryParams)
@@ -144,12 +146,13 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
     )
   }
 
-  getRecordByLink(link: string) {
-    return this.restService.call(link).pipe(
-      tap(()=>this.processed++),
-      catchError(e => of(e)),
-    )
-  }
+  //TODO what this function doing?
+  // getRecordByLink(link: string) {
+  //   return this.restService.call(link).pipe(
+  //     tap(()=>this.processed++),
+  //     catchError(e => of(e)),
+  //   )
+  // }
 
 
   onCloseClick() {
@@ -159,7 +162,8 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
   next(){
     sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage);
       this.loading = true;
-      this.illService.setFormValue(this.selected);
+      //TODO what this function doing?
+      //this.illService.setFormValue(this.selected);
       this.router.navigate(['searchRecord',this.selected.record.nacsisId,this.selected.record.title,
                             this.selected.record.isbn,this.selected.record.issn]);
   }
