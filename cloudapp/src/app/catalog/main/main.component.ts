@@ -7,11 +7,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
 
-import { NacsisCatalogResults, BaseResult, IDisplayLines } from '../results-types/results-common'
+import { NacsisCatalogResults, IDisplayLines } from '../results-types/results-common'
 import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
 import { RecordSelection } from '../../user-controls/result-card/result-card.component';
-import { FullViewLink } from '../full-view-display/full-view-display.component';
+import { FullViewLink } from '../../user-controls/full-view-display/full-view-display.component';
 import { HoldingsService } from '../../service/holdings.service';
+import { MembersService } from '../../service/members.service';
 
 
 
@@ -28,7 +29,8 @@ export class CatalogMainComponent implements AfterViewInit {
         [SearchType.Monographs, ['BOOK','PREBOOK','JPMARC','TRCMARC','USMARC','USMARCX','GPOMARC','UKMARC','REMARC','DNMARC','CHMARC','KORMARC','RECON','HBZBKS','SPABKS','ITABKS','KERISB','KERISX','BNFBKS']],
         [SearchType.Serials, ['SERIAL','JPMARCS','USMARCS','SPASER','ITASER','KERISS','BNFSER']],
         [SearchType.Names, ['NAME', 'JPMARCA', 'USMARCA']],
-        [SearchType.UniformTitles, ['TITLE', 'USMARCT']]
+        [SearchType.UniformTitles, ['TITLE', 'USMARCT']],
+        [SearchType.Members, ['MEMBER']]
     ]);
     public ALL_SEARCH_FIELDS_MAP = new Map([
         [SearchType.Monographs, this.initMonographsSearchFields()],
@@ -77,6 +79,7 @@ export class CatalogMainComponent implements AfterViewInit {
     constructor(
         private catalogService: CatalogService,
         private holdingsService: HoldingsService,
+        private membersService : MembersService,
         private router: Router,
         private alert: AlertService,
         private translate: TranslateService,
@@ -258,6 +261,56 @@ export class CatalogMainComponent implements AfterViewInit {
         this.currentResulsTmpl = this.searchResultsTmpl;
         this.isRightTableOpen = false;
     }
+
+    getCatalogResults(urlParams : string) {
+        this.catalogService.getSearchResultsFromNacsis(urlParams)
+        .subscribe({
+            next: (catalogResults) => {
+                if (catalogResults.status === this.catalogService.OkStatus) {
+                    if (catalogResults.totalRecords == 1) {
+                        let baseResult = this.catalogService.resultsTypeFactory(this.linkSearchType, catalogResults.records[0]);
+                        this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
+                        this.isRightTableOpen = true;
+                    } else {
+                        this.resultFullLinkDisplay == null;
+                        this.isRightTableOpen = true;
+                    }
+                } else {
+                    this.alert.error(catalogResults.errorMessage, {keepAfterRouteChange:true});  
+                } },
+            error: e => {
+                this.loading = false;
+                console.log(e.message);
+                this.alert.error(e.message, {keepAfterRouteChange:true});
+            },
+            complete: () => this.loading = false
+        });
+    }
+
+    getMemberResult(urlParams : string) {
+        this.membersService.getSearchResultsFromNacsis(urlParams)
+        .subscribe({
+            next: (catalogResults) => {
+                if (catalogResults.status === this.membersService.OkStatus) {
+                  if (catalogResults.totalRecords == 1) {
+                    let baseResult = this.membersService.resultsTypeFactory(SearchType.Members, catalogResults.records[0]);
+                    this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
+                    this.isRightTableOpen = true;
+                  } else {
+                      this.resultFullLinkDisplay == null;
+                      this.isRightTableOpen = false;
+                  }
+                } else {
+                    this.alert.error(catalogResults.errorMessage, {keepAfterRouteChange:true});  
+                } },
+            error: e => {
+                this.loading = false;
+                console.log(e.message);
+                this.alert.error(e.message, {keepAfterRouteChange:true});
+            },
+            complete: () => this.loading = false
+        });
+    }
     
     onFullViewInternalLinkClick(fullViewLink: FullViewLink) {
         this.linkSearchType = fullViewLink.searchType;
@@ -270,28 +323,11 @@ export class CatalogMainComponent implements AfterViewInit {
 
         this.loading = true;
         try{
-            this.catalogService.getSearchResultsFromNacsis(urlParams)
-            .subscribe({
-                next: (catalogResults) => {
-                    if (catalogResults.status === this.catalogService.OkStatus) {
-                        if (catalogResults.totalRecords == 1) {
-                            let baseResult = this.catalogService.resultsTypeFactory(this.linkSearchType, catalogResults.records[0]);
-                            this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
-                            this.isRightTableOpen = true;
-                        } else {
-                            this.resultFullLinkDisplay == null;
-                            this.isRightTableOpen = true;
-                        }
-                    } else {
-                        this.alert.error(catalogResults.errorMessage, {keepAfterRouteChange:true});  
-                    } },
-                error: e => {
-                    this.loading = false;
-                    console.log(e.message);
-                    this.alert.error(e.message, {keepAfterRouteChange:true});
-                },
-                complete: () => this.loading = false
-            });
+            if (fullViewLink.searchType === SearchType.Members) {
+                this.getMemberResult(urlParams);
+            } else {
+                this. getCatalogResults(urlParams);
+            }
         } catch (e) {
             this.loading = false;
             console.log(e);

@@ -1,10 +1,11 @@
 <div class="full-view-record">
-  <div *ngFor="let line of resultFullDisplay;index as i" class="full-view-line {{isEvenRow(i)}}">
-    <div class="full-view-line-header">
+  <ng-container *ngFor="let line of resultFullDisplay;index as i ">
+    <!-- <div *ngFor="let line of resultFullDisplay;index as i" class="full-view-line {{isEvenRow(i)}}"> -->
+    <div class="full-view-line-header {{isEvenRow(i)}}">
       {{line.getHeaderLabel()}}
     </div>
-    <div class="full-view-line-content">
-      <div class="full-view-line-field" *ngFor="let field of line.getContent()">
+    <div class="full-view-line-content {{isEvenRow(i)}}">
+      <div class="full-view-line-field " *ngFor="let field of line.getContent()">
         <div class="full-view-line-field-label" *ngIf="field.hasLabel()">
           {{field.getLabel()}}
         </div>
@@ -16,5 +17,6 @@
         </ng-template>
       </div>
     </div>
-  </div>
+  </ng-container>
+<!-- </div> -->
 </div>

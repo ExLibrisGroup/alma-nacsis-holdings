@@ -1,6 +1,5 @@
 import { TranslateService } from '@ngx-translate/core';
 import { SearchType } from '../../user-controls/search-form/search-form-utils';
-import { Header } from "../../service/base.service";
 
 export const BLANK_SPACE = "&nbsp;";
 
@@ -37,11 +36,21 @@ export class NacsisCatalogResults {
     }
 }
 
+export class Header {
+    status: string = ""
+    errorMessage: string = ""
+    BID: string = ""
+    type: string = "" // BOOK/SERIAL
+  }
+
+
 
 export class ResultsHeader extends Header {
     totalRecords: number;
     searchType: SearchType;
 }
+
+
 
 // BaseResult a prototype of a Ncsis servlet's result
 export abstract class BaseResult {
@@ -121,6 +130,10 @@ export abstract class IDisplayLines {
 
     isEmpty(str): boolean {
         return (str == "" || str == undefined || str == null);
+    }
+
+    isListEmpty(list): boolean {
+        return (typeof list !== 'undefined' && list.length > 0);
     }
 
     toStringPairOfFields(fieldA, fieldB, labelB?: string): string {

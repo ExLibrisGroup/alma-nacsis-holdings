@@ -14,6 +14,11 @@
   background-color: whitesmoke !important;
 }
 
+.holding-card-actions {
+  padding: 0px;
+  margin: 0px;
+}
+
 .card-title {
   @include flexText;
   font-weight: bold;
@@ -42,25 +47,6 @@
   @include flexText;
   @include filedPadding;
 }
-
-/*
-.result-card-index {
-  margin-right: 20px;
-}
-
-.result-card-text-content {
-  margin-bottom: 5px;
-}
-
-.result-line-field {
-  padding-right: 8px;
-}
-
-.label {
-  font-weight: bold;
-}
-
-*/
 
 a,
 a label {

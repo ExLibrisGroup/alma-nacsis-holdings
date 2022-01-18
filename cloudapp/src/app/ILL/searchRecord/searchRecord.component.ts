@@ -1,18 +1,16 @@
 import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL, SELECTED_RECORD_ILL } from '../../service/base.service';
-import { Component, OnInit, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
 import { SearchType, SearchField, FieldSize, FieldName } from '../../user-controls/search-form/search-form-utils';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { CatalogService } from '../../service/catalog.service';
-import { AlertService, Entity, CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
 import { NacsisCatalogResults, IDisplayLines } from '../../catalog/results-types/results-common';
 import { IllService, AlmaRecord, AlmaRecordDisplay } from '../../service/ill.service';
-import { FullViewLink } from '../../catalog/full-view-display/full-view-display.component';
+import { FullViewLink } from '../../user-controls/full-view-display/full-view-display.component';
 import { RecordSelection } from '../../user-controls/selectable-result-card/selectable-result-card.component';
-import { HoldingsService } from '../../service/holdings.service';
-
 
 @Component({
   selector: 'ILL-searchRecord',
@@ -93,17 +91,15 @@ export class searchRecordComponent implements AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private catalogService: CatalogService,
-    private holdingsService: HoldingsService,
     private router: Router,
     private alert: AlertService,
     private translate: TranslateService,
     private illService: IllService,
-    private restService: CloudAppRestService,
   ) { }
 
   ngAfterViewInit() {
     if (!this.illService.isEmpty(this.isBackFromHoldingSearch)) {
-      if (this.catalogService.getSearchResults(this.currentSearchType).getResults() != null) {
+      if (this.illService.getSearchResults(this.currentSearchType).getResults() != null) {
         this.setSearchResultsDisplay();
       } else {
         this.currentResulsTmpl = this.notSearchedTmpl;
@@ -192,7 +188,7 @@ export class searchRecordComponent implements AfterViewInit {
   onTabChange(event: MatTabChangeEvent) {
     this.currentSearchType = this.SEARCH_TYPE_ARRAY[event.index];
     this.currentDatabase = this.getCurrentDatabases()[0];
-    if (this.catalogService.getSearchResults(this.currentSearchType).getResults() != null) {
+    if (this.illService.getSearchResults(this.currentSearchType).getResults() != null) {
       this.setSearchResultsDisplay();
     } else {
       this.currentResulsTmpl = this.notSearchedTmpl;
@@ -207,7 +203,7 @@ export class searchRecordComponent implements AfterViewInit {
 
   /***  Summary View Section  ***/
   private setSearchResultsDisplay() {
-    this.catalogResultsData = this.catalogService.getSearchResults(this.currentSearchType);
+    this.catalogResultsData = this.illService.getSearchResults(this.currentSearchType);
     this.numOfResults = this.catalogResultsData.getHeader().totalRecords;
     this.resultsSummaryDisplay = new Array();
     this.catalogResultsData.getResults()?.forEach(result => {
@@ -284,10 +280,10 @@ export class searchRecordComponent implements AfterViewInit {
       this.catalogService.getSearchResultsFromNacsis(urlParams)
         .subscribe({
           next: (catalogResults) => {
-            if (catalogResults.status === this.catalogService.OkStatus) {
+            if (catalogResults.status === this.illService.OkStatus) {
               if (!isFullViewLink) {
                 if (catalogResults.totalRecords >= 1) {
-                  this.catalogService.setSearchResultsMap(this.currentSearchType, catalogResults, urlParams);
+                  this.illService.setSearchResultsMap(this.currentSearchType, catalogResults, urlParams);
                   this.setPageIndexAndSize(urlParams);
                   this.setSearchResultsDisplay();
                 } else {
@@ -296,7 +292,7 @@ export class searchRecordComponent implements AfterViewInit {
                 }
               } else {
                 if (catalogResults.totalRecords >= 1) {
-                  let baseResult = this.catalogService.resultsTypeFactory(this.currentSearchType, catalogResults.records[0]);
+                  let baseResult = this.illService.resultsTypeFactory(this.currentSearchType, catalogResults.records[0]);
                   this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
                   this.isRightTableOpen = true;
                 } else {
@@ -333,7 +329,7 @@ export class searchRecordComponent implements AfterViewInit {
   }
 
   onPageAction(pageEvent: PageEvent) {
-    let urlParams = this.catalogService.getQueryParams(this.currentSearchType);
+    let urlParams = this.illService.getQueryParams(this.currentSearchType);
     let newIndexStr = QueryParams.PageIndex + "=" + pageEvent.pageIndex + "&" + QueryParams.PageSize;
     urlParams = urlParams.replace(/pageIndex=.*pageSize/, newIndexStr);
     let newSizeStr = QueryParams.PageSize + "=" + pageEvent.pageSize + "&" + QueryParams.SearchType;
@@ -349,7 +345,7 @@ export class searchRecordComponent implements AfterViewInit {
     this.fillInItemRecord();
 
     if (sessionStorage.getItem(ROUTING_STATE_KEY) == "") {
-      this.catalogService.clearAllSearchResults();
+      this.illService.clearAllSearchResults();
     } else {
       this.onBackFromViewHolding();
     }

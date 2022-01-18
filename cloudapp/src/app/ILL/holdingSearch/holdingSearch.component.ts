@@ -4,19 +4,17 @@ import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, HoldingsSearch, NacsisHoldingRecord, DisplayHoldingResult, NacsisBookHoldingsListDetail, NacsisSerialHoldingsListDetail } from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL,SELECTED_RECORD_LIST_ILL} from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL,SELECTED_RECORD_LIST_ILL, BaseService} from '../../service/base.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { IllService } from '../../service/ill.service';
 import { holdingFormGroup } from './holdingSearch-utils';
 import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { NacsisCatalogResults, IDisplayLines } from '../../catalog/results-types/results-common'
-import { CatalogService } from '../../service/catalog.service';
 import { SearchType , SelectedSearchFieldValues, SelectSearchField, SearchField, FieldName, FieldSize} from '../../user-controls/search-form/search-form-utils';
-import { FullViewLink } from '../full-view-display-member/full-view-display-member.component';
 
 
 @Component({
@@ -90,15 +88,12 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   ]);
 
   selectedValues = new SelectedSearchFieldValues();
-
-
   fieldsMap =  new Map();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private illService: IllService,
-    private catalogService: CatalogService,
     private translate: TranslateService,
     private nacsis: HoldingsService,
     private alert: AlertService,
@@ -652,9 +647,9 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   private setSearchResultsDisplay(memberinfo) {
 
-    this.catalogService.setSearchMemberDBResultsMap(this.currentSearchType, memberinfo);
+    this.illService.setSearchMemberDBResultsMap(this.currentSearchType, memberinfo);
 
-    this.catalogResultsData = this.catalogService.getSearchResults(this.currentSearchType);
+    this.catalogResultsData = this.illService.getSearchResults(this.currentSearchType);
     this.resultsSummaryDisplay = new Array();
     this.catalogResultsData.getResults()?.forEach(result => {
       this.resultsSummaryDisplay.push(result.getSummaryDisplay());

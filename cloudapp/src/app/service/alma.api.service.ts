@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
 import { mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay } from '../service/ill.service';
+import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay, AlmaRequestInfo } from '../service/ill.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
@@ -23,19 +23,6 @@ export class AlmaApiService {
     private illService: IllService,
   ) {  }
 
-  /*
-  <?xml version=\"1.0\" encoding=\"UTF-16\"?>
-  <record>
-    <leader>00944pam a2200301 a 4500</leader>
-    <controlfield tag=\"001\">99960780000541</controlfield>
-    ...
-    <datafield ind1=\" \" ind2=\" \" tag=\"016\">
-      <subfield code=\"a\">BB26104986</subfield>
-      <subfield code=\"2\">JP-ToKJK</subfield>
-    </datafield>
-    ...
-  </record>
-  */
   extractNacsisId(stringXml, systemNumberPrefix) : string{
     const doc = new DOMParser().parseFromString(stringXml, "application/xml");
     let datafields = doc.getElementsByTagName("datafield");
@@ -81,8 +68,8 @@ export class AlmaApiService {
     return "";
   }
 
-  extractDisplayCardInfoFromRequest(record): AlmaRecordInfo{
-    let recordInfo: AlmaRecordInfo = new AlmaRecordInfo();
+  extractDisplayCardInfoFromRequest(record): AlmaRequestInfo{
+    let recordInfo: AlmaRequestInfo = new AlmaRequestInfo();
     recordInfo.title = this.isEmpty(record.title)?'':record.title;
     recordInfo.author = this.isEmpty(record.author)?'':record.author;
     recordInfo.place_of_pub = this.isEmpty(record.place_of_publication)?'':record.place_of_publication;
@@ -90,6 +77,7 @@ export class AlmaApiService {
     recordInfo.date_of_pub = this.isEmpty(record.year)?'':record.year;
     recordInfo.isbn = this.isEmpty(record.isbn)?'':record.isbn;
     recordInfo.issn = this.isEmpty(record.issn)?'':record.issn;
+    recordInfo.exrernalId = this.isEmpty(record.external_id)?'':record.external_id;
     if(!this.isEmpty(record.requested_language)){
       recordInfo.language = this.isEmpty(record.requested_language.value)?'':record.requested_language.value;
     }else{
@@ -101,14 +89,14 @@ export class AlmaApiService {
   }
 
 
-  extractDisplayCardInfo(stringXml, systemNumberPrefix): AlmaRecordInfo {
+  extractDisplayCardInfo(stringXml, systemNumberPrefix): AlmaRequestInfo {
 
     const doc = new DOMParser().parseFromString(stringXml, "application/xml");
 
     let datafields = doc.getElementsByTagName("datafield");
     let controlfield = doc.getElementsByTagName("controlfield");
 
-    let recordInfo: AlmaRecordInfo = new AlmaRecordInfo();
+    let recordInfo: AlmaRequestInfo = new AlmaRequestInfo();
     //Title 
     let subfield_245_a, subfield_245_b, subfield_245_c;
     // Author 
@@ -187,7 +175,7 @@ export class AlmaApiService {
       recordInfo.seriesSummaryAll = seriesSummary;
 
     } catch (error) {
-      return new AlmaRecordInfo();
+      return new AlmaRequestInfo();
     }
 
     return recordInfo;
@@ -296,8 +284,8 @@ export class AlmaApiService {
 
   getAlmaRecodsInfo(records: any[]) {
     let index: number = 0;
-    let disCards: AlmaRecordInfo[] = new Array();
-    let singleRecordInfo: AlmaRecordInfo;
+    let disCards: AlmaRequestInfo[] = new Array();
+    let singleRecordInfo: AlmaRequestInfo;
 
     records.forEach(record => {
       if(!this.isEmpty(record.bib)){
@@ -321,7 +309,7 @@ export class AlmaApiService {
 
   }
 
-   setRecordsSummaryDisplay(recordInfoList: AlmaRecordInfo[],type: string){
+   setRecordsSummaryDisplay(recordInfoList: AlmaRequestInfo[],type: string){
     this.almaResultsData = new AlmaRecordsResults();
     this.baseRecordInfoList = new Array();
     recordInfoList.forEach(record=>{
@@ -339,14 +327,7 @@ export class AlmaApiService {
 
     return this.recordsSummaryDisplay;
   }
-
-
-  
 }
-
-
-
-
 
 export class IntegrationProfile {
     libraryCode: string;

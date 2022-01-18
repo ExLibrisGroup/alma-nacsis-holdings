@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, DisplayHoldingResult} from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL } from '../../service/base.service';
+import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL } from '../../service/base.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { IllService, RequestFields, Bibg, HMLG } from '../../service/ill.service';
@@ -54,6 +54,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   dataPubArrayAuto: any[];
   dataVolArrayAuto: any[];
   bibIDAuto: string;
+  externalAuto: string;
 
   illStaffAuto:string;
   illTelAuto:string;
@@ -180,6 +181,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
     }
     this.vlyrAuto = fullRecordData.VLYR;
     this.bibIDAuto = this.nacsisId;
+    this.externalAuto = sessionStorage.getItem(REQUEST_EXTERNAL_ID);
+
 
     this.formResourceInformation.controls.BIBID.setValue(this.bibIDAuto);
     this.formResourceInformation.controls.BIBNT.setValue(this.buildBibMetadata());
@@ -375,7 +378,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
     item.SPVIA = this.illService.isEmpty(this.sendingMethod.value) ? "" : this.sendingMethod.value;
     item.ONO = this.illService.isEmpty(this.formResourceInformation.value.ONO) ? "" : this.formResourceInformation.value.ONO;
     item.PRMT = this.illService.isEmpty(this.formResourceInformation.value.PRMT) ? "" : this.formResourceInformation.value.PRMT;
-
+    item.EXTERNAL_ID = this.externalAuto;//sessionStorage.getItem(REQUEST_EXTERNAL_ID);
     let bibg = new Bibg();
   
     bibg.BIBID = this.illService.isEmpty(this.formResourceInformation.value.BIBID)? this.nacsisId: this.formResourceInformation.value.BIBID;

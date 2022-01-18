@@ -1,13 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DisplayHoldingResult } from '../../service/holdings.service';
 import { MembersService, NacsisMembersRecord } from '../../service/members.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { NacsisCatalogResults, IDisplayLines } from '../../catalog/results-types/results-common'
-import { CatalogService } from '../../service/catalog.service';
 import { SearchType, SearchField, FieldSize, FieldName, SelectSearchField, SelectedSearchFieldValues } from '../../user-controls/search-form/search-form-utils';
-//import { FullViewLink } from '../../user-controls/full-view-display/full-view-display.component';
+import { FullViewLink } from '../../user-controls/full-view-display/full-view-display.component';
 import { PageEvent } from '@angular/material/paginator';
 
 @Component({
@@ -27,6 +26,7 @@ export class MembersSearchComponent implements OnInit {
   //basic variable
   private owners: any[];
   private loading : boolean = false;
+  private isRightTableOpen: boolean = false;
   private nacsisMembersResultList: Array<NacsisMembersRecord> = new Array();
   private members: DisplayHoldingResult[];
   private selectedValues = new SelectedSearchFieldValues();
@@ -39,7 +39,16 @@ export class MembersSearchComponent implements OnInit {
   private numOfResults: number;
   private pageIndex: number = 0;
   private pageSize: number = 20;
+  private enableEdit: boolean = true;
+  private enableDelete: boolean = false;
   selected: string;
+
+  // Templates
+  @ViewChild('notSearched') notSearchedTmpl:TemplateRef<any>;
+  @ViewChild('searchResults') searchResultsTmpl:TemplateRef<any>;
+  @ViewChild('noResults') noResultsTmpl:TemplateRef<any>;
+  @ViewChild('fullRecord') fullRecordTmpl:TemplateRef<any>;
+  private currentResulsTmpl: TemplateRef<any>;
 
 
   /*Initialize all the search values of members search form*/ 
@@ -66,10 +75,8 @@ export class MembersSearchComponent implements OnInit {
 
   constructor(
     private membersService: MembersService,
-    private catalogService: CatalogService,
     private translate: TranslateService,
     private alert: AlertService,
-
   ) {
     
   }
@@ -79,13 +86,14 @@ export class MembersSearchComponent implements OnInit {
   }
 
   private setSearchResultsDisplay(){
-    this.catalogResultsData = this.catalogService.getSearchResults(SearchType.Members);
+    this.catalogResultsData = this.membersService.getSearchResults(SearchType.Members);
     this.numOfResults = this.catalogResultsData.getHeader().totalRecords;
     this.resultsSummaryDisplay = new Array();
     this.catalogResultsData.getResults()?.forEach(result=>{
         this.resultsSummaryDisplay.push(result.getSummaryDisplay());
     });    
     this.panelState = false;
+    this.resultsTemplateFactory();
   }
 
   panelOpenState() {
@@ -95,6 +103,16 @@ export class MembersSearchComponent implements OnInit {
   panelCloseState() {
     this.panelState = false;
   }
+
+  resultsTemplateFactory() {
+    if(this.numOfResults > 0){
+        this.currentResulsTmpl = this.searchResultsTmpl;
+    } else if(this.numOfResults == 0 || this.numOfResults == null) {
+        this.currentResulsTmpl = this.noResultsTmpl;
+    } else {
+        this.currentResulsTmpl = this.notSearchedTmpl;
+    }
+}
 
     /*Pagination*/
     setPageIndexAndSize(urlParams: string) {
@@ -106,7 +124,7 @@ export class MembersSearchComponent implements OnInit {
   }
 
   onPageAction(pageEvent: PageEvent) {
-    let urlParams = this.catalogService.getQueryParams(SearchType.Members);
+    let urlParams = this.membersService.getQueryParams(SearchType.Members);
     let newIndexStr = QueryParams.PageIndex + "=" + pageEvent.pageIndex + "&" + QueryParams.PageSize;
     urlParams = urlParams.replace(/pageIndex=.*pageSize/, newIndexStr);
     let newSizeStr = QueryParams.PageSize + "=" + pageEvent.pageSize + "&" + QueryParams.SearchType;
@@ -118,18 +136,20 @@ export class MembersSearchComponent implements OnInit {
     try {
       this.loading = true;
       /* Calling Nacsis servlet */
-      this.membersService.getMembersFromNacsis(queryParams)
+      // this.membersService.getMembersFromNacsis(queryParams)
+      this.membersService.getSearchResultsFromNacsis(queryParams)
+
         .subscribe({
           next: (nacsisResponse) => {
             if (nacsisResponse.status === this.membersService.OkStatus) {
               if (nacsisResponse.totalRecords >= 1) {
                 this.setPageIndexAndSize(queryParams);
-                this.catalogService.setSearchResultsMap(SearchType.Members, nacsisResponse, queryParams);
+                this.membersService.setSearchResultsMap(SearchType.Members, nacsisResponse, queryParams);
                 this.setSearchResultsDisplay();
               } else {
                 this.panelState = false;
                 this.numOfResults = 0;
-                this.resultsSummaryDisplay = new Array();
+                this.resultsTemplateFactory();
               }
             } else {
                 this.alert.error(nacsisResponse.errorMessage, {keepAfterRouteChange:true});  
@@ -165,40 +185,52 @@ export class MembersSearchComponent implements OnInit {
   onTitleClick(recordIndex: number) {
     // Clicking on title will open the full view 
     let record = this.resultsSummaryDisplay[recordIndex];
-    //this.currentResulsTmpl = this.fullRecordTmpl;
+    this.currentResulsTmpl = this.fullRecordTmpl;
     this.resultFullDisplay = record.getFullRecordData().getFullViewDisplay().initContentDisplay();
   }
 
-  // onFullViewInternalLinkClick(fullViewLink: FullViewLink) {
-  //   this.loading = true;
-  //     try{
-  //       this.catalogService.getSearchResultsFromNacsis(null)
-  //       .subscribe({
-  //           next: (catalogResults) => {
-  //               if (catalogResults.status === this.catalogService.OkStatus) {
-  //                 if (catalogResults.totalRecords == 1) {
-  //                   let baseResult = this.catalogService.resultsTypeFactory(SearchType.Members, catalogResults.records[0]);
-  //                   this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
-  //                 } else {
-  //                     this.resultFullLinkDisplay == null;
-  //                 }
-  //               } else {
-  //                   this.alert.error(catalogResults.errorMessage, {keepAfterRouteChange:true});  
-  //               } },
-  //           error: e => {
-  //               this.loading = false;
-  //               console.log(e.message);
-  //               this.alert.error(e.message, {keepAfterRouteChange:true});
-  //           },
-  //           complete: () => this.loading = false
-  //       });
-  //     } catch (e) {
-  //         this.loading = false;
-  //         console.log(e);
-  //         this.alert.error(this.translate.instant('General.Errors.generalError'), {keepAfterRouteChange:true});      
-  //     }
+  onBackFromFullView() {
+    this.currentResulsTmpl = this.searchResultsTmpl;
+    this.isRightTableOpen = false;
+}
 
-  // }
+  onFullViewInternalLinkClick(fullViewLink: FullViewLink) {
+    this.loading = true;
+      try{
+        this.membersService.getSearchResultsFromNacsis(null)
+        .subscribe({
+            next: (catalogResults) => {
+                if (catalogResults.status === this.membersService.OkStatus) {
+                  if (catalogResults.totalRecords == 1) {
+                    let baseResult = this.membersService.resultsTypeFactory(SearchType.Members, catalogResults.records[0]);
+                    this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
+                    this.isRightTableOpen = true;
+                  } else {
+                      this.resultFullLinkDisplay == null;
+                      this.isRightTableOpen = false;
+                  }
+                } else {
+                    this.alert.error(catalogResults.errorMessage, {keepAfterRouteChange:true});  
+                } },
+            error: e => {
+                this.loading = false;
+                console.log(e.message);
+                this.alert.error(e.message, {keepAfterRouteChange:true});
+            },
+            complete: () => this.loading = false
+        });
+      } catch (e) {
+          this.loading = false;
+          console.log(e);
+          this.alert.error(this.translate.instant('General.Errors.generalError'), {keepAfterRouteChange:true});      
+      }
+
+  }
+
+  onFullViewLinkClose() {
+    this.isRightTableOpen = false;
+    this.resultFullLinkDisplay = null;
+}
 
   /* Run over all formControl and build the QueryParams for the get request */
   private buildQueryUrl() : string{

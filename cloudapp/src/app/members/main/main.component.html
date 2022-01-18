@@ -1,15 +1,14 @@
 <div class="align-space-between" fxLayout="row">
+  <h1>{{'Members.Main.SerachMembers' | translate}}</h1>
+</div>
+
+<div class="align-space-between" fxLayout="row">
   <a>
     <button mat-flat-button color="secondary" [routerLink]="['']">
       <mat-icon>arrow_back_ios</mat-icon>
       {{ 'General.BackToMenu' | translate }}
     </button>
   </a>
-</div>
-
-
-<div class="align-space-between" fxLayout="row">
-  <h1>{{'Members.Main.SerachMembers' | translate}}</h1>
   <div class="align-to-right" fxLayout="row">
     <button style="margin-right: 15px" mat-flat-button color="secondary" (click)="clear()">
       {{ 'General.Clear' | translate }}
@@ -19,11 +18,73 @@
     </button>
   </div>
 </div>
+<br>
+
+<div>
+<mat-accordion>
+  <mat-expansion-panel (opened)="panelOpenState()" (closed)="panelCloseState()" [expanded]="panelState">
+    <mat-expansion-panel-header>
+      <mat-panel-title *ngIf="!panelState">{{ 'Catalog.Form.RefineSearch' | translate }}</mat-panel-title>
+    </mat-expansion-panel-header>
+    <search-form [fieldsList]="getFieldsList()"></search-form>
+    <br>
+  </mat-expansion-panel>
+</mat-accordion>
+</div>
+
+<ng-container *ngTemplateOutlet="currentResulsTmpl"></ng-container>
 
 <div class="loading-shade" *ngIf="loading">
   <mat-progress-spinner mode="indeterminate" diameter="50">
   </mat-progress-spinner>
 </div>
+
+
+<ng-template #searchResults>
+  <results-list [numOfResults]="numOfResults" [pageIndex]="pageIndex" [pageSize]="pageSize"
+    [resultsSummaryDisplay]="resultsSummaryDisplay"
+    (onTitleSelected)="onTitleClick($event)">
+  </results-list>
+</ng-template>
+
+<ng-template #noResults>
+  <div class="noResults">
+    <span class="uxf-icon uxf-list" style="font-size: 3em;"></span>
+    <h2>{{'Catalog.Results.NoRecordsExist' | translate}}</h2>
+  </div>
+  <br><br><br>
+</ng-template>
+
+
+<ng-template #notSearched>
+  <div class="notSearched"></div>
+</ng-template>
+
+
+<ng-template #fullRecord>
+  <button mat-flat-button color="secondary" (click)="onBackFromFullView()">
+    <mat-icon>arrow_back_ios</mat-icon>
+    {{'General.Back' | translate}}
+  </button>
+  <br><br><br>
+  <div class="full-view">
+    <div class="full-view-left-table" *ngIf="!(isColapsedMode && isRightTableOpen)">
+      <full-view-display [resultFullDisplay]="resultFullDisplay" (onFullViewLinkSelected)="onFullViewInternalLinkClick($event)" (onFullViewLinkSelected)="onFullViewInternalLinkClick($event)">
+      </full-view-display>
+    </div>
+    <div class="full-view-right-table" (window:resize)="onResize($event)" *ngIf="isRightTableOpen">
+      <button class="close-button" (click)="onFullViewLinkClose()">
+        <i class="uxf-icon uxf-close eca-button" aria-label="Delete" (click)="delete(i)"></i>
+      </button>
+      <div *ngIf="resultFullLinkDisplay != null else noResults">
+        <full-view-display [resultFullDisplay]="resultFullLinkDisplay">
+        </full-view-display>
+      </div>
+    </div>
+  </div>
+
+</ng-template>
+<!-- 
 
 <mat-accordion>
   <mat-expansion-panel (opened)="panelOpenState()" (closed)="panelCloseState()" [expanded]="panelState">
@@ -42,12 +103,44 @@
   </mat-expansion-panel>
 </mat-accordion>
 
+<ng-template #searchResults>
   <results-list [numOfResults]="numOfResults" [pageIndex]="pageIndex" [pageSize]="pageSize"
     [resultsSummaryDisplay]="resultsSummaryDisplay" (onTitleSelected)="onTitleClick($event)" (onPageSelected)="onPageAction($event)">
   </results-list>
+</ng-template>
 
-<div *ngIf="resultExists()">
-  <span class="uxf-icon uxf-list" style="font-size: 3em;"></span>
-  <h2>{{'Catalog.Results.NoRecordsExist' | translate}}</h2>
-</div>
-<br><br><br>
+
+<ng-template #noResults>
+  <div class="noResults">
+    <span class="uxf-icon uxf-list" style="font-size: 3em;"></span>
+    <h2>{{'Catalog.Results.NoRecordsExist' | translate}}</h2>
+  </div>
+  <br><br><br>
+</ng-template>
+
+
+<ng-template #notSearched>
+  <div class="notSearched"></div>
+</ng-template>
+
+
+  
+
+  
+  
+  <br><br><br>
+  <div class="full-view">
+    <div class="full-view-left-table" *ngIf="true">
+      <full-view-display [resultFullDisplay]="resultFullDisplay" (onFullViewLinkSelected)="onFullViewInternalLinkClick($event)">
+      </full-view-display>
+    </div>
+    <div class="full-view-right-table" (window:resize)="onResize($event)" *ngIf="isRightTableOpen">
+     
+      <div *ngIf="resultFullLinkDisplay != null else noResults">
+        <full-view-display [resultFullDisplay]="resultFullLinkDisplay">
+        </full-view-display>
+      </div>
+    </div>
+  </div>
+
+<br><br><br> -->
