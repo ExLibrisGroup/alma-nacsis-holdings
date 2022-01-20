@@ -19,7 +19,9 @@ export class MultiOccurrenceControllersComponent implements OnChanges {
         if(this.isAddEnabled) {
             this.controllersList.push(ControllerButton.add);
         }
-        this.controllersList.push(ControllerButton.copy);
+        if(this.isAddEnabled) {
+            this.controllersList.push(ControllerButton.copy);
+        }
         if(this.isDeleteEnabled) {
             this.controllersList.push(ControllerButton.delete);
         }

@@ -18,8 +18,11 @@
                 </mat-form-field>
             </div>
             <div *ngSwitchCase="searchFieldType.multi">
-                <form-multi-occurrence [minOccurrence]="minOccurrence" [maxOccurrence]="maxOccurrence"
-                 [contentArray]="field.getFieldsArray()"></form-multi-occurrence>
+                <form-multi-occurrence 
+                    [minOccurrence]="field.getMinOccurrence()" 
+                    [maxOccurrence]="field.getMaxOccurrence()"
+                    [contentArray]="field.getFieldsArray()">
+                </form-multi-occurrence>
             </div>
         </div>
     </form>
