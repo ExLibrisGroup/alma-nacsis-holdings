@@ -1,0 +1,26 @@
+<div class="form-fields-parent" color="secondary">
+    <form *ngFor="let field of formFields" class="{{field.getFieldLength()}}">
+        <div [ngSwitch]="isSelectedSearchField(field)">
+            <div *ngSwitchCase="searchFieldType.input">
+                <mat-form-field appearance="outline">
+                    <mat-label>{{ field.getFieldLabel() | translate }}</mat-label>
+                    <input matInput [formControl]="field.getFormControl()">
+                </mat-form-field>
+            </div>
+            <div *ngSwitchCase="searchFieldType.select">
+                <mat-form-field appearance="outline">
+                    <mat-label>{{ field.getFieldLabel() | translate }}</mat-label>
+                    <mat-select [formControl]="field.getFormControl()" multiple>
+                        <mat-option *ngFor="let val of field.getFieldValueList()" [value]="val.value">
+                            {{val.viewValue | translate}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div *ngSwitchCase="searchFieldType.multi">
+                <form-multi-occurrence [minOccurrence]="minOccurrence" [maxOccurrence]="maxOccurrence"
+                 [contentArray]="field.getFieldsArray()"></form-multi-occurrence>
+            </div>
+        </div>
+    </form>
+</div>
