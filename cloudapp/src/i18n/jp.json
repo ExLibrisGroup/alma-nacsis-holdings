@@ -131,6 +131,14 @@
       }
     }
   },
+  "Members" : {
+    "Main" : {
+      "SerachMembers":"Search for NACSIS member information"
+    },
+    "MembersSearch" : {
+      "Name" : "Participating organization name"
+    }
+  },
   "ILL": {
     "Main": {
       "Intro": "依頼するレコードを選択してください:",

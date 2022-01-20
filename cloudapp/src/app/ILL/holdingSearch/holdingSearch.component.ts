@@ -4,19 +4,17 @@ import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, HoldingsSearch, NacsisHoldingRecord, DisplayHoldingResult, NacsisBookHoldingsListDetail, NacsisSerialHoldingsListDetail } from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL,SELECTED_RECORD_LIST_ILL} from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL,SELECTED_RECORD_LIST_ILL, BaseService} from '../../service/base.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { IllService } from '../../service/ill.service';
-import { holdingFormGroup, FieldName } from './holdingSearch-utils';
+import { holdingFormGroup } from './holdingSearch-utils';
 import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { NacsisCatalogResults, IDisplayLines } from '../../catalog/results-types/results-common'
-import { CatalogService } from '../../service/catalog.service';
-import { SearchType } from '../../user-controls/search-form/search-form-utils';
-import { FullViewLink } from '../full-view-display-member/full-view-display-member.component';
+import { SearchType , SelectedSearchFieldValues, SelectSearchField, SearchField, FieldName, FieldSize} from '../../user-controls/search-form/search-form-utils';
 
 
 @Component({
@@ -50,80 +48,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   // UI variables
   private panelState: boolean = true;
-  regionCode = new FormControl();
-  regionCodeList: string[] = [
-    '01 北海道', '02 青森', '03 岩手', '04 宮城', '05 秋田', '06 山形',
-    '07 福島', '08 茨城', '09 栃木', '10 群馬', '11 埼玉', '12 千葉',
-    '13 東京', '14 神奈川', '15 新潟', '16 富山', '17 石川', '18 福井',
-    '19 山梨', '20 長野', '21 岐阜', '22 静岡', '23 愛知', '24 三重',
-    '25 滋賀', '26 京都', '27 大阪', '28 兵庫', '29 奈良', '30 和歌山',
-    '31 鳥取', '32 島根', '33 岡山', '34 広島', '35 山口', '36 徳島',
-    '37 香川', '38 愛媛', '39 高知', '40 福岡', '41 佐賀', '42 長崎',
-    '43 熊本', '44 大分', '45 宮崎', '46 鹿児島', '47 沖縄', 'なし 全国'
-  ];
-
-  establisherType = new FormControl();
-  establisherTypeList: EstablisherType[] = [
-    { value: '1', viewValue: 'ILL.OptionViewValue.SETCODE.National' },
-    { value: '2', viewValue: 'ILL.OptionViewValue.SETCODE.Public' },
-    { value: '3', viewValue: 'ILL.OptionViewValue.SETCODE.Private' },
-    { value: '4', viewValue: 'ILL.OptionViewValue.SETCODE.SpecialPublicCorporation' },
-    { value: '5', viewValue: 'ILL.OptionViewValue.SETCODE.Overseas' },
-    { value: '8', viewValue: 'ILL.OptionViewValue.SETCODE.TrainingTesting' },
-    { value: '9', viewValue: 'ILL.OptionViewValue.SETCODE.Other' }
-  ];
-
-  institutionType = new FormControl();
-  institutionTypeList: InstitutionType[] = [
-    { value: '1', viewValue: 'ILL.OptionViewValue.ORGCODE.University' },
-    { value: '2', viewValue: 'ILL.OptionViewValue.ORGCODE.JuniorCollege' },
-    { value: '3', viewValue: 'ILL.OptionViewValue.ORGCODE.CollegeOfTechnology' },
-    { value: '4', viewValue: 'ILL.OptionViewValue.ORGCODE.InterResearchInstitutes' },
-    { value: '5', viewValue: 'ILL.OptionViewValue.ORGCODE.FacilitiesOfOtherMinistries' },
-    { value: '8', viewValue: 'ILL.OptionViewValue.ORGCODE.TrainingTesting' },
-    { value: '9', viewValue: 'ILL.OptionViewValue.ORGCODE.Other' }
-  ];
-
-  iLLParticipationType = new FormControl();
-  iLLParticipationTypeList: ILLParticipationType[] = [
-    { value: '', viewValue: 'ILL.OptionViewValue.ILLFLG.None' },
-    { value: 'A', viewValue: 'ILL.OptionViewValue.ILLFLG.Participate' },
-    { value: 'N', viewValue: 'ILL.OptionViewValue.ILLFLG.DoNotParticipate' }
-  ];
-
-  serviceStatus = new FormControl();
-  serviceStatusList: ServiceStatus[] = [
-    { value: '', viewValue: 'ILL.OptionViewValue.STAT.None' },
-    { value: 'A', viewValue: 'ILL.OptionViewValue.STAT.Available' },
-    { value: 'N', viewValue: 'ILL.OptionViewValue.STAT.NotAvailable' }
-  ];
-
-  offsetCharge = new FormControl();
-  offsetChargeList: OffsetCharge[] = [
-    { value: '', viewValue: 'ILL.OptionViewValue.GRPCODE.None' },
-    { value: 'N', viewValue: 'ILL.OptionViewValue.GRPCODE.ParticipateILLOffsetService' }
-  ];
-
-  copyServiceType = new FormControl();
-  copyServiceTypeList: CopyServiceType[] = [
-    { value: 'A', viewValue: 'ILL.OptionViewValue.COPYS.Accept' },
-    { value: 'C', viewValue: 'ILL.OptionViewValue.COPYS.AcceptAtOtherCounters' },
-    { value: 'N', viewValue: 'ILL.OptionViewValue.COPYS.NotAccepted' }
-  ];
-
-  lendingServiceType = new FormControl();
-  lendingServiceTypeList: LendingServiceType[] = [
-    { value: 'A', viewValue: 'ILL.OptionViewValue.LOANS.Accept' },
-    { value: 'C', viewValue: 'ILL.OptionViewValue.LOANS.AcceptAtOtherCounters' },
-    { value: 'N', viewValue: 'ILL.OptionViewValue.LOANS.NotAccepted' }
-  ];
-
-  fAXServiceType = new FormControl();
-  fAXServiceTypeList: FAXServiceType[] = [
-    { value: 'A', viewValue: 'ILL.OptionViewValue.FAXS.Available' },
-    { value: 'C', viewValue: 'ILL.OptionViewValue.FAXS.ConditionallyAvailable' },
-    { value: 'N', viewValue: 'ILL.OptionViewValue.FAXS.NotAvailable' }
-  ];
+  
 
   //result view
   displayHoldingResult = new MatTableDataSource<DisplayHoldingResult>();
@@ -162,11 +87,13 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     [SearchType.UniformTitles, ['TITLE', 'USMARCT']]
   ]);
 
+  selectedValues = new SelectedSearchFieldValues();
+  fieldsMap =  new Map();
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private illService: IllService,
-    private catalogService: CatalogService,
     private translate: TranslateService,
     private nacsis: HoldingsService,
     private alert: AlertService,
@@ -196,6 +123,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       this.ngOnChanges(this.holdings);
       this.panelState = false;
     }
+    this.initFieldsMap();
   }
 
   ngOnChanges(holdings) {
@@ -203,6 +131,27 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.displayHoldingResult.sort = this.sort;
     this.selectedVolMap = new Map();
     this.numOfResults = holdings.length;
+  }
+
+  initFieldsMap() {
+
+    this.fieldsMap.set(FieldName.FANO , new SearchField(FieldName.FANO, FieldSize.small)); 
+    this.fieldsMap.set(FieldName.VOL , new SearchField(FieldName.VOL, FieldSize.small));
+    this.fieldsMap.set(FieldName.YEAR, new SearchField(FieldName.YEAR, FieldSize.small)); 
+    this.fieldsMap.set(FieldName.LOC, new SearchField(FieldName.LOC, FieldSize.small));
+    this.fieldsMap.set(FieldName.KENCODE, new SelectSearchField( this.selectedValues.getRegionCodeList(), FieldName.KENCODE, FieldSize.medium)); 
+    this.fieldsMap.set(FieldName.SETCODE , new SelectSearchField(this.selectedValues.getEstablisherTypeList(), FieldName.SETCODE, FieldSize.medium));
+    this.fieldsMap.set(FieldName.ORGCODE, new SelectSearchField( this.selectedValues.getInstitutionTypeList(), FieldName.ORGCODE, FieldSize.medium));
+    this.fieldsMap.set(FieldName.ILLFLG, new SelectSearchField( this.selectedValues.getILLParticipationTypeList(), FieldName.ILLFLG, FieldSize.medium));
+    this.fieldsMap.set(FieldName.STAT, new SelectSearchField( this.selectedValues.getServiceStatusList(), FieldName.STAT, FieldSize.medium));
+    this.fieldsMap.set(FieldName.GRPCODE, new SelectSearchField( this.selectedValues.getOffsetChargeList(), FieldName.GRPCODE, FieldSize.medium));
+    this.fieldsMap.set(FieldName.COPYS, new SelectSearchField( this.selectedValues.getCopyServiceTypeList(), FieldName.COPYS, FieldSize.medium));
+    this.fieldsMap.set(FieldName.LOANS, new SelectSearchField( this.selectedValues.getLendingServiceTypeList(), FieldName.LOANS, FieldSize.medium));
+    this.fieldsMap.set(FieldName.FAXS, new SelectSearchField( this.selectedValues.getFAXServiceTypeList(), FieldName.FAXS, FieldSize.medium));
+  }
+
+  getFieldsList() {
+    return Array.from(this.fieldsMap.values());
   }
 
   search() {
@@ -252,26 +201,22 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     }
   }
 
+  getFormControlValueByKey(key : String) {
+    return this.fieldsMap.get(key).getFormControl().value;
+  }
+
   buildQueryUrl() {
     let urlParams = "";
     urlParams = "nacsisId=" + this.nacsisId;
 
-    urlParams = this.buildParamField_text(urlParams, FieldName.FANO, this.form.value.FANO);
-    urlParams = this.buildParamField_text(urlParams, FieldName.VOL, this.form.value.VOL_HLV);
-    urlParams = this.buildParamField_text(urlParams, FieldName.YEAR, this.form.value.CPYR_HLYR);
-    urlParams = this.buildParamField_text(urlParams, FieldName.LOC, this.form.value.LOC);
-
-    urlParams = this.buildParamField_selectBox(urlParams, FieldName.KENCODE, this.regionCode.value);
-    urlParams = this.buildParamField_selectBox(urlParams, FieldName.SETCODE, this.establisherType.value);
-    urlParams = this.buildParamField_selectBox(urlParams, FieldName.ORGCODE, this.institutionType.value);
-    urlParams = this.buildParamField_text(urlParams, FieldName.GRPCODE, this.offsetCharge.value);
-
-    urlParams = this.buildParamField_text(urlParams, FieldName.ILLFLG, this.iLLParticipationType.value);
-    urlParams = this.buildParamField_text(urlParams, FieldName.STAT, this.serviceStatus.value);
-    urlParams = this.buildParamField_selectBox(urlParams, FieldName.COPYS, this.copyServiceType.value);
-    urlParams = this.buildParamField_selectBox(urlParams, FieldName.LOANS, this.lendingServiceType.value);
-
-    urlParams = this.buildParamField_selectBox(urlParams, FieldName.FAXS, this.fAXServiceType.value);
+    this.fieldsMap.forEach((value, key)=> {
+      if ( value instanceof SelectSearchField) {
+        urlParams = this.buildParamField_selectBox(urlParams, key, this.getFormControlValueByKey(key));
+      } else {
+        urlParams = this.buildParamField_text(urlParams, key, this.getFormControlValueByKey(key));
+      }
+    });
+   
     return urlParams;
   }
 
@@ -302,15 +247,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   clear() {
     this.ngOnInit();
-    this.regionCode = new FormControl();
-    this.establisherType = new FormControl();
-    this.institutionType = new FormControl();
-    this.serviceStatus = new FormControl();
-    this.offsetCharge = new FormControl();
-    this.copyServiceType = new FormControl();
-    this.lendingServiceType = new FormControl();
-    this.fAXServiceType = new FormControl();
-    this.iLLParticipationType = new FormControl();
     this.holdings = new Array();
     this.panelState = true;
     this.selected = "0";
@@ -412,7 +348,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     let paramsMap = new Map();
     switch (tag) {
       case 'KENCODE':
-        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.regionCodeList);
+        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illService.regionCodeList);
         break;
       case 'SETCODE':
         paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illService.establisherTypeResult);
@@ -711,9 +647,9 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   private setSearchResultsDisplay(memberinfo) {
 
-    this.catalogService.setSearchMemberDBResultsMap(this.currentSearchType, memberinfo);
+    this.illService.setSearchMemberDBResultsMap(this.currentSearchType, memberinfo);
 
-    this.catalogResultsData = this.catalogService.getSearchResults(this.currentSearchType);
+    this.catalogResultsData = this.illService.getSearchResults(this.currentSearchType);
     this.resultsSummaryDisplay = new Array();
     this.catalogResultsData.getResults()?.forEach(result => {
       this.resultsSummaryDisplay.push(result.getSummaryDisplay());
@@ -766,49 +702,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.router.navigate(['searchRecord', 'back']);
   }
 
-}
-
-
-
-interface EstablisherType {
-  value: string;
-  viewValue: string;
-}
-
-interface InstitutionType {
-  value: string;
-  viewValue: string;
-}
-
-
-interface ILLParticipationType {
-  value: string;
-  viewValue: string;
-}
-
-interface ServiceStatus {
-  value: string;
-  viewValue: string;
-}
-
-interface OffsetCharge {
-  value: string;
-  viewValue: string;
-}
-
-interface CopyServiceType {
-  value: string;
-  viewValue: string;
-}
-
-interface LendingServiceType {
-  value: string;
-  viewValue: string;
-}
-
-interface FAXServiceType {
-  value: string;
-  viewValue: string;
 }
 
 export enum QueryParams {

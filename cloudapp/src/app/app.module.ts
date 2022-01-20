@@ -23,7 +23,6 @@ import { HelpComponent } from './holdings/help/help.component';
 
 // Catalog
 import { CatalogMainComponent } from './catalog/main/main.component';
-import { FullviewDisplayComponent } from './catalog/full-view-display/full-view-display.component';
 
 // User Controls
 import { SearchFormComponent } from './user-controls/search-form/search-form.component';
@@ -33,17 +32,16 @@ import { RecordsListComponent } from './user-controls/records-list/records-list.
 import { RecordCardComponent } from './user-controls/record-card/record-card.component';
 import { SelectableResultsListComponent } from './user-controls/selectable-results-list/selectable-results-list.component';
 import { SelectableResultCardComponent } from './user-controls/selectable-result-card/selectable-result-card.component';
-import { MultiOccurrenceControllersComponent } from './user-controls/forms/multi-occurrence-controllers/multi-occurrence-controllers.component';
-import { FormMultiOccurrenceComponent } from './user-controls/forms/form-multi-occurrence/form-multi-occurrence.component';
-import { FormFieldsComponent } from './user-controls/forms/form-fields/form-fields.component';
-
+import { FullviewDisplayComponent } from './user-controls/full-view-display/full-view-display.component';
 
 // ILL
 import { ILLBorrowingMainComponent } from './ILL/main/main.component';
 import { searchRecordComponent } from './ILL/searchRecord/searchRecord.component';
 import { HoldingSearchComponent } from './ILL/holdingSearch/holdingSearch.component';
 import { RequestFormComponent } from './ILL/requestForm/requestForm.component';
-import { FullviewDisplayOfMemComponent } from './ILL/full-view-display-member/full-view-display-member.component';
+
+// Members 
+import { MembersSearchComponent } from './members/main/main.component';
 
 //Paginator
 import {MatPaginatorModule, MatPaginatorIntl } from '@angular/material/paginator';
@@ -81,10 +79,8 @@ export function getToastrModule() {
       SelectableResultCardComponent,
       HoldingSearchComponent,
       RequestFormComponent,
-      FullviewDisplayOfMemComponent,
-      MultiOccurrenceControllersComponent,
-      FormMultiOccurrenceComponent,
-      FormFieldsComponent
+      MembersSearchComponent
+
    ],
    entryComponents: [ConfirmationDialog],
    imports: [

@@ -10,7 +10,7 @@ import { map, catchError, switchMap, tap } from 'rxjs/operators';
 import { AlmaApiService, IntegrationProfile } from '../../service/alma.api.service';
 import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
 
-import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay} from '../../service/ill.service';
+import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay, AlmaRequestInfo} from '../../service/ill.service';
 
 
 @Component({
@@ -32,7 +32,7 @@ export class MainComponent implements OnInit, OnDestroy {
   private recordsSummaryDisplay: Array<IDisplayLines>;
   private almaResultsData: AlmaRecordsResults;
   baseRecordInfoList: Array<BaseRecordInfo> = new Array();
-  recordInfoList: AlmaRecordInfo[] = new Array();
+  recordInfoList: AlmaRequestInfo[] = new Array();
   almaRecord: AlmaRecord = new AlmaRecord('',this.translate,this.illService);
 
   constructor(
@@ -60,7 +60,7 @@ export class MainComponent implements OnInit, OnDestroy {
                 this.integrationProfile = integrationProfile;
 
                 let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS);
-                let disCards: AlmaRecordInfo[] = new Array(rawBibs.length);     
+                let disCards: AlmaRequestInfo[] = new Array(rawBibs.length);     
 
                 forkJoin(rawBibs.map(entity => this.getRecord(entity)))
                     .subscribe({
@@ -139,7 +139,7 @@ export class MainComponent implements OnInit, OnDestroy {
     this.isErrorMessageVisible = false;
   }
 
-  private setSearchResultsDisplay(recordInfoList: AlmaRecordInfo[], type: string){
+  private setSearchResultsDisplay(recordInfoList: AlmaRequestInfo[], type: string){
     this.recordsSummaryDisplay = this.almaApiService.setRecordsSummaryDisplay(recordInfoList,type);
     } 
 

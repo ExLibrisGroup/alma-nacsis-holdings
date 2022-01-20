@@ -17,6 +17,8 @@ export class ResultsListComponent implements OnChanges, AfterViewInit {
   @Input() pageSize: number;
   @Input() resultsSummaryDisplay: Array<IDisplayLines> = new Array();
   @Input() resultActionList: Array<string> = new Array();
+  @Input() enableEdit: boolean;
+  @Input() enableDelete: boolean;
   @Output() onActionSelected = new EventEmitter<RecordSelection>();  
   @Output() onTitleSelected = new EventEmitter<number>();  
   @Output() onPageSelected = new EventEmitter<PageEvent>();  

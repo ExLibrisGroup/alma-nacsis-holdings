@@ -2,11 +2,11 @@ import { Subscription, of, forkJoin} from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CloudAppEventsService, Entity, EntityType, CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Router } from '@angular/router';
-import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay} from '../../service/ill.service';
+import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo, AlmaRequestInfo, AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay} from '../../service/ill.service';
 import {  catchError, tap } from 'rxjs/operators';
 import { AlmaApiService, IntegrationProfile } from '../../service/alma.api.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AppRoutingState, ROUTING_STATE_KEY,LIBRARY_ID_KEY ,LIBRARY_MEMBERINFO_KEY} from '../../service/base.service';
+import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY, LIBRARY_ID_KEY ,LIBRARY_MEMBERINFO_KEY} from '../../service/base.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { HoldingsService} from '../../service/holdings.service';
 
@@ -25,7 +25,7 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
   isErrorMessageVisible: boolean = false;
   processed = 0;
   integrationProfile: IntegrationProfile;
-  recordInfoList: AlmaRecordInfo[] = new Array();
+  recordInfoList: AlmaRequestInfo[] = new Array();
   recordsSummaryDisplay: Array<IDisplayLines>;
   almaResultsData: AlmaRecordsResults;
   almaRecord: AlmaRecord = new AlmaRecord('',this.translate,this.illService);
@@ -58,7 +58,7 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
 
           sessionStorage.setItem(LIBRARY_ID_KEY,integrationProfile.libraryID);
           let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS || e.type == EntityType.BORROWING_REQUEST );
-          let disCards: AlmaRecordInfo[] = new Array(rawBibs.length);
+          let disCards: AlmaRequestInfo[] = new Array(rawBibs.length);
 
           forkJoin(rawBibs.map(entity => this.getRecord(entity)))
             .subscribe({
@@ -95,7 +95,9 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
   setMemberInfo(fano){
     let obj:[];
     let queryParams = "";
+    //TODO: send the DB also
     queryParams = "ID=" + fano;
+
     try {
       this.loading = true;
       this.nacsis.getMemberForILLFromNacsis(queryParams)
@@ -144,14 +146,6 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
     )
   }
 
-  getRecordByLink(link: string) {
-    return this.restService.call(link).pipe(
-      tap(()=>this.processed++),
-      catchError(e => of(e)),
-    )
-  }
-
-
   onCloseClick() {
     this.isErrorMessageVisible = false;
   }
@@ -159,7 +153,7 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
   next(){
     sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage);
       this.loading = true;
-      this.illService.setFormValue(this.selected);
+      sessionStorage.setItem(REQUEST_EXTERNAL_ID, this.selected.record.exrernalId);
       this.router.navigate(['searchRecord',this.selected.record.nacsisId,this.selected.record.title,
                             this.selected.record.isbn,this.selected.record.issn]);
   }
@@ -175,7 +169,7 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
     this.selected = item;
  }
 
- private setSearchResultsDisplay(recordInfoList: AlmaRecordInfo[], type: string){
+ private setSearchResultsDisplay(recordInfoList: AlmaRequestInfo[], type: string){
   this.recordsSummaryDisplay = this.almaApiService.setRecordsSummaryDisplay(recordInfoList,type);
   } 
 

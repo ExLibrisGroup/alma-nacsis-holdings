@@ -14,6 +14,8 @@ export class ResultCardComponent implements OnInit {
   @Input() recordIndex: number;
   @Input() record: IDisplayLines;
   @Input() resultActionList: Array<string> = new Array();
+  @Input() enableEdit: boolean;
+  @Input() enableDelete: boolean;
   @Output() onActionSelected = new EventEmitter<RecordSelection>();  
   @Output() onTitleSelected = new EventEmitter<number>();  
   private titleDisplay: Array<ViewField>;
