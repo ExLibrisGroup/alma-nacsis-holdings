@@ -33,6 +33,10 @@ import { RecordsListComponent } from './user-controls/records-list/records-list.
 import { RecordCardComponent } from './user-controls/record-card/record-card.component';
 import { SelectableResultsListComponent } from './user-controls/selectable-results-list/selectable-results-list.component';
 import { SelectableResultCardComponent } from './user-controls/selectable-result-card/selectable-result-card.component';
+import { MultiOccurrenceControllersComponent } from './user-controls/forms/multi-occurrence-controllers/multi-occurrence-controllers.component';
+import { FormMultiOccurrenceComponent } from './user-controls/forms/form-multi-occurrence/form-multi-occurrence.component';
+import { FormFieldsComponent } from './user-controls/forms/form-fields/form-fields.component';
+
 
 // ILL
 import { ILLBorrowingMainComponent } from './ILL/main/main.component';
@@ -77,7 +81,10 @@ export function getToastrModule() {
       SelectableResultCardComponent,
       HoldingSearchComponent,
       RequestFormComponent,
-      FullviewDisplayOfMemComponent
+      FullviewDisplayOfMemComponent,
+      MultiOccurrenceControllersComponent,
+      FormMultiOccurrenceComponent,
+      FormFieldsComponent
    ],
    entryComponents: [ConfirmationDialog],
    imports: [
