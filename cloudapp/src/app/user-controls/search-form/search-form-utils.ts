@@ -9,6 +9,12 @@ export enum SearchType {
     Members = "Members"
 }
 
+export enum SearchFieldTypes {
+  input = "input",
+  select = "select",
+  multi = "multi"
+}
+
 export class SearchField {
 
     key: FieldName;
@@ -16,10 +22,11 @@ export class SearchField {
     formControl: FormControl;
     fieldLength: FieldSize = FieldSize.fullWidth;
 
-    constructor(key: FieldName, fieldSize?: FieldSize){
+    constructor(key: FieldName, fieldSize?: FieldSize, formControlValue?: string){
         this.key = key;
-        this.formControl = new FormControl();
         this.fieldLength = fieldSize;
+        this.formControl = new FormControl();
+        this.formControl.setValue(formControlValue);
     }
 
     getKey(): string {
@@ -46,7 +53,18 @@ export class SearchField {
     setFieldLength(size: FieldSize) {
         this.fieldLength = size;
     }
+
+    copyField(copyFormControlValues: boolean): SearchField {
+        let newField;
+        if (copyFormControlValues) {
+            newField = new SearchField(this.key, this.fieldLength, this.formControl.value);
+        } else {
+            newField = new SearchField(this.key, this.fieldLength);
+        }
+        return newField;
+    }
 }
+
 export class SelectSearchField extends SearchField {
     fieldValueList: any[];
 
@@ -61,15 +79,25 @@ export class SelectSearchField extends SearchField {
 
 }
 
+export class MultiSearchField extends SearchField {
+    fieldsArr: Array<Array<SearchField>>;
 
+    constructor(fieldsArr: Array<Array<SearchField>>) {
+      super(null, FieldSize.fullWidth);
+      this.fieldsArr = fieldsArr;
+    }
+
+    getFieldsArray(): Array<Array<SearchField>> {
+      return this.fieldsArr;
+    }
+}
 
 
 export enum FieldSize {
-    fullWidth = "form-card-field-full-width",
-    /*size of the searchFields or the selectSearchFields*/
-    large = "form-card-field-large",
-    medium = "form-card-field-medium",
-    small = "form-card-field-small"
+    fullWidth = "form-feild-full-width",
+    large = "form-field-half",
+    medium = "form-field-third",
+    small = "form-field-quarter"
 }
 
 export enum FieldName {

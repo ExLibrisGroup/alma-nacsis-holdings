@@ -1,0 +1,5 @@
+<div class="controllers-group">
+    <div *ngFor="let icon of controllersList" class="icon-controller {{icon.className}}">
+        <i class="{{icon.iconName}}" (click)="onControllerClick(icon)"></i>
+    </div>
+</div>
