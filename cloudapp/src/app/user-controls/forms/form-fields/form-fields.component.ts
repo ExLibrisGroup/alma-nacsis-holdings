@@ -11,8 +11,6 @@ import { SearchField, SelectSearchField, SearchFieldTypes, MultiSearchField } fr
 export class FormFieldsComponent {
     
     @Input() formFields: Array<SearchField>;
-    @Input() minOccurrence: number;
-    @Input() maxOccurrence: number;
     searchFieldType: typeof SearchFieldTypes = SearchFieldTypes;
 
 

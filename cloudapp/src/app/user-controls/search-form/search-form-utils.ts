@@ -80,15 +80,30 @@ export class SelectSearchField extends SearchField {
 }
 
 export class MultiSearchField extends SearchField {
+    minOccurrence: number;
+    maxOccurrence: number;
     fieldsArr: Array<Array<SearchField>>;
 
-    constructor(fieldsArr: Array<Array<SearchField>>) {
-      super(null, FieldSize.fullWidth);
-      this.fieldsArr = fieldsArr;
+    constructor(
+      fieldsArr: Array<Array<SearchField>>, 
+      minOccurrence?: number, 
+      maxOccurrence?: number) {
+        super(null, FieldSize.fullWidth);
+        this.fieldsArr = fieldsArr;
+        this.minOccurrence = minOccurrence;
+        this.maxOccurrence = maxOccurrence;
     }
 
     getFieldsArray(): Array<Array<SearchField>> {
       return this.fieldsArr;
+    }
+
+    getMinOccurrence(): number {
+      return this.minOccurrence;
+    }
+
+    getMaxOccurrence(): number {
+      return this.maxOccurrence;
     }
 }
 
