@@ -32,7 +32,7 @@ import { RecordsListComponent } from './user-controls/records-list/records-list.
 import { RecordCardComponent } from './user-controls/record-card/record-card.component';
 import { SelectableResultsListComponent } from './user-controls/selectable-results-list/selectable-results-list.component';
 import { SelectableResultCardComponent } from './user-controls/selectable-result-card/selectable-result-card.component';
-import { FullviewDisplayComponent } from './catalog/full-view-display/full-view-display.component';
+import { FullviewDisplayComponent } from './user-controls/full-view-display/full-view-display.component';
 import { MultiOccurrenceControllersComponent } from './user-controls/forms/multi-occurrence-controllers/multi-occurrence-controllers.component';
 import { FormMultiOccurrenceComponent } from './user-controls/forms/form-multi-occurrence/form-multi-occurrence.component';
 import { FormFieldsComponent } from './user-controls/forms/form-fields/form-fields.component';
@@ -45,6 +45,8 @@ import { RequestFormComponent } from './ILL/requestForm/requestForm.component';
 
 // Member
 import { MembersSearchComponent } from './members/main/main.component';
+import { EditFormComponent } from './members/edit/edit.component';
+
 
 //Paginator
 import {MatPaginatorModule, MatPaginatorIntl } from '@angular/material/paginator';
@@ -83,6 +85,7 @@ export function getToastrModule() {
       HoldingSearchComponent,
       RequestFormComponent,
       MembersSearchComponent,
+      EditFormComponent,
       MultiOccurrenceControllersComponent,
       FormMultiOccurrenceComponent,
       FormFieldsComponent

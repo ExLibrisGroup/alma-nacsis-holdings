@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { InitData, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Observable, of } from 'rxjs';
@@ -26,6 +25,7 @@ export abstract class BaseService {
     protected _exp: number;
     public currentSearchType: SearchType;
     public OkStatus: string = 'OK';
+    public OwnerKey: string = 'OWNER_KEY';
 
     constructor(
         eventsService: CloudAppEventsService,
@@ -140,10 +140,6 @@ export abstract class BaseService {
     setSearchMemberDBResultsMap(searchType: SearchType, memberinfo: any) {
         this.searchResultsMap.get(searchType).setResults(new Array());
         memberinfo.forEach(record => {
-            // let newRecord = new Member(record, null);
-            // newRecord.fullView = record;
-            // newRecord.summaryView = record;
-            // this.searchResultsMap.get(searchType).getResults().push(this.resultsTypeFactory(searchType, newRecord));
             this.searchResultsMap.get(searchType).getResults().push(this.resultsTypeFactory(searchType, record));
        
         });
@@ -180,6 +176,7 @@ export const SELECTED_RECORD_ILL = "selectedDataInILL";
 export const SELECTED_RECORD_LIST_ILL = "selectedDataListInILL";
 export const RESULT_RECORD_LIST_ILL = "resultDataInILL";
 export const REQUEST_EXTERNAL_ID = "requestExternalId";
+export const MEMBER_RECORD = "memberRecord";
 
 export enum AppRoutingState {
     MainMenuPage = "",

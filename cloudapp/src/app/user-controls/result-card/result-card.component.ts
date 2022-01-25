@@ -14,13 +14,11 @@ export class ResultCardComponent implements OnInit {
   @Input() recordIndex: number;
   @Input() record: IDisplayLines;
   @Input() resultActionList: Array<string> = new Array();
-  @Input() enableEdit: boolean;
-  @Input() enableDelete: boolean;
-  @Output() onActionSelected = new EventEmitter<RecordSelection>();  
+  @Output() onActionSelected = new EventEmitter<RecordSelection>(); 
+  @Output() onEditRecord = new EventEmitter<RecordSelection>();  
   @Output() onTitleSelected = new EventEmitter<number>();  
   private titleDisplay: Array<ViewField>;
-  private contentDisplay: Array<ViewLine>;
-
+  private contentDisplay: Array<ViewLine>
 
   constructor() { }
 
@@ -31,6 +29,10 @@ export class ResultCardComponent implements OnInit {
 
   onActionsClick(recordIndex: number, actionIndex: number) {
     this.onActionSelected.emit(new RecordSelection(recordIndex, actionIndex));
+  }
+
+  onEditClick(recordIndex: number) {
+    this.onEditRecord.emit(new RecordSelection(recordIndex, null));
   }
 
   onTitleClick(recordIndex: number) {

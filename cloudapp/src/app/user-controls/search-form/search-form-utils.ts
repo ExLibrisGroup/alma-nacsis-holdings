@@ -21,17 +21,25 @@ export class SearchField {
     fieldLabel: string;
     formControl: FormControl;
     fieldLength: FieldSize = FieldSize.fullWidth;
+    readOnly : boolean = false;
 
-    constructor(key: FieldName, fieldSize?: FieldSize, formControlValue?: string){
+
+    constructor(key: FieldName , fieldSize?: FieldSize, formControlValue?: string, readOnly: boolean = false){
         this.key = key;
         this.fieldLength = fieldSize;
         this.formControl = new FormControl();
         this.formControl.setValue(formControlValue);
+        this.readOnly = readOnly;
     }
+
 
     getKey(): string {
         return this.key;
     }
+
+    getReadOnly(): boolean {
+      return this.readOnly;
+  }
 
     getFieldLabel(): string {
         this.fieldLabel = "UserControls.Fields." + this.key;
@@ -57,9 +65,9 @@ export class SearchField {
     copyField(copyFormControlValues: boolean): SearchField {
         let newField;
         if (copyFormControlValues) {
-            newField = new SearchField(this.key, this.fieldLength, this.formControl.value);
+            newField = new SearchField(this.key, this.fieldLength, this.formControl.value, this.readOnly);
         } else {
-            newField = new SearchField(this.key, this.fieldLength);
+            newField = new SearchField(this.key, this.fieldLength, null, this.readOnly);
         }
         return newField;
     }
@@ -68,8 +76,8 @@ export class SearchField {
 export class SelectSearchField extends SearchField {
     fieldValueList: any[];
 
-    constructor(fieldValueList, key: FieldName, fieldSize?: FieldSize){
-        super(key, fieldSize);
+    constructor(fieldValueList, key: FieldName, fieldSize?: FieldSize, formControlValue?: string, readOnly : boolean = false){
+        super(key, fieldSize, formControlValue, readOnly);
         this.fieldValueList = fieldValueList;
     }
 
@@ -152,7 +160,16 @@ export enum FieldName {
     GRPCODE = "GRPCODE",
     COPYS = "COPYS",
     LOANS = "LOANS",
-    FAXS = "FAXS"
+    FAXS = "FAXS",
+    CATTEL = "CATTEL",
+    CATDEPT = "CATDEPT",
+    CATFAX = "CATFAX",
+    SYSDEPT = "SYSDEPT",
+    SYSTEL = "SYSTEL",
+    SYSFAX = "SYSFAX",
+    EMAIL = "EMAIL",
+    POLICY = "POLICY"
+  
 }
 
 interface selectedFieldValue {

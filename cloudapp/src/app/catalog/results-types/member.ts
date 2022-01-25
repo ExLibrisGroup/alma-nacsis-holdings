@@ -1,5 +1,7 @@
 import { TranslateService } from '@ngx-translate/core';
 import { IDisplayLines, BaseResult, ViewField, ViewLine, ViewFieldBuilder, BLANK_SPACE } from './results-common';
+import { AlmaApiService } from '../../service/alma.api.service';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib/angular/ui/components/alerts/alert.service';
 
 export class Member extends BaseResult {
     summaryView: MemberSummary;
@@ -31,10 +33,11 @@ export class Member extends BaseResult {
 export class MemberSummaryDisplay extends IDisplayLines {
 
     private record: MemberSummary;
+    private alert: AlertService;
 
     constructor(
         private translate: TranslateService,
-        fullRecordData: Member
+        fullRecordData: Member,
     ) {
         super(fullRecordData);
         this.record = fullRecordData.getSummaryView();

@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY, LIBRARY_ID_KEY ,LIBRARY_MEMBERINFO_KEY} from '../../service/base.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { HoldingsService} from '../../service/holdings.service';
+import { MembersService } from '../../service/members.service';
 
 @Component({
   selector: 'ILL-main',
@@ -39,10 +40,10 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private restService: CloudAppRestService,
     private almaApiService: AlmaApiService,
+    private membersService: MembersService,
     private illService: IllService,
     private alert: AlertService,
     private router: Router,
-    private nacsis: HoldingsService,
   ) { }
 
   ngOnInit() {
@@ -100,27 +101,27 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
 
     try {
       this.loading = true;
-      this.nacsis.getMemberForILLFromNacsis(queryParams)
-        .subscribe({
-          next: (header) => {
-            if (header.status === this.nacsis.OkStatus) {
-              obj = this.convertMemberInfo(header, obj);
-            } else {
-              this.loading = false;
-              //console.log('header' + header);
-              this.alert.error(header.errorMessage, { keepAfterRouteChange: true });
-            }
-          },
-          error: e => {
+      this.membersService.getSearchResultsFromNacsis(queryParams)
+
+      .subscribe({
+        next: (nacsisResponse) => {
+          if (nacsisResponse.status === this.membersService.OkStatus) {
+            obj = this.convertMemberInfo(nacsisResponse, obj);
+          } else {
             this.loading = false;
-            console.log(e.message);
-            this.alert.error(e.message, { keepAfterRouteChange: true });
-          },
-          complete: () => {
-            sessionStorage.setItem(LIBRARY_MEMBERINFO_KEY, JSON.stringify(obj));
-            this.loading = false;
+            this.alert.error(nacsisResponse.errorMessage, { keepAfterRouteChange: true });
           }
-        });
+        },
+        error: e => {
+          this.loading = false;
+          console.log(e.message);
+          this.alert.error(e.message, { keepAfterRouteChange: true });
+        },
+        complete: () => {
+          sessionStorage.setItem(LIBRARY_MEMBERINFO_KEY, JSON.stringify(obj));
+          this.loading = false;
+        }
+      });
     } catch (e) {
       this.loading = false;
       this.alert.error(this.translate.instant('General.Errors.generalError'), { keepAfterRouteChange: true });

@@ -15,6 +15,7 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { NacsisCatalogResults, IDisplayLines } from '../../catalog/results-types/results-common'
 import { SearchType , SelectedSearchFieldValues, SelectSearchField, SearchField, FieldName, FieldSize} from '../../user-controls/search-form/search-form-utils';
+import { MembersService } from '../../service/members.service';
 
 
 @Component({
@@ -96,6 +97,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     private illService: IllService,
     private translate: TranslateService,
     private nacsis: HoldingsService,
+    private membersService: MembersService,
     private alert: AlertService,
     private _liveAnnouncer: LiveAnnouncer
 
@@ -502,35 +504,35 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     }
   }
 
-  setMemberInfo(fano) {
-
+  setMemberInfo(fano){
     let obj = [];
-    this.setSearchResultsDisplay(obj);
     let queryParams = "";
+    //TODO: send the DB also
     queryParams = "ID=" + fano;
+
     try {
       this.loading = true;
-      this.nacsis.getMemberForILLFromNacsis(queryParams)
-        .subscribe({
-          next: (header) => {
-            if (header.status === this.nacsis.OkStatus) {
-              obj = this.convertMemberInfo(header, obj);
-            } else {
-              this.loading = false;
-              //console.log('header' + header);
-              this.alert.error(header.errorMessage, { keepAfterRouteChange: true });
-            }
-          },
-          error: e => {
+      this.membersService.getSearchResultsFromNacsis(queryParams)
+
+      .subscribe({
+        next: (nacsisResponse) => {
+          if (nacsisResponse.status === this.membersService.OkStatus) {
+            obj = this.convertMemberInfo(nacsisResponse, obj);
+          } else {
             this.loading = false;
-            console.log(e.message);
-            this.alert.error(e.message, { keepAfterRouteChange: true });
-          },
-          complete: () => {
-            this.loading = false;
-            this.setSearchResultsDisplay(obj);
+            this.alert.error(nacsisResponse.errorMessage, { keepAfterRouteChange: true });
           }
-        });
+        },
+        error: e => {
+          this.loading = false;
+          console.log(e.message);
+          this.alert.error(e.message, { keepAfterRouteChange: true });
+        },
+        complete: () => {
+          this.setSearchResultsDisplay(obj);
+          this.loading = false;
+        }
+      });
     } catch (e) {
       this.loading = false;
       this.alert.error(this.translate.instant('General.Errors.generalError'), { keepAfterRouteChange: true });

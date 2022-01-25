@@ -4,13 +4,13 @@
             <div *ngSwitchCase="searchFieldType.input">
                 <mat-form-field appearance="outline">
                     <mat-label>{{ field.getFieldLabel() | translate }}</mat-label>
-                    <input matInput [formControl]="field.getFormControl()">
+                    <input matInput [formControl]="field.getFormControl()" [readonly] = "field.getReadOnly()">
                 </mat-form-field>
             </div>
             <div *ngSwitchCase="searchFieldType.select">
                 <mat-form-field appearance="outline">
                     <mat-label>{{ field.getFieldLabel() | translate }}</mat-label>
-                    <mat-select [formControl]="field.getFormControl()" multiple>
+                    <mat-select [disabled] = "field.getReadOnly()" [formControl]="field.getFormControl()" multiple>
                         <mat-option *ngFor="let val of field.getFieldValueList()" [value]="val.value">
                             {{val.viewValue | translate}}
                         </mat-option>

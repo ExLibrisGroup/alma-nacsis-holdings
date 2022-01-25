@@ -1,13 +1,21 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DisplayHoldingResult } from '../../service/holdings.service';
-import { MembersService, NacsisMembersRecord } from '../../service/members.service';
+import { MembersService } from '../../service/members.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { NacsisCatalogResults, IDisplayLines } from '../../catalog/results-types/results-common'
-import { SearchType, SearchField, FieldSize, FieldName, SelectSearchField, SelectedSearchFieldValues } from '../../user-controls/search-form/search-form-utils';
+import { SearchType, SearchField, FieldSize, FieldName, SelectSearchField, SelectedSearchFieldValues, MultiSearchField } from '../../user-controls/search-form/search-form-utils';
 import { FullViewLink } from '../../user-controls/full-view-display/full-view-display.component';
 import { PageEvent } from '@angular/material/paginator';
+import { AlmaApiService } from '../../service/alma.api.service';
+//import { MemberSummaryDisplay } from '../../catalog/results-types/member';
+import { RecordSelection } from '../../user-controls/result-card/result-card.component';
+import { Router } from '@angular/router';
+import { MEMBER_RECORD, ROUTING_STATE_KEY, AppRoutingState } from '../../service/base.service';
+
+
+
 
 @Component({
   selector: 'members',
@@ -27,10 +35,10 @@ export class MembersSearchComponent implements OnInit {
   private owners: any[];
   private loading : boolean = false;
   private isRightTableOpen: boolean = false;
-  private nacsisMembersResultList: Array<NacsisMembersRecord> = new Array();
   private members: DisplayHoldingResult[];
   private selectedValues = new SelectedSearchFieldValues();
   private fieldsMap : Map<FieldName ,SearchField> =  new Map();
+  private editFieldsMap : Map<FieldName ,SearchField> =  new Map();
   private catalogResultsData: NacsisCatalogResults;
   private resultsSummaryDisplay: Array<IDisplayLines>;
   private resultFullDisplay;
@@ -39,15 +47,19 @@ export class MembersSearchComponent implements OnInit {
   private numOfResults: number;
   private pageIndex: number = 0;
   private pageSize: number = 20;
-  private enableEdit: boolean = true;
-  private enableDelete: boolean = false;
+  //private enableEdit: boolean = true;
+  //private enableDelete: boolean = false;
   selected: string;
+  isAllRetrieved: boolean = false;
+  private fanoId : string;
+
 
   // Templates
   @ViewChild('notSearched') notSearchedTmpl:TemplateRef<any>;
   @ViewChild('searchResults') searchResultsTmpl:TemplateRef<any>;
   @ViewChild('noResults') noResultsTmpl:TemplateRef<any>;
   @ViewChild('fullRecord') fullRecordTmpl:TemplateRef<any>;
+  @ViewChild('editForm') editFormTmpl:TemplateRef<any>;
   private currentResulsTmpl: TemplateRef<any>;
 
 
@@ -73,27 +85,63 @@ export class MembersSearchComponent implements OnInit {
     return Array.from(this.fieldsMap.values());
   }  
 
+  /*Initialize all the search values of members search form*/ 
+  private initEditFieldsMap(record : IDisplayLines) : void {
+    this.editFieldsMap.set(FieldName.ID , new SearchField(FieldName.ID, FieldSize.medium, record.getFullRecordData().fullView.ID, true)); 
+    this.editFieldsMap.set(FieldName.NAME , new SearchField(FieldName.NAME, FieldSize.medium, record.getFullRecordData().fullView.NAME, true));
+    this.editFieldsMap.set(FieldName.LOC, new SearchField(FieldName.LOC, FieldSize.medium, record.getFullRecordData().fullView.LOC, true));
+    this.editFieldsMap.set(FieldName.KENCODE, new SearchField(FieldName.KENCODE, FieldSize.medium, record.getFullRecordData().fullView.KENCODE, true)); 
+    this.editFieldsMap.set(FieldName.SETCODE , new SearchField(FieldName.SETCODE, FieldSize.medium, record.getFullRecordData().fullView.SETCODE, true));
+    this.editFieldsMap.set(FieldName.ORGCODE, new SearchField(FieldName.ORGCODE, FieldSize.medium, record.getFullRecordData().fullView.ORGCODE, true));
+    this.editFieldsMap.set(FieldName.GRPCODE, new SearchField(FieldName.GRPCODE, FieldSize.medium, record.getFullRecordData().fullView.GRPCODE, true));
+    this.editFieldsMap.set(FieldName.CATFLG, new SearchField(FieldName.CATFLG, FieldSize.medium, record.getFullRecordData().fullView.CATFLG, true));
+    this.editFieldsMap.set(FieldName.ILLFLG, new SearchField(FieldName.ILLFLG, FieldSize.medium, record.getFullRecordData().fullView.ILLFLG, true));
+    this.editFieldsMap.set(FieldName.STAT, new SelectSearchField( this.selectedValues.getServiceStatusList(), FieldName.STAT, FieldSize.medium, record.getFullRecordData().fullView.STAT));
+    this.editFieldsMap.set(FieldName.COPYS, new SelectSearchField( this.selectedValues.getCopyServiceTypeList(), FieldName.COPYS, FieldSize.medium, record.getFullRecordData().fullView.COPYS));
+    this.editFieldsMap.set(FieldName.LOANS, new SelectSearchField( this.selectedValues.getLendingServiceTypeList(), FieldName.LOANS, FieldSize.medium, record.getFullRecordData().fullView.LOANS));
+    this.editFieldsMap.set(FieldName.FAXS, new SelectSearchField( this.selectedValues.getFAXServiceTypeList(), FieldName.FAXS, FieldSize.medium, record.getFullRecordData().fullView.FAXS));
+    this.editFieldsMap.set(FieldName.CATTEL, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.CATTEL, FieldSize.medium, record.getFullRecordData().fullView.EMAIL)));
+    this.editFieldsMap.set(FieldName.CATDEPT, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.CATDEPT, FieldSize.medium, record.getFullRecordData().fullView.POLICY)));
+    this.editFieldsMap.set(FieldName.CATFAX, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.CATFAX, FieldSize.medium, record.getFullRecordData().fullView.EMAIL)));
+    this.editFieldsMap.set(FieldName.SYSDEPT, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.SYSDEPT, FieldSize.medium, record.getFullRecordData().fullView.POLICY)));
+    this.editFieldsMap.set(FieldName.SYSTEL, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.SYSTEL, FieldSize.medium, record.getFullRecordData().fullView.EMAIL)));
+    this.editFieldsMap.set(FieldName.SYSFAX, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.SYSFAX, FieldSize.medium, record.getFullRecordData().fullView.POLICY)));
+    this.editFieldsMap.set(FieldName.EMAIL, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.EMAIL, FieldSize.medium, record.getFullRecordData().fullView.EMAIL)));
+    this.editFieldsMap.set(FieldName.POLICY, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.POLICY, FieldSize.medium, record.getFullRecordData().fullView.POLICY)));
+
+
+  }
+
+  /*Get list of all search value, calling this function from the DOM*/
+  public getEditFieldsList() : Array<SearchField> {
+    return Array.from(this.editFieldsMap.values());
+  } 
+  
+  createSearchFieldListbyFormControlValues(key : FieldName, fieldSize : FieldSize, formControlValues) : any[][] {
+    let searchFieldsArrary = new Array();
+    formControlValues?.forEach(element => {
+      searchFieldsArrary.push( new Array(new SearchField(key, FieldSize.medium, element)));
+    });
+    if(searchFieldsArrary.length < 1) {
+      searchFieldsArrary.push (new Array(new SearchField(key, FieldSize.medium, "")));
+    } 
+    return searchFieldsArrary;
+  }
+
   constructor(
     private membersService: MembersService,
     private translate: TranslateService,
     private alert: AlertService,
-  ) {
+    protected almaApiService: AlmaApiService,
+    private router: Router,
+
+
     
-  }
+  ) {}
 
   ngOnInit() {
     this.initFieldsMap();
-  }
-
-  private setSearchResultsDisplay(){
-    this.catalogResultsData = this.membersService.getSearchResults(SearchType.Members);
-    this.numOfResults = this.catalogResultsData.getHeader().totalRecords;
-    this.resultsSummaryDisplay = new Array();
-    this.catalogResultsData.getResults()?.forEach(result=>{
-        this.resultsSummaryDisplay.push(result.getSummaryDisplay());
-    });    
-    this.panelState = false;
-    this.resultsTemplateFactory();
+    //this.backSession = sessionStorage.getItem(ROUTING_STATE_KEY);
   }
 
   panelOpenState() {
@@ -102,6 +150,31 @@ export class MembersSearchComponent implements OnInit {
 
   panelCloseState() {
     this.panelState = false;
+  }
+
+  onActionsClick(selection: RecordSelection) {
+    this.currentResulsTmpl = this.editFormTmpl;
+    let record = this.resultsSummaryDisplay[selection.recordIndex];  
+    this.initEditFieldsMap(record);
+    sessionStorage.setItem(MEMBER_RECORD, JSON.stringify(record));
+    sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.MembersMainPage);
+    this.router.navigate(['editMember']); 
+
+  }
+
+  private setSearchResultsDisplay(){
+    this.catalogResultsData = this.membersService.getSearchResults(SearchType.Members);
+    this.numOfResults = this.catalogResultsData.getHeader().totalRecords;
+    this.resultsSummaryDisplay = new Array();
+    this.getFanoId();
+    this.catalogResultsData.getResults()?.forEach(result=>{
+        let summery = result.getSummaryDisplay()
+        /* If the memeber is mine - we can edit it */
+        summery.setEnableEdit(result.getSummaryView().ID === this.fanoId);
+        this.resultsSummaryDisplay.push(summery);
+    });    
+    this.panelState = false;
+    this.resultsTemplateFactory();
   }
 
   resultsTemplateFactory() {
@@ -170,6 +243,19 @@ export class MembersSearchComponent implements OnInit {
     }
   }
 
+  onOwnerSelected() {
+    
+    sessionStorage.setItem(this.membersService.OwnerKey, this.selected);
+
+   // owner = All, Mine is included in All, therefore, no need to retrieve from nacsis
+    // get All only once
+    if (this.selected === '1' && !this.isAllRetrieved) {
+      this.getFanoId();
+      //this.fieldsMap.get(FieldName.ID).getFormControl().setValue(this.fanoId);
+      this.search();
+    }
+   }
+
   /*Search the members, calling this function from the DOM*/
   public search() : void{
     this.loading = true;
@@ -178,12 +264,31 @@ export class MembersSearchComponent implements OnInit {
     
   }
 
-  isEmpty(val) {
-    return (val === undefined || val == null || val.length <= 0) ? true : false;
-  }
+  save() {}
+
+
+  getFanoId() {
+
+    this.almaApiService.getIntegrationProfile()
+      .subscribe( {
+        next : integrationProfile => {
+          this.fanoId =  integrationProfile.libraryID;
+          },
+          error: e => {
+              this.loading = false;
+              console.log(e.message);
+              this.alert.error(this.translate.instant('General.Errors.generalError'), {keepAfterRouteChange:true});     
+            }
+        });
+}
+
+
+  // isEmpty(val) {
+  //   return (val === undefined || val == null || val.length <= 0) ? true : false;
+  // }
 
   onTitleClick(recordIndex: number) {
-    // Clicking on title will open the full view 
+    // Click on the title to open the full view mode
     let record = this.resultsSummaryDisplay[recordIndex];
     this.currentResulsTmpl = this.fullRecordTmpl;
     this.resultFullDisplay = record.getFullRecordData().getFullViewDisplay().initContentDisplay();
@@ -192,6 +297,11 @@ export class MembersSearchComponent implements OnInit {
   onBackFromFullView() {
     this.currentResulsTmpl = this.searchResultsTmpl;
     this.isRightTableOpen = false;
+}
+
+onBackFromEditForm() {
+  this.currentResulsTmpl = this.searchResultsTmpl;
+  //this.isRightTableOpen = false;
 }
 
   onFullViewInternalLinkClick(fullViewLink: FullViewLink) {
@@ -205,6 +315,7 @@ export class MembersSearchComponent implements OnInit {
                     let baseResult = this.membersService.resultsTypeFactory(SearchType.Members, catalogResults.records[0]);
                     this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
                     this.isRightTableOpen = true;
+                    this.isAllRetrieved = true;
                   } else {
                       this.resultFullLinkDisplay == null;
                       this.isRightTableOpen = false;
@@ -273,6 +384,10 @@ export class MembersSearchComponent implements OnInit {
   resultExists() {
     this.numOfResults > 0;
   }
+
+  public ACTIONS_MENU_LIST: string[] = [
+    'ILL.Results.Actions.ViewHolding', 'ILL.Results.Actions.ViewMemInfo'
+  ];
 }
 
 

@@ -17,9 +17,8 @@ export class ResultsListComponent implements OnChanges, AfterViewInit {
   @Input() pageSize: number;
   @Input() resultsSummaryDisplay: Array<IDisplayLines> = new Array();
   @Input() resultActionList: Array<string> = new Array();
-  @Input() enableEdit: boolean;
-  @Input() enableDelete: boolean;
-  @Output() onActionSelected = new EventEmitter<RecordSelection>();  
+  @Output() onActionSelected = new EventEmitter<RecordSelection>();
+  @Output() onEditRecord = new EventEmitter<RecordSelection>();    
   @Output() onTitleSelected = new EventEmitter<number>();  
   @Output() onPageSelected = new EventEmitter<PageEvent>();  
   
@@ -49,6 +48,10 @@ export class ResultsListComponent implements OnChanges, AfterViewInit {
 
   onActionsClick(selection: RecordSelection) {
     selection.recordIndex = selection.recordIndex - this.recordIndex; // Geting omly the for loop's index (i)
+    this.onActionSelected.emit(selection);
+  }
+
+  onEdidRecordClick(selection: RecordSelection) {
     this.onActionSelected.emit(selection);
   }
 

@@ -12,7 +12,6 @@ import { BaseService } from "./base.service";
 export class HoldingsService extends BaseService {
   private _holdings: Holding[];
   private _header: Header;
-  public OwnerKey: string = 'OWNER_KEY';
   private PREVIEW_MAX_LENGTH: number = 30;
 
   constructor(
@@ -25,12 +24,6 @@ export class HoldingsService extends BaseService {
   setBaseUrl(initData: InitData) : string {
     let baseUrl = super.setBaseUrl(initData);
     baseUrl = baseUrl + "holdings?";
-    return baseUrl;
-  }
-
-  setMemberBaseUrl(initData: InitData) : string {
-    let baseUrl = super.setBaseUrl(initData);
-    baseUrl = baseUrl + "member?";
     return baseUrl;
   }
 
@@ -80,24 +73,6 @@ export class HoldingsService extends BaseService {
         if (this._header.status === this.OkStatus && !this.isEmpty(this._holdings)) {
           this.updateHoldingPreview();
         }
-        return of(this._header);
-      })
-    );
-  }
-
-  
-  getMemberForILLFromNacsis(queryParams: String){
-
-    let fullUrl: string;
-    return this.getInitData().pipe(
-      mergeMap(initData => {
-        fullUrl = this.setMemberBaseUrl(initData) +  queryParams;
-        return this.getAuthToken()}),
-      mergeMap(authToken => {
-        let headers = this.setAuthHeader(authToken);
-        return this.http.get<any>(fullUrl, { headers })}),
-      mergeMap(response => {
-        this._header = response;
         return of(this._header);
       })
     );

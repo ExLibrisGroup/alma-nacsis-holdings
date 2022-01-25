@@ -99,10 +99,15 @@ export abstract class IDisplayLines {
     protected fullRecord: BaseResult;
     protected viewLines: Array<ViewLine>;
     protected titleLine: ViewLine;
+    protected enableEdit  : boolean = false;
 
 
     constructor(viewRecord: BaseResult) {
         this.fullRecord = viewRecord;
+    }
+
+    setEnableEdit(enableEdit: boolean) {
+        this.enableEdit = enableEdit;
     }
 
     getFullRecordData() {
@@ -130,10 +135,6 @@ export abstract class IDisplayLines {
 
     isEmpty(str): boolean {
         return (str == "" || str == undefined || str == null);
-    }
-
-    isListEmpty(list): boolean {
-        return (typeof list !== 'undefined' && list.length > 0);
     }
 
     toStringPairOfFields(fieldA, fieldB, labelB?: string): string {

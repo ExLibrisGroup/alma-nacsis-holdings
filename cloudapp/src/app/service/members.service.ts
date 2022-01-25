@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { mergeMap } from 'rxjs/operators';
-import { of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { CloudAppEventsService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
 import { ResultsHeader } from '../catalog/results-types/results-common';
 import { BaseService } from "./base.service";
+import { AlmaApiService } from "./alma.api.service";
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +13,7 @@ export class MembersService extends BaseService {
   
   public OwnerKey: string = 'OWNER_KEY';
   private _header: ResultsHeader;
+  protected almaApiService :AlmaApiService;
 
   constructor(
     protected eventsService: CloudAppEventsService,
@@ -26,56 +27,35 @@ export class MembersService extends BaseService {
     baseUrl = baseUrl + "members?";
     return baseUrl;
   }
+
+  saveMemberToNacsis(nacsisId: string, member: Member) {
+  
+    let fullUrl: string;
+    let body = JSON.stringify(member);
+
+    return this.getInitData().pipe(
+      mergeMap(initData => {
+        fullUrl = this.setBaseUrl(initData) + "nacsisId=" + nacsisId;
+        return this.getAuthToken()}),
+      mergeMap(authToken => {
+        let headers = this.setAuthHeader(authToken);
+        fullUrl = fullUrl + "ID=FA026267&dataBase=MEMBER"
+        return this.http.put<any>(fullUrl, body, { headers });
+      })
+    );
+  }
 }
 
-export class NacsisMembersRecord{
-  BID: string = "";
-  COPYS: string = "";
-  CRTDT: string = "";
-  FANO: string = "";
-  FAXS: string = "";
-  GRPCODE: string = "";
-  ID: string = "";
-  ILLFLG: string = "";
-  KENCODE: string = "";
-  LIBABL: string = "";
-  LOANS:string = "";
-  LOC: string = "";
-  SUM:string="";
-  ORGCODE: string = "";
-  RNWDT: string = "";
-  SETCODE: string = "";
-  STAT:string = "";
-  editable: boolean = false;
-  info: string = "";
-  libraryFullName: string = "";
-  nacsisHoldingsList: any[];
-  type: string = "";
-}
-
-export class DisplaMembersResult{
-  index: number;
-  name: string = "";
-  vol: any[];//book only
-  hlv: string = "";//serial only
-  hlyr: string = "";//serial only
-  cln: string = "";//serial only
-  ldf: string = "";//serial only
-  region: string = "";
-  establisher: string = "";
-  institutionType: string = "";
-  fee: string = "";
-  location : string = "";
-  photoCopy_fee : string = "";
-  ill : string = "";
-  stat : string = "";
-  photoCopy  : string = "";
-  loan : string = "";
-  fax : string = "";
-  isSelected:boolean = false;
-  id: string = "";
-  crtdt: string = "";
-  rnwdt : string = "";
-  fano : string = "";
-  memberinfo:any[];
+export class Member {
+    COPYS: any[];
+    LOANS: any[];
+    FAXS: any[];
+    CATTEL: any[];
+    CATDEPT: any[];
+    CATFAX: any[];
+    SYSDEPT: any[];
+    SYSTEL: any[];
+    SYSFAX: any[];
+    EMAIL: any[];
+    POLICY:any[];
 }

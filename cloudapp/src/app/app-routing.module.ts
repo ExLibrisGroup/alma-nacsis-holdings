@@ -12,6 +12,8 @@ import { searchRecordComponent } from './ILL/searchRecord/searchRecord.component
 import { HoldingSearchComponent } from './ILL/holdingSearch/holdingSearch.component';
 import { RequestFormComponent } from './ILL/requestForm/requestForm.component';
 import { MembersSearchComponent } from './members/main/main.component';
+import { EditFormComponent } from './members/edit/edit.component';
+
 
 
 const routes: Routes = [
@@ -26,6 +28,7 @@ const routes: Routes = [
   { path: 'catalog', component: CatalogMainComponent },
   { path: 'ILL', component: ILLBorrowingMainComponent },
   { path: 'members', component: MembersSearchComponent },
+  { path: 'editMember', component: EditFormComponent },
   { path: 'searchRecord', component: searchRecordComponent },
   { path: 'searchRecord/:flagBack', component: searchRecordComponent },
   { path: 'searchRecord/:nacsisId/:title/:isbn/:issn', component: searchRecordComponent },

@@ -436,7 +436,15 @@
       "CATFLG" : "Cataloging participation type",
       "COPYS":"Copy service type",
       "LOANS":"Lending service type",
-      "FAXS":"FAX service type"
+      "FAXS":"FAX service type",
+      "CATTEL":"CATTEL",
+      "CATDEPT":"CATDEPT",
+      "CATFAX":"CATFAX",
+      "SYSDEPT":"SYSDEPT",
+     "SYSTEL":"SYSTEL",
+      "SYSFAX":"SYSFAX",
+      "EMAIL":"EMAIL",
+      "POLICY":"POLICY"
     }
   }
 }
