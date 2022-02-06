@@ -1,0 +1,154 @@
+.align-space-between {
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .align-space-between-no-bottom {
+    justify-content: space-between;
+  }
+  
+  .align-to-left {
+    justify-content: flex-start;
+    margin-bottom: 15px;
+  }
+  
+  .align-to-right {
+    justify-content: flex-end;
+    margin-bottom: 15px;
+  }
+
+  .align-to-right-no-bottom {
+    justify-content: flex-end;
+  }
+
+  .top-title{
+    width: 100%;
+    background: rgb(240, 240, 240);
+  }
+
+  mat-form-field {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-right: 5px;
+    margin-left: 5px;
+  }
+
+  mat-card {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    margin-left: 0;
+    padding: 0px;
+    background: whitesmoke !important;
+  }
+
+
+
+  .form-card-parent {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    column-gap: 2%;
+    background-color: whitesmoke !important;
+    ::ng-deep .mat-form-field-wrapper {
+      padding-bottom: 5px !important;
+    }
+    // ::ng-deep .mat-form-field-flex {
+    //   height: 45px;
+    // }
+  }
+      .form-card-input-full-width {
+        padding-top: 10px;
+        width: 98.4%;
+        min-width: 285px;
+      }
+      .form-card-inputs-large {
+        padding-top: 10px;
+        width: 48.8%;
+        min-width: 285px;
+        flex-grow: 1;
+      }
+      .form-card-inputs-medium {
+        padding-top: 10px;
+        width: 32.3%;
+        min-width: 285px;
+        flex-grow: 1;
+      }
+    
+
+
+    .align-to-right {
+      justify-content: flex-end;
+      margin-bottom: 20px;
+    }
+
+  
+    div.form {
+      column-gap: 2%;
+    }
+  
+    mat-list-item {
+      i.eca-button,
+      i.cloudapp-button {
+        visibility: visible !important;
+      }
+      &:hover i.eca-button,
+      &:hover i.cloudapp-button {
+        visibility: visible;
+      }
+    }
+  
+
+  table {
+    width: 100%;
+  }
+  
+  :host ::ng-deep .mat-sort-header-container { 
+    display: flex;  
+    justify-content: center; 
+  }
+  
+  th.mat-header-cell {
+    background-color: rgb(78, 78, 78);
+    color: white;
+    text-align: center;
+  }
+  
+  .mat-column-select {
+    overflow: initial;
+  }
+  
+  td.mat-cell {
+    text-align: center;
+    border-left: 1px solid lightgray;
+    border-right: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+  }
+  
+  td.mat-cell:first-child {
+    width: 3%;
+    padding-left: 0px;
+    border-left: 1px solid lightgray;
+  }
+  
+  td.mat-cell:last-child {
+    padding-right: 0px;
+  }
+  
+  
+  th.mat-header-cell:first-child {
+    padding-left: 5px;
+    border-left: 1px solid lightgray;
+  }
+  
+  th.mat-header-cell:last-child {
+    padding-right: 0px;
+  }
+
+  .mat-column-id{
+    background-color: rgb(236, 236, 236);
+  }
+  .mat-column-index{
+    width: 7%;
+    background-color: rgb(236, 236, 236);
+  }

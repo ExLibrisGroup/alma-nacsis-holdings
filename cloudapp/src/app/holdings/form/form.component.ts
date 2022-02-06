@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, Holding, HoldingsBook, HoldingsSerial, Header } from '../../service/holdings.service';
 import { holdingFormGroup } from './form-utils';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { Action } from '../../user-controls/result-card/result-card.component';
 
 
 @Component({
@@ -42,6 +43,10 @@ export class FormComponent implements OnInit {
     private nacsis: HoldingsService,
     private alert: AlertService
   ) { }
+
+  public ACTIONS_MENU_LIST = new Array(
+    new Action('Catalog.Results.Actions.Delete', false),
+  );
 
   ngOnInit() {
     this.mmsId = this.route.snapshot.params['mmsId'];
@@ -199,6 +204,12 @@ export class FormComponent implements OnInit {
 
   isBook(): boolean {
     return this.type === this.book;
+  }
+
+  getResultActionList() {
+    const isEditable = true;//this.record.isEditable;
+    return this.ACTIONS_MENU_LIST.filter(
+      action  => action.avliableForAll || isEditable);
   }
 
 }

@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { SearchField } from './search-form-utils';
+import { SearchField, SelectSearchField } from './search-form-utils';
 import { MatSelectChange } from '@angular/material/select';
 
 
@@ -25,6 +25,10 @@ export class SearchFormComponent implements OnChanges {
 
     selectDatabase(db: MatSelectChange) {
       this.selectedDatabase.emit(db.value);
+    }
+
+    isSelectedSearchField(value) : boolean {
+      return value instanceof SelectSearchField;
     }
 
 

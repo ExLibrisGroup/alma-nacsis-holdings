@@ -1,0 +1,318 @@
+<div class="align-space-between" fxLayout="row">
+    <a>
+        <button mat-flat-button color="secondary" (click)="backToHoldingSearch()">
+            <mat-icon>arrow_back_ios</mat-icon>
+            {{'General.Back' | translate}}
+        </button>
+    </a>
+    <div class="align-to-right" fxLayout="row">
+        <button mat-flat-button color="primary" aria-label="search" (click)="order()" [disabled]="">
+            {{ 'General.Order' | translate }}
+        </button>
+    </div>
+</div>
+
+<div class="top-title">
+    <h3>{{mmsTitle}} ({{nacsisId}})</h3>
+</div>
+
+<div class="loading-shade" *ngIf="loading">
+    <mat-progress-spinner mode="indeterminate" diameter="50">
+    </mat-progress-spinner>
+</div>
+
+<mat-accordion multi>
+    <mat-expansion-panel (opened)="panelOpenStateResourceInformation()" (closed)="panelCloseStateResourceInformation()"
+        [expanded]="panelStateResourceInformation">
+        <mat-expansion-panel-header>
+            <mat-panel-title>{{ 'ILL.RequestForm.ResourceInformation' | translate }}</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        
+                <mat-card class="form-card-parent">
+                    <form [formGroup]="formResourceInformation" >
+                        <mat-form-field class="form-card-inputs-medium" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.RequestType</mat-label>
+                            <mat-select [formControl]="requestType" required (selectionChange)=onRequestTypeSelected()>
+                                <mat-option *ngFor="let requestType of requestTypeList" [value]="requestType.value">
+                                    {{requestType.viewValue | translate}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-medium" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.PayClass</mat-label>
+                            <mat-select [formControl]="payClass" required>
+                                <mat-option *ngFor="let payClass of payClassList" [value]="payClass.value">
+                                    {{payClass.viewValue | translate}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="payClass.hasError('required')">
+                                {{'ILL.Errors.warningSelectValue' | translate}}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-medium" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.CopyType</mat-label>
+                            <mat-select [formControl]="copyType" >
+                                <mat-option *ngFor="let copyType of copyTypeList" [value]="copyType.value">
+                                    {{copyType.viewValue | translate}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="copyType.hasError('required')">
+                                {{'ILL.Errors.warningSelectValue' | translate}}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-medium" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.SendingMethod</mat-label>
+                            <mat-select [formControl]="sendingMethod">
+                                <mat-option *ngFor="let sendingMethod of sendingMethodList"
+                                    [value]="sendingMethod.value">
+                                    {{sendingMethod.viewValue | translate}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-medium" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.ExternalRequestID</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="ONO">
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-medium" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.DefermentPermitNumber</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="PRMT">
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-medium" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.NACSISBibliographicID</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="BIBID" 
+                                >
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-medium" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.StandardNumber</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="STDNO"
+                                >
+                        </mat-form-field>
+
+
+                        <mat-form-field class="form-card-inputs-medium" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.Volume</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="VOL">
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-medium" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.Page</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="PAGE">
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-medium" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.Year</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="YEAR">
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-input-full-width" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.BibliographicMetadata</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="BIBNT" [errorStateMatcher]="matcher"
+                                required>
+                            <mat-error *ngIf="BIBNT.hasError('required')">
+                                {{'ILL.Errors.warningInputValue' | translate}}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-input-full-width" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.TreatiseRelatedMatters</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="ARTCL">
+                        </mat-form-field>
+
+                    </form>
+
+                </mat-card>
+      
+
+    </mat-expansion-panel>
+    <br>
+
+    <mat-expansion-panel (opened)="panelOpenStateRota()" (closed)="panelCloseStateRota()" [expanded]="panelStateRota">
+        <mat-expansion-panel-header>
+            <mat-panel-title>{{ 'ILL.RequestForm.Rota' | translate }}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <form [formGroup]="formRotamation">
+            <table mat-table [dataSource]="dataSourceRota">
+
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef>
+                    </th>
+                    <td mat-cell *matCellDef="let element">{{element.index}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="index">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.HoldingSearchResult.Lender' | translate}}</th>
+                    <td mat-cell *matCellDef="let element">{{'ILL.HoldingSearchResult.Lender' | translate}}
+                        #{{element.index}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="fano">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.RequestForm.FANO' | translate}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <input cdkTextareaAutosize matInput value="{{element.fano}}"
+                            formControlName="HMLID{{element.index}}">
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.RequestForm.NAME' | translate}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <input cdkTextareaAutosize matInput value="{{element.name}}"
+                            formControlName="HMLNM{{element.index}}">
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="location">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.HoldingSearchResult.LOC' | translate}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <input cdkTextareaAutosize matInput value=" {{element.location}}"
+                            formControlName="LOC{{element.index}}">
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="vol">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.HoldingSearchResult.Volume' | translate}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <input cdkTextareaAutosize matInput value="{{showVolDetal(element,'VOL')}}"
+                            formControlName="VOL{{element.index}}">
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="callNumber">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.HoldingSearchResult.CallNumber' | translate}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <input cdkTextareaAutosize matInput value="{{showVolDetal(element,'CLN')}}"
+                            formControlName="CLN{{element.index}}">
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="registrationNumber">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.HoldingSearchResult.RegistrationNumber' | translate}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <input cdkTextareaAutosize matInput value="{{showVolDetal(element,'RGTN')}}"
+                            formControlName="RGTN{{element.index}}">
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="bid">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{'ILL.HoldingSearchResult.BID' | translate}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <input cdkTextareaAutosize matInput value="{{nacsisId}}">
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="getDisplayedColumns()"></tr>
+                <tr mat-row *matRowDef="let element; columns: getDisplayedColumns();" class="expand-element-row"></tr>
+            </table>
+        </form>
+    </mat-expansion-panel>
+    <br>
+
+    <mat-expansion-panel (opened)="panelOpenStateRequestInformation()" (closed)="panelCloseStateRequestInformation()"
+        [expanded]="panelStateRequestInformation">
+        <mat-expansion-panel-header>
+            <mat-panel-title>{{ 'ILL.RequestForm.RequesterInformation' | translate }}</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="form-wrapper">
+            <div class="form-cards">
+                <mat-card>
+                    <form [formGroup]="formRequesterInformation">
+                        <mat-form-field class="form-card-inputs-large" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.BibliographicAuthority</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="BVRFY">
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-large" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.CollectionAuthority</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="HVRFY">
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-medium" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.ApplicantName</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="CLNT">
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-medium" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.ApplicantAffiliation</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="CLNTP">
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-medium" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.DateNeededBy</mat-label>
+                            <input matInput [matDatepicker]="picker" [formControl]="ODATE">
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+
+                        <!-- <mat-form-field class="form-card-input-full-width" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.Comments</mat-label>
+                            <mat-select [formControl]="commentsType">
+                                <mat-option *ngFor="let commentsType of commentsTypeList" [value]="commentsType.value">
+                                    {{commentsType.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field> -->
+
+                        <mat-form-field class="form-card-input-full-width" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.Comments</mat-label>
+                            <input matInput formControlName="SENDCMNT">
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-large" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.RequesterStaff</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="OSTAF" [errorStateMatcher]="matcher"
+                                required>
+                            <mat-error *ngIf="OSTAF.hasError('required')">
+                                {{'ILL.Errors.warningInputValue' | translate}}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-large" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.RequesterAddress</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="OADRS" [errorStateMatcher]="matcher"
+                                required>
+                            <mat-error *ngIf="OADRS.hasError('required')">
+                                {{'ILL.Errors.warningInputValue' | translate}}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-input-full-width" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.LocalData</mat-label>
+                            <input matInput formControlName="OLDF">
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-large" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.LocalAccountingData</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="OLDAF">
+                        </mat-form-field>
+
+                        <mat-form-field class="form-card-inputs-large" appearance="outline">
+                            <mat-label translate>ILL.RequestForm.ElectronicShippingAddress</mat-label>
+                            <input cdkTextareaAutosize matInput formControlName="OEDA">
+                        </mat-form-field>
+
+                    </form>
+                </mat-card>
+            </div>
+        </div>
+    </mat-expansion-panel>
+
+</mat-accordion>
+
+<br><br>

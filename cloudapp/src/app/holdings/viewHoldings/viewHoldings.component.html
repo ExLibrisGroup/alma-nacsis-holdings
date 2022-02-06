@@ -39,27 +39,46 @@
     <mat-list role="list">
       <mat-list-item role="listitem" *ngFor="let holding of getDisplayHoldings(); index as i">
         <mat-card class="holdings-cards">
-          <div fxLayout="row">
-            <div class="holdings-cards-index">
-              <span><strong>{{i + 1}}</strong></span>
+          <div>
+            <div fxLayout="row">
+              <div class="holdings-cards-index">
+                <span><strong>{{i + 1}}</strong></span>
+              </div>
+              <mat-card-title>
+                <a [routerLink]="['/holdings', mmsId, 'view', holding.ID, mmsTitle]">
+                  {{'Holdings.ViewHoldings.ID' | translate}}: {{holding.ID}}
+                </a>
+              </mat-card-title>
             </div>
-            <mat-card-title>
-              <a [routerLink]="['/holdings', mmsId, 'view', holding.ID, mmsTitle]">
-                {{'Holdings.ViewHoldings.ID' | translate}}: {{holding.ID}}
-              </a>
-            </mat-card-title>
+            <mat-card-content class="holding-card-content">
+              <span><strong>{{'Holdings.ViewHoldings.Library' | translate}}: {{holding.libraryFullName}}</strong></span>
+              <span><strong>{{'Holdings.ViewHoldings.Location' | translate}}: {{holding.LOC}}</strong></span>
+              <span><strong>{{holding.info}}</strong></span>
+            </mat-card-content>
           </div>
-          <mat-card-content class="holding-card-content">
-            <span><strong>{{'Holdings.ViewHoldings.Library' | translate}}: {{holding.libraryFullName}}</strong></span>
-            <span><strong>{{'Holdings.ViewHoldings.Location' | translate}}: {{holding.LOC}}</strong></span>
-            <span><strong>{{holding.info}}</strong></span>
-          </mat-card-content>
-          <mat-card-actions class="holding-card-actions" *ngIf="holding.editable">
+
+
+          <div class="result-actions" *ngIf="getResultActionList()?.length > 0">
+            <button mat-button class="result-actions-button" [matMenuTriggerFor]="actionsMenu" color="primary">
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+            <mat-menu #actionsMenu="matMenu">
+              <div *ngFor="let item of getResultActionList(); index as Actionsindex">
+                <button mat-menu-item type="submit" (click)="onActionsClick(holding, Actionsindex)">
+                  {{ item.label | translate }}
+                </button>
+              </div>
+            </mat-menu>
+          </div>
+
+
+
+          <!-- <mat-card-actions class="holding-card-actions" *ngIf="holding.editable">
             <i class="uxf-icon uxf-pencil eca-button" aria-label="Edit"
               [routerLink]="['/holdings', mmsId, 'edit', holding.ID, mmsTitle]"></i>
             <i class="uxf-icon uxf-trash eca-button" style="margin-left: 20px;" aria-label="Delete"
               (click)="delete(mmsId, holding.ID)"></i>
-          </mat-card-actions>
+          </mat-card-actions> -->
         </mat-card>
       </mat-list-item>
     </mat-list>

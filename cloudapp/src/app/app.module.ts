@@ -23,15 +23,35 @@ import { HelpComponent } from './holdings/help/help.component';
 
 // Catalog
 import { CatalogMainComponent } from './catalog/main/main.component';
-import { FullviewDisplayComponent } from './catalog/full-view-display/full-view-display.component';
 
 // User Controls
 import { SearchFormComponent } from './user-controls/search-form/search-form.component';
 import { ResultsListComponent } from './user-controls/results-list/results-list.component';
 import { ResultCardComponent } from './user-controls/result-card/result-card.component';
+import { RecordsListComponent } from './user-controls/records-list/records-list.component';
+import { RecordCardComponent } from './user-controls/record-card/record-card.component';
+import { SelectableResultsListComponent } from './user-controls/selectable-results-list/selectable-results-list.component';
+import { SelectableResultCardComponent } from './user-controls/selectable-result-card/selectable-result-card.component';
+import { FullviewDisplayComponent } from './user-controls/full-view-display/full-view-display.component';
+import { MultiOccurrenceControllersComponent } from './user-controls/forms/multi-occurrence-controllers/multi-occurrence-controllers.component';
+import { FormMultiOccurrenceComponent } from './user-controls/forms/form-multi-occurrence/form-multi-occurrence.component';
+import { FormFieldsComponent } from './user-controls/forms/form-fields/form-fields.component';
+
+// ILL
+import { ILLBorrowingMainComponent } from './ILL/main/main.component';
+import { searchRecordComponent } from './ILL/searchRecord/searchRecord.component';
+import { HoldingSearchComponent } from './ILL/holdingSearch/holdingSearch.component';
+import { RequestFormComponent } from './ILL/requestForm/requestForm.component';
+
+// Member
+import { MembersSearchComponent } from './members/main/main.component';
+import { EditFormComponent } from './members/edit/edit.component';
 
 
-
+//Paginator
+import {MatPaginatorModule, MatPaginatorIntl } from '@angular/material/paginator';
+import { TranslateService } from '@ngx-translate/core';
+import { PaginatorIntlService } from './service/paginator.translate';
 
 export function getToastrModule() {
   return ToastrModule.forRoot({
@@ -56,6 +76,19 @@ export function getToastrModule() {
       ResultsListComponent,
       ResultCardComponent,
       FullviewDisplayComponent,
+      ILLBorrowingMainComponent,
+      RecordsListComponent,
+      RecordCardComponent,
+      searchRecordComponent,
+      SelectableResultsListComponent,
+      SelectableResultCardComponent,
+      HoldingSearchComponent,
+      RequestFormComponent,
+      MembersSearchComponent,
+      EditFormComponent,
+      MultiOccurrenceControllersComponent,
+      FormMultiOccurrenceComponent,
+      FormFieldsComponent
    ],
    entryComponents: [ConfirmationDialog],
    imports: [
@@ -73,7 +106,12 @@ export function getToastrModule() {
       AlertModule,
       MenuModule,
    ],
-   providers: [],
+   providers: [
+      {
+         provide: MatPaginatorIntl,
+         useClass: PaginatorIntlService,
+       },
+   ],
    bootstrap: [
       AppComponent
    ]

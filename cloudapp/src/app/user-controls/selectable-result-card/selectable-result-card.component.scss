@@ -1,0 +1,73 @@
+@mixin flexText {
+  display: flex;
+}
+
+@mixin filedPadding {
+  padding-right: 3px;
+}
+
+
+.result-card{
+  @include flexText;
+  justify-content: space-between;
+  width: 100%;
+  background-color: whitesmoke !important;
+}
+
+.card-title {
+  @include flexText;
+  font-weight: bold;
+  margin-left: 20px;
+}
+
+.card-title-field {
+  @include flexText;
+}
+
+.card-content-line {
+  @include flexText;
+  flex-wrap: wrap;
+}
+
+.card-content-field {
+  @include flexText;
+}
+
+.card-content-field-label {
+  font-weight: bold;
+  @include filedPadding;
+}
+
+.card-content-field-content {
+  @include flexText;
+  @include filedPadding;
+}
+
+
+/*
+.result-card-index {
+  margin-right: 20px;
+}
+
+.result-card-text-content {
+  margin-bottom: 5px;
+}
+
+.result-line-field {
+  padding-right: 8px;
+}
+
+.label {
+  font-weight: bold;
+}
+
+*/
+
+.record-card-radio {
+  margin:auto 0 ;
+}
+
+a,
+a label {
+    cursor: pointer;
+}

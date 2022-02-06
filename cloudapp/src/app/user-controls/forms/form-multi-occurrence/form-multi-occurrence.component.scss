@@ -1,0 +1,43 @@
+@import '../../../../main.scss';
+
+@mixin fields-border {
+  border: solid 1px rgba(0, 0, 0, 0.12);
+  border-radius: 5px;
+  padding: 10px;
+  padding-bottom: 5px;
+}
+
+.all-occurrences {
+    display: flex;
+    flex-wrap: wrap;
+    @include fields-border();
+  }
+
+.one-occurrence {
+  // inner style
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  column-gap: 2%;
+  width: 100%;
+  // outer style
+  @include fields-border();
+  margin-bottom: 8px;
+}
+
+.form-fields {
+  @include form-fields-parent;
+  width: 100%;
+}
+
+@include form-feild-full-width;
+  
+@include form-field-half;
+
+@include form-field-third;
+  
+@include form-field-quarter;
+
+multi-occurrence-controllers {
+  margin-bottom: 8px !important;
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 //import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../../dialog/confirmation-dialog.component';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
+import { Action, RecordSelection } from '../../user-controls/result-card/result-card.component';
 
 @Component({
   selector: 'app-holdings',
@@ -27,11 +28,11 @@ export class HoldingsComponent implements OnInit {
   _owner: string = 'All';
   backSession;//: AppRoutingState;
 
+  @Output() onActionSelected = new EventEmitter<RecordSelection>(); 
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    //private http: HttpClient,
     private translate: TranslateService,
     private nacsis: HoldingsService,
     private dialog: MatDialog,
@@ -43,6 +44,11 @@ export class HoldingsComponent implements OnInit {
       { id: "1", name: this.translate.instant('Holdings.ViewHoldings.Mine') }
     ];
   }
+
+  public ACTIONS_MENU_LIST = new Array(
+    new Action('Catalog.Results.Actions.Edit', false),
+    new Action('Catalog.Results.Actions.Delete', false),
+  );
 
   ngOnInit() {
     this.mmsId = this.route.snapshot.params['mmsId'];
@@ -194,5 +200,24 @@ export class HoldingsComponent implements OnInit {
 
   onCloseClick() {
     this.isErrorMessageVisible = false;
+  }
+
+  getResultActionList() {
+    const isEditable = true;//this.record.isEditable;
+    return this.ACTIONS_MENU_LIST.filter(
+      action  => action.avliableForAll || isEditable);
+  }
+
+  onActionsClick(holding: Holding, index : number) {
+    switch (index) {
+      case 0: // Edit
+      this.router.navigate(['/holdings', this.mmsId, 'edit', holding.ID, this.mmsTitle]);
+        break;
+      case 1: // Delete
+        this.delete(this.mmsId, holding.ID) 
+        break;
+      default: {
+      }
+    }
   }
 }

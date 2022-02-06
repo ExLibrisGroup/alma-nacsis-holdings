@@ -1,0 +1,10 @@
+.align-space-between {
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+::ng-deep .cdk-overlay-pane
+{
+  min-width: auto !important;
+  width: 12%;
+}

@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { AppService } from '../service/app.service';
-import { CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
-import { TranslateService } from '@ngx-translate/core';
 import { ROUTING_STATE_KEY, AppRoutingState } from '../service/base.service';
 
 
@@ -35,19 +32,19 @@ import { ROUTING_STATE_KEY, AppRoutingState } from '../service/base.service';
                 icon:   'uxf-icon uxf-background-color',
                 link:   'catalog'
             },
-            // {
-                // title:  'MainMenu.Member.Title',
-                // text:   'MainMenu.Member.Text',
-                // icon:   'uxf-icon uxf-switch',
-                // link:   'main'
-            // },
-            // {
-                // title:  'MainMenu.ILL.Title',
-                // text:   'MainMenu.ILL.Text',
-                // icon:   'uxf-icon uxf-external-link',
-                // link:   'ILL'
-            // },
-        );
+            {
+                title:  'MainMenu.Members.Title',
+                text:   'MainMenu.Members.Text',
+                icon:   'uxf-icon uxf-switch',
+                link:   'members'
+            },
+            {
+                title:  'MainMenu.ILL.Title',
+                text:   'MainMenu.ILL.Text',
+                icon:   'uxf-icon uxf-external-link',
+                link:   'ILL'
+            },
+            );
     }
 
   }

@@ -1,0 +1,90 @@
+<div class="align-space-between" fxLayout="row">
+  <h1>{{'Members.Main.SerachMembers' | translate}}</h1>
+</div>
+<div class="align-space-between" fxLayout="row">
+  <a>
+    <button mat-flat-button color="secondary" [routerLink]="['']">
+      <mat-icon>arrow_back_ios</mat-icon>
+      {{ 'General.BackToMenu' | translate }}
+    </button>
+  </a>
+  <div class="align-to-right" fxLayout="row">
+    <button style="margin-right: 15px" mat-flat-button color="secondary" (click)="clear()">
+      {{ 'General.Clear' | translate }}
+    </button>
+    <button mat-flat-button color="primary" aria-label="search" (click)="search()">
+      {{ 'General.Search' | translate }}
+    </button>
+  </div>
+</div>
+<br>
+
+<div>
+<mat-accordion>
+  <mat-expansion-panel (opened)="panelOpenState()" (closed)="panelCloseState()" [expanded]="panelState">
+    <mat-expansion-panel-header>
+      <mat-panel-title *ngIf="!panelState">{{ 'Catalog.Form.RefineSearch' | translate }}</mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-card class="form-card" color="secondary">
+      <form-fields [formFields]="getFieldsList()"></form-fields>
+    </mat-card>
+    <br>
+  </mat-expansion-panel>
+</mat-accordion>
+</div>
+
+
+<div class="loading-shade" *ngIf="loading">
+  <mat-progress-spinner mode="indeterminate" diameter="50">
+  </mat-progress-spinner>
+</div>
+<br>
+<div class="holdings-drop-down">
+  <mat-form-field class="holdings-mat-drop-down">
+    <mat-placeholder>{{'Holdings.ViewHoldings.Owner' | translate}}</mat-placeholder>
+    <mat-select [(value)]="selected" (selectionChange)=onOwnerSelected()>
+      <mat-option *ngFor="let owner of owners" [value]="owner.id">
+        {{owner.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<ng-container *ngTemplateOutlet="currentResulsTmpl"></ng-container>
+
+
+<ng-template #searchResults>
+  <br>
+  <results-list [numOfResults]="getNumOfRecords()" [pageIndex]="pageIndex" [pageSize]="pageSize"
+    [resultsSummaryDisplay]="resultsSummaryDisplay" [resultActionList]="getActionMenu()"
+    (onTitleSelected)="onTitleClick($event)" (onActionSelected)="onActionsClick($event)" (onPageSelected)="onPageAction($event)">
+  </results-list>
+</ng-template>
+
+<ng-template #noResults>
+  <div class="noResults">
+    <span class="uxf-icon uxf-list" style="font-size: 3em;"></span>
+    <h2>{{'Catalog.Results.NoRecordsExist' | translate}}</h2>
+  </div>
+  <br><br><br>
+</ng-template>
+
+
+<ng-template #notSearched>
+  <div class="notSearched"></div>
+</ng-template>
+
+
+<ng-template #fullRecord>
+  <button mat-flat-button color="secondary" (click)="onBackFromFullView()">
+    <mat-icon>arrow_back_ios</mat-icon>
+    {{'General.Back' | translate}}
+  </button>
+  <br><br><br>
+  <div class="full-view">
+    <div class="full-view-left-table" *ngIf="!(isColapsedMode && isRightTableOpen)">
+      <full-view-display [resultFullDisplay]="resultFullDisplay" (onFullViewLinkSelected)="null" (onFullViewLinkSelected)="null">
+      </full-view-display>
+    </div>
+  </div>
+</ng-template>

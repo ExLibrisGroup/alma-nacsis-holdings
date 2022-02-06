@@ -68,10 +68,11 @@
 
   "Holdings": {
     "Main": {
-      "Intro": "NACSISから所蔵を取得するための書誌レコードを選択してください：",
+      "Intro": "NACSISから所蔵を取得するための書誌レコードを選択してください:",
       "NoRecords": "NACSISの所蔵を閲覧表示するため、該当の書誌レコードに移動します。",
       "SelectBib": "書誌レコードの選択",
-      "RetrieveHoldings": "所蔵の検索"
+      "RetrieveHoldings": "所蔵の検索",
+      "SerachHoldings":"Search for NACSIS Holdings"
     },
     "ViewHoldings": {
       "Owner": "所蔵館",
@@ -127,6 +128,251 @@
       }
     }
   },
+  "Members" : {
+    "Main" : {
+      "SerachMembers":"Search for NACSIS member information"
+    },
+    "MembersSearch" : {
+      "Name" : "Participating organization name"
+    }
+  },
+  "ILL": {
+    "Main": {
+      "Intro": "依頼するレコードを選択してください:",
+      "NoRecords": "新規ILL依頼を作成するために、依頼一覧や書誌レコードを開いて、または検索してください.",
+      "SelectBib": "タイトルを選択してください",
+      "NewSearchInNACSIS": "新しい検索",
+      "CreateILLSuccess":"ILL依頼が作成されました。依頼番号:"
+    },
+    "DisplayCard": {
+      "By":"By",
+      "Title":"タイトル",
+      "Language":"Language",
+      "ISBN":"ISBN",
+      "ISSN":"ISSN",
+      "Others":"その他",
+      "NACSIS_ID":"NACSIS ID"
+    },
+    "Results": {
+      "Title": "レコード件数",
+      "NoRecordsExist": "レコードがありません",
+      "By": "By",
+      "Book": "Book",
+      "NACSISID": "NACSIS ID",
+      "ISBN": "ISBN",
+      "ISSN": "ISSN",
+      "Subjects": "Subjects",
+      "Actions" : {
+        "ViewHolding" : "所蔵を見る",
+        "ViewMemInfo" : "参加組織の詳細を見る"
+      },
+      "SelectedLenders":"選択された受付館",
+      "RowSelected":"行が選択されました",
+      "ClearSelection":"クリア",
+      "MaxRowSelected":"最大数に達しています"
+    },
+    "HoldingSearch":{
+       "ParticipatingOrgCode":"参加組織コード",
+       "Volume":"巻冊次等",
+       "Year":"Year",
+       "Location":"配置コード",
+       "RegionCode":"地域(県)コード",
+       "EstablisherType":"設置者種別",
+       "InstitutionType":"機関種別",
+       "ILLParticipationType":"ILL参加種別",
+       "ServiceStatus":"サービスステータス",
+       "OffsetCharge":"料金相殺グループ",
+       "CopyServiceType":"複写サービス種別",
+       "LendingServiceType":"貸借サービス種別",
+       "FAXServiceType":"FAXサービス種別"
+    },
+    "HoldingSearchResult":{
+      "INDEX":"ID",
+      "CHECKBOX":"check",
+      "NAME":"Name",
+      "VOL":"VOL",
+      "HLV":"HLV",
+      "HLYR":"HLYR",
+      "BID":"BID",
+      "COPYS":"Photocopy",
+      "CRTDT":"Create date",
+      "FANO":"Member ID",
+      "FAXS":"FAXS",
+      "GRPCODE":"Offset charge",
+      "ILLFLG":"ILL",
+      "KENCODE":"Region",
+      "LIBABL":"Name",
+      "LOC":"LOC",
+      "LOANS":"LOANS",
+      "ORGCODE":"Institution type",
+      "RNWDT":"Update date",
+      "SETCODE":"Establisher",
+      "STAT":"STAT",
+      "type":"Type",
+      "SUM":"Photocopy fee",
+      "Volume":"VOL",
+      "RGNT":"RGNT",
+      "LDF":"LDF",
+      "CLN":"CLN",
+      "CallNumber":"CLN",
+      "RegistrationNumber":"RGTN",
+      "Lender":"Lender"
+   },
+   "RequestForm":{
+    "ResourceInformation":"リソース情報",
+    "Rota":"ロタ",
+    "RequesterInformation":"リクエスター情報",
+    "RequestType":"依頼種別",
+    "PayClass":"支払区分",
+    "CopyType":"複写種別",
+    "SendingMethod":"送付方法",
+    "ExternalRequestID":"依頼番号",
+    "DefermentPermitNumber":"徴収猶予許可番号",
+    "NACSISBibliographicID":"NC書誌ID",
+    "StandardNumber":"標準番号",
+    "Volume":"巻冊次等",
+    "Page":"Page",
+    "Year":"Year",
+    "BibliographicMetadata":"書誌事項",
+    "TreatiseRelatedMatters":"論文関係事項",
+    "FANO":"所蔵館コード",
+    "NAME":"所蔵館略称",
+    "BibliographicAuthority":"書誌典拠",
+    "CollectionAuthority":"所蔵典拠",
+    "ApplicantName":"申込者氏名",
+    "ApplicantAffiliation":"申込者所属",
+    "DateNeededBy":"依頼日",
+    "Comments":"コメント",
+    "RequesterStaff":"依頼館担当者",
+    "RequesterAddress":"依頼館宛名",
+    "LocalData":"ローカルデータ",
+    "LocalAccountingData":"ローカル会計データ",
+    "ElectronicShippingAddress":"電子的配送先アドレス"
+    },
+    "MemberInfo":{
+      "MemberID":"Member ID:",
+      "CreateDate":"Create date:",
+      "UpdateDate":"Update date:",
+      "ParticipatingOrganizationName":"参加組織名称",
+      "ParticipatingOrganizationAbbreviation":"参加組織略称",
+      "Address":"住所",
+      "PostalCode":"郵便番号:",
+      "StreetAddress":"住所:",
+      "ILLDepartment":"ILL担当部局",
+      "ILLPersonInCharge":"ILL担当者",
+      "PhoneNumber":"電話番号",
+      "Ext":"内線.",
+      "Fax":"FAX番号",
+      "EstablisherType":"設置者種別",
+      "InstitutionType":"機関種別",
+      "CATParticipationType":"CAT参加種別",
+      "ILLParticipationType":"ILL参加種別",
+      "CopyServiceType":"複写サービス種別",
+      "LendingServiceType":"貸借サービス種別",
+      "FAXServiceType":"FAXサービス種別",
+      "ServiceStatus":"サービスステータス",
+      "CopyReceptionHallCode":"複写受理館コード",
+      "RentalAndBorrowingCenterCode":"貸借受理館コード",
+      "LendingPeriod":"貸借期間",
+      "RegionPrefectureCode":"地域(県)コード",
+      "CatalogingDepartment":"目録担当部局名",
+      "CatPhoneNumFirst":"目録担当電話番号(内線)",
+      "CatPhoneNum":"目録担当電話番号.:",
+      "CatFax":"目録担当FAX番号",
+      "SystemDepartment":"システム担当部局",
+      "SystemPhoneNum":"システム担当部局電話番号",
+      "SystemFax":"システム担当部局FAX番号",
+      "Email":"E-mailアドレス",
+      "ILLPolicy":"レンディングポリシー",
+      "LocationCode":"配置コード",
+      "OffsetCode":"料金相殺グループ"
+    },
+    "OptionViewValue": {
+      "SETCODE" : {
+        "National" : "国立",
+        "Public" : "公立",
+        "Private" : "私立",
+        "SpecialPublicCorporation" : "特殊法人",
+        "Overseas" : "海外",
+        "TrainingTesting" : "研修・テスト用",
+        "Other":"その他"
+      },
+      "ORGCODE" : {
+        "University" : "大学",
+        "JuniorCollege" : "短期大学",
+        "CollegeOfTechnology" : "高等専門学校",
+        "InterResearchInstitutes" : "大学共同利用機関等",
+        "FacilitiesOfOtherMinistries" : "他省庁の施設機関等",
+        "TrainingTesting" : "研修・テスト用",
+        "Other":"その他"
+      },
+      "GRPCODE" : {
+        "None":"",
+        "ParticipateILLOffsetService" : "相殺"
+      },
+      "ILLFLG" : {
+        "None":"",
+        "Participate" : "参加",
+        "DoNotParticipate" : "未参加"
+      },
+      "STAT" : {
+        "None":"",
+        "Available" : "サービス可",
+        "NotAvailable" : "サービス不可"
+      },
+      "COPYS" : {
+        "Accept" : "受け付ける",
+        "AcceptAtOtherCounters" : "他の窓口で受け付ける",
+        "NotAccepted":"受け付けない"
+      },
+      "LOANS" : {
+        "Accept" : "受け付ける",
+        "AcceptAtOtherCounters" : "他の窓口で受け付ける",
+        "NotAccepted":"受け付けない"
+      },
+      "FAXS" : {
+        "Available" : "サービス可",
+        "ConditionallyAvailable" : "条件付でサービス可",
+        "NotAvailable":"サービス不可"
+      },
+      "requestTypeList" : {
+        "Copy" : "複写",
+        "Loan" : "貸出"
+      },
+      "payClassList" : {
+        "ResearchExpenses" : "産学連携等研究費",
+        "UniversityHospital" : "大学附属病院",
+        "NationalSchool" : "国立学校",
+        "PrivateExpense" : "私費",
+        "Laboratory" : "研究所"
+      },
+      "copyTypeList" : {
+        "ElectronicCopy" : "電子複写",
+        "FAX" : "FAX",
+        "eDDS" : "eDDS",
+        "Stretch" : "引き伸ばし",
+        "Microfitsyu" : "マイクロフイツシユ",
+        "Microfilm" : "マイクロフイルム",
+        "ReaderPrinter" : "リーダプリンタ",
+        "Slide" : "スライド",
+        "CopyOrder" : "複写取寄"
+      },
+      "sendingMethodList" : {
+        "Regular" : "普通",
+        "Express" : "速達",
+        "DDS" : "DDS",
+        "FAX" : "FAX",
+        "RegisteredMail" : "書留",
+        "RegularMail" : "普通郵便",
+        "Mail" : "郵送",
+        "eDDS" : "eDDS"
+      }
+    },
+      "Errors": {
+        "warningSelectValue":"値を選択してください",
+        "warningInputValue":"値を入力してください"
+      }
+  },
 
   "Config": {
     "Title": "設定",
@@ -134,6 +380,14 @@
     "Fields": {
       "Code": "NACSISのコード"
     }
+  },
+
+  "PagePaginator": {
+    "itemsPerPageLabel": "表示行数:",
+    "firstPageLabel": "最初のページ",
+    "nextPageLabel": "次のページ",
+    "previousPageLabel": "前のページ",
+    "lastPageLabel": "最終のページ"
   },
 
   "Help": {

@@ -28,14 +28,14 @@
     </mat-card-content>
   </div>
 
-  <div class="result-actions">
+  <div class="result-actions" *ngIf="resultActionList?.length > 0">
     <button mat-button class="result-actions-button" [matMenuTriggerFor]="actionsMenu" color="primary">
       <mat-icon>more_horiz</mat-icon>
     </button>
-    <mat-menu #actionsMenu="matMenu">
-      <div *ngFor="let item of resultActionList; index as Actionsindex">
+    <mat-menu #actionsMenu="matMenu" >
+      <div *ngFor="let item of getResultActionList(); index as Actionsindex">
         <button mat-menu-item type="submit" (click)="onActionsClick(recordIndex, Actionsindex)">
-          {{ item | translate }}
+          {{ item.label | translate }}
         </button>
       </div>
     </mat-menu>

@@ -1,7 +1,6 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, AfterViewInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { IDisplayLines, ViewLine, ViewField } from '../../catalog/results-types/results-common';
-
 
 @Component({
     selector: 'result-card',
@@ -13,8 +12,9 @@ export class ResultCardComponent implements OnInit {
 
   @Input() recordIndex: number;
   @Input() record: IDisplayLines;
-  @Input() resultActionList: Array<string> = new Array();
-  @Output() onActionSelected = new EventEmitter<RecordSelection>();  
+  @Input() resultActionList: Array<Action>;
+  @Output() onActionSelected = new EventEmitter<RecordSelection>(); 
+  @Output() onEditRecord = new EventEmitter<RecordSelection>();  
   @Output() onTitleSelected = new EventEmitter<number>();  
   public titleDisplay: Array<ViewField>;
   public contentDisplay: Array<ViewLine>;
@@ -31,12 +31,21 @@ export class ResultCardComponent implements OnInit {
     this.onActionSelected.emit(new RecordSelection(recordIndex, actionIndex));
   }
 
+  onEditClick(recordIndex: number) {
+    this.onEditRecord.emit(new RecordSelection(recordIndex, null));
+  }
+
   onTitleClick(recordIndex: number) {
     this.onTitleSelected.emit(recordIndex);
   }
+
+  getResultActionList() {
+    const isEditable = this.record.isEditable;
+    return this.resultActionList.filter(
+      action  => action.avliableForAll || isEditable);
+  }
   
 }
-
 
 export class RecordSelection {
   constructor (
@@ -45,5 +54,12 @@ export class RecordSelection {
   ) { }
 }
 
+export class Action {
+  label: string;
+  avliableForAll : boolean;
 
-
+  constructor(label : string, avliableForAll : boolean = true) {
+    this.label = label;
+    this.avliableForAll = avliableForAll;
+  }
+}

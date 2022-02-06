@@ -1,0 +1,29 @@
+<div class="align-space-between" fxLayout="row">
+  <h1>{{'Members.Main.SerachMembers' | translate}}</h1>
+</div>
+
+<div class="align-space-between" fxLayout="row">
+  <a [routerLink]="backSession">
+    <button mat-flat-button color="secondary" (click)="cancel()">
+      <mat-icon>arrow_back_ios</mat-icon>
+      {{'General.Back' | translate}}
+    </button>
+  </a>
+  <div class="align-to-right" fxLayout="row">
+   
+    <button mat-flat-button color="primary" aria-label="search" (click)="save()">
+      {{ 'General.Save' | translate }}
+    </button>
+  </div>
+</div>
+<br>
+
+
+<div>
+<mat-accordion>
+  <mat-expansion-panel (opened)="panelOpenState()" (closed)="panelCloseState()" [expanded]="panelState">
+    <form-fields [formFields]="getEditFieldsList()"></form-fields>
+    <br>
+  </mat-expansion-panel>
+</mat-accordion>
+</div>

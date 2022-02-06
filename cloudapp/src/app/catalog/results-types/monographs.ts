@@ -195,7 +195,7 @@ export class MonographSummaryDisplay extends IDisplayLines{
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
         fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.ISBN').content(this.record.ISBN).build());      
-            if(this.record.hasMoreThen1ISBN){
+            if(this.record.hasMoreThen1ISBN && !this.isEmpty(this.record.ISBN)){
                 fieldsArray.push(new ViewFieldBuilder().content(('Catalog.Results.AndOthers')).build());
             }
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
@@ -234,7 +234,7 @@ export class MonographFullDisplay extends IDisplayLines {
             fieldsArray.push(new ViewFieldBuilder().label("Create date: ").content(this.dateFormatDisplay(this.record.CRTDT)).build());
             fieldsArray.push(new ViewFieldBuilder().label("Creating institution: ").content(this.record.CRTFA).build());
             fieldsArray.push(new ViewFieldBuilder().label("Update date: ").content(this.dateFormatDisplay(this.record.RNWDT)).build());
-            fieldsArray.push(new ViewFieldBuilder().label("Modifying institution: ").content(this.record.RNWFA).build());
+            fieldsArray.push(new ViewFieldBuilder().label("Modifying institution: ").link(SearchType.Members).content(this.record.RNWFA).build());
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
         fieldsArray = new Array<ViewField>()
             fieldsArray.push(new ViewFieldBuilder().content(this.record.ID).build());

@@ -7,6 +7,8 @@
     "OK": "OK",
     "Clear": "Clear",
     "Search": "Search",
+    "Next": "Next",
+    "Order": "Order",
     "Errors": {
       "generalError": "App general error"
     }
@@ -60,7 +62,9 @@
       "Actions" : {
         "View" : "View",
         "Import" : "Import",
-        "ViewHoldings" : "View Holdings"
+        "ViewHoldings" : "View Holdings",
+        "Edit" : "Edit",
+        "Delete" : "Delete"
       },
       "ImportSucceeded": "The record was successfully imported"
     }
@@ -71,7 +75,8 @@
       "Intro": "Select a record to retrieve NACSIS holdings:",
       "NoRecords": "To view NACSIS holdings, navigate to a bibliographic record.",
       "SelectBib": "Select a title",
-      "RetrieveHoldings": "Retrieve NACSIS Holdings"
+      "RetrieveHoldings": "Retrieve NACSIS Holdings",
+      "SerachHoldings":"Search for NACSIS Holdings"
     },
     "ViewHoldings": {
       "Owner": "Owner",
@@ -88,6 +93,7 @@
       "NoHoldingRecordsExist": "No holding records exist.",
       "DeleteYesButton": "Yes, delete it",
       "DeleteNoButton": "No, keep it",
+      "NacsisID":"NACSIS ID",
       "Errors": {
         "NoNoldings": "No holdings record were found",
         "GetFailed": "Get holdings failed",
@@ -127,13 +133,269 @@
       }
     }
   },
-
+  "Members" : {
+    "Main" : {
+      "SerachMembers":"Search for NACSIS member information"
+    },
+    "MembersSearch" : {
+      "Name" : "Participating organization name"
+    },
+    "Form" : {
+      "Success": "Member successfully saved."
+    }
+  },
+  "ILL": {
+    "Main": {
+      "Intro": "Select a record to create ILL borrowing request:",
+      "NoRecords": "To create ILL borrowing request, navigate to a borrowing request list, bibliographic record or start a new search.",
+      "SelectBib": "Select a title",
+      "NewSearchInNACSIS": "New search",
+      "CreateILLSuccess":"Create ILL request successfully.Request ID is:"
+    },
+    "DisplayCard": {
+      "By":"By",
+      "Title":"Title",
+      "Language":"Language",
+      "ISBN":"ISBN",
+      "ISSN":"ISSN",
+      "Others":"and others",
+      "NACSIS_ID":"NACSIS ID"
+    },
+    "Results": {
+      "Title": "Records",
+      "NoRecordsExist": "No records exist.",
+      "By": "By",
+      "Book": "Book",
+      "NACSISID": "NACSIS ID",
+      "ISBN": "ISBN",
+      "ISSN": "ISSN",
+      "Subjects": "Subjects",
+      "Actions" : {
+        "ViewHolding" : "View holding",
+        "ViewMemInfo" : "View member info"
+      },
+      "SelectedLenders":"Selected Lenders",
+      "RowSelected":"row(s) selected",
+      "ClearSelection":"Clear Selection",
+      "MaxRowSelected":"Max row selected"
+    },
+    "HoldingSearch":{
+       "ParticipatingOrgCode":"Participating organization code",
+       "Volume":"Volume",
+       "Year":"Year",
+       "Location":"Location",
+       "RegionCode":"Region(prefeture) code",
+       "EstablisherType":"Establisher type",
+       "InstitutionType":"Institution type",
+       "ILLParticipationType":"ILL participation type",
+       "ServiceStatus":"Service status",
+       "OffsetCharge":"Offset charge",
+       "CopyServiceType":"Copy service type",
+       "LendingServiceType":"Lending service type",
+       "FAXServiceType":"FAX service type"
+    },
+    "HoldingSearchResult":{
+      "INDEX":"ID",
+      "CHECKBOX":"check",
+      "NAME":"Name",
+      "VOL":"VOL",
+      "HLV":"HLV",
+      "HLYR":"HLYR",
+      "BID":"Bibliographic ID",
+      "COPYS":"Photocopy",
+      "CRTDT":"Create date",
+      "FANO":"Member ID",
+      "FAXS":"FAXS",
+      "GRPCODE":"Offset charge",
+      "ILLFLG":"ILL",
+      "KENCODE":"Region",
+      "LIBABL":"Name",
+      "LOC":"Location",
+      "LOANS":"LOANS",
+      "ORGCODE":"Institution type",
+      "RNWDT":"Update date",
+      "SETCODE":"Establisher",
+      "STAT":"STAT",
+      "type":"Type",
+      "SUM":"Photocopy fee",
+      "Volume":"Volume",
+      "RGNT":"RGNT",
+      "LDF":"LDF",
+      "CLN":"CLN",
+      "CallNumber":"Call Number",
+      "RegistrationNumber":"Registration Number",
+      "Lender":"Lender"
+   },
+   "RequestForm":{
+    "ResourceInformation":"Resource Information",
+    "Rota":"Rota",
+    "RequesterInformation":"Requester Information",
+    "RequestType":"Request Type",
+    "PayClass":"Payment classification",
+    "CopyType":"Copy type",
+    "SendingMethod":"Sending Method",
+    "ExternalRequestID":"External request ID",
+    "DefermentPermitNumber":"Deferment permit number",
+    "NACSISBibliographicID":"NACSIS Bibliographic ID",
+    "StandardNumber":"Standard number",
+    "Volume":"Volume",
+    "Page":"Page",
+    "Year":"Year",
+    "BibliographicMetadata":"Bibliographic metadata",
+    "TreatiseRelatedMatters":"Treatise-related matters",
+    "FANO":"Member ID",
+    "NAME":"Name",
+    "BibliographicAuthority":"Bibliographic authority",
+    "CollectionAuthority":"Collection authority",
+    "ApplicantName":"Applicant name",
+    "ApplicantAffiliation":"Applicant affiliation",
+    "DateNeededBy":"Date Needed By",
+    "Comments":"Comments",
+    "RequesterStaff":"Requester staff",
+    "RequesterAddress":"Requester address",
+    "LocalData":"Local data",
+    "LocalAccountingData":"Local accounting data",
+    "ElectronicShippingAddress":"Electronic shipping address"
+    },
+    "MemberInfo":{
+      "MemberID":"Member ID:",
+      "CreateDate":"Create date:",
+      "UpdateDate":"Update date:",
+      "ParticipatingOrganizationName":"Participating organization name",
+      "ParticipatingOrganizationAbbreviation":"Participating organization abbreviation",
+      "Address":"Address",
+      "PostalCode":"Postal Code:",
+      "StreetAddress":"Street Address:",
+      "ILLDepartment":"ILL department",
+      "ILLPersonInCharge":"ILL person in charge",
+      "PhoneNumber":"Phone number",
+      "Ext":"Ext.",
+      "Fax":"Fax",
+      "EstablisherType":"Establisher Type",
+      "InstitutionType":"Institution type",
+      "CATParticipationType":"CAT participation type",
+      "ILLParticipationType":"ILL participation type",
+      "CopyServiceType":"Copy service type",
+      "LendingServiceType":"Lending service type",
+      "FAXServiceType":"FAX service type",
+      "ServiceStatus":"Service status",
+      "CopyReceptionHallCode":"Copy reception hall code",
+      "RentalAndBorrowingCenterCode":"Rental and borrowing center code",
+      "LendingPeriod":"Lending period",
+      "RegionPrefectureCode":"Region (prefecture) code",
+      "CatalogingDepartment":"Cataloging department",
+      "CatPhoneNumFirst":"Phone num. (Ext.)",
+      "CatPhoneNum":"Phone num.:",
+      "CatFax":"Fax",
+      "SystemDepartment":"System department",
+      "SystemPhoneNum":"Phone num.",
+      "SystemFax":"Fax",
+      "Email":"Email",
+      "ILLPolicy":"ILL policy",
+      "LocationCode":"Location code",
+      "OffsetCode":"Offset code"
+    },
+    "OptionViewValue": {
+      "SETCODE" : {
+        "National" : "National",
+        "Public" : "Public",
+        "Private" : "Private",
+        "SpecialPublicCorporation" : "Special public corporation",
+        "Overseas" : "Overseas",
+        "TrainingTesting" : "Training/testing",
+        "Other":"Other"
+      },
+      "ORGCODE" : {
+        "University" : "University",
+        "JuniorCollege" : "Junior college",
+        "CollegeOfTechnology" : "College of technology",
+        "InterResearchInstitutes" : "Inter-university research institutes",
+        "FacilitiesOfOtherMinistries" : "Facilities of other ministries",
+        "TrainingTesting" : "Training/testing",
+        "Other":"Other"
+      },
+      "GRPCODE" : {
+        "None":"",
+        "ParticipateILLOffsetService" : "Participate in ILL offset service"
+      },
+      "ILLFLG" : {
+        "None":"",
+        "Participate" : "Participate",
+        "DoNotParticipate" : "Do not participate"
+      },
+      "STAT" : {
+        "None":"",
+        "Available" : "Available",
+        "NotAvailable" : "Not available"
+      },
+      "COPYS" : {
+        "Accept" : "Accept",
+        "AcceptAtOtherCounters" : "Accept at other counters",
+        "NotAccepted":"Not accepted"
+      },
+      "LOANS" : {
+        "Accept" : "Accept",
+        "AcceptAtOtherCounters" : "Accept at other counters",
+        "NotAccepted":"Not accepted"
+      },
+      "FAXS" : {
+        "Available" : "Available",
+        "ConditionallyAvailable" : "Conditionally available",
+        "NotAvailable":"Not available"
+      },
+      "requestTypeList" : {
+        "Copy" : "Copy",
+        "Loan" : "Loan"
+      },
+      "payClassList" : {
+        "ResearchExpenses" : "Research expenses",
+        "UniversityHospital" : "University hospital",
+        "NationalSchool" : "National school",
+        "PrivateExpense" : "Private expense",
+        "Laboratory" : "Laboratory"
+      },
+      "copyTypeList" : {
+        "ElectronicCopy" : "Electronic copy",
+        "FAX" : "FAX",
+        "eDDS" : "eDDS",
+        "Stretch" : "Stretch",
+        "Microfitsyu" : "Microfitsyu",
+        "Microfilm" : "Microfilm",
+        "ReaderPrinter" : "Reader printer",
+        "Slide" : "Slide",
+        "CopyOrder" : "Copy order"
+      },
+      "sendingMethodList" : {
+        "Regular" : "Regular",
+        "Express" : "Express",
+        "DDS" : "DDS",
+        "FAX" : "FAX",
+        "RegisteredMail" : "Registered mail",
+        "RegularMail" : "Regular mail",
+        "Mail" : "Mail",
+        "eDDS" : "eDDS"
+      }
+    },
+      "Errors": {
+        "warningSelectValue":"Please choose an option",
+        "warningInputValue":"Please input a value"
+      }
+  },
+  
   "Config": {
     "Title": "Configuration",
     "Success": "Configuration successfully saved.",
     "Fields": {
       "Code": "NACSIS Code"
     }
+  },
+
+  "PagePaginator": {
+    "itemsPerPageLabel": "Items per page:",
+    "firstPageLabel": "first page",
+    "nextPageLabel": "next page",
+    "previousPageLabel": "previous page",
+    "lastPageLabel": "last page"
   },
 
   "Help": {
@@ -166,7 +428,28 @@
       "LCCN": "LCCN",
       "FID": "FID",
       "DATE": "DATE",
-      "SAID": "SAID"
+      "SAID": "SAID",
+      "FANO": "Participating organization code",
+      "NAME": "Participating organization name",
+      "LOC": "Location",
+      "KENCODE": "Region(prefeture) code",
+      "SETCODE" : "Establisher type",
+      "ORGCODE" : "Institution type",
+      "ILLFLG" : "ILL participation type",
+      "STAT" : "Service status",
+      "GRPCODE":"Offset charge",
+      "CATFLG" : "Cataloging participation type",
+      "COPYS":"Copy service type",
+      "LOANS":"Lending service type",
+      "FAXS":"FAX service type",
+      "CATTEL":"CATTEL",
+      "CATDEPT":"CATDEPT",
+      "CATFAX":"CATFAX",
+      "SYSDEPT":"SYSDEPT",
+     "SYSTEL":"SYSTEL",
+      "SYSFAX":"SYSFAX",
+      "EMAIL":"EMAIL",
+      "POLICY":"POLICY"
     }
   }
 }

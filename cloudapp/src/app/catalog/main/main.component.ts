@@ -7,11 +7,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
 
-import { NacsisCatalogResults, BaseResult, IDisplayLines } from '../results-types/results-common'
-import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
-import { RecordSelection } from '../../user-controls/result-card/result-card.component';
-import { FullViewLink } from '../full-view-display/full-view-display.component';
+import { NacsisCatalogResults, IDisplayLines } from '../results-types/results-common'
+import { AppRoutingState, ROUTING_STATE_KEY, QueryParams } from '../../service/base.service';
+import { RecordSelection, Action } from '../../user-controls/result-card/result-card.component';
+import { FullViewLink } from '../../user-controls/full-view-display/full-view-display.component';
 import { HoldingsService } from '../../service/holdings.service';
+import { MembersService } from '../../service/members.service';
 
 
 
@@ -28,7 +29,8 @@ export class CatalogMainComponent implements AfterViewInit {
         [SearchType.Monographs, ['BOOK','PREBOOK','JPMARC','TRCMARC','USMARC','USMARCX','GPOMARC','UKMARC','REMARC','DNMARC','CHMARC','KORMARC','RECON','HBZBKS','SPABKS','ITABKS','KERISB','KERISX','BNFBKS']],
         [SearchType.Serials, ['SERIAL','JPMARCS','USMARCS','SPASER','ITASER','KERISS','BNFSER']],
         [SearchType.Names, ['NAME', 'JPMARCA', 'USMARCA']],
-        [SearchType.UniformTitles, ['TITLE', 'USMARCT']]
+        [SearchType.UniformTitles, ['TITLE', 'USMARCT']],
+        [SearchType.Members, ['MEMBER']]
     ]);
     public ALL_SEARCH_FIELDS_MAP = new Map([
         [SearchType.Monographs, this.initMonographsSearchFields()],
@@ -37,10 +39,10 @@ export class CatalogMainComponent implements AfterViewInit {
         [SearchType.UniformTitles, this.initUniformTitlesSearchFields()] 
     ]);
     public ACTIONS_MENU_LIST = new Map([
-        [SearchType.Monographs, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import']],
-        [SearchType.Serials, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import']],
-        [SearchType.Names, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import']],
-        [SearchType.UniformTitles, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import']]
+        [SearchType.Monographs, [new Action('Catalog.Results.Actions.View'), new Action('Catalog.Results.Actions.Import'), new Action('Catalog.Results.Actions.ViewHoldings')]],
+        [SearchType.Serials, [new Action('Catalog.Results.Actions.View'), new Action('Catalog.Results.Actions.Import'), new Action('Catalog.Results.Actions.ViewHoldings')]],
+        [SearchType.Names, [new Action('Catalog.Results.Actions.View') /* , new Action('Catalog.Results.Actions.Import') */]],
+        [SearchType.UniformTitles, [new Action('Catalog.Results.Actions.View')/* , new Action('Catalog.Results.Actions.Import') */]],
     ]);
 
 
@@ -78,6 +80,7 @@ export class CatalogMainComponent implements AfterViewInit {
     constructor(
         private catalogService: CatalogService,
         private holdingsService: HoldingsService,
+        private membersService : MembersService,
         private router: Router,
         private alert: AlertService,
         private translate: TranslateService,
@@ -109,6 +112,10 @@ export class CatalogMainComponent implements AfterViewInit {
 
     setCurrentDatabase(db: string) {
         this.currentDatabase = db;
+    }
+
+    getPrimaryDatabase(searchType: SearchType) {
+        return this.ALL_DATABASES_MAP.get(searchType)[0];
     }
 
     getSearchFields(): Array<SearchField> {
@@ -153,39 +160,28 @@ export class CatalogMainComponent implements AfterViewInit {
                     urlParams =  urlParams + "&" + field.getKey();
                     urlParams =  urlParams + "=" + field.getFormControl().value;
             });
-            this.getResultsFromNacsis(urlParams, false);
+            this.getSearchResultsFromNacsis(urlParams);
         } else {
            return;
         }
     } 
     
     // Calling Nacsis servlet
-    getResultsFromNacsis(urlParams:string, isFullViewLink: boolean) {
+    getSearchResultsFromNacsis(urlParams:string) {
         this.loading = true;
         try{
             this.catalogService.getSearchResultsFromNacsis(urlParams)
             .subscribe({
                 next: (catalogResults) => {
                     if (catalogResults.status === this.catalogService.OkStatus) {
-                        if(!isFullViewLink) {
-                            if (catalogResults.totalRecords >= 1) {
-                                this.catalogService.setSearchResultsMap(this.currentSearchType, catalogResults, urlParams);
-                                this.setPageIndexAndSize(urlParams);
-                                this.setSearchResultsDisplay();
-                            } else {
-                                this.panelState = false;
-                                this.numOfResults = 0;
-                                this.resultsTemplateFactory();
-                            }
+                        if (catalogResults.totalRecords >= 1) {
+                            this.catalogService.setSearchResultsMap(this.currentSearchType, catalogResults, urlParams);
+                            this.setPageIndexAndSize(urlParams);
+                            this.setSearchResultsDisplay();
                         } else {
-                            if (catalogResults.totalRecords >= 1) {
-                                let baseResult = this.catalogService.resultsTypeFactory(this.linkSearchType, catalogResults.records[0]);
-                                this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
-                                this.isRightTableOpen = true;
-                            } else {
-                                this.resultFullLinkDisplay == null;
-                                this.isRightTableOpen = true;
-                            }
+                            this.panelState = false;
+                            this.numOfResults = 0;
+                            this.resultsTemplateFactory();
                         }
                     } else {
                         this.alert.error(catalogResults.errorMessage, {keepAfterRouteChange:true});  
@@ -276,17 +272,78 @@ export class CatalogMainComponent implements AfterViewInit {
         this.currentResulsTmpl = this.searchResultsTmpl;
         this.isRightTableOpen = false;
     }
+
+    getCatalogResults(urlParams : string) {
+        this.catalogService.getSearchResultsFromNacsis(urlParams)
+        .subscribe({
+            next: (catalogResults) => {
+                if (catalogResults.status === this.catalogService.OkStatus) {
+                    if (catalogResults.totalRecords == 1) {
+                        let baseResult = this.catalogService.resultsTypeFactory(this.linkSearchType, catalogResults.records[0]);
+                        this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
+                        this.isRightTableOpen = true;
+                    } else {
+                        this.resultFullLinkDisplay == null;
+                        this.isRightTableOpen = true;
+                    }
+                } else {
+                    this.alert.error(catalogResults.errorMessage, {keepAfterRouteChange:true});  
+                } },
+            error: e => {
+                this.loading = false;
+                console.log(e.message);
+                this.alert.error(e.message, {keepAfterRouteChange:true});
+            },
+            complete: () => this.loading = false
+        });
+    }
+
+    getMemberResult(urlParams : string) {
+        this.membersService.getSearchResultsFromNacsis(urlParams)
+        .subscribe({
+            next: (catalogResults) => {
+                if (catalogResults.status === this.membersService.OkStatus) {
+                  if (catalogResults.totalRecords == 1) {
+                    let baseResult = this.membersService.resultsTypeFactory(SearchType.Members, catalogResults.records[0]);
+                    this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
+                    this.isRightTableOpen = true;
+                  } else {
+                      this.resultFullLinkDisplay == null;
+                      this.isRightTableOpen = false;
+                  }
+                } else {
+                    this.alert.error(catalogResults.errorMessage, {keepAfterRouteChange:true});  
+                } },
+            error: e => {
+                this.loading = false;
+                console.log(e.message);
+                this.alert.error(e.message, {keepAfterRouteChange:true});
+            },
+            complete: () => this.loading = false
+        });
+    }
     
-    onFullViewLink(fullViewLink: FullViewLink) {
+    onFullViewInternalLinkClick(fullViewLink: FullViewLink) {
         this.linkSearchType = fullViewLink.searchType;
-        let urlParams = "";
-        urlParams = urlParams + QueryParams.PageIndex + "=0&" + QueryParams.PageSize + "=20";
+        let urlParams = QueryParams.PageIndex + "=0&" + QueryParams.PageSize + "=20";
         urlParams = urlParams + "&" + QueryParams.SearchType + "=" + fullViewLink.searchType;
-        urlParams =  urlParams + "&" + QueryParams.Databases + "=" + this.ALL_DATABASES_MAP.get(fullViewLink.searchType)[0];
+        urlParams =  urlParams + "&" + QueryParams.Databases + "=" + this.getPrimaryDatabase(fullViewLink.searchType);
         urlParams =  urlParams + "&" + QueryParams.ID + "=" + fullViewLink.linkID;
         
-        this.getResultsFromNacsis(urlParams, true);
         this.isColapsedMode = (window.innerWidth <= 600) ? true : false;
+
+        this.loading = true;
+        try{
+            if (fullViewLink.searchType === SearchType.Members) {
+                this.getMemberResult(urlParams);
+            } else {
+                this. getCatalogResults(urlParams);
+            }
+        } catch (e) {
+            this.loading = false;
+            console.log(e);
+            this.alert.error(this.translate.instant('General.Errors.generalError'), {keepAfterRouteChange:true});      
+        }
 
     }
 
@@ -377,7 +434,7 @@ export class CatalogMainComponent implements AfterViewInit {
         let newSizeStr = QueryParams.PageSize + "=" + pageEvent.pageSize + "&" + QueryParams.SearchType;
         urlParams = urlParams.replace(/pageSize=.*searchType/, newSizeStr);
 
-        this.getResultsFromNacsis(urlParams, false);
+        this.getSearchResultsFromNacsis(urlParams);
     }
 
 
@@ -463,12 +520,4 @@ export class CatalogMainComponent implements AfterViewInit {
             new SearchField(FieldName.ID, FieldSize.medium), 
             new SearchField(FieldName.SAID, FieldSize.medium));
     }
-}
-
-export enum QueryParams {
-    PageIndex = "pageIndex",
-    PageSize = "pageSize",
-    SearchType = "searchType",
-    Databases = "dataBase",
-    ID = "ID"
 }

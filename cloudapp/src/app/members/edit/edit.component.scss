@@ -1,0 +1,58 @@
+
+p {
+  margin-bottom: 0px;
+}
+
+.align-to-left {
+justify-content: flex-start;
+margin-bottom: 15px;
+}
+
+.align-to-right {
+justify-content: flex-end;
+}
+
+.align-space-between {
+justify-content: space-between;
+margin-bottom: 20px;
+}
+
+.noResults{
+text-align: center;
+height: fit-content;
+margin-top: 40px;
+}
+
+
+.full-view {
+display: flex;
+flex-direction: row;
+
+}
+
+.full-view-left-table {
+flex: 1;
+margin-right: 8px;
+}
+
+.full-view-right-table {
+position: relative;
+flex: 1;
+}
+
+a,
+a label {
+  cursor: pointer;
+}
+
+
+.close-button {
+background: transparent;
+  border: none;
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  i {
+    font-size: 12px;
+  }
+}
