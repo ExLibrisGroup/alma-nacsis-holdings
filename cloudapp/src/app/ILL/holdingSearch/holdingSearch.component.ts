@@ -706,12 +706,3 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
 }
 
-export enum QueryParams {
-  PageIndex = "pageIndex",
-  PageSize = "pageSize",
-  SearchType = "searchType",
-  Databases = "dataBase",
-  ID = "ID"
-}
-
-

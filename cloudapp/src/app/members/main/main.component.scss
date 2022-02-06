@@ -1,124 +1,3 @@
-// .p {
-//   margin-bottom: 0px;
-// }
-
-// .align-to-left {
-// justify-content: flex-start;
-// margin-bottom: 15px;
-// }
-
-// .align-to-right {
-// justify-content: flex-end;
-// }
-
-// .align-space-between {
-// justify-content: space-between;
-// margin-bottom: 20px;
-// }
-
-//   mat-form-field {
-//     margin-top: 0px;
-//     margin-bottom: 0px;
-//     margin-right: 5px;
-//     margin-left: 5px;
-//   }
-  
-//   .form-wrapper {
-//     flex-direction: column;
-//     display: flex;
-  
-//     .form-cards {
-//       overflow: hidden;
-//       padding-top: 0px;
-//       padding-bottom: 10px;
-//       padding-left: 0px;
-//       padding-right: 0px;
-//       margin-bottom: 40px;
-//        .form-card-inputs {
-//          padding-top: 10px;
-//          ::ng-deep .mat-form-field-wrapper {
-//           padding-bottom: 10px !important;
-//       }
-//       }
-//       .form-card-input-full-width {
-//         width: 96%;
-//         padding-top: 10px;
-//         min-width: 285px;
-//         ::ng-deep .mat-form-field-wrapper {
-//          padding-bottom: 10px !important;
-//        }
-//       }
-//       .form-card-inputs-large {
-//         padding-top: 10px;
-//         width: 49%;
-//         min-width: 285px;
-//         flex-grow: 1;
-//         ::ng-deep .mat-form-field-wrapper {
-//          padding-bottom: 10px !important;
-//         }
-//       }
-//       .form-card-inputs-medium {
-//         padding-top: 10px;
-//         width: 32.3%;
-//         min-width: 285px;
-//         flex-grow: 1;
-
-//       }
-//       .form-card-inputs-small {
-//         padding-top: 10px;
-//         width: 24%;
-//         flex-grow: 1;
-//         min-width: 140px;
-
-//       }
-//     }
-  
-//     .form-commands {
-//       margin-right: 15px;
-//     }
-  
- 
-  
-//     .align-to-right {
-//       justify-content: flex-end;
-//       margin-bottom: 20px;
-//     }
-
-//     .noResults{
-//       text-align: center;
-//       height: fit-content;
-//       margin-top: 40px;
-//     }
-    
-    
-//     .full-view {
-//       display: flex;
-//       flex-direction: row;
-    
-//     }
-    
-//     .full-view-left-table {
-//       flex: 1;
-//       margin-right: 8px;
-//     }
-    
-//     .full-view-right-table {
-//       position: relative;
-//       flex: 1;
-//     }
-  
-//     mat-list-item {
-//       i.eca-button,
-//       i.cloudapp-button {
-//         visibility: visible !important;
-//       }
-//       &:hover i.eca-button,
-//       &:hover i.cloudapp-button {
-//         visibility: visible;
-//       }
-//     }
-//   }
-
 p {
     margin-bottom: 0px;
   }
@@ -175,5 +54,21 @@ a label {
     i {
       font-size: 12px;
     }
+}
+
+.form-card {
+  background-color: whitesmoke !important;
+}
+
+.holdings-drop-down {
+  margin-left: 20px;
+  width: 25%;
+  max-width: 200px;
+  .holdings-mat-drop-down {
+    width: 100%;
+    .mat-select {
+      min-width: 0px;
+    }
+  }
 }
 

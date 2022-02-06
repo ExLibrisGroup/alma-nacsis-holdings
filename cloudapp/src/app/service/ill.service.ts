@@ -6,7 +6,7 @@ import { mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { CloudAppEventsService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
 import { HoldingsService } from '../service/holdings.service';
-import { BaseService } from "./base.service";
+import { BaseService, QueryParams } from "./base.service";
 
 @Injectable({
   providedIn: 'root'
@@ -365,14 +365,6 @@ export class AlmaRecordDisplay extends IDisplayLines {
   }
 
 
-}
-
-export enum QueryParams {
-  PageIndex = "pageIndex",
-  PageSize = "pageSize",
-  SearchType = "searchType",
-  Databases = "dataBase",
-  ID = "ID"
 }
 
 export class RequestFields {

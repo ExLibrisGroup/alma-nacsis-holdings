@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { AppService } from '../service/app.service';
-import { CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
-import { TranslateService } from '@ngx-translate/core';
 import { ROUTING_STATE_KEY, AppRoutingState } from '../service/base.service';
 
 

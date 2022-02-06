@@ -5,6 +5,7 @@ import { CloudAppEventsService, InitData } from '@exlibris/exl-cloudapp-angular-
 import { ResultsHeader } from '../catalog/results-types/results-common';
 import { BaseService } from "./base.service";
 import { AlmaApiService } from "./alma.api.service";
+import { MemberUpdate } from "../catalog/results-types/member";
 
 @Injectable({
   providedIn: 'root'
@@ -28,18 +29,18 @@ export class MembersService extends BaseService {
     return baseUrl;
   }
 
-  saveMemberToNacsis(nacsisId: string, member: Member) {
+  saveMemberToNacsis(member: MemberUpdate) {
   
     let fullUrl: string;
     let body = JSON.stringify(member);
 
     return this.getInitData().pipe(
       mergeMap(initData => {
-        fullUrl = this.setBaseUrl(initData) + "nacsisId=" + nacsisId;
+        fullUrl = this.setBaseUrl(initData) + "dataBase=" + "MEMBER&";
         return this.getAuthToken()}),
       mergeMap(authToken => {
         let headers = this.setAuthHeader(authToken);
-        fullUrl = fullUrl + "ID=FA026267&dataBase=MEMBER"
+        fullUrl = fullUrl + "ID=" + member.ID
         return this.http.put<any>(fullUrl, body, { headers });
       })
     );

@@ -26,13 +26,6 @@
         </div>
       </div>
     </mat-card-content>
-    <mat-card-actions class="holding-card-actions" *ngIf="record.enableEdit">
-      <div fx-layout="row" fx-flex fx-layout-align="flex-start">
-        <i class="uxf-icon uxf-pencil eca-button" aria-label="Edit"
-      (click)="onEditClick(recordIndex)"></i>
-      </div>
-      
-    </mat-card-actions>
   </div>
 
   <div class="result-actions" *ngIf="resultActionList?.length > 0">
@@ -40,9 +33,9 @@
       <mat-icon>more_horiz</mat-icon>
     </button>
     <mat-menu #actionsMenu="matMenu" >
-      <div *ngFor="let item of resultActionList; index as Actionsindex">
+      <div *ngFor="let item of getResultActionList(); index as Actionsindex">
         <button mat-menu-item type="submit" (click)="onActionsClick(recordIndex, Actionsindex)">
-          {{ item | translate }}
+          {{ item.label | translate }}
         </button>
       </div>
     </mat-menu>

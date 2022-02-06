@@ -8,8 +8,8 @@ import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
 
 import { NacsisCatalogResults, IDisplayLines } from '../results-types/results-common'
-import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
-import { RecordSelection } from '../../user-controls/result-card/result-card.component';
+import { AppRoutingState, ROUTING_STATE_KEY, QueryParams } from '../../service/base.service';
+import { RecordSelection, Action } from '../../user-controls/result-card/result-card.component';
 import { FullViewLink } from '../../user-controls/full-view-display/full-view-display.component';
 import { HoldingsService } from '../../service/holdings.service';
 import { MembersService } from '../../service/members.service';
@@ -39,10 +39,10 @@ export class CatalogMainComponent implements AfterViewInit {
         [SearchType.UniformTitles, this.initUniformTitlesSearchFields()] 
     ]);
     public ACTIONS_MENU_LIST = new Map([
-        [SearchType.Monographs, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import', 'Catalog.Results.Actions.ViewHoldings']],
-        [SearchType.Serials, ['Catalog.Results.Actions.View', 'Catalog.Results.Actions.Import', 'Catalog.Results.Actions.ViewHoldings']],
-        [SearchType.Names, ['Catalog.Results.Actions.View' /* , 'Catalog.Results.Actions.Import' */]],
-        [SearchType.UniformTitles, ['Catalog.Results.Actions.View'/* , 'Catalog.Results.Actions.Import' */]]
+        [SearchType.Monographs, [new Action('Catalog.Results.Actions.View'), new Action('Catalog.Results.Actions.Import'), new Action('Catalog.Results.Actions.ViewHoldings')]],
+        [SearchType.Serials, [new Action('Catalog.Results.Actions.View'), new Action('Catalog.Results.Actions.Import'), new Action('Catalog.Results.Actions.ViewHoldings')]],
+        [SearchType.Names, [new Action('Catalog.Results.Actions.View') /* , new Action('Catalog.Results.Actions.Import') */]],
+        [SearchType.UniformTitles, [new Action('Catalog.Results.Actions.View')/* , new Action('Catalog.Results.Actions.Import') */]],
     ]);
 
 
@@ -505,12 +505,4 @@ export class CatalogMainComponent implements AfterViewInit {
             new SearchField(FieldName.ID, FieldSize.medium), 
             new SearchField(FieldName.SAID, FieldSize.medium));
     }
-}
-
-export enum QueryParams {
-    PageIndex = "pageIndex",
-    PageSize = "pageSize",
-    SearchType = "searchType",
-    Databases = "dataBase",
-    ID = "ID"
 }

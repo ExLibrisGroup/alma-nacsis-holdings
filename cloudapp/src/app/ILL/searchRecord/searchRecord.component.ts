@@ -1,4 +1,4 @@
-import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL, SELECTED_RECORD_ILL } from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL, SELECTED_RECORD_ILL, QueryParams } from '../../service/base.service';
 import { Component, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
 import { SearchType, SearchField, FieldSize, FieldName } from '../../user-controls/search-form/search-form-utils';
 import { MatTabChangeEvent } from '@angular/material/tabs';
@@ -440,15 +440,4 @@ export class searchRecordComponent implements AfterViewInit {
   }
 
 
-}
-
-
-
-
-export enum QueryParams {
-  PageIndex = "pageIndex",
-  PageSize = "pageSize",
-  SearchType = "searchType",
-  Databases = "dataBase",
-  ID = "ID"
 }

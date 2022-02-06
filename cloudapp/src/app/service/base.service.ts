@@ -163,11 +163,7 @@ export abstract class BaseService {
             })
         );
     }
-
-
 }
-
-
 
 export const ROUTING_STATE_KEY = "routingState";
 export const LIBRARY_ID_KEY = "libraryIDKey";
@@ -177,6 +173,8 @@ export const SELECTED_RECORD_LIST_ILL = "selectedDataListInILL";
 export const RESULT_RECORD_LIST_ILL = "resultDataInILL";
 export const REQUEST_EXTERNAL_ID = "requestExternalId";
 export const MEMBER_RECORD = "memberRecord";
+export const FANO_ID = "fanoId";
+
 
 export enum AppRoutingState {
     MainMenuPage = "",
@@ -187,3 +185,12 @@ export enum AppRoutingState {
     HoldingSearchMainPage = "/holdingSearch",
     MembersMainPage = "/members"
 }
+
+export enum QueryParams {
+    PageIndex = "pageIndex",
+    PageSize = "pageSize",
+    SearchType = "searchType",
+    Databases = "dataBase",
+    ID = "ID"
+  }
+  

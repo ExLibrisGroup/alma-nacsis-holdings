@@ -46,7 +46,8 @@
 
   <div class="form-cards">
     <mat-list-item role="listitem" *ngFor="let form of forms; index as i"> 
-      <mat-card >
+      <mat-card class="card-content">
+        <div>
         <form *ngIf="form" [formGroup]="form">
           <div *ngIf="isBook() else serial" class="form">
             <mat-form-field appearance="outline" class="form-card-inputs">
@@ -117,9 +118,19 @@
             </div>
           </ng-template>
         </form>
-        <mat-card-actions class="form-card-actions" *ngIf="!isReadOnly">
-          <i class="uxf-icon uxf-trash eca-button" aria-label="Delete" (click)="delete(i)"></i>
-        </mat-card-actions>
+      </div>
+        <div class="result-actions" *ngIf="getResultActionList()?.length > 0">
+          <button mat-button class="result-actions-button" [matMenuTriggerFor]="actionsMenu" color="primary">
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+          <mat-menu #actionsMenu="matMenu" >
+            <div *ngFor="let item of getResultActionList(); index as Actionsindex">
+              <button mat-menu-item type="submit" (click)="delete(i)">
+                {{ item.label | translate }}
+              </button>
+            </div>
+          </mat-menu>
+        </div>
       </mat-card>
     </mat-list-item>
   </div>

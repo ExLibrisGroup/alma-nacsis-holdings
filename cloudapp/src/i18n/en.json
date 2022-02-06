@@ -62,7 +62,9 @@
       "Actions" : {
         "View" : "View",
         "Import" : "Import",
-        "ViewHoldings" : "View Holdings"
+        "ViewHoldings" : "View Holdings",
+        "Edit" : "Edit",
+        "Delete" : "Delete"
       },
       "ImportSucceeded": "The record was successfully imported"
     }
@@ -137,6 +139,9 @@
     },
     "MembersSearch" : {
       "Name" : "Participating organization name"
+    },
+    "Form" : {
+      "Success": "Member successfully saved."
     }
   },
   "ILL": {

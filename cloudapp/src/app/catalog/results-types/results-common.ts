@@ -99,15 +99,15 @@ export abstract class IDisplayLines {
     protected fullRecord: BaseResult;
     protected viewLines: Array<ViewLine>;
     protected titleLine: ViewLine;
-    protected enableEdit  : boolean = false;
+    public isEditable  : boolean = false;
 
 
     constructor(viewRecord: BaseResult) {
         this.fullRecord = viewRecord;
     }
 
-    setEnableEdit(enableEdit: boolean) {
-        this.enableEdit = enableEdit;
+    setEnableEdit(isEditable: boolean) {
+        this.isEditable = isEditable;
     }
 
     getFullRecordData() {

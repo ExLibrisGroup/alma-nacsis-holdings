@@ -19,6 +19,12 @@ mat-card {
   background: whitesmoke !important;
 }
 
+.card-content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
 .form-wrapper {
   flex-direction: column;
   display: flex;

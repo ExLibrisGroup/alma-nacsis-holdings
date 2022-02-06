@@ -25,22 +25,38 @@
     <mat-expansion-panel-header>
       <mat-panel-title *ngIf="!panelState">{{ 'Catalog.Form.RefineSearch' | translate }}</mat-panel-title>
     </mat-expansion-panel-header>
-    <form-fields [formFields]="getFieldsList()"></form-fields>
+    <mat-card class="form-card" color="secondary">
+      <form-fields [formFields]="getFieldsList()"></form-fields>
+    </mat-card>
     <br>
   </mat-expansion-panel>
 </mat-accordion>
 </div>
 
-<ng-container *ngTemplateOutlet="currentResulsTmpl"></ng-container>
 
 <div class="loading-shade" *ngIf="loading">
   <mat-progress-spinner mode="indeterminate" diameter="50">
   </mat-progress-spinner>
 </div>
+<br>
+<div class="holdings-drop-down">
+  <mat-form-field class="holdings-mat-drop-down">
+    <mat-placeholder>{{'Holdings.ViewHoldings.Owner' | translate}}</mat-placeholder>
+    <mat-select [(value)]="selected" (selectionChange)=onOwnerSelected()>
+      <mat-option *ngFor="let owner of owners" [value]="owner.id">
+        {{owner.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<ng-container *ngTemplateOutlet="currentResulsTmpl"></ng-container>
+
 
 <ng-template #searchResults>
-  <results-list [numOfResults]="numOfResults" [pageIndex]="pageIndex" [pageSize]="pageSize"
-    [resultsSummaryDisplay]="resultsSummaryDisplay"
+  <br>
+  <results-list [numOfResults]="getNumOfRecords()" [pageIndex]="pageIndex" [pageSize]="pageSize"
+    [resultsSummaryDisplay]="resultsSummaryDisplay" [resultActionList]="getActionMenu()"
     (onTitleSelected)="onTitleClick($event)" (onActionSelected)="onActionsClick($event)" (onPageSelected)="onPageAction($event)">
   </results-list>
 </ng-template>
@@ -67,18 +83,8 @@
   <br><br><br>
   <div class="full-view">
     <div class="full-view-left-table" *ngIf="!(isColapsedMode && isRightTableOpen)">
-      <full-view-display [resultFullDisplay]="resultFullDisplay" (onFullViewLinkSelected)="onFullViewInternalLinkClick($event)" (onFullViewLinkSelected)="onFullViewInternalLinkClick($event)">
+      <full-view-display [resultFullDisplay]="resultFullDisplay" (onFullViewLinkSelected)="null" (onFullViewLinkSelected)="null">
       </full-view-display>
     </div>
-    <div class="full-view-right-table" (window:resize)="onResize($event)" *ngIf="isRightTableOpen">
-      <button class="close-button" (click)="onFullViewLinkClose()">
-        <i class="uxf-icon uxf-close eca-button" aria-label="Delete" (click)="delete(i)"></i>
-      </button>
-      <div *ngIf="resultFullLinkDisplay != null else noResults">
-        <full-view-display [resultFullDisplay]="resultFullLinkDisplay">
-        </full-view-display>
-      </div>
-    </div>
   </div>
-
 </ng-template>

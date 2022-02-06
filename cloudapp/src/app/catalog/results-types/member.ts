@@ -239,6 +239,7 @@ export class MemberFull {
     SETCODE: string;
     ORGCODE: string;
     TEL: string;
+    EXTEL : string;//new
 
     FAX: string;
     CATFLG: string;
@@ -262,4 +263,27 @@ export class MemberFull {
 
 }
 
+export class MemberUpdate {
+    ID: string;
+    COPYS:any[];
+    LOANS: string[];
+    FAXS: string;
+    STAT: string;
+    ZIP: string;
+    ADDRESS: string;
+    TEL: string;
+    EXTEL : string;
+    FAX: string;
+    ILLDEPT: string;
+    ILLSTAFF: string;
+    POLICY: any[];
+    LOANP: string;
+    CATDEPT: any[];
+    CATTEL: any[];
+    CATFAX: any[];
+    SYSDEPT: any[];
+    SYSTEL: any[];
+    SYSFAX: any[];
+    EMAIL: any[];
+}
 

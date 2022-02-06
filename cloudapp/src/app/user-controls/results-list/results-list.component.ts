@@ -56,7 +56,7 @@ export class ResultsListComponent implements OnChanges, AfterViewInit {
   }
 
   onTitleClick(recordIndex: number) {
-    recordIndex = recordIndex - this.recordIndex; // Geting omly the for loop's index (i)
+    recordIndex = recordIndex - this.recordIndex; // Geting only the for loop's index (i)
     this.onTitleSelected.emit(recordIndex);
   }
 
