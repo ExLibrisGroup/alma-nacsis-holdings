@@ -39,8 +39,8 @@
   </mat-progress-spinner>
 </div>
 <br>
-<div class="holdings-drop-down">
-  <mat-form-field class="holdings-mat-drop-down">
+<div class="owners-drop-down">
+  <mat-form-field class="owners-mat-drop-down">
     <mat-placeholder>{{'Holdings.ViewHoldings.Owner' | translate}}</mat-placeholder>
     <mat-select [(value)]="selected" (selectionChange)=onOwnerSelected()>
       <mat-option *ngFor="let owner of owners" [value]="owner.id">

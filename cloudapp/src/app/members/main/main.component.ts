@@ -357,6 +357,9 @@ export class MembersSearchComponent implements OnInit {
   getNumOfRecords() {
     let members = this.getDisplayMembers();
     if (members.length > 0) {
+      if (this.selected === '1') {
+        return members.length
+      }
       return this.numOfResults;
     } else {
       return 0;

@@ -9,7 +9,7 @@ import { MainMenuComponent } from './main-menu/main-menu.component';
 import { CatalogMainComponent } from './catalog/main/main.component';
 import { ILLBorrowingMainComponent } from './ILL/main/main.component';
 import { searchRecordComponent } from './ILL/searchRecord/searchRecord.component';
-import { HoldingSearchComponent } from './ILL/holdingSearch/holdingSearch.component';
+import { HoldingSearchComponent }  from './ILL/holdingSearch/holdingSearch.component';
 import { RequestFormComponent } from './ILL/requestForm/requestForm.component';
 import { MembersSearchComponent } from './members/main/main.component';
 import { EditFormComponent } from './members/edit/edit.component';
@@ -28,11 +28,11 @@ const routes: Routes = [
   { path: 'catalog', component: CatalogMainComponent },
   { path: 'ILL', component: ILLBorrowingMainComponent },
   { path: 'members', component: MembersSearchComponent }, 
-  { path: 'members/:resulsTmpl', component: MembersSearchComponent },
+  { path: 'members/:ViewChild', component: MembersSearchComponent },
   { path: 'editMember', component: EditFormComponent },
   { path: 'searchRecord', component: searchRecordComponent },
   { path: 'searchRecord/:flagBack', component: searchRecordComponent },
-  { path: 'searchRecord/:nacsisId/:title/:isbn/:issn', component: searchRecordComponent },
+  { path: 'searchRecord/:nacsisId/:ViewChild/:isbn/:issn', component: searchRecordComponent },
   { path: 'holdingSearch', component: HoldingSearchComponent },
   { path: 'holdingSearch/:nacsisId/:mmsTitle', component: HoldingSearchComponent },
   { path: 'holdingSearch/:nacsisId/:mmsTitle/:searchType', component: HoldingSearchComponent },
