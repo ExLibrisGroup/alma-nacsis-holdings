@@ -203,7 +203,9 @@ export class HoldingsComponent implements OnInit {
   }
 
   getResultActionList() {
-    const isEditable = true;//this.record.isEditable;
+    /*Note - all the actions in this component are avialable for mine holdings only
+      So the value of  isEditable must be true*/
+    const isEditable = true;
     return this.ACTIONS_MENU_LIST.filter(
       action  => action.avliableForAll || isEditable);
   }

@@ -57,28 +57,21 @@
             </mat-card-content>
           </div>
 
-
-          <div class="result-actions" *ngIf="getResultActionList()?.length > 0">
-            <button mat-button class="result-actions-button" [matMenuTriggerFor]="actionsMenu" color="primary">
-              <mat-icon>more_horiz</mat-icon>
-            </button>
-            <mat-menu #actionsMenu="matMenu">
-              <div *ngFor="let item of getResultActionList(); index as Actionsindex">
-                <button mat-menu-item type="submit" (click)="onActionsClick(holding, Actionsindex)">
-                  {{ item.label | translate }}
-                </button>
-              </div>
-            </mat-menu>
+          <div *ngIf="holding.editable">
+            <div class="result-actions"  index="i" *ngIf="getResultActionList()?.length > 0">
+              <button mat-button class="result-actions-button" [matMenuTriggerFor]="actionsMenu" color="primary">
+                <mat-icon>more_horiz</mat-icon>
+              </button>
+              <mat-menu #actionsMenu="matMenu">
+                <div *ngFor="let item of getResultActionList(); index as Actionsindex">
+                  <button mat-menu-item type="submit" (click)="onActionsClick(holding, Actionsindex)">
+                    {{ item.label | translate }}
+                  </button>
+                </div>
+              </mat-menu>
+            </div>
           </div>
 
-
-
-          <!-- <mat-card-actions class="holding-card-actions" *ngIf="holding.editable">
-            <i class="uxf-icon uxf-pencil eca-button" aria-label="Edit"
-              [routerLink]="['/holdings', mmsId, 'edit', holding.ID, mmsTitle]"></i>
-            <i class="uxf-icon uxf-trash eca-button" style="margin-left: 20px;" aria-label="Delete"
-              (click)="delete(mmsId, holding.ID)"></i>
-          </mat-card-actions> -->
         </mat-card>
       </mat-list-item>
     </mat-list>

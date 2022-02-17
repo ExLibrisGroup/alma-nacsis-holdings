@@ -144,8 +144,8 @@ export class EditFormComponent implements OnInit {
   }
 
   private getFormControlValues(filedName: FieldName): any[] {
-    return (this.editFieldsMap.get(filedName) as MultiSearchField).fieldsArr[0]?.map(element => {
-      return element.formControl.value;
+    return (this.editFieldsMap.get(filedName) as MultiSearchField).fieldsArr?.map(element => {
+      return element[0].formControl.value;
     });;
   }
 }
