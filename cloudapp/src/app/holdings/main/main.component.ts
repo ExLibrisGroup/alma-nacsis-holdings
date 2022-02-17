@@ -8,7 +8,7 @@ import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 
 import { map, catchError, switchMap, tap } from 'rxjs/operators';
 import { AlmaApiService, IntegrationProfile } from '../../service/alma.api.service';
-import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY, VOLUME_LIST } from '../../service/base.service';
 
 import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay, AlmaRequestInfo} from '../../service/ill.service';
 
@@ -114,6 +114,7 @@ export class MainComponent implements OnInit, OnDestroy {
           .subscribe({
             next: (header) => {
               if (header.status === this.nacsis.OkStatus) {
+                sessionStorage.setItem(VOLUME_LIST, bib[0].volumes.join(VOLUME_LIST_SEPARATOR))
                 sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.HoldingsMainPage);
                 this.router.navigate(['/holdings', this.selected, bib[0].title]);
               } else {
@@ -149,3 +150,4 @@ export class MainComponent implements OnInit, OnDestroy {
 
 }
 
+export const VOLUME_LIST_SEPARATOR = "(^_^)";

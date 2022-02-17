@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
-import { mergeMap } from 'rxjs/operators';
+import { mergeMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay, AlmaRequestInfo } from '../service/ill.service';
 import { TranslateService } from '@ngx-translate/core';
+import { MembersService } from './members.service';
+import { FieldName } from '../user-controls/search-form/search-form-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +20,7 @@ export class AlmaApiService {
   baseRecordInfoList: Array<BaseRecordInfo> = new Array();
 
   constructor(
+    private membersService: MembersService,
     private restService: CloudAppRestService,
     private translate: TranslateService,
     private illService: IllService,
@@ -109,6 +112,8 @@ export class AlmaApiService {
     let subfield_008_35_37;
     // ISBN/ISSN  
     let subfield_020_a, subfield_022_a;
+    // Volumes
+    let allField_020_q: Array<string>;
     // NACSIS   
     let nacsisID;
 
@@ -168,7 +173,11 @@ export class AlmaApiService {
 
       recordInfo.isbn = subfield_020_a;
       recordInfo.issn = subfield_022_a;
-     
+
+      // Volumes
+      allField_020_q = this.getAllValueFromDatafields(datafields, "020", "q");
+      
+      recordInfo.volumes = allField_020_q;
 
       //seriesSummary
       seriesSummary =  this.getAllSubfieldValueFromDataFields(datafields, "490");
@@ -183,8 +192,6 @@ export class AlmaApiService {
 
 
   getValueFromDataFields(datafields, tag_send, subfield_send): string {
-
-    let str = "";
     for (let index = 0; index < datafields.length; index++) {
       const field = datafields[index];
       let tag = field.getAttribute("tag").valueOf();
@@ -194,12 +201,12 @@ export class AlmaApiService {
           const subfield = subfields[index];
           let tag = subfield.getAttribute("code").valueOf();
           if (tag === subfield_send) {
-            str = subfield.innerHTML;
+            return subfield.innerHTML;
           }
         }
       }
     }
-    return str;
+    return "";
   }
 
 
@@ -232,6 +239,25 @@ export class AlmaApiService {
     return str;
   }
 
+  getAllValueFromDatafields(datafields, tag_send, subfield_send): string[] {
+    let allValues = new Array<string>();
+    for (let index = 0; index < datafields.length; index++) {
+      const field = datafields[index];
+      let tag = field.getAttribute("tag").valueOf();
+      if (tag === tag_send) {
+        let subfields = field.getElementsByTagName("subfield");
+        for (let index = 0; index < subfields.length; index++) {
+          const subfield = subfields[index];
+          let tag = subfield.getAttribute("code").valueOf();
+          if (tag === subfield_send) {
+            allValues.push(subfield.innerHTML);
+          }
+        }
+      }
+    }
+    return allValues;
+  }
+
   isEmpty(val) {
     return (val === undefined || val == null || val.length <= 0) ? true : false;
   }
@@ -244,41 +270,50 @@ export class AlmaApiService {
     if(this.integrationProfile != null && this.integrationProfile != undefined) {
       return of(this.integrationProfile)
     }
-    let libraryID: string = null;
-    let repositoryImportProfile: string = null;
-    let authorityImportProfileNames: string = null;
-    let authorityImportProfileUniformTitles: string = null;
+    this.integrationProfile = new IntegrationProfile();
      
     return this.restService.call(url).pipe(
       mergeMap(response => { 
         // extract integration profile
         let nacsisIntegrationProfile = response.integration_profile[0]; // assume can be only one CENTRAL_CATALOG_INTEGRATION
-        libraryID = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_INFORMATION_B" && param.name.value == "nacsisLibraryId")[0].value;
+        this.integrationProfile.libraryID = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_INFORMATION_B" && param.name.value == "nacsisLibraryId")[0].value;
         // extract import profiles
         let ContributionConfigurationParams = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_CONTRIBUTION_CONFIGURATION");
-        repositoryImportProfile = ContributionConfigurationParams.filter(param => param.name.value == "repositoryImportProfile")[0].value; 
-        authorityImportProfileNames = ContributionConfigurationParams.filter(param => param.name.value == "authNames")[0].value;
-        authorityImportProfileUniformTitles = ContributionConfigurationParams.filter(param => param.name.value == "authUniformTitle")[0].value;
-        return of(this.integrationProfile); 
+        this.integrationProfile.repositoryImportProfile = ContributionConfigurationParams.filter(param => param.name.value == "repositoryImportProfile")[0].value; 
+        this.integrationProfile.authorityImportProfileNames = ContributionConfigurationParams.filter(param => param.name.value == "authNames")[0].value;
+        this.integrationProfile.authorityImportProfileUniformTitles = ContributionConfigurationParams.filter(param => param.name.value == "authUniformTitle")[0].value;
+        
+        let queryParams = FieldName.ID + "=" + this.integrationProfile.libraryID;
+        return this.membersService.getSearchResultsFromNacsis(queryParams);
+      }),
+      mergeMap(response => {
+        if (response.status === this.membersService.OkStatus) {
+          this.integrationProfile.locations = response.records[0].LOC;
+        }
+        return of(this.integrationProfile);
+      }),
+      catchError(error => {
+        console.log("An error occurred while trying to get Nacsis integration profile. " + error.message);
+        return of(this.integrationProfile);
       }),
       mergeMap(() => {
         url = "/almaws/v1/conf/code-tables/NacsisExternalSystemCodes";
         return this.restService.call(url);
       }),
       mergeMap(response => {
-        let libraryCode = response.row.filter(row => row.code == "libraryCode")[0].description;
-        let systemPrefix = response.row.filter(row => row.code == "systemPrefix")[0].description;
-        
-        this.integrationProfile = new IntegrationProfile();
-        this.integrationProfile.libraryCode = libraryCode;
-        this.integrationProfile.libraryID = libraryID;
-        this.integrationProfile.systemPrefix = systemPrefix;
-        this.integrationProfile.repositoryImportProfile = repositoryImportProfile;
-        this.integrationProfile.authorityImportProfileNames = authorityImportProfileNames;
-        this.integrationProfile.authorityImportProfileUniformTitles = authorityImportProfileUniformTitles;
+        this.integrationProfile.libraryCode = response.row.filter(row => row.code == "libraryCode")[0].description;
+        this.integrationProfile.systemPrefix = response.row.filter(row => row.code == "systemPrefix")[0].description;
+        return of(this.integrationProfile);
+      }),
+      catchError(error => {
+        console.log("An error occurred while trying to get Nacsis code table parameters. " +  error.message);
         return of(this.integrationProfile);
       })
     );
+  }
+
+  getIntegretionProfileVariable() {
+    return this.integrationProfile;
   }
 
 
@@ -336,5 +371,6 @@ export class IntegrationProfile {
     repositoryImportProfile: string;
     authorityImportProfileNames: string;
     authorityImportProfileUniformTitles: string;
+    locations: string[];
 }
 

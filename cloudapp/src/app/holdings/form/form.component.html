@@ -1,13 +1,13 @@
 <div class="form-wrapper">
 
-<a *ngIf="isReadOnly">
-  <button *ngIf="isReadOnly" mat-flat-button color="secondary" (click)="cancel()">
-    <mat-icon>arrow_back_ios</mat-icon>
-    {{'General.Back' | translate}}
-  </button>
-</a>
+  <a *ngIf="isReadOnly">
+    <button *ngIf="isReadOnly" mat-flat-button color="secondary" (click)="cancel()">
+      <mat-icon>arrow_back_ios</mat-icon>
+      {{'General.Back' | translate}}
+    </button>
+  </a>
 
-<div class="align-to-right" fxLayout="row">
+  <div class="align-to-right" fxLayout="row">
     <button class="form-commands" *ngIf="!isReadOnly" mat-flat-button type="button" color="primary" (click)="cancel()">
       {{'General.Cancel' | translate}}
     </button>
@@ -15,16 +15,16 @@
       color="primary" (click)="add()">
       <mat-icon>add</mat-icon>
     </button>
-    <button class="form-commands" *ngIf="!isReadOnly" type="submit" mat-flat-button type="button" color="primary" (click)="save()">
+    <button class="form-commands" *ngIf="!isReadOnly" type="submit" mat-flat-button type="button" color="primary"
+      (click)="save()">
       {{ 'General.Save' | translate }}
     </button>
   </div>
-  
-  <!-- <error-message-inpu-output *ngIf="isErrorMessageVisible" [title]="title" [message]="message"
-    (onCloseEvent)="onCloseClick()"></error-message-inpu-output> -->
 
   <div class="title">
-    <h2>{{ (isReadOnly ? 'Holdings.Form.ViewTitle' : holdingId ? 'Holdings.Form.EditTitle' : 'Holdings.Form.AddTitle') | translate}}</h2>
+    <h2>
+      {{ (isReadOnly ? 'Holdings.Form.ViewTitle' : holdingId ? 'Holdings.Form.EditTitle' : 'Holdings.Form.AddTitle') | translate}}
+    </h2>
   </div>
 
   <div class="loading-shade" *ngIf="loading">
@@ -37,101 +37,29 @@
   <br>
   <span><strong>{{'Holdings.Form.Title' | translate}}: {{mmsTitle}}</strong></span>
   <br>
+  <br>
 
   <mat-form-field class="form-input-location">
     <mat-label translate>Holdings.Form.Fields.Location</mat-label>
-    <input [formControl]="locationFormControl" #locationInput [readonly]="isReadOnly" matInput class="form-control" required [(ngModel)]="holding.LOC">
-    <mat-error *ngIf="holding?.LOC?.length === 0" translate>Holdings.Form.Errors.LOC</mat-error>
+    <mat-select *ngIf="!isReadOnly else locationReadOnly" [formControl]="locationFormControl" required
+      [(ngModel)]="holding.LOC">
+      <mat-option *ngFor="let location of locationsList" value="{{location}}">
+        {{ location }}
+      </mat-option>
+    </mat-select>
+    <ng-template #locationReadOnly>
+      <input matInput [formControl]="locationFormControl" [(ngModel)]="holding.LOC" readonly required>
+    </ng-template>
   </mat-form-field>
 
-  <div class="form-cards">
-    <mat-list-item role="listitem" *ngFor="let form of forms; index as i"> 
-      <mat-card class="card-content">
-        <div>
-        <form *ngIf="form" [formGroup]="form">
-          <div *ngIf="isBook() else serial" class="form">
-            <mat-form-field appearance="outline" class="form-card-inputs">
-              <mat-label translate>Holdings.Form.Fields.VOL</mat-label>
-              <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="VOL">
-              </textarea>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="form-card-inputs">
-              <mat-label translate>Holdings.Form.Fields.CLN</mat-label>
-              <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="CLN">
-              </textarea>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="form-card-inputs">
-              <mat-label translate>Holdings.Form.Fields.RGTN</mat-label>
-              <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="RGTN">
-              </textarea>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="form-card-inputs">
-              <mat-label translate>Holdings.Form.Fields.CPYR</mat-label>
-              <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="CPYR">
-              </textarea>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="form-card-inputs">
-              <mat-label translate>Holdings.Form.Fields.CPYNT</mat-label>
-              <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="CPYNT">
-              </textarea>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="form-card-inputs">
-              <mat-label translate>Holdings.Form.Fields.LDF</mat-label>
-              <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="LDF">
-              </textarea>
-            </mat-form-field>
-          </div>
-          <ng-template #serial >
-            <div class="form">
-              <mat-form-field appearance="outline" class="form-card-inputs">
-                <mat-label translate>Holdings.Form.Fields.HLYR</mat-label>
-                <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="HLYR" required>
-                </textarea>
-                <mat-error *ngIf="form.controls.HLYR.invalid" translate>Holdings.Form.Errors.HLYR</mat-error>
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="form-card-inputs">
-                <mat-label translate>Holdings.Form.Fields.HLV</mat-label>
-                <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="HLV" required>
-                </textarea>
-                <mat-error *ngIf="form.controls.HLV.invalid" translate>Holdings.Form.Errors.HLV</mat-error>
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="form-card-inputs">
-                <mat-label translate>Holdings.Form.Fields.CONT</mat-label>
-                <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="CONT">
-                </textarea>
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="form-card-inputs">
-                <mat-label translate>Holdings.Form.Fields.CLN</mat-label>
-                <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="CLN">
-                </textarea>
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="form-card-inputs">
-                <mat-label translate>Holdings.Form.Fields.LDF</mat-label>
-                <textarea cdkTextareaAutosize [readonly]="isReadOnly" matInput formControlName="LDF">
-                </textarea>
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="form-card-inputs">
-                <mat-label translate>Holdings.Form.Fields.CPYNT</mat-label>
-                <textarea [readonly]="isReadOnly" cdkTextareaAutosize matInput formControlName="CPYNT">
-                </textarea>
-              </mat-form-field>
-            </div>
-          </ng-template>
-        </form>
-      </div>
-        <div class="result-actions" *ngIf="getResultActionList()?.length > 0">
-          <button mat-button class="result-actions-button" [matMenuTriggerFor]="actionsMenu" color="primary">
-            <mat-icon>more_horiz</mat-icon>
-          </button>
-          <mat-menu #actionsMenu="matMenu" >
-            <div *ngFor="let item of getResultActionList(); index as Actionsindex">
-              <button mat-menu-item type="submit" (click)="delete(i)">
-                {{ item.label | translate }}
-              </button>
-            </div>
-          </mat-menu>
-        </div>
-      </mat-card>
-    </mat-list-item>
+  <form-fields [formFields]="allVolumes"></form-fields>
+  <form-fields [formFields]="ltrList"></form-fields>
+
+  <br><br><br>
+
+  <div class="loading-shade" *ngIf="loading">
+    <mat-progress-spinner mode="indeterminate" diameter="50">
+    </mat-progress-spinner>
   </div>
+  
 </div>
