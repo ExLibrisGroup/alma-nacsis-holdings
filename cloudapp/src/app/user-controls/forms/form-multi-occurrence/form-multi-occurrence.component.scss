@@ -5,6 +5,7 @@
   border-radius: 5px;
   padding: 10px;
   padding-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .all-occurrences {
@@ -14,20 +15,31 @@
   }
 
 .one-occurrence {
-  // inner style
   display: flex;
   justify-content: space-between;
-  align-items: end;
-  column-gap: 2%;
+  align-items: center;
+  column-gap: 10px;
   width: 100%;
-  // outer style
+  padding-bottom: 10px;
+}
+
+.odd {
+  background-color: whitesmoke;
+}
+
+.border {
   @include fields-border();
-  margin-bottom: 8px;
+}
+
+.occurrence-index {
+  margin-bottom: 0px !important;
 }
 
 .form-fields {
   @include form-fields-parent;
+  row-gap: 10px;
   width: 100%;
+  min-width: 50px;
 }
 
 @include form-feild-full-width;
@@ -38,6 +50,12 @@
   
 @include form-field-quarter;
 
+.mat-error {
+  padding-top: 12px;
+}
+
 multi-occurrence-controllers {
+  align-self: flex-end;
   margin-bottom: 8px !important;
 }
+

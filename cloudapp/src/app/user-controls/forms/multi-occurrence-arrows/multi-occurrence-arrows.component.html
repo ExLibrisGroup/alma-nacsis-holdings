@@ -1,10 +1,14 @@
 <div class="controllers-group">
     <div *ngFor="let controller of controllersEnabledMap | keyvalue" class="icon-controller {{controller.key.className}}">
         <div *ngIf="(controller.value && !disabled) else disabledController">
-            <i class="{{controller.key.iconName}} eca-button" (click)="onControllerClick(controller.key)"></i>
+            <mat-icon class="eca-button" (click)="onControllerClick(controller.key)">
+                {{controller.key.iconName}}
+            </mat-icon>
         </div>
         <ng-template #disabledController>
-            <i class="{{controller.key.iconName}} disabledController"></i>
+            <mat-icon class="disabledController">
+                {{controller.key.iconName}}
+            </mat-icon>
         </ng-template>
         
     </div>

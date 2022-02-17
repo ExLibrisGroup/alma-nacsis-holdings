@@ -34,6 +34,7 @@ import { SelectableResultsListComponent } from './user-controls/selectable-resul
 import { SelectableResultCardComponent } from './user-controls/selectable-result-card/selectable-result-card.component';
 import { FullviewDisplayComponent } from './user-controls/full-view-display/full-view-display.component';
 import { MultiOccurrenceControllersComponent } from './user-controls/forms/multi-occurrence-controllers/multi-occurrence-controllers.component';
+import { MultiOccurrenceArrowsComponent } from './user-controls/forms/multi-occurrence-arrows/multi-occurrence-arrows.component';
 import { FormMultiOccurrenceComponent } from './user-controls/forms/form-multi-occurrence/form-multi-occurrence.component';
 import { FormFieldsComponent } from './user-controls/forms/form-fields/form-fields.component';
 
@@ -87,6 +88,7 @@ export function getToastrModule() {
       MembersSearchComponent,
       EditFormComponent,
       MultiOccurrenceControllersComponent,
+      MultiOccurrenceArrowsComponent,
       FormMultiOccurrenceComponent,
       FormFieldsComponent
    ],

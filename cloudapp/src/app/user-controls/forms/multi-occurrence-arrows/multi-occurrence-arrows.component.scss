@@ -1,0 +1,25 @@
+.controllers-group {
+    display: grid;
+    grid-template-rows: 27px 27px;
+    align-items: center;
+    justify-items: center;
+    width: fit-content;
+}
+
+.icon-controller {
+    color: #4164A4; 
+    cursor: pointer;
+}
+
+.disabledController {
+    color: rgba(0, 0, 0, 0.12) !important;
+    cursor: default;
+}
+
+.upward-controller {
+    grid-row: 1;
+}
+
+.downward-controller {
+    grid-row: 2;
+}

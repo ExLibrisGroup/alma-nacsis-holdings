@@ -1,14 +1,19 @@
 <div class="all-occurrences">
-  <div class="one-occurrence" *ngFor="let fieldsArr of contentArray; index as i" fxLayout="row">
+  <div class="one-occurrence" *ngFor="let fieldsArr of contentArray; index as i" fxLayout="row" 
+    [ngClass]="{'odd': (i%2!=0 && fieldsArr.length > 1), 'border': (fieldsArr.length > 1)}">
+    <multi-occurrence-arrows [disabled]="isReadOnlyMode(i)" [isFirstOccurrence]="i==0" [isLastOccurrence]="i==(contentArray.length-1)"
+      (selectedController)="onControllerClick($event, i)"></multi-occurrence-arrows>
+    <p class="occurrence-index">{{ i +1 }}</p>
     <div class="form-fields">
       <form *ngFor="let field of fieldsArr" class="{{field.getFieldLength()}}">
         <mat-form-field appearance="outline">
           <mat-label>{{ field.getFieldLabel() | translate }}</mat-label>
-          <input matInput [formControl]="field.getFormControl()">
+          <input matInput [formControl]="field.getFormControl()" [readonly] = "field.getReadOnly()" [required]="field.isRequired()">
+          <mat-error *ngIf="field.isRequired()"> {{'General.Errors.RequiredField' | translate}} </mat-error>
         </mat-form-field>
       </form>
     </div>
-    <multi-occurrence-controllers [isAddEnabled]="isLastOccurrence(i)" [isDeleteEnabled]="isFirstOccurrence(i)"
-      (selectedController)="onControllerClick($event, i)"></multi-occurrence-controllers>
+    <multi-occurrence-controllers [disabled]="isReadOnlyMode(i)" [isAddEnabled]="isLastOccurrence(i)" [isDeleteEnabled]="isFirstOccurrence(i)"
+    (selectedController)="onControllerClick($event, i)"></multi-occurrence-controllers>    
   </div>
 </div>

@@ -22,14 +22,21 @@ export class SearchField {
     formControl: FormControl;
     fieldLength: FieldSize = FieldSize.fullWidth;
     readOnly : boolean = false;
+    required: boolean = false;
 
 
-    constructor(key: FieldName , fieldSize?: FieldSize, formControlValue?: string, readOnly: boolean = false){
+    constructor(
+      key: FieldName, 
+      fieldSize?: FieldSize, 
+      formControlValue?: string, 
+      readOnly: boolean = false,
+      required?: boolean){
         this.key = key;
         this.fieldLength = fieldSize;
         this.formControl = new FormControl();
         this.formControl.setValue(formControlValue);
         this.readOnly = readOnly;
+        this.required = required;
     }
 
 
@@ -39,7 +46,11 @@ export class SearchField {
 
     getReadOnly(): boolean {
       return this.readOnly;
-  }
+    }
+
+    setReadOnly(isReadOnly: boolean) {
+      this.readOnly = isReadOnly;
+    }
 
     getFieldLabel(): string {
         this.fieldLabel = "UserControls.Fields." + this.key;
@@ -62,12 +73,16 @@ export class SearchField {
         this.fieldLength = size;
     }
 
+    isRequired() {
+      return this.required;
+    }
+
     copyField(copyFormControlValues: boolean): SearchField {
         let newField;
         if (copyFormControlValues) {
-            newField = new SearchField(this.key, this.fieldLength, this.formControl.value, this.readOnly);
+            newField = new SearchField(this.key, this.fieldLength, this.formControl.value, this.readOnly, this.required);
         } else {
-            newField = new SearchField(this.key, this.fieldLength, null, this.readOnly);
+            newField = new SearchField(this.key, this.fieldLength, null, this.readOnly, this.required);
         }
         return newField;
     }
@@ -168,8 +183,17 @@ export enum FieldName {
     SYSTEL = "SYSTEL",
     SYSFAX = "SYSFAX",
     EMAIL = "EMAIL",
-    POLICY = "POLICY"
-  
+    POLICY = "POLICY",
+    // Holdings fields
+    CLN = "CLN",
+    RGTN = "RGTN",
+    CPYR = "CPYR",
+    CPYNT = "CPYNT",
+    LDF = "LDF",
+    HLYR = "HLYR",
+    HLV = "HLV",
+    CONT = "CONT",
+    LTR = "LTR",
 }
 
 interface selectedFieldValue {
