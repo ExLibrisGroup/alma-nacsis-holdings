@@ -204,6 +204,7 @@ export class Holding {
   nacsisHoldingsList: any[];
   editable: boolean;
   type: string;
+  ltrList: string[];
 }
 
 export class HoldingsBook {
