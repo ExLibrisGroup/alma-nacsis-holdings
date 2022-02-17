@@ -168,6 +168,7 @@ export class AlmaRecordInfo {
   isbn: string = "";
   issn: string = "";
   seriesSummaryAll: string = "";
+  volumes?: string[];
 }
 
 export class AlmaRequestInfo extends AlmaRecordInfo {

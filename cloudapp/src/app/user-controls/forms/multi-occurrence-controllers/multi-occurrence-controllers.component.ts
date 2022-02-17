@@ -1,4 +1,6 @@
 import { Component, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import { ControllerButton } from '../form-multi-occurrence/form-multi-occurrence.component';
+
 
 
 @Component({
@@ -11,19 +13,30 @@ export class MultiOccurrenceControllersComponent implements OnChanges {
     
     @Input() isAddEnabled: boolean;
     @Input() isDeleteEnabled: boolean;
+    @Input() disabled: boolean = false;
     @Output() selectedController = new EventEmitter<any>();
-    private controllersList: Array<any>;
+    private controllersEnabledMap = this.initControllers();
+    
+    initControllers() {
+        let controllers = new Map([
+        [ControllerButton.add, true],
+        [ControllerButton.copy, true],
+        [ControllerButton.delete, true]
+        ]);
+    return controllers;
+    }
+
+
 
     ngOnChanges() {
-        this.controllersList = new Array();
-        if(this.isAddEnabled) {
-            this.controllersList.push(ControllerButton.add);
+        this.controllersEnabledMap = this.initControllers();
+        if(!this.isAddEnabled) {
+            this.controllersEnabledMap.set(ControllerButton.add, false);
+            this.controllersEnabledMap.set(ControllerButton.copy, false);
         }
-        if(this.isAddEnabled) {
-            this.controllersList.push(ControllerButton.copy);
-        }
-        if(this.isDeleteEnabled) {
-            this.controllersList.push(ControllerButton.delete);
+        if(!this.isDeleteEnabled) {
+            this.controllersEnabledMap.set(ControllerButton.delete, false);
+
         }
     }
 
@@ -33,12 +46,3 @@ export class MultiOccurrenceControllersComponent implements OnChanges {
 
 
 }
-
-export const ControllerButton = {
-    add: {iconName: "uxf-icon uxf-plus-circle", className: "add-controller"},
-    copy: {iconName: "uxf-icon uxf-popup", className: "copy-controller"}, // optional - uxf-docs, uxf-doc-add
-    delete: {iconName: "uxf-icon uxf-trash eca-button", className: "delete-controller"},
-}
-
-
-

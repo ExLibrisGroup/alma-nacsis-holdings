@@ -1,5 +1,4 @@
 import { Component, OnChanges, Input } from '@angular/core';
-import { ControllerButton } from '../multi-occurrence-controllers/multi-occurrence-controllers.component';
 import { SearchField, FieldName, FieldSize } from '../../search-form/search-form-utils';
 
 import { FormControl } from "@angular/forms";
@@ -35,6 +34,16 @@ export class FormMultiOccurrenceComponent {
     onControllerClick(controllerButtom: any, index: number) {
 
         switch(controllerButtom) {
+            case(ControllerButton.upward):
+                if(index > 0){
+                    [this.contentArray[index], this.contentArray[index-1]] = [this.contentArray[index-1], this.contentArray[index]];
+                }
+                break;
+            case(ControllerButton.downward):
+                if(index < this.contentArray.length-1){
+                    [this.contentArray[index], this.contentArray[index+1]] = [this.contentArray[index+1], this.contentArray[index]];
+                }
+                break;
             case(ControllerButton.add):
                 this.setAdditionalContent(index, this.copySearchFieldsArray(this.contentArray[index], false)); 
                 break;
@@ -60,5 +69,20 @@ export class FormMultiOccurrenceComponent {
             this.contentArray.splice(i+1, 0, content);
         }
     }
+
+    // Checking if all fields are in readOnly mode
+    isReadOnlyMode(index: number): boolean {
+        let fieldsInReadOnlyMode = this.contentArray[index].filter(field => field.getReadOnly());
+        return fieldsInReadOnlyMode.length == this.contentArray[index].length;
+    }
     
+}
+
+
+export const ControllerButton = {
+    add: {iconName: "uxf-icon uxf-plus-circle", className: "add-controller"},
+    copy: {iconName: "uxf-icon uxf-popup", className: "copy-controller"}, // optional - uxf-docs, uxf-doc-add
+    delete: {iconName: "uxf-icon uxf-trash", className: "delete-controller"},
+    upward: {iconName: "keyboard_arrow_up", className: "upward-controller"},
+    downward: {iconName: "keyboard_arrow_down", className: "downward-controller"},
 }

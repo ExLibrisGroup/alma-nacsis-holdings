@@ -4,13 +4,13 @@
             <div *ngSwitchCase="searchFieldType.input">
                 <mat-form-field appearance="outline">
                     <mat-label>{{ field.getFieldLabel() | translate }}</mat-label>
-                    <input matInput [formControl]="field.getFormControl()" [readonly] = "field.getReadOnly()">
+                    <input matInput [formControl]="field.getFormControl()" [readonly] = "field.getReadOnly()" [required]="field.isRequired()">
                 </mat-form-field>
             </div>
             <div *ngSwitchCase="searchFieldType.select">
                 <mat-form-field appearance="outline">
                     <mat-label>{{ field.getFieldLabel() | translate }}</mat-label>
-                    <mat-select [disabled] = "field.getReadOnly()" [formControl]="field.getFormControl()" multiple>
+                    <mat-select [formControl]="field.getFormControl()" [disabled] = "field.getReadOnly()" multiple>
                         <mat-option *ngFor="let val of field.getFieldValueList()" [value]="val.value">
                             {{val.viewValue | translate}}
                         </mat-option>
@@ -19,6 +19,7 @@
             </div>
             <div *ngSwitchCase="searchFieldType.multi">
                 <form-multi-occurrence 
+                    *ngIf="field.getFieldsArray().length > 0"
                     [minOccurrence]="field.getMinOccurrence()" 
                     [maxOccurrence]="field.getMaxOccurrence()"
                     [contentArray]="field.getFieldsArray()">

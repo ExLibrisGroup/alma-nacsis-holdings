@@ -1,93 +1,16 @@
-mat-form-field {
-  margin-top: 0px;
-  margin-bottom: 0px;
-  margin-right: 20px;
-  margin-left: 20px;
-}
-
-mat-checkbox {
+.align-to-right {
+  justify-content: flex-end;
   margin-bottom: 20px;
-  display: block;
 }
 
-mat-card {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-right: 10px;
-  margin-left: 0;
-  padding: 0px;
+.form-commands {
+  margin-right: 15px;
+}
+
+.form-input-location {
+  display: contents;
+}
+
+.form-cards {
   background: whitesmoke !important;
-}
-
-.card-content {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.form-wrapper {
-  flex-direction: column;
-  display: flex;
-
-  .form-cards {
-    overflow: auto;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 0px;
-    padding-right: 0px;
-    margin-bottom: 40px;
-     .form-card-inputs {
-       padding-top: 10px;
-       ::ng-deep .mat-form-field-wrapper {
-        padding-bottom: 0px !important;
-    }
-    }
-  }
-
-  .form-commands {
-    margin-right: 15px;
-  }
-
-  .form-input-location {
-    margin-right: 0px;
-    margin-left: 0px;
-    margin-bottom: 0px;
-    width: 15%;
-    min-width: 250px;
-  }
-
-  .align-to-right {
-    justify-content: flex-end;
-    margin-bottom: 20px;
-  }
-
-  .form-card-actions {
-    justify-content: flex-end;
-    padding-bottom: 15px;
-    margin-right: 20px;
-  }
-
-  .delete-command {
-    display: flex;
-    align-items: center;
-    vertical-align: middle;
-    margin-right: 15px;
-  }
-
-  div.form {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    column-gap: 1em;
-  }
-
-  mat-list-item {
-    i.eca-button,
-    i.cloudapp-button {
-      visibility: visible !important;
-    }
-    &:hover i.eca-button,
-    &:hover i.cloudapp-button {
-      visibility: visible;
-    }
-  }
 }

@@ -165,6 +165,8 @@ export abstract class BaseService {
     }
 }
 
+// Session Storage consts 
+// TODO: Turned it into Enum
 export const ROUTING_STATE_KEY = "routingState";
 export const LIBRARY_ID_KEY = "libraryIDKey";
 export const LIBRARY_MEMBERINFO_KEY = "libraryMemberInfoKey";
@@ -174,6 +176,8 @@ export const RESULT_RECORD_LIST_ILL = "resultDataInILL";
 export const REQUEST_EXTERNAL_ID = "requestExternalId";
 export const MEMBER_RECORD = "memberRecord";
 export const FANO_ID = "fanoId";
+export const VOLUME_LIST = "volumeList";
+
 
 
 export enum AppRoutingState {

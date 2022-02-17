@@ -10,7 +10,8 @@
     "Next": "Next",
     "Order": "Order",
     "Errors": {
-      "generalError": "App general error"
+      "generalError": "App general error",
+      "RequiredField": "This field is required"
     }
   },
 
@@ -112,17 +113,7 @@
         "Description": "Description",
         "Library": "Library",
         "Location": "Location",
-        "Ill": "Available for resource sharing",
-        "VOL": "VOL",
-        "CLN": "CLN",
-        "RGTN": "RGTN",
-        "CPYR": "CPYR",
-        "CPYNT": "CPYNT",
-        "LDF": "LDF",
-        "LTR": "LTR",
-        "HLV": "HLV",
-        "CONT": "CONT",
-        "HLYR": "HLYR"
+        "Ill": "Available for resource sharing"
       },
       "Errors": {
         "Id": "ID field is required",
@@ -449,7 +440,16 @@
      "SYSTEL":"SYSTEL",
       "SYSFAX":"SYSFAX",
       "EMAIL":"EMAIL",
-      "POLICY":"POLICY"
+      "POLICY":"POLICY",
+      "CLN": "CLN",
+      "RGTN": "RGTN",
+      "CPYR": "CPYR",
+      "CPYNT": "CPYNT",
+      "LDF": "LDF",
+      "LTR": "LTR",
+      "HLV": "HLV",
+      "CONT": "CONT",
+      "HLYR": "HLYR"
     }
   }
 }
