@@ -17,8 +17,8 @@ export class SelectableResultCardComponent implements OnInit {
   @Output() onActionSelected = new EventEmitter<RecordSelection>();  
   @Output() onTitleSelected = new EventEmitter<number>();  
   @Output() onRadioSelected = new EventEmitter<IDisplayLines>(); 
-  private titleDisplay: Array<ViewField>;
-  private contentDisplay: Array<ViewLine>;
+  titleDisplay: Array<ViewField>;
+  contentDisplay: Array<ViewLine>;
 
 
   constructor() { }

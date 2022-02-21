@@ -51,22 +51,22 @@ export class searchRecordComponent implements AfterViewInit {
   selected: IDisplayLines;
 
   // UI variables
-  private panelState: boolean = true;
-  private loading: boolean = false;
-  private isRightTableOpen: boolean = false;
-  private isColapsedMode: boolean = true;
-  private isFirstIndex: number;
+  panelState: boolean = true;
+  loading: boolean = false;
+  isRightTableOpen: boolean = false;
+  isColapsedMode: boolean = true;
+  isFirstIndex: number;
 
   // Search variables
   private catalogResultsData: NacsisCatalogResults;
-  private numOfResults: number;
-  private pageIndex: number = 0;
-  private pageSize: number = 20;
+  numOfResults: number;
+  pageIndex: number = 0;
+  pageSize: number = 20;
 
   // Display variables
-  private resultsSummaryDisplay: Array<IDisplayLines>;
-  private resultFullDisplay;
-  private resultFullLinkDisplay;
+  resultsSummaryDisplay: Array<IDisplayLines>;
+  resultFullDisplay;
+  resultFullLinkDisplay;
   public selectedIndexBinding = 0;
   private recordIndexSelected: number;
 
@@ -86,7 +86,7 @@ export class searchRecordComponent implements AfterViewInit {
   @ViewChild('searchResults') searchResultsTmpl: TemplateRef<any>;
   @ViewChild('noResults') noResultsTmpl: TemplateRef<any>;
   @ViewChild('fullRecord') fullRecordTmpl: TemplateRef<any>;
-  private currentResulsTmpl: TemplateRef<any>;
+  currentResulsTmpl: TemplateRef<any>;
 
   constructor(
     private route: ActivatedRoute,
@@ -150,7 +150,7 @@ export class searchRecordComponent implements AfterViewInit {
     });
   }
 
-  private getActionMenu() {
+  getActionMenu() {
     return this.ACTIONS_MENU_LIST.get(this.currentSearchType);
   }
 

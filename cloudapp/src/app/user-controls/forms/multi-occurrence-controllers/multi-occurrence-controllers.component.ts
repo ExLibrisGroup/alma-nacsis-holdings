@@ -15,7 +15,7 @@ export class MultiOccurrenceControllersComponent implements OnChanges {
     @Input() isDeleteEnabled: boolean;
     @Input() disabled: boolean = false;
     @Output() selectedController = new EventEmitter<any>();
-    private controllersEnabledMap = this.initControllers();
+    controllersEnabledMap = this.initControllers();
     
     initControllers() {
         let controllers = new Map([

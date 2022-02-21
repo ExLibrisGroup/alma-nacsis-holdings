@@ -23,7 +23,7 @@ export class SelectableResultsListComponent implements OnChanges, AfterViewInit 
   @Output() onRadioSelected = new EventEmitter<IDisplayLines>();  
   
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  private recordIndex: number;
+  recordIndex: number;
 
 
   constructor() { }

@@ -42,7 +42,7 @@ export class FormComponent implements OnInit {
   urlViewSigment: string = "view";
 
   locationFormControl = new FormControl();
-  private locationsList = new Array<string>();
+  locationsList = new Array<string>();
 
   constructor(
     private almaService: AlmaApiService,

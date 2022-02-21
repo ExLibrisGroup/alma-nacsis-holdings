@@ -21,7 +21,7 @@ export class RecordsListComponent implements OnChanges, AfterViewInit{
   @Output() onPageSelected = new EventEmitter<PageEvent>();  
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  private recordIndex: number ;
+  recordIndex: number ;
 
   constructor() { }
 

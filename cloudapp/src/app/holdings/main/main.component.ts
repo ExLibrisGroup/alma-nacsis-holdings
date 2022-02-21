@@ -29,7 +29,7 @@ export class MainComponent implements OnInit, OnDestroy {
   isErrorMessageVisible: boolean = false;
   processed = 0;
   integrationProfile: IntegrationProfile;
-  private recordsSummaryDisplay: Array<IDisplayLines>;
+  recordsSummaryDisplay: Array<IDisplayLines>;
   private almaResultsData: AlmaRecordsResults;
   baseRecordInfoList: Array<BaseRecordInfo> = new Array();
   recordInfoList: AlmaRequestInfo[] = new Array();

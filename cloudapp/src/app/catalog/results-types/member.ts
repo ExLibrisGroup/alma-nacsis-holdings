@@ -100,6 +100,7 @@ export class MemberFullDisplay extends IDisplayLines {
 
         fieldsArray = new Array<ViewField>();
         fieldsArray.push(new ViewFieldBuilder().content(this.record.TEL).build());
+        fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.EXTEL).build());
         this.addLine(new ViewFieldBuilder().label("Phone Number").build(), fieldsArray);
 
         fieldsArray = new Array<ViewField>();
@@ -200,6 +201,8 @@ export class MemberFullDisplay extends IDisplayLines {
             this.addLine(new ViewFieldBuilder().label("Location code").build(), fieldsArray);
         }
 
+        //TODO: add LDF field
+
         fieldsArray = new Array<ViewField>();
         fieldsArray.push(new ViewFieldBuilder().content(this.record.GRPCODE).build());
         this.addLine(new ViewFieldBuilder().label("Offset code").build(), fieldsArray);
@@ -239,7 +242,7 @@ export class MemberFull {
     SETCODE: string;
     ORGCODE: string;
     TEL: string;
-    EXTEL : string;//new
+    EXTEL : string;
 
     FAX: string;
     CATFLG: string;

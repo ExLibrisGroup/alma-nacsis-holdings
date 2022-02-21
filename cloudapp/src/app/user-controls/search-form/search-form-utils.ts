@@ -184,6 +184,8 @@ export enum FieldName {
     SYSFAX = "SYSFAX",
     EMAIL = "EMAIL",
     POLICY = "POLICY",
+    TEL = "TEL",
+    FAX = "FAX",
     // Holdings fields
     CLN = "CLN",
     RGTN = "RGTN",
@@ -285,7 +287,6 @@ export class SelectedSearchFieldValues {
     }
 
   iLLParticipationTypeList: selectedFieldValue[] = [
-    { value: '', viewValue: 'ILL.OptionViewValue.ILLFLG.None' },
     { value: 'A', viewValue: 'ILL.OptionViewValue.ILLFLG.Participate' },
     { value: 'N', viewValue: 'ILL.OptionViewValue.ILLFLG.DoNotParticipate' }
   ];
@@ -295,7 +296,6 @@ export class SelectedSearchFieldValues {
 }
 
   serviceStatusList: selectedFieldValue[] = [
-    { value: '', viewValue: 'ILL.OptionViewValue.STAT.None' },
     { value: 'A', viewValue: 'ILL.OptionViewValue.STAT.Available' },
     { value: 'N', viewValue: 'ILL.OptionViewValue.STAT.NotAvailable' }
   ];
@@ -305,7 +305,8 @@ export class SelectedSearchFieldValues {
 }
 
   offsetChargeList: selectedFieldValue[] = [
-    { value: '', viewValue: 'ILL.OptionViewValue.GRPCODE.None' },
+    //TODO : change the label of U
+    { value: 'U', viewValue: 'ILL.OptionViewValue.GRPCODE.ParticipateILLOffsetService' },
     { value: 'N', viewValue: 'ILL.OptionViewValue.GRPCODE.ParticipateILLOffsetService' }
   ];
 
@@ -314,7 +315,6 @@ export class SelectedSearchFieldValues {
 }
 
 catalogingParticipationTypeList: selectedFieldValue[] = [
-  { value: '', viewValue: 'ILL.OptionViewValue.ILLFLG.None' },
   { value: 'A', viewValue: 'ILL.OptionViewValue.ILLFLG.Participate' },
   { value: 'N', viewValue: 'ILL.OptionViewValue.ILLFLG.DoNotParticipate' }
 ];

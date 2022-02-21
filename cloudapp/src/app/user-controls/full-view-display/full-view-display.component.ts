@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { SearchType } from '../../user-controls/search-form/search-form-utils';
-import { LinkState } from '../results-types/results-common';
+import { LinkState } from '../../catalog/results-types/results-common';
 
 
 @Component({

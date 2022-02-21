@@ -32,28 +32,28 @@ import { MemberSummaryDisplay } from '../../catalog/results-types/member';
 export class MembersSearchComponent implements OnInit {
 
   //basic variable
-  private owners: any[];
-  private isRightTableOpen: boolean = false;
+  owners: any[];
+  isRightTableOpen: boolean = false;
   private selectedValues = new SelectedSearchFieldValues();
-  private selected: string;
+  selected: string;
   private fanoId: string;
 
   // UI variables
-  private panelState: boolean = true;
-  private loading: boolean = false;
+  panelState: boolean = true;
+  loading: boolean = false;
 
   // Search variables
   private numOfResults: number;
-  private pageIndex: number = 0;
-  private pageSize: number = 20;
+  pageIndex: number = 0;
+  pageSize: number = 20;
   private fieldsMap: Map<FieldName, SearchField> = new Map();
 
   // Data variables
-  private resultFullDisplay: Array<ViewLine>;
+  resultFullDisplay: Array<ViewLine>;
   private resultFullLinkDisplay: Array<ViewLine>;
   private catalogResultsData: NacsisCatalogResults;
   private resultsSummaryRecord: Array<IDisplayLines>;
-  private resultsSummaryDisplay: Array<IDisplayLines> = new Array();
+  resultsSummaryDisplay: Array<IDisplayLines> = new Array();
 
   // Templates
   @ViewChild('notSearched') notSearchedTmpl: TemplateRef<any>;
@@ -61,7 +61,7 @@ export class MembersSearchComponent implements OnInit {
   @ViewChild('noResults') noResultsTmpl: TemplateRef<any>;
   @ViewChild('fullRecord') fullRecordTmpl: TemplateRef<any>;
   @ViewChild('editForm') editFormTmpl: TemplateRef<any>;
-  private currentResulsTmpl: TemplateRef<any>;
+  currentResulsTmpl: TemplateRef<any>;
 
   public ACTIONS_MENU_LIST = new Array(
     new Action('Catalog.Results.Actions.View', true),
@@ -116,19 +116,12 @@ export class MembersSearchComponent implements OnInit {
 
   ngOnInit() {
     this.initFieldsMap();
-    //TODO - check it again
-    let owner;// = sessionStorage.getItem(this.membersService.OwnerKey);
+    let owner = sessionStorage.getItem(this.membersService.OwnerKey);
 
     if (!this.membersService.isEmpty(owner)) {
       this.selected = owner;
     } else if (this.membersService.isEmpty(this.selected)) {
-      this.selected = '1'; // owner = Mine
-
-      // if (sessionStorage.getItem(ROUTING_STATE_KEY) == "") {
-      //   this.membersService.clearAllSearchResults();
-      // } else {
-      //   this.onBackFromEditForm();
-      // }
+      this.selected = '0'; // owner = All
     }
   }
 
@@ -142,11 +135,11 @@ export class MembersSearchComponent implements OnInit {
   }
 
   /* Methods called from the DOM */
-  private getActionMenu() {
+  getActionMenu() {
     return this.ACTIONS_MENU_LIST;
   }
 
-  private onActionsClick(selection: RecordSelection) {
+  onActionsClick(selection: RecordSelection) {
     let record = this.resultsSummaryRecord[selection.recordIndex];
     switch (selection.actionIndex) {
       case 0: // Full view
@@ -165,15 +158,15 @@ export class MembersSearchComponent implements OnInit {
     }
   }
 
-  private panelOpenState() {
+  panelOpenState() {
     this.panelState = true;
   }
 
-  private panelCloseState() {
+  panelCloseState() {
     this.panelState = false;
   }
 
-  private onOwnerSelected() {
+  onOwnerSelected() {
     /* owner = All, Mine is included in All, therefore, no need to retrieve from nacsis
        get All only once */
     if (this.selected === '1') {
@@ -184,7 +177,7 @@ export class MembersSearchComponent implements OnInit {
     this.resultsTemplateFactory();
   }
 
-  private onTitleClick(recordIndex: number) {
+  onTitleClick(recordIndex: number) {
     // Click on the title to open the full view mode
     let record = this.resultsSummaryDisplay[recordIndex];
     this.currentResulsTmpl = this.fullRecordTmpl;
@@ -192,15 +185,15 @@ export class MembersSearchComponent implements OnInit {
       resultFullDisplay = record.getFullRecordData().getFullViewDisplay().initContentDisplay();
   }
 
-  private clear() {
+  clear() {
     this.ngOnInit();
   }
 
-  private resultExists() {
+  resultExists() {
     this.numOfResults > 0;
   }
 
-  private onFullViewLinkClose() {
+  onFullViewLinkClose() {
     this.isRightTableOpen = false;
     this.resultFullLinkDisplay = null;
   }
@@ -296,7 +289,7 @@ export class MembersSearchComponent implements OnInit {
     this.pageSize = Number(urlParams.split(pageSizeParam).pop().split(searchTypeParam)[0]);
   }
 
-  private onPageAction(pageEvent: PageEvent) {
+  onPageAction(pageEvent: PageEvent) {
     let urlParams = this.membersService.getQueryParams(SearchType.Members);
     let newIndexStr = QueryParams.PageIndex + "=" + pageEvent.pageIndex + "&" + QueryParams.PageSize;
     urlParams = urlParams.replace(/pageIndex=.*pageSize/, newIndexStr);

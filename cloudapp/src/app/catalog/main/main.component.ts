@@ -50,7 +50,7 @@ export class CatalogMainComponent implements AfterViewInit {
     public currentSearchType: SearchType = SearchType.Monographs;
     currentDatabase: string;// = 'BOOK';  // first default selection (since opened with Monographs)
     linkSearchType: SearchType;
-    actionMenuEnteries: Array<string>;
+    actionMenuEnteries: Array<Action>;
 
     // UI variables
     public panelState: boolean = true;
@@ -218,7 +218,7 @@ export class CatalogMainComponent implements AfterViewInit {
         // For searches inside BOOK or SERIAL DB, return the full option
         if (searchedDBName === "BOOK" || searchedDBName === "SERIAL") {
             let additionalMenu = [...this.ACTIONS_MENU_LIST.get(this.currentSearchType)];
-            additionalMenu.push('Catalog.Results.Actions.ViewHoldings');
+            additionalMenu.push(new Action('Catalog.Results.Actions.ViewHoldings'));
             return additionalMenu;
         } else {
             return this.ACTIONS_MENU_LIST.get(this.currentSearchType);

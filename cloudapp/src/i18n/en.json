@@ -306,16 +306,13 @@
         "Other":"Other"
       },
       "GRPCODE" : {
-        "None":"",
         "ParticipateILLOffsetService" : "Participate in ILL offset service"
       },
       "ILLFLG" : {
-        "None":"",
         "Participate" : "Participate",
         "DoNotParticipate" : "Do not participate"
       },
       "STAT" : {
-        "None":"",
         "Available" : "Available",
         "NotAvailable" : "Not available"
       },
@@ -449,7 +446,9 @@
       "LTR": "LTR",
       "HLV": "HLV",
       "CONT": "CONT",
-      "HLYR": "HLYR"
+      "HLYR": "HLYR",
+      "TEL" : "TEL",
+      "FAX" : "FAX"
     }
   }
 }

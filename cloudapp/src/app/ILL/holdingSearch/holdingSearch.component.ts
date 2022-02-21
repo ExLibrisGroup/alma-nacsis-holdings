@@ -38,8 +38,8 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   owners: any[];
   loading = false;
   selected: string;
-  private isRightTableOpen: boolean = false;
-  private isColapsedMode: boolean = true;
+  isRightTableOpen: boolean = false;
+  isColapsedMode: boolean = true;
 
   form: FormGroup;
   holdingSearch: HoldingsSearch;
@@ -48,7 +48,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   localMemberInfo:any[];
 
   // UI variables
-  private panelState: boolean = true;
+  panelState: boolean = true;
   
 
   //result view
@@ -79,7 +79,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   public routerSearchType: SearchType = SearchType.Monographs;
   private catalogResultsData: NacsisCatalogResults;
   private resultsSummaryDisplay: Array<IDisplayLines>;
-  private resultFullDisplay;
+  resultFullDisplay;
   private resultFullLinkDisplay;
   public ALL_DATABASES_MAP_SEARCH = new Map([
     [SearchType.Monographs, ['BOOK', 'PREBOOK', 'JPMARC', 'TRCMARC', 'USMARC', 'USMARCX', 'GPOMARC', 'UKMARC', 'REMARC', 'DNMARC', 'CHMARC', 'KORMARC', 'RECON', 'HBZBKS', 'SPABKS', 'ITABKS', 'KERISB', 'KERISX', 'BNFBKS']],
@@ -486,7 +486,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   }
 
 
-  private getActionMenu() {
+  getActionMenu() {
     return this.ACTIONS_MENU_LIST;
   }
 

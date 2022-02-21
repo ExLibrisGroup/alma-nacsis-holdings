@@ -15,7 +15,7 @@ export class MultiOccurrenceArrowsComponent implements OnChanges {
     @Input() disabled: boolean = false;
     @Output() selectedController = new EventEmitter<any>();
 
-    private controllersEnabledMap = this.initControllers(); 
+    controllersEnabledMap = this.initControllers(); 
 
     initControllers() {
         let controllers = new Map([

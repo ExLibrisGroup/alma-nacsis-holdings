@@ -24,7 +24,7 @@ export class EditFormComponent implements OnInit {
   backSession;//: AppRoutingState;
 
   // UI variables
-  private panelState: boolean = true;
+  panelState: boolean = true;
   private loading: boolean = false;
 
    // Data variables
@@ -38,7 +38,6 @@ export class EditFormComponent implements OnInit {
   private initEditFieldsMap(record): void {
     this.editFieldsMap.set(FieldName.ID, new SearchField(FieldName.ID, FieldSize.medium, record.fullRecord.fullView.ID, true));
     this.editFieldsMap.set(FieldName.NAME, new SearchField(FieldName.NAME, FieldSize.medium, record.fullRecord.fullView.NAME, true));
-    this.editFieldsMap.set(FieldName.LOC, new SearchField(FieldName.LOC, FieldSize.medium, record.fullRecord.fullView.LOC, true));
     this.editFieldsMap.set(FieldName.KENCODE, new SearchField(FieldName.KENCODE, FieldSize.medium, record.fullRecord.fullView.KENCODE, true));
     this.editFieldsMap.set(FieldName.SETCODE, new SearchField(FieldName.SETCODE, FieldSize.medium, record.fullRecord.fullView.SETCODE, true));
     this.editFieldsMap.set(FieldName.ORGCODE, new SearchField(FieldName.ORGCODE, FieldSize.medium, record.fullRecord.fullView.ORGCODE, true));
@@ -49,6 +48,8 @@ export class EditFormComponent implements OnInit {
     this.editFieldsMap.set(FieldName.COPYS, new SelectSearchField(this.selectedValues.getCopyServiceTypeList(), FieldName.COPYS, FieldSize.medium, record.fullRecord.fullView.COPYS));
     this.editFieldsMap.set(FieldName.LOANS, new SelectSearchField(this.selectedValues.getLendingServiceTypeList(), FieldName.LOANS, FieldSize.medium, record.fullRecord.fullView.LOANS));
     this.editFieldsMap.set(FieldName.FAXS, new SelectSearchField(this.selectedValues.getFAXServiceTypeList(), FieldName.FAXS, FieldSize.medium, record.fullRecord.fullView.FAXS));
+    this.editFieldsMap.set(FieldName.TEL, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.TEL, FieldSize.medium, record.fullRecord.fullView.TEL), 1));
+    this.editFieldsMap.set(FieldName.FAX, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.FAX, FieldSize.medium, record.fullRecord.fullView.FAX), 1));
     this.editFieldsMap.set(FieldName.CATTEL, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.CATTEL, FieldSize.medium, record.fullRecord.fullView.CATTEL), 1));
     this.editFieldsMap.set(FieldName.CATDEPT, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.CATDEPT, FieldSize.medium, record.fullRecord.fullView.CATDEPT), 1));
     this.editFieldsMap.set(FieldName.CATFAX, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.CATFAX, FieldSize.medium, record.fullRecord.fullView.CATFAX), 1));
@@ -57,6 +58,8 @@ export class EditFormComponent implements OnInit {
     this.editFieldsMap.set(FieldName.SYSFAX, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.SYSFAX, FieldSize.medium, record.fullRecord.fullView.SYSFAX), 1));
     this.editFieldsMap.set(FieldName.EMAIL, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.EMAIL, FieldSize.medium, record.fullRecord.fullView.EMAIL), 1));
     this.editFieldsMap.set(FieldName.POLICY, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.POLICY, FieldSize.medium, record.fullRecord.fullView.POLICY), 1));
+    this.editFieldsMap.set(FieldName.LOC, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.LOC, FieldSize.medium, record.fullRecord.fullView.LOC, true), 1));
+
   }
 
   /* Get list of all search value, calling this function from the DOM */
@@ -64,11 +67,11 @@ export class EditFormComponent implements OnInit {
     return Array.from(this.editFieldsMap.values());
   }
 
-  private createSearchFieldListbyFormControlValues(key: FieldName, fieldSize: FieldSize, formControlValues): any[] {
+  private createSearchFieldListbyFormControlValues(key: FieldName, fieldSize: FieldSize, formControlValues, readOnly? : boolean): any[] {
     let searchFieldsArrary = new Array();
     if (formControlValues[0]?.length > 0 && formControlValues[0] !== "null") {
       formControlValues?.forEach(element => {
-        searchFieldsArrary.push(new Array(new SearchField(key, FieldSize.medium, element)));
+        searchFieldsArrary.push(new Array(new SearchField(key, FieldSize.medium, element, readOnly)));
       });
     } else {
       searchFieldsArrary.push(new Array(new SearchField(key, FieldSize.medium)));
@@ -90,15 +93,15 @@ export class EditFormComponent implements OnInit {
   }
 
     /* Methods called from the DOM */
-    private panelOpenState() {
+    public panelOpenState() {
       this.panelState = true;
     }
   
-    private panelCloseState() {
+    public panelCloseState() {
       this.panelState = false;
     }
   
-    private resultExists() {
+    public resultExists() {
       this.numOfResults > 0;
     }
 
@@ -145,7 +148,10 @@ export class EditFormComponent implements OnInit {
 
   private getFormControlValues(filedName: FieldName): any[] {
     return (this.editFieldsMap.get(filedName) as MultiSearchField).fieldsArr?.map(element => {
-      return element[0].formControl.value;
+      if (element[0].formControl.value) {
+        return element[0].formControl.value;
+      }
+      return "";
     });;
   }
 }

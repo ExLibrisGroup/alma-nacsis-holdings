@@ -19,6 +19,8 @@
 </div>
 <br>
 
+
+
 <div>
 <mat-accordion>
   <mat-expansion-panel (opened)="panelOpenState()" (closed)="panelCloseState()" [expanded]="panelState">
@@ -33,27 +35,28 @@
 </mat-accordion>
 </div>
 
+<ng-container *ngTemplateOutlet="currentResulsTmpl"></ng-container>
 
 <div class="loading-shade" *ngIf="loading">
   <mat-progress-spinner mode="indeterminate" diameter="50">
   </mat-progress-spinner>
 </div>
-<br>
-<div class="owners-drop-down">
-  <mat-form-field class="owners-mat-drop-down">
-    <mat-placeholder>{{'Holdings.ViewHoldings.Owner' | translate}}</mat-placeholder>
-    <mat-select [(value)]="selected" (selectionChange)=onOwnerSelected()>
-      <mat-option *ngFor="let owner of owners" [value]="owner.id">
-        {{owner.name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-</div>
 
-<ng-container *ngTemplateOutlet="currentResulsTmpl"></ng-container>
+<br><br><br>
 
 
 <ng-template #searchResults>
+  <br>
+  <div class="owners-drop-down">
+    <mat-form-field class="owners-mat-drop-down">
+      <mat-placeholder>{{'Holdings.ViewHoldings.Owner' | translate}}</mat-placeholder>
+      <mat-select [(value)]="selected" (selectionChange)=onOwnerSelected()>
+        <mat-option *ngFor="let owner of owners" [value]="owner.id">
+          {{owner.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
   <br>
   <results-list [numOfResults]="getNumOfRecords()" [pageIndex]="pageIndex" [pageSize]="pageSize"
     [resultsSummaryDisplay]="resultsSummaryDisplay" [resultActionList]="getActionMenu()"
@@ -62,6 +65,18 @@
 </ng-template>
 
 <ng-template #noResults>
+  <br>
+  <div class="owners-drop-down">
+    <mat-form-field class="owners-mat-drop-down">
+      <mat-placeholder>{{'Holdings.ViewHoldings.Owner' | translate}}</mat-placeholder>
+      <mat-select [(value)]="selected" (selectionChange)=onOwnerSelected()>
+        <mat-option *ngFor="let owner of owners" [value]="owner.id">
+          {{owner.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <br>
   <div class="noResults">
     <span class="uxf-icon uxf-list" style="font-size: 3em;"></span>
     <h2>{{'Catalog.Results.NoRecordsExist' | translate}}</h2>
@@ -82,8 +97,8 @@
   </button>
   <br><br><br>
   <div class="full-view">
-    <div class="full-view-left-table" *ngIf="!(isColapsedMode && isRightTableOpen)">
-      <full-view-display [resultFullDisplay]="resultFullDisplay" (onFullViewLinkSelected)="null" (onFullViewLinkSelected)="null">
+    <div class="full-view-left-table" *ngIf="!isRightTableOpen">
+      <full-view-display [resultFullDisplay]="resultFullDisplay" (onFullViewLinkSelected)="null">
       </full-view-display>
     </div>
   </div>
