@@ -87,10 +87,20 @@ export class EditFormComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    
+    
     this.backSession = sessionStorage.getItem(ROUTING_STATE_KEY);
     this.record = JSON.parse(sessionStorage.getItem(MEMBER_RECORD));
     this.initEditFieldsMap(this.record);
   }
+
+//   ngAfterViewInit(){
+//     if(sessionStorage.getItem(ROUTING_STATE_KEY) == "") {
+//         this.catalogService.clearAllSearchResults();
+//     } else {
+//         this.onBackFromViewHolding();
+//     }
+// }
 
     /* Methods called from the DOM */
     public panelOpenState() {
@@ -101,9 +111,9 @@ export class EditFormComponent implements OnInit {
       this.panelState = false;
     }
   
-    public resultExists() {
-      this.numOfResults > 0;
-    }
+    // public resultExists() {
+    //   this.numOfResults > 0;
+    // }
 
   /* Save the record (member) on the server */
   save() {

@@ -305,8 +305,6 @@ export class SelectedSearchFieldValues {
 }
 
   offsetChargeList: selectedFieldValue[] = [
-    //TODO : change the label of U
-    { value: 'U', viewValue: 'ILL.OptionViewValue.GRPCODE.ParticipateILLOffsetService' },
     { value: 'N', viewValue: 'ILL.OptionViewValue.GRPCODE.ParticipateILLOffsetService' }
   ];
 

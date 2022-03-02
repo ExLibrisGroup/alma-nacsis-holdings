@@ -44,6 +44,7 @@ export class MembersSearchComponent implements OnInit {
 
   // Search variables
   private numOfResults: number;
+  private TotalResults: number;
   pageIndex: number = 0;
   pageSize: number = 20;
   private fieldsMap: Map<FieldName, SearchField> = new Map();
@@ -171,8 +172,10 @@ export class MembersSearchComponent implements OnInit {
        get All only once */
     if (this.selected === '1') {
       this.resultsSummaryDisplay = this.resultsSummaryRecord.filter(member => member.isEditable);
+      this.numOfResults = this.resultsSummaryDisplay.length;
     } else {
       this.resultsSummaryDisplay = this.resultsSummaryRecord;
+      this.numOfResults = this.TotalResults;
     }
     this.resultsTemplateFactory();
   }
@@ -252,6 +255,7 @@ export class MembersSearchComponent implements OnInit {
         if (nacsisResponse.status === this.membersService.OkStatus) {
           if (nacsisResponse.totalRecords >= 1) {
             this.numOfResults = nacsisResponse.totalRecords;
+            this.TotalResults = nacsisResponse.totalRecords;
             this.setPageIndexAndSize(queryParams);
             this.membersService.setSearchResultsMap(SearchType.Members, nacsisResponse, queryParams);
             this.setSearchResultsDisplay();
@@ -297,18 +301,15 @@ export class MembersSearchComponent implements OnInit {
     urlParams = urlParams.replace(/pageSize=.*searchType/, newSizeStr);
     this.getSearchResultsFromNacsis(urlParams);
   }
-
-  /* Navigation */
   resultsTemplateFactory() {
-    let members = this.getDisplayMembers();
-    if (members.length > 0) {
-      this.currentResulsTmpl = this.searchResultsTmpl;
-    } else if (members.length == 0 || members.length == null) {
-      this.currentResulsTmpl = this.noResultsTmpl;
+    if(this.numOfResults > 0){
+        this.currentResulsTmpl = this.searchResultsTmpl;
+    } else if(this.numOfResults == 0 || this.numOfResults == null) {
+        this.currentResulsTmpl = this.noResultsTmpl;
     } else {
-      this.currentResulsTmpl = this.notSearchedTmpl;
+        this.currentResulsTmpl = this.notSearchedTmpl;
     }
-  }
+}
 
   onBackFromFullView() {
     this.currentResulsTmpl = this.searchResultsTmpl;
@@ -328,6 +329,8 @@ export class MembersSearchComponent implements OnInit {
   onBackFromEditForm() {
     this.searchFormRefill();
     this.setSearchResultsDisplay();
+    this.numOfResults = this.resultsSummaryDisplay.length;
+    this.resultsTemplateFactory();
   }
 
   /*Build the data */
@@ -344,19 +347,6 @@ export class MembersSearchComponent implements OnInit {
     this.resultsSummaryDisplay = this.resultsSummaryRecord;
     this.panelState = false;
     this.resultsTemplateFactory();
-  }
-
-
-  getNumOfRecords() {
-    let members = this.getDisplayMembers();
-    if (members.length > 0) {
-      if (this.selected === '1') {
-        return members.length
-      }
-      return this.numOfResults;
-    } else {
-      return 0;
-    }
   }
 
   getDisplayMembers() {

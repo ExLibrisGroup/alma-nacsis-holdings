@@ -58,7 +58,7 @@
     </mat-form-field>
   </div>
   <br>
-  <results-list [numOfResults]="getNumOfRecords()" [pageIndex]="pageIndex" [pageSize]="pageSize"
+  <results-list [numOfResults]="numOfResults" [pageIndex]="pageIndex" [pageSize]="pageSize"
     [resultsSummaryDisplay]="resultsSummaryDisplay" [resultActionList]="getActionMenu()"
     (onTitleSelected)="onTitleClick($event)" (onActionSelected)="onActionsClick($event)" (onPageSelected)="onPageAction($event)">
   </results-list>
@@ -91,6 +91,7 @@
 
 
 <ng-template #fullRecord>
+  <br><br>
   <button mat-flat-button color="secondary" (click)="onBackFromFullView()">
     <mat-icon>arrow_back_ios</mat-icon>
     {{'General.Back' | translate}}
