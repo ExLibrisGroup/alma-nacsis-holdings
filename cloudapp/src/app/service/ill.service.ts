@@ -62,6 +62,7 @@ export class IllService extends BaseService {
     protected eventsService: CloudAppEventsService,
     protected http: HttpClient,
     private nacsis: HoldingsService,
+    protected translate: TranslateService
   ) {
     super(eventsService, http);
   }

@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, ViewChild, AfterViewInit, OnChanges } from '@angular/core';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { IDisplayLines } from '../../catalog/results-types/results-common';
-import { RecordSelection } from '../result-card/result-card.component';
+import { RecordSelection, Action } from '../result-card/result-card.component';
 
 
 @Component({
@@ -16,7 +16,7 @@ export class ResultsListComponent implements OnChanges, AfterViewInit {
   @Input() pageIndex: number;
   @Input() pageSize: number;
   @Input() resultsSummaryDisplay: Array<IDisplayLines> = new Array();
-  @Input() resultActionList: Array<string> = new Array();
+  @Input() resultActionList: Array<Action> = new Array();
   @Output() onActionSelected = new EventEmitter<RecordSelection>();
   @Output() onEditRecord = new EventEmitter<RecordSelection>();    
   @Output() onTitleSelected = new EventEmitter<number>();  

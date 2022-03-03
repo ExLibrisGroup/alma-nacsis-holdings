@@ -25,6 +25,10 @@
   margin-left: 20px;
 }
 
+.card-title-field-label {
+  @include filedPadding;
+}
+
 .card-title-field {
   @include flexText;
 }
