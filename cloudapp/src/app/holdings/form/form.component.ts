@@ -103,7 +103,7 @@ export class FormComponent implements OnInit {
       } else {
         this.forms[0] = this.initVolumeForm(true);
       }
-      this.ltrList.push(new MultiSearchField(this.initLtrForm(false, this.holding.ltrList), 1, 4));
+      this.ltrList.push(new MultiSearchField(this.initLtrForm(this.holding.ltrList), 1, 4));
 
     } else { // new holding
       this.holding = new Holding();
@@ -115,7 +115,7 @@ export class FormComponent implements OnInit {
       } else {
         this.forms.push(this.initVolumeForm(true));
       }      
-      this.ltrList.push(new MultiSearchField(this.initLtrForm(true), 1, 4));
+      this.ltrList.push(new MultiSearchField(this.initLtrForm(), 1, 4));
     }
 
     this.allVolumes.push(new MultiSearchField(this.forms, 0, this.isBook()? null : 1)); // Serial records always have a single volume
@@ -290,9 +290,9 @@ export class FormComponent implements OnInit {
     return '';
   }
 
-  initLtrForm(isNew: boolean, ltrList?: string[]) {
+  initLtrForm(ltrList?: string[]) {
     let ltrSearchFieldArr = new Array<Array<SearchField>>();
-    if(isNew) {
+    if(!this.isReadOnly && this.nacsis.isEmpty(ltrList)) {
       ltrSearchFieldArr.push(new Array(new SearchField(FieldName.LTR, FieldSize.fullWidth, null, this.isReadOnly)));
     } else {
       ltrList?.forEach(ltrValue => {
