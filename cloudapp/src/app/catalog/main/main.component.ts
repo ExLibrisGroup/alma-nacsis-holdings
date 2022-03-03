@@ -389,8 +389,8 @@ export class CatalogMainComponent implements AfterViewInit {
             this.catalogService.importRecordToAlma(this.currentSearchType, rawData)
             .subscribe({
                 next: (importedRecord) => {
-                    let mmsIdText = " (" + importedRecord.mms_id + ")";
-                    this.alert.success(this.translate.instant('Catalog.Results.ImportSucceeded') + mmsIdText, {autoClose: false, keepAfterRouteChange:true});  
+                    let mmsId: string = importedRecord.link.split("/").pop();
+                    this.alert.success(this.translate.instant('Catalog.Results.ImportSucceeded') + "(" + mmsId + ")", {autoClose: false, keepAfterRouteChange:true});  
                 },
                 error: e => {
                     this.loading = false;
