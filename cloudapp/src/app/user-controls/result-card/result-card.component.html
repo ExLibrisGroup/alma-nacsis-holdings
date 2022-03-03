@@ -6,7 +6,7 @@
       </div>
       <a class="card-title" (click)="onTitleClick(recordIndex)">
         <div class="card-title-field" *ngFor="let field of titleDisplay">
-          <div *ngIf="field.hasLabel()"> {{field.getLabel()}} </div>
+          <div *ngIf="field.hasLabel()" class="card-title-field-label"> {{field.getLabel() | translate}} </div>
           <div> {{field.getContent()}} </div>
         </div>
       </a>
@@ -28,13 +28,13 @@
     </mat-card-content>
   </div>
 
-  <div class="result-actions" *ngIf="resultActionList?.length > 0">
+  <div class="result-actions" *ngIf="getResultActionList()?.length > 0">
     <button mat-button class="result-actions-button" [matMenuTriggerFor]="actionsMenu" color="primary">
       <mat-icon>more_horiz</mat-icon>
     </button>
-    <mat-menu #actionsMenu="matMenu" >
-      <div *ngFor="let item of getResultActionList(); index as Actionsindex">
-        <button mat-menu-item type="submit" (click)="onActionsClick(recordIndex, Actionsindex)">
+    <mat-menu #actionsMenu="matMenu">
+      <div *ngFor="let item of getResultActionList(); index as ActionsIndex">
+        <button mat-menu-item type="submit" (click)="onActionsClick(recordIndex, ActionsIndex)">
           {{ item.label | translate }}
         </button>
       </div>
