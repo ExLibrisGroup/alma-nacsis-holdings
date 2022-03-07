@@ -26,7 +26,7 @@
       "Text": "Search and Copy cataloging NACSIS Bib/Auth records"
     },
     "ILL": {
-      "Title": "ILL Borrowing Requests",
+      "Title": "ILL Request",
       "Text": "NACSIS borrowing request creation"
     },
     "Members": {
@@ -83,10 +83,10 @@
       "Owner": "Owner",
       "All": "All",
       "Mine": "Mine",
-      "ID": "ID",
+      "ID": "ID:",
       "Title": "Holdings",
-      "Library": "Library",
-      "Location": "Location",
+      "Library": "Library:",
+      "Location": "Location:",
       "ConfirmDelete": "Are you sure you wish to delete this holding record?",
       "DeleteTitle": "Delete Holding record",
       "Deleted": "Record successfully deleted.",
