@@ -134,7 +134,7 @@
       "NoRecords": "新規ILL依頼を作成するために、依頼一覧や書誌レコードを開いて、または検索してください.",
       "SelectBib": "タイトルを選択してください",
       "NewSearchInNACSIS": "新しい検索",
-      "CreateILLSuccess":"ILL依頼が作成されました。依頼番号:"
+      "CreateILLSuccess":"ILL依頼が作成されました。依頼番号: "
     },
     "DisplayCard": {
       "By":"By",

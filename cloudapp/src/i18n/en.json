@@ -141,7 +141,7 @@
       "NoRecords": "To create ILL borrowing request, navigate to a borrowing request list, bibliographic record or start a new search.",
       "SelectBib": "Select a title",
       "NewSearchInNACSIS": "New search",
-      "CreateILLSuccess":"Create ILL request successfully.Request ID is:"
+      "CreateILLSuccess":"Create ILL request successfully.Request ID is: "
     },
     "DisplayCard": {
       "By":"By",
