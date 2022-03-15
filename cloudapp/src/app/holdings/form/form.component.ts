@@ -169,6 +169,7 @@ export class FormComponent implements OnInit {
 
     this.holding.BID = this.nacsis.getHeader().BID;
     this.holding.FANO = this.nacsis.getHeader().FANO;
+    this.holding.LIBABL = this.nacsis.getHeader().LIBABL;
     this.holding.type = this.type;
     this.holding.editable = true;
     this.holding.ID = this.holdingId;
