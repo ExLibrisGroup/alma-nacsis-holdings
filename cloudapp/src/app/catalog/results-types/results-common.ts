@@ -67,7 +67,7 @@ export abstract class BaseResult {
         protected translate: TranslateService
     ){
         this.id = record.id;
-        this.summaryView = record.summaryView;
+        this.summaryView = record.fullView; //summaryView;
         this.fullView = record.fullView;
         this.rawData = record.rawData;
     }

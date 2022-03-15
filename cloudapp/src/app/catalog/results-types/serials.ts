@@ -23,7 +23,7 @@ export class Serial extends BaseResult{
 export class SerialSummary{
     TRD: string = "";
     AL: SerialAL[];
-    PUBL: string = "";
+    PUB: SerialPUB[];
     VLYR: string = "";
     TTLL: string = "";
     YEAR1: string = "";
@@ -32,9 +32,8 @@ export class SerialSummary{
     TRVR: string = "";
     ID: string = "";
     ISSN: string = "";
-    hasMoreThen1ISBN: boolean;
     SH: SerialSH[];
-    hasMoreThen3SH: Boolean;
+    ED: string = "";
 }
 
 
@@ -103,6 +102,7 @@ export class SerialPUB{
     PUBP: string = "";
     PUBL: string = "";
     PUBDT: string = "";
+    PUBF: string = "";
 }
 
 export class SerialVT{
@@ -164,47 +164,51 @@ export class SerialSummaryDisplay extends IDisplayLines{
 
     initContentDisplay(): Array<ViewLine> {
         this.viewLines = new Array<ViewLine>();
+        // General information line
         let fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.By').content(this.record.AL[0]?.AHDNG).build());
             fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.AL[0]?.AHDNGR).build());
             fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.AL[0]?.AHDNGVR).build());
             fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.Journal').build());
-            fieldsArray.push(new ViewFieldBuilder().content(this.record.PUBL).build());
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.PUB[0]?.PUBL).build());
             fieldsArray.push(new ViewFieldBuilder().label(", ").content(this.record.TTLL).build());
             fieldsArray.push(new ViewFieldBuilder().label(": ").content(this.record.VLYR).build());
-            fieldsArray.push(new ViewFieldBuilder().label("; ").content(this.record.YEAR1).build());
-            fieldsArray.push(new ViewFieldBuilder().label(" - ").content(this.record.YEAR2).build());
             fieldsArray.push(new ViewFieldBuilder().label(")").build());
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
+        // TR line
         fieldsArray = new Array<ViewField>();
-            fieldsArray.push(new ViewFieldBuilder().content(this.record.TRR).link('').build());  
-            fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.TRVR).link('').build());
+        fieldsArray.push(new ViewFieldBuilder().content(this.record.TRR).link('').build());  
+        fieldsArray.push(new ViewFieldBuilder().content(this.record.TRVR).link('').build());
+        fieldsArray = this.setSeparator(fieldsArray, "||");
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
+        // ID line
         fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.NACSISID').content(this.record.ID).build());      
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
+        // ISSN line
         fieldsArray = new Array<ViewField>();
-            fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.ISSN').content(this.record.ISSN).build());      
-            if(this.record.hasMoreThen1ISBN && !this.isEmpty(this.record.ISSN)){
-                fieldsArray.push(new ViewFieldBuilder().content(('Catalog.Results.AndOthers')).build());
-            }        
+            fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.ISSN').content(this.record.ISSN).build());         
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
+        // ED line
+        fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.ED').content(this.record.ED).build());      
+        this.addLine(new ViewFieldBuilder().build(), fieldsArray);
+        // SH lines
         let shStrFields = "";
-        for (let i = 0; i < this.record.SH.length-1; i++) {
+        let numOfIterations: number = Math.min(this.record.SH?.length, 3);
+        for (let i = 0; i < numOfIterations; i++) {
             shStrFields = shStrFields + this.toStringPairOfFields(this.record.SH[i].SHD, this.record.SH[i].SHR, "||");
-            shStrFields = shStrFields + "<br/>";
-        }
-        if (this.record.SH.length > 0) {
-            let j = this.record.SH.length - 1;
-            shStrFields = shStrFields + this.toStringPairOfFields(this.record.SH[j].SHD, this.record.SH[j].SHR, "||");
-            if(this.record.hasMoreThen3SH) {
-                shStrFields = shStrFields + " " + ('Catalog.Results.AndOthers');
+            if(i != numOfIterations-1) {
+                shStrFields = shStrFields + "<br/>";
             }
         }
+        if(this.record.SH?.length > 3) {
+            shStrFields = shStrFields + " " + this.translate.instant('Catalog.Results.AndOthers');
+        }
         fieldsArray = new Array<ViewField>();
-            fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.Subjects').content(shStrFields).build());      
+            fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.SH').content(shStrFields).build());      
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
-        
+
         return this.viewLines;
     }
 
@@ -268,9 +272,15 @@ export class SerialFullDisplay extends IDisplayLines {
         this.addLine(new ViewFieldBuilder().label("VLYR").build(), fieldsArray);
         this.record.PUB?.forEach(pub=>{
             fieldsArray = new Array<ViewField>();
+                if (pub.PUBF == "m") {
+                    fieldsArray.push(new ViewFieldBuilder().label("(").build());
+                }
                 fieldsArray.push(new ViewFieldBuilder().content(pub.PUBP).build());
                 fieldsArray.push(new ViewFieldBuilder().label(": ").content(pub.PUBL).build());
                 fieldsArray.push(new ViewFieldBuilder().label(", ").content(pub.PUBDT).build());
+                if (pub.PUBF == "m") {
+                    fieldsArray.push(new ViewFieldBuilder().label(")").build());
+                }
             this.addLine(new ViewFieldBuilder().label("PUB").build(), fieldsArray);
         });
         fieldsArray = new Array<ViewField>();
