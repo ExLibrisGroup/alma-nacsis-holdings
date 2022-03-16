@@ -48,6 +48,7 @@ export class EditFormComponent implements OnInit {
     this.editFieldsMap.set(FieldName.COPYS, new SelectSearchField(this.selectedValues.getCopyServiceTypeList(), FieldName.COPYS, FieldSize.medium, record.fullRecord.fullView.COPYS));
     this.editFieldsMap.set(FieldName.LOANS, new SelectSearchField(this.selectedValues.getLendingServiceTypeList(), FieldName.LOANS, FieldSize.medium, record.fullRecord.fullView.LOANS));
     this.editFieldsMap.set(FieldName.FAXS, new SelectSearchField(this.selectedValues.getFAXServiceTypeList(), FieldName.FAXS, FieldSize.medium, record.fullRecord.fullView.FAXS));
+    this.editFieldsMap.set(FieldName.LOC, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.LOC, FieldSize.medium, record.fullRecord.fullView.LOC, true), 1));
     this.editFieldsMap.set(FieldName.TEL, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.TEL, FieldSize.medium, record.fullRecord.fullView.TEL), 1));
     this.editFieldsMap.set(FieldName.FAX, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.FAX, FieldSize.medium, record.fullRecord.fullView.FAX), 1));
     this.editFieldsMap.set(FieldName.CATTEL, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.CATTEL, FieldSize.medium, record.fullRecord.fullView.CATTEL), 1));
@@ -58,7 +59,6 @@ export class EditFormComponent implements OnInit {
     this.editFieldsMap.set(FieldName.SYSFAX, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.SYSFAX, FieldSize.medium, record.fullRecord.fullView.SYSFAX), 1));
     this.editFieldsMap.set(FieldName.EMAIL, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.EMAIL, FieldSize.medium, record.fullRecord.fullView.EMAIL), 1));
     this.editFieldsMap.set(FieldName.POLICY, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.POLICY, FieldSize.medium, record.fullRecord.fullView.POLICY), 1));
-    this.editFieldsMap.set(FieldName.LOC, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.LOC, FieldSize.medium, record.fullRecord.fullView.LOC, true), 1));
 
   }
 

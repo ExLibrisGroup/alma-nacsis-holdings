@@ -158,7 +158,7 @@ export class CatalogMainComponent implements AfterViewInit {
             urlParams =  urlParams + "&" + QueryParams.Databases + "=" + this.currentDatabase;
             valuableFields.forEach(field => {
                     urlParams =  urlParams + "&" + field.getKey();
-                    urlParams =  urlParams + "=" + field.getFormControl().value;
+                    urlParams =  urlParams + "=" + field.getFormControl().value.replace(this.catalogService.punctuationRegex, '');
             });
             this.getSearchResultsFromNacsis(urlParams);
         } else {
@@ -184,7 +184,7 @@ export class CatalogMainComponent implements AfterViewInit {
                             this.resultsTemplateFactory();
                         }
                     } else {
-                        this.alert.error(catalogResults.errorMessage, {keepAfterRouteChange:true});  
+                        this.alert.error(catalogResults.errorMessage, {keepAfterRouteChange:true}); 
                     } },
                 error: e => {
                     this.loading = false;
@@ -509,7 +509,7 @@ export class CatalogMainComponent implements AfterViewInit {
             new SearchField(FieldName.ID, FieldSize.large), 
             new SearchField(FieldName.SAID, FieldSize.large),
             new SearchField(FieldName.AKEY, FieldSize.medium), 
-            new SearchField(FieldName.PLACE, FieldSize.medium), 
+            new SearchField(FieldName.PLACEKEY, FieldSize.medium), 
             new SearchField(FieldName.DATE, FieldSize.medium));
     }
 

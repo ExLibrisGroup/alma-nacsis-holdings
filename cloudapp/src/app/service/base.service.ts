@@ -27,6 +27,7 @@ export abstract class BaseService {
     public OkStatus: string = 'OK';
     public OwnerKey: string = 'OWNER_KEY';
 
+    public punctuationRegex = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g;
     constructor(
         eventsService: CloudAppEventsService,
         http: HttpClient

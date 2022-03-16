@@ -151,6 +151,7 @@ export enum FieldName {
     PUB = "PUB",
     YEAR = "YEAR",
     PLACE = "PLACE",
+    PLACEKEY = "PLACEKEY",
     CNTRY = "CNTRY",
     LANG = "LANG",
     SH = "SH",
