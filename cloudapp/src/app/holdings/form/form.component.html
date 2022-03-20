@@ -35,7 +35,7 @@
   <mat-card-title *ngIf="holdingId">{{'Holdings.ViewHoldings.ID' | translate}}: {{holdingId}}</mat-card-title>
   <span><strong>{{'Holdings.ViewHoldings.Library' | translate}}: {{getLibraryFullName()}}</strong></span>
   <br>
-  <span><strong>{{'Holdings.Form.Title' | translate}}: {{mmsTitle}}</strong></span>
+  <span><strong [innerHTML]="getMmsInfoTitle()"></strong></span>
   <br>
   <br>
 

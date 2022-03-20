@@ -73,6 +73,10 @@ export class HoldingsComponent implements OnInit {
     }
   }
 
+  getMmsInfoTitle(): string {
+    return this.mmsTitle + " (" + this.mmsId + ")";
+  }
+
   onOwnerSelected() {
     
     sessionStorage.setItem(this.nacsis.OwnerKey, this.selected);
