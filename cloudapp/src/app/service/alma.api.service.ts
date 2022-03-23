@@ -201,6 +201,9 @@ export class AlmaApiService {
           const subfield = subfields[index];
           let tag = subfield.getAttribute("code").valueOf();
           if (tag === subfield_send) {
+            if(subfield.innerHTML.includes("&amp;")) {
+              return subfield.innerHTML.replaceAll("&amp;", "&");
+            }
             return subfield.innerHTML;
           }
         }

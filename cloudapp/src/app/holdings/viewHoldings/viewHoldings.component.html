@@ -13,7 +13,7 @@
   </div>
 
   <div>
-    <h3>{{mmsTitle}}</h3>
+    <h3 class="mms-info-title" [innerHTML]="getMmsInfoTitle()"></h3>
 
     <div class="holdings-drop-down">
       <mat-form-field class="holdings-mat-drop-down">
@@ -57,8 +57,8 @@
             </mat-card-content>
           </div>
 
-          <div *ngIf="holding.editable">
-            <div class="result-actions"  index="i" *ngIf="getResultActionList()?.length > 0">
+          <div class="my-holding-options" *ngIf="holding.editable">
+            <div class="result-actions" *ngIf="getResultActionList()?.length > 0">
               <button mat-button class="result-actions-button" [matMenuTriggerFor]="actionsMenu" color="primary">
                 <mat-icon>more_horiz</mat-icon>
               </button>
@@ -70,8 +70,10 @@
                 </div>
               </mat-menu>
             </div>
+            <button *ngIf="holding.editable" mat-flat-button class="my-holding-label" color="primary">
+              {{'Holdings.ViewHoldings.MyLabel' | translate}}
+            </button>
           </div>
-
         </mat-card>
       </mat-list-item>
     </mat-list>
