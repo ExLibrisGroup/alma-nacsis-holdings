@@ -205,7 +205,7 @@ export class FormComponent implements OnInit {
     });
     
     let ltrFirstValue = this.ltrList[0]?.getFieldsArray()[0][0]?.getFormControl().value;
-    let hasChanged: boolean = !this.nacsis.isEmpty(this.holding.ltrList[0]) && this.nacsis.isEmpty(ltrFirstValue);
+    let hasChanged: boolean = !this.nacsis.isEmpty(this.holding.ltrList) && this.nacsis.isEmpty(ltrFirstValue);
     if(!this.nacsis.isEmpty(ltrFirstValue) || hasChanged) {
       this.holding.ltrList = new Array<string>();
       this.ltrList[0]?.getFieldsArray()?.forEach(ltrFieldArr => {

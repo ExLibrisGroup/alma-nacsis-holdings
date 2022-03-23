@@ -97,6 +97,7 @@
       "DeleteYesButton": "Yes, delete it",
       "DeleteNoButton": "No, keep it",
       "NacsisID":"NACSIS ID",
+      "MyLabel": "MY HOLDING",
       "Errors": {
         "NoNoldings": "No holdings record were found",
         "GetFailed": "Get holdings failed",
