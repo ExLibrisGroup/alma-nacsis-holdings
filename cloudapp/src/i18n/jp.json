@@ -122,7 +122,7 @@
   },
   "Members" : {
     "Main" : {
-      "SerachMembers":"Search for NACSIS member information"
+      "SerachMembers":"参加組織の検索"
     },
     "MembersSearch" : {
       "Name" : "Participating organization name"
