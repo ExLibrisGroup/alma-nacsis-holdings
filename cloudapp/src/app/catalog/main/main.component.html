@@ -16,7 +16,7 @@
 
 <p> {{'Catalog.Form.MainTitle' | translate}} </p>
 
-<mat-tab-group (selectedTabChange)="onTabChange($event)">
+<mat-tab-group [selectedIndex]="getSearchTypeIndex()" (selectedTabChange)="onTabChange($event)">
   <mat-tab *ngFor="let searchType of getSearchTypesLabels()" label="{{ searchType | translate }}">
     <mat-accordion>
       <mat-expansion-panel (opened)="panelOpenState()" (closed)="panelCloseState()" [expanded]="panelState">

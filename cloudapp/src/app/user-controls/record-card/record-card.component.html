@@ -9,11 +9,11 @@
         <div class="record-card-index">
           <span><strong>{{recordIndex + 1}}</strong></span>
         </div>
-        <span><strong>{{record.getDisplayTitle()}}</strong></span>
+        <span><strong [innerHTML]="record.getDisplayTitle()"></strong></span>
       </mat-card-title>
  
       <mat-card-content class="record-card-content" *ngFor="let line of record.initContentDisplay()">
-        <span><strong>{{line}}</strong></span>
+        <span><strong [innerHTML]="line"></strong></span>
       </mat-card-content>
     </div>
   </mat-card>

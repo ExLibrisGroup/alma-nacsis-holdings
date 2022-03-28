@@ -122,6 +122,10 @@ export class FormComponent implements OnInit {
 
   }
 
+  getMmsInfoTitle(): string {
+    return this.translate.instant('Holdings.Form.Title') + ": " + this.mmsTitle + " (" + this.mmsId + ")";
+  }
+
   onCloseClick() {
     this.isErrorMessageVisible = false;
   }
@@ -199,8 +203,10 @@ export class FormComponent implements OnInit {
         this.holding.nacsisHoldingsList[index] = holdingsSerial;
       }
     });
-
-    if(!this.nacsis.isEmpty(this.ltrList[0]?.getFieldsArray()[0][0]?.getFormControl().value)) {
+    
+    let ltrFirstValue = this.ltrList[0]?.getFieldsArray()[0][0]?.getFormControl().value;
+    let hasChanged: boolean = !this.nacsis.isEmpty(this.holding.ltrList) && this.nacsis.isEmpty(ltrFirstValue);
+    if(!this.nacsis.isEmpty(ltrFirstValue) || hasChanged) {
       this.holding.ltrList = new Array<string>();
       this.ltrList[0]?.getFieldsArray()?.forEach(ltrFieldArr => {
         let ltrValue = ltrFieldArr[0].getFormControl().value;

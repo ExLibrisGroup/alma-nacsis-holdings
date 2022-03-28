@@ -105,6 +105,10 @@ export class CatalogMainComponent implements AfterViewInit {
         });
         return searchTypeMap;
     }
+
+    getSearchTypeIndex(): number {
+        return this.SEARCH_TYPE_ARRAY.indexOf(this.currentSearchType);
+    }
     
     getCurrentDatabases(): Array<string> {
         return this.ALL_DATABASES_MAP.get(this.currentSearchType);
