@@ -103,8 +103,8 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   ) {
     this.owners = [
-      { id: "0", name: this.translate.instant('Holdings.ViewHoldings.All') },
-      { id: "1", name: this.translate.instant('Holdings.ViewHoldings.Mine') }
+      { id: "0", name: "Holdings.ViewHoldings.All" },
+      { id: "1", name: "Holdings.ViewHoldings.Mine" }
     ];
   }
 

@@ -7,6 +7,8 @@
     "OK": "OK",
     "Clear": "クリア",
     "Search": "検索",
+    "Next": "Next",
+    "Order": "Order",
     "Errors": {
       "generalError": "アプリケーションエラー",
       "RequiredField": "???の入力は必須です???"

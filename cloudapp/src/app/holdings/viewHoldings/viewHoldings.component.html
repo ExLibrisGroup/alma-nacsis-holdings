@@ -20,7 +20,7 @@
         <mat-placeholder>{{'Holdings.ViewHoldings.Owner' | translate}}</mat-placeholder>
         <mat-select [(value)]="selected" (selectionChange)=onOwnerSelected()>
           <mat-option *ngFor="let owner of owners" [value]="owner.id">
-            {{owner.name}}
+            {{owner.name | translate}}
           </mat-option>
         </mat-select>
       </mat-form-field>
