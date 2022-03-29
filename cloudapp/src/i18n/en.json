@@ -79,7 +79,7 @@
       "NoRecords": "To view NACSIS holdings, navigate to a bibliographic record.",
       "SelectBib": "Select a title",
       "RetrieveHoldings": "Retrieve NACSIS Holdings",
-      "SerachHoldings":"Search for NACSIS Holdings"
+      "SearchHoldings":"Search for NACSIS Holdings"
     },
     "ViewHoldings": {
       "Owner": "Owner",
@@ -97,13 +97,7 @@
       "DeleteYesButton": "Yes, delete it",
       "DeleteNoButton": "No, keep it",
       "NacsisID":"NACSIS ID",
-      "MyLabel": "MY HOLDING",
-      "Errors": {
-        "NoNoldings": "No holdings record were found",
-        "GetFailed": "Get holdings failed",
-        "DeleteFailed": "Delete holding failed",
-        "Uneditable": "This holding is not a member of +++ therefore can't be edit"
-      }
+      "MyHolding": "MY HOLDING"
     },
     "Form": {
       "Title":"Title",
@@ -129,13 +123,7 @@
   },
   "Members" : {
     "Main" : {
-      "SerachMembers":"Search for NACSIS member information"
-    },
-    "MembersSearch" : {
-      "Name" : "Participating organization name"
-    },
-    "Form" : {
-      "Success": "Member successfully saved."
+      "SearchMembers":"Search for NACSIS member information"
     }
   },
   "ILL": {
@@ -176,7 +164,6 @@
     "HoldingSearch":{
        "ParticipatingOrgCode":"Participating organization code",
        "Volume":"Volume",
-       "Year":"Year",
        "Location":"Location",
        "RegionCode":"Region(prefeture) code",
        "EstablisherType":"Establisher type",
@@ -438,7 +425,7 @@
       "CATDEPT":"CATDEPT",
       "CATFAX":"CATFAX",
       "SYSDEPT":"SYSDEPT",
-     "SYSTEL":"SYSTEL",
+      "SYSTEL":"SYSTEL",
       "SYSFAX":"SYSFAX",
       "EMAIL":"EMAIL",
       "POLICY":"POLICY",

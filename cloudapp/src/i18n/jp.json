@@ -7,11 +7,11 @@
     "OK": "OK",
     "Clear": "クリア",
     "Search": "検索",
-    "Next": "Next",
-    "Order": "Order",
+    "Next": "次へ",
+    "Order": "発注",
     "Errors": {
       "generalError": "アプリケーションエラー",
-      "RequiredField": "???の入力は必須です???"
+      "RequiredField": "この項目が必須です"
     }
   },
 
@@ -58,12 +58,16 @@
       "NACSISID": "NACSIS ID:",
       "ISBN": "ISBN:",
       "ISSN": "ISSN:",
-      "Subjects": "件名：",
+      "PTBL": "Series title:",
+      "ED": "Edition:",
+      "SH": "件名:",
       "AndOthers": "その他",
       "Actions" : {
         "View" : "プレビュー",
-        "Import" : "ダウンロード",
-        "ViewHoldings" : "所蔵を確認する"
+        "Import" : "ダウウンロード",
+        "ViewHoldings" : "所蔵を確認する",
+        "Edit" : "編集",
+        "Delete" : "削除"
       },
       "ImportSucceeded": "レコードがダウンロードされました"
     }
@@ -75,7 +79,7 @@
       "NoRecords": "NACSISの所蔵を閲覧表示するため、該当の書誌レコードに移動します。",
       "SelectBib": "書誌レコードの選択",
       "RetrieveHoldings": "所蔵の検索",
-      "SerachHoldings":"Search for NACSIS Holdings"
+      "SearchHoldings":"NACSIS所蔵を検索する"
     },
     "ViewHoldings": {
       "Owner": "所蔵館",
@@ -92,12 +96,8 @@
       "NoHoldingRecordsExist": "所蔵レコードがありません。",
       "DeleteYesButton": "削除する",
       "DeleteNoButton": "削除しない",
-      "Errors": {
-        "NoNoldings": "所蔵レコードが見つかりません。",
-        "GetFailed": "所蔵レコードの取得ができませんでした。",
-        "DeleteFailed": "所蔵レコードの削除ができませんでした。",
-        "Uneditable": "This holding is not a member of +++ therefore can't be edit"
-      }
+      "NacsisID":"NACSIS ID",
+      "MyHolding": "MY HOLDING"
     },
     "Form": {
       "Title": "タイトル",
@@ -110,8 +110,7 @@
         "Description": "記述",
         "Library": "図書館",
         "Location": "配置場所",
-        "Ill": "ILL（リソース共有）可",
-        "VOL": "巻冊次等"
+        "Ill": "ILL（リソース共有）可"
       },
       "Errors": {
         "Id": "所蔵IDの入力は必須です。",
@@ -124,10 +123,7 @@
   },
   "Members" : {
     "Main" : {
-      "SerachMembers":"参加組織の検索"
-    },
-    "MembersSearch" : {
-      "Name" : "Participating organization name"
+      "SearchMembers":"参加組織の検索"
     }
   },
   "ILL": {
@@ -151,11 +147,11 @@
       "Title": "レコード件数",
       "NoRecordsExist": "レコードがありません",
       "By": "By",
-      "Book": "Book",
+      "Book": "(図書",
       "NACSISID": "NACSIS ID",
       "ISBN": "ISBN",
       "ISSN": "ISSN",
-      "Subjects": "Subjects",
+      "Subjects": "件名:",
       "Actions" : {
         "ViewHolding" : "所蔵を見る",
         "ViewMemInfo" : "参加組織の詳細を見る"
@@ -168,7 +164,6 @@
     "HoldingSearch":{
        "ParticipatingOrgCode":"参加組織コード",
        "Volume":"巻冊次等",
-       "Year":"Year",
        "Location":"配置コード",
        "RegionCode":"地域(県)コード",
        "EstablisherType":"設置者種別",
@@ -415,6 +410,27 @@
       "FID": "FID",
       "DATE": "DATE",
       "SAID": "SAID",
+      "FANO": "Participating organization code",
+      "NAME": "Participating organization name",
+      "LOC": "Location",
+      "KENCODE": "Region(prefeture) code",
+      "SETCODE" : "Establisher type",
+      "ORGCODE" : "Institution type",
+      "ILLFLG" : "ILL participation type",
+      "STAT" : "Service status",
+      "GRPCODE":"Offset charge",
+      "CATFLG" : "Cataloging participation type",
+      "COPYS":"Copy service type",
+      "LOANS":"Lending service type",
+      "FAXS":"FAX service type",
+      "CATTEL":"CATTEL",
+      "CATDEPT":"CATDEPT",
+      "CATFAX":"CATFAX",
+      "SYSDEPT":"SYSDEPT",
+      "SYSTEL":"SYSTEL",
+      "SYSFAX":"SYSFAX",
+      "EMAIL":"EMAIL",
+      "POLICY":"POLICY",
       "CLN": "請求記号",
       "RGTN": "登録番号",
       "CPYR": "刷の出版年",
