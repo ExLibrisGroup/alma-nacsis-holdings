@@ -82,7 +82,7 @@
     </div>
     <div class="full-view-right-table" (window:resize)="onResize($event)" *ngIf="isRightTableOpen">
       <button class="close-button" (click)="onFullViewLinkClose()">
-        <i class="uxf-icon uxf-close eca-button" aria-label="Delete" (click)="delete(i)"></i>
+        <i class="uxf-icon uxf-close eca-button" aria-label="Delete"></i>
       </button>
       <div *ngIf="resultFullLinkDisplay != null else noResults">
         <full-view-display [resultFullDisplay]="resultFullLinkDisplay">

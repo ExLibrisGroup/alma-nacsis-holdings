@@ -43,7 +43,7 @@ export class MembersSearchComponent implements OnInit {
   loading: boolean = false;
 
   // Search variables
-  private numOfResults: number;
+  numOfResults: number;
   private TotalResults: number;
   pageIndex: number = 0;
   pageSize: number = 20;

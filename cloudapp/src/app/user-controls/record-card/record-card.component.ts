@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { IDisplayLines} from '../../service/ill.service';
+import { IDisplayLines, AlmaRecordDisplay } from '../../service/ill.service';
 
 
 @Component({
@@ -11,7 +11,7 @@ import { IDisplayLines} from '../../service/ill.service';
 export class RecordCardComponent {
 
   @Input() recordIndex: number;
-  @Input() record: IDisplayLines;
+  @Input() record: AlmaRecordDisplay;
   @Output() onTitleSelected = new EventEmitter<number>();  
   @Output() onRadioSelected = new EventEmitter<IDisplayLines>();  
 

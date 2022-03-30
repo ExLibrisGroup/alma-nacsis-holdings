@@ -58,8 +58,8 @@
       "NACSISID": "NACSIS ID:",
       "ISBN": "ISBN:",
       "ISSN": "ISSN:",
-      "PTBL": "Series title:",
-      "ED": "Edition:",
+      "PTBL": "シリーズのタイトル:",
+      "ED": "版次:",
       "SH": "件名:",
       "AndOthers": "その他",
       "Actions" : {
@@ -97,7 +97,7 @@
       "DeleteYesButton": "削除する",
       "DeleteNoButton": "削除しない",
       "NacsisID":"NACSIS ID",
-      "MyHolding": "MY HOLDING"
+      "MyHolding": "自館の所蔵"
     },
     "Form": {
       "Title": "タイトル",
