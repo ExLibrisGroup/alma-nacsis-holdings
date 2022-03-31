@@ -124,6 +124,9 @@
   "Members" : {
     "Main" : {
       "SearchMembers":"Search for NACSIS member information"
+    },
+    "Form": {
+      "Success": "The member information was successfully saved"
     }
   },
   "ILL": {
@@ -418,14 +421,14 @@
       "COPYS":"Copy service type",
       "LOANS":"Lending service type",
       "FAXS":"FAX service type",
-      "CATTEL":"CATTEL",
-      "CATDEPT":"CATDEPT",
-      "CATFAX":"CATFAX",
-      "SYSDEPT":"SYSDEPT",
-      "SYSTEL":"SYSTEL",
-      "SYSFAX":"SYSFAX",
-      "EMAIL":"EMAIL",
-      "POLICY":"POLICY",
+      "CATTEL":"Phone num. (Ext.)",
+      "CATDEPT":"Cataloging department",
+      "CATFAX":"Fax",
+      "SYSDEPT":"System department",
+      "SYSTEL":"Phone num.",
+      "SYSFAX":"Fax",
+      "EMAIL":"Email",
+      "POLICY":"ILL policy",
       "CLN": "CLN",
       "RGTN": "RGTN",
       "CPYR": "CPYR",
