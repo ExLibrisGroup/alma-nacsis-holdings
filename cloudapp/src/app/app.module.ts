@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialModule, getTranslateModule, AlertModule, MenuModule } from '@exlibris/exl-cloudapp-angular-lib';
-import { ToastrModule } from 'ngx-toastr';
+import { MaterialModule, CloudAppTranslateModule, AlertModule, MenuModule } from '@exlibris/exl-cloudapp-angular-lib';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -54,12 +53,6 @@ import {MatPaginatorModule, MatPaginatorIntl } from '@angular/material/paginator
 import { TranslateService } from '@ngx-translate/core';
 import { PaginatorIntlService } from './service/paginator.translate';
 
-export function getToastrModule() {
-  return ToastrModule.forRoot({
-    positionClass: 'toast-top-right',
-    timeOut: 2000
-  });
-}
 
 @NgModule({
    declarations: [
@@ -102,8 +95,7 @@ export function getToastrModule() {
       HttpClientModule,
       FormsModule,
       ReactiveFormsModule,
-      getTranslateModule(),
-      getToastrModule(),
+      CloudAppTranslateModule.forRoot(),
       FlexLayoutModule,
       AlertModule,
       MenuModule,
