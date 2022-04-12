@@ -1,6 +1,5 @@
 <div class="full-view-record">
   <ng-container *ngFor="let line of resultFullDisplay;index as i ">
-    <!-- <div *ngFor="let line of resultFullDisplay;index as i" class="full-view-line {{isEvenRow(i)}}"> -->
     <div class="full-view-line-header {{isEvenRow(i)}}">
       {{line.getHeaderLabel() | translate}}
     </div>
@@ -9,14 +8,23 @@
         <div class="full-view-line-field-label" *ngIf="field.hasLabel()">
           {{field.getLabel() | translate}}
         </div>
-        <a *ngIf="field.isInternalLink() else noLink" (click)="onFullViewLink(field.getLink(), field.getContent())">
-          {{field.getContent()}}
-        </a>
+        <div *ngIf="field.isInternalLink() else otherLink">
+          <a (click)="onFullViewLink(field.getLink(), field.getContent())">
+            {{field.getContent()}}
+          </a>
+        </div>
+        <ng-template #otherLink>
+          <div *ngIf="(field.getExternalLink() != null) else noLink">
+            <a href="{{field.getExternalLink()}}" 
+            target="_blank">
+              {{field.getContent()}}
+            </a>
+          </div>
+        </ng-template>
         <ng-template #noLink>
           {{field.getContent()}}
         </ng-template>
       </div>
     </div>
   </ng-container>
-<!-- </div> -->
 </div>
