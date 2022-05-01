@@ -16,7 +16,7 @@ export class IllService extends BaseService {
   recordInfoList: AlmaRecordInfo[] = new Array();
   recordsSummaryDisplay: Array<IDisplayLines>;
   almaResultsData: AlmaRecordsResults;
-  almaRecord: AlmaRecord = new AlmaRecord('', this.translate, this.illService);
+  almaRecord: AlmaRecord = new AlmaRecord('', this.translate, this);
   baseRecordInfoList: Array<BaseRecordInfo> = new Array();
   localMemberInfo: any[];
 
@@ -58,7 +58,6 @@ export class IllService extends BaseService {
 
 
   constructor(
-    private illService: IllService,
     protected eventsService: CloudAppEventsService,
     protected http: HttpClient,
     private nacsis: HoldingsService,
