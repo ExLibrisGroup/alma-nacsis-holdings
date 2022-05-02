@@ -85,7 +85,7 @@ export abstract class BaseService {
         this.searchResultsMap.get(searchType).setHeader(response);
         this.searchResultsMap.get(searchType).setQueryParams(urlParams);
         this.searchResultsMap.get(searchType).setResults(new Array());
-        response.records.forEach(record => {
+        response.records?.forEach(record => {
             this.searchResultsMap.get(searchType).getResults().push(this.resultsTypeFactory(searchType, record));
         });
     }

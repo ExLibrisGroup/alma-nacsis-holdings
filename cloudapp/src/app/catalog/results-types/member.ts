@@ -158,29 +158,37 @@ export class MemberFullDisplay extends IDisplayLines {
         for (let i = 0; i < this.record.CATDEPT?.length; i++) {
             fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().content(this.record.CATDEPT[i]).build());
-            if (!this.isEmpty(this.record.CATTEL) && this.record.CATTEL.length >= i) {
-                if(i==1){
-                    fieldsArray.push(new ViewFieldBuilder().label('ILL.MemberInfo.CatPhoneNumFirst').content(this.record.CATTEL[i]).build());
-                }else{
-                    fieldsArray.push(new ViewFieldBuilder().label('ILL.MemberInfo.CatPhoneNum').content(this.record.CATTEL[i]).build());
-                }
-            }
-            if (!this.isEmpty(this.record.CATFAX) && this.record.CATFAX.length >= i) {
-                fieldsArray.push(new ViewFieldBuilder().label('ILL.MemberInfo.CatFax').content(this.record.CATFAX[i]).build());
-            }
             this.addLine(new ViewFieldBuilder().label('ILL.MemberInfo.CatalogingDepartment').build(), fieldsArray);
+        }
+
+        for (let i = 0; i < this.record.CATTEL?.length; i++) {
+            fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.CATTEL[i]).build());
+            this.addLine(new ViewFieldBuilder().label('ILL.MemberInfo.CatPhoneNum').build(), fieldsArray);
+        }
+
+        for (let i = 0; i < this.record.CATFAX?.length; i++) {
+            fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.CATFAX[i]).build());
+            this.addLine(new ViewFieldBuilder().label('ILL.MemberInfo.CatFax').build(), fieldsArray);
         }
 
         for (let i = 0; i < this.record.SYSDEPT?.length; i++) {
             fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().content(this.record.SYSDEPT[i]).build());
-            if (!this.isEmpty(this.record.SYSTEL) && this.record.SYSTEL.length >= i) {
-                fieldsArray.push(new ViewFieldBuilder().label('ILL.MemberInfo.CatPhoneNum').content(this.record.SYSTEL[i]).build());
-            }
-            if (!this.isEmpty(this.record.SYSFAX) && this.record.SYSFAX.length >= i) {
-                fieldsArray.push(new ViewFieldBuilder().label('ILL.MemberInfo.CatFax').content(this.record.SYSFAX[i]).build());
-            }
             this.addLine(new ViewFieldBuilder().label('ILL.MemberInfo.SystemDepartment').build(), fieldsArray);
+        }
+
+        for (let i = 0; i < this.record.SYSTEL?.length; i++) {
+            fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.SYSTEL[i]).build());
+            this.addLine(new ViewFieldBuilder().label('ILL.MemberInfo.SystemPhoneNum').build(), fieldsArray);
+        }
+
+        for (let i = 0; i < this.record.SYSFAX?.length; i++) {
+            fieldsArray = new Array<ViewField>();
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.SYSFAX[i]).build());
+            this.addLine(new ViewFieldBuilder().label('ILL.MemberInfo.SystemFax').build(), fieldsArray);
         }
   
         for (let i = 0; i < this.record.EMAIL?.length; i++) {
@@ -274,9 +282,9 @@ export class MemberUpdate {
     STAT: string;
     ZIP: string;
     ADDRESS: string;
-    TEL: string;
+    TEL: any[];
     EXTEL : string;
-    FAX: string;
+    FAX: any[];
     ILLDEPT: string;
     ILLSTAFF: string;
     POLICY: any[];

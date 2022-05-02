@@ -11,6 +11,7 @@ import { NacsisCatalogResults, IDisplayLines } from '../../catalog/results-types
 import { IllService, AlmaRecord, AlmaRecordDisplay } from '../../service/ill.service';
 import { FullViewLink } from '../../user-controls/full-view-display/full-view-display.component';
 import { RecordSelection } from '../../user-controls/selectable-result-card/selectable-result-card.component';
+import { MembersService } from '../../service/members.service';
 
 @Component({
   selector: 'ILL-searchRecord',
@@ -95,6 +96,7 @@ export class searchRecordComponent implements AfterViewInit {
     private alert: AlertService,
     private translate: TranslateService,
     private illService: IllService,
+    private memberService : MembersService,
   ) { }
 
   ngAfterViewInit() {
@@ -438,6 +440,50 @@ export class searchRecordComponent implements AfterViewInit {
   onResize(event) {
     this.isColapsedMode = (event.target.innerWidth <= 600) ? true : false;
   }
+
+  onFullViewInternalLinkClick(fullViewLink: FullViewLink) {
+    let urlParams = QueryParams.PageIndex + "=0&" + QueryParams.PageSize + "=20";
+    urlParams = urlParams + "&" + QueryParams.SearchType + "=" + fullViewLink.searchType;
+    urlParams =  urlParams + "&" + QueryParams.Databases + "=" + 'MEMBER';
+    urlParams =  urlParams + "&" + QueryParams.ID + "=" + fullViewLink.linkID;
+    
+    this.isColapsedMode = (window.innerWidth <= 600) ? true : false;
+
+    this.loading = true;
+    try{
+      this.getMemberResult(urlParams);
+    } catch (e) {
+        this.loading = false;
+        console.log(e);
+        this.alert.error(this.translate.instant('General.Errors.generalError'), {keepAfterRouteChange:true});      
+    }
+
+}
+
+getMemberResult(urlParams : string) {
+  this.memberService.getSearchResultsFromNacsis(urlParams)
+  .subscribe({
+      next: (catalogResults) => {
+          if (catalogResults.status === this.illService.OkStatus) {
+            if (catalogResults.totalRecords == 1) {
+              let baseResult = this.illService.resultsTypeFactory(SearchType.Members, catalogResults.records[0]);
+              this.resultFullLinkDisplay = baseResult.getFullViewDisplay().initContentDisplay();
+              this.isRightTableOpen = true;
+            } else {
+                this.resultFullLinkDisplay == null;
+                this.isRightTableOpen = false;
+            }
+          } else {
+              this.alert.error(catalogResults.errorMessage, {keepAfterRouteChange:true});  
+          } },
+      error: e => {
+          this.loading = false;
+          console.log(e.message);
+          this.alert.error(e.message, {keepAfterRouteChange:true});
+      },
+      complete: () => this.loading = false
+  });
+}
 
 
 }

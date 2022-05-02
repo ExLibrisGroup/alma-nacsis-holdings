@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { IDisplayLines } from '../../catalog/results-types/results-common'
-import { SearchField, FieldSize, FieldName, SelectSearchField, SelectedSearchFieldValues, MultiSearchField } from '../../user-controls/search-form/search-form-utils';
+import { SearchField, FieldSize, FieldName, SelectSearchField, SelectedSearchFieldValues, MultiSearchField, SearchType } from '../../user-controls/search-form/search-form-utils';
 import { AlmaApiService } from '../../service/alma.api.service';
 import { MEMBER_RECORD, ROUTING_STATE_KEY } from '../../service/base.service';
 import { MemberUpdate } from '../../catalog/results-types/member';
@@ -25,7 +25,7 @@ export class EditFormComponent implements OnInit {
 
   // UI variables
   panelState: boolean = true;
-  private loading: boolean = false;
+  loading: boolean = false;
 
    // Data variables
    private member: MemberUpdate;
@@ -51,8 +51,8 @@ export class EditFormComponent implements OnInit {
     this.editFieldsMap.set(FieldName.LOC, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.LOC, FieldSize.medium, record.fullRecord.fullView.LOC, true), 1));
     this.editFieldsMap.set(FieldName.TEL, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.TEL, FieldSize.medium, record.fullRecord.fullView.TEL), 1));
     this.editFieldsMap.set(FieldName.FAX, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.FAX, FieldSize.medium, record.fullRecord.fullView.FAX), 1));
-    this.editFieldsMap.set(FieldName.CATTEL, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.CATTEL, FieldSize.medium, record.fullRecord.fullView.CATTEL), 1));
     this.editFieldsMap.set(FieldName.CATDEPT, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.CATDEPT, FieldSize.medium, record.fullRecord.fullView.CATDEPT), 1));
+    this.editFieldsMap.set(FieldName.CATTEL, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.CATTEL, FieldSize.medium, record.fullRecord.fullView.CATTEL), 1));
     this.editFieldsMap.set(FieldName.CATFAX, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.CATFAX, FieldSize.medium, record.fullRecord.fullView.CATFAX), 1));
     this.editFieldsMap.set(FieldName.SYSDEPT, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.SYSDEPT, FieldSize.medium, record.fullRecord.fullView.SYSDEPT), 1));
     this.editFieldsMap.set(FieldName.SYSTEL, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.SYSTEL, FieldSize.medium, record.fullRecord.fullView.SYSTEL), 1));
@@ -94,14 +94,6 @@ export class EditFormComponent implements OnInit {
     this.initEditFieldsMap(this.record);
   }
 
-//   ngAfterViewInit(){
-//     if(sessionStorage.getItem(ROUTING_STATE_KEY) == "") {
-//         this.catalogService.clearAllSearchResults();
-//     } else {
-//         this.onBackFromViewHolding();
-//     }
-// }
-
     /* Methods called from the DOM */
     public panelOpenState() {
       this.panelState = true;
@@ -110,13 +102,10 @@ export class EditFormComponent implements OnInit {
     public panelCloseState() {
       this.panelState = false;
     }
-  
-    // public resultExists() {
-    //   this.numOfResults > 0;
-    // }
 
   /* Save the record (member) on the server */
   save() {
+    this.loading = true;
     this.member = new MemberUpdate();
     this.member.ID = this.editFieldsMap.get(FieldName.ID).formControl.value;
     this.member.COPYS = this.editFieldsMap.get(FieldName.COPYS).formControl.value;
@@ -131,6 +120,8 @@ export class EditFormComponent implements OnInit {
     this.member.SYSTEL = this.getFormControlValues(FieldName.SYSTEL);
     this.member.SYSFAX = this.getFormControlValues(FieldName.SYSFAX);
     this.member.EMAIL = this.getFormControlValues(FieldName.EMAIL);
+    this.member.FAX = this.getFormControlValues(FieldName.FAX);
+    this.member.TEL = this.getFormControlValues(FieldName.TEL);
     this.membersService.saveMemberToNacsis(this.member)
       .subscribe({
         next: (updateResponse) => {
@@ -138,6 +129,7 @@ export class EditFormComponent implements OnInit {
             console.log(updateResponse);
             if (updateResponse.status === this.membersService.OkStatus) {
               this.alert.success(this.translate.instant('Members.Form.Success'), { keepAfterRouteChange: true });
+              this.membersService.setSearchResultsMap(SearchType.Members, updateResponse, "");
             } else {
               this.alert.error(updateResponse.errorMessage, { keepAfterRouteChange: true });
             }

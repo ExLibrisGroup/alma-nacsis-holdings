@@ -44,7 +44,7 @@ export class MembersSearchComponent implements OnInit {
 
   // Search variables
   numOfResults: number;
-  private TotalResults: number;
+  private totalResults: number;
   pageIndex: number = 0;
   pageSize: number = 20;
   private fieldsMap: Map<FieldName, SearchField> = new Map();
@@ -175,7 +175,7 @@ export class MembersSearchComponent implements OnInit {
       this.numOfResults = this.resultsSummaryDisplay.length;
     } else {
       this.resultsSummaryDisplay = this.resultsSummaryRecord;
-      this.numOfResults = this.TotalResults;
+      this.numOfResults = this.totalResults;
     }
     this.resultsTemplateFactory();
   }
@@ -255,7 +255,7 @@ export class MembersSearchComponent implements OnInit {
         if (nacsisResponse.status === this.membersService.OkStatus) {
           if (nacsisResponse.totalRecords >= 1) {
             this.numOfResults = nacsisResponse.totalRecords;
-            this.TotalResults = nacsisResponse.totalRecords;
+            this.totalResults = nacsisResponse.totalRecords;
             this.setPageIndexAndSize(queryParams);
             this.membersService.setSearchResultsMap(SearchType.Members, nacsisResponse, queryParams);
             this.setSearchResultsDisplay();
@@ -327,7 +327,6 @@ export class MembersSearchComponent implements OnInit {
   }
 
   onBackFromEditForm() {
-    this.searchFormRefill();
     this.setSearchResultsDisplay();
     this.numOfResults = this.resultsSummaryDisplay.length;
     this.resultsTemplateFactory();

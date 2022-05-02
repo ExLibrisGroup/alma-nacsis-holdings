@@ -264,9 +264,10 @@ export class RequestFormComponent implements OnInit, OnChanges {
   buildRequesterStaff(){
     let requesterStaff = "";
     requesterStaff = requesterStaff + (this.illService.isEmpty(this.illStaffAuto) ? "" : this.illStaffAuto + " ");
-    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illDeptAuto) ? "" : this.illDeptAuto + " ");
-    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illTelAuto) ? "" : "TEL=" + this.illTelAuto + " ");
-    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illFaxAuto) ? "" : "FAX=" + this.illFaxAuto);
+    //TODO : What TEL & FAX doing here?
+    // requesterStaff = requesterStaff + (this.illService.isEmpty(this.illDeptAuto) ? "" : this.illDeptAuto + " ");
+    // requesterStaff = requesterStaff + (this.illService.isEmpty(this.illTelAuto) ? "" : "TEL=" + this.illTelAuto + " ");
+    // requesterStaff = requesterStaff + (this.illService.isEmpty(this.illFaxAuto) ? "" : "FAX=" + this.illFaxAuto);
     return requesterStaff;
   }
 
