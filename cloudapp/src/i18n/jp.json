@@ -109,7 +109,7 @@
         "Id": "データID",
         "Description": "記述",
         "Library": "図書館",
-        "Location": "配置場所",
+        "Location": "配置コード",
         "Ill": "ILL（リソース共有）可"
       },
       "Errors": {
