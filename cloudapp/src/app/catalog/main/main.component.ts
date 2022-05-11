@@ -41,8 +41,8 @@ export class CatalogMainComponent implements AfterViewInit {
     public ACTIONS_MENU_LIST = new Map([
         [SearchType.Monographs, [new Action('Catalog.Results.Actions.View'), new Action('Catalog.Results.Actions.Import')]],
         [SearchType.Serials, [new Action('Catalog.Results.Actions.View'), new Action('Catalog.Results.Actions.Import')]],
-        [SearchType.Names, [new Action('Catalog.Results.Actions.View') /* , new Action('Catalog.Results.Actions.Import') */]],
-        [SearchType.UniformTitles, [new Action('Catalog.Results.Actions.View')/* , new Action('Catalog.Results.Actions.Import') */]],
+        [SearchType.Names, [new Action('Catalog.Results.Actions.View') , new Action('Catalog.Results.Actions.Import')]],
+        [SearchType.UniformTitles, [new Action('Catalog.Results.Actions.View'), new Action('Catalog.Results.Actions.Import')]],
     ]);
 
 
