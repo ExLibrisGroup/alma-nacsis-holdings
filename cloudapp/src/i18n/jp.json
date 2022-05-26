@@ -64,7 +64,7 @@
       "AndOthers": "その他",
       "Actions" : {
         "View" : "プレビュー",
-        "Import" : "ダウウンロード",
+        "Import" : "ダウンロード",
         "ViewHoldings" : "所蔵を確認する",
         "Edit" : "編集",
         "Delete" : "削除"
