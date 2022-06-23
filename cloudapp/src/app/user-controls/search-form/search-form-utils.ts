@@ -28,7 +28,7 @@ export class SearchField {
     constructor(
       key: FieldName, 
       fieldSize?: FieldSize, 
-      formControlValue?: string, 
+      formControlValue?: any, 
       readOnly: boolean = false,
       required?: boolean){
         this.key = key;
@@ -91,7 +91,7 @@ export class SearchField {
 export class SelectSearchField extends SearchField {
     fieldValueList: any[];
 
-    constructor(fieldValueList, key: FieldName, fieldSize?: FieldSize, formControlValue?: string, readOnly : boolean = false){
+    constructor(fieldValueList, key: FieldName, fieldSize?: FieldSize, formControlValue?: any, readOnly : boolean = false){
         super(key, fieldSize, formControlValue, readOnly);
         this.fieldValueList = fieldValueList;
     }
