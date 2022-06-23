@@ -129,7 +129,7 @@ export class MemberFullDisplay extends IDisplayLines {
 
         fieldsArray = new Array<ViewField>();
         fieldsArray.push(new ViewFieldBuilder().content(this.record.LOANS).build());
-        this.addLine(new ViewFieldBuilder().label('ILL.MemberInfo.FAXServiceType').build(), fieldsArray);
+        this.addLine(new ViewFieldBuilder().label('ILL.MemberInfo.LendingServiceType').build(), fieldsArray);
 
         fieldsArray = new Array<ViewField>();
         fieldsArray.push(new ViewFieldBuilder().content(this.record.FAXS).build());
@@ -276,8 +276,8 @@ export class MemberFull {
 
 export class MemberUpdate {
     ID: string;
-    COPYS:any[];
-    LOANS: string[];
+    COPYS:string;
+    LOANS: string;
     FAXS: string;
     STAT: string;
     ZIP: string;
