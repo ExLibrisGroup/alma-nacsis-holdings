@@ -83,6 +83,10 @@ export class MonographVOLG{
     VOL: string = "";
     ISBN: string = "";
     PRICE: string = "";
+    XISBN: MonographXISBN[];
+}
+
+export class MonographXISBN{
     XISBN: string = "";
 }
 
@@ -209,11 +213,19 @@ export class MonographSummaryDisplay extends IDisplayLines{
         // ISBN line
         fieldsArray = new Array<ViewField>();
             let isbnStrField: string;
-            if(this.record.VOLG?.length > 1 && !this.isEmpty(this.record.VOLG[0]?.ISBN)) {
-                isbnStrField = this.record.VOLG[0]?.ISBN + " " + this.translate.instant('Catalog.Results.AndOthers')
-            } else {
-                isbnStrField = this.record.VOLG[0]?.ISBN;
-            } 
+            if(!this.isEmpty(this.record.VOLG?.length)) {
+                // Setting the main identifier (ISBN or XISBN)
+                if(!this.isEmpty(this.record.VOLG[0]?.ISBN)) {
+                    isbnStrField = this.record.VOLG[0]?.ISBN;
+                } else if(!this.isEmpty(this.record.VOLG[0]?.XISBN)) {
+                    isbnStrField = this.record.VOLG[0]?.XISBN[0].XISBN;
+                }
+                // Adding the "and others" label
+                if(this.record.VOLG?.length > 1 || this.record.VOLG[0]?.XISBN?.length > 1 
+                    || (!this.isEmpty(this.record.VOLG[0]?.ISBN) && !this.isEmpty(this.record.VOLG[0]?.XISBN[0]?.XISBN))) {
+                        isbnStrField = isbnStrField + " "  + this.translate.instant('Catalog.Results.AndOthers');
+                }
+            }
             fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.ISBN').content(isbnStrField).build());      
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
          // ED line
@@ -298,7 +310,9 @@ export class MonographFullDisplay extends IDisplayLines {
                 fieldsArray.push(new ViewFieldBuilder().label("VOL: ").content(vol.VOL).build());
                 fieldsArray.push(new ViewFieldBuilder().label("ISBN: ").content(vol.ISBN).build());
                 fieldsArray.push(new ViewFieldBuilder().label("PRICE: ").content(vol.PRICE).build());
-                fieldsArray.push(new ViewFieldBuilder().label("XISBN: ").content(vol.XISBN).build());
+                vol.XISBN?.forEach(xisbn => {
+                    fieldsArray.push(new ViewFieldBuilder().label("XISBN: ").content(xisbn.XISBN).build());
+                });
             this.addLine(new ViewFieldBuilder().label("VOLG").build(), fieldsArray);
         });
         fieldsArray = new Array<ViewField>();
