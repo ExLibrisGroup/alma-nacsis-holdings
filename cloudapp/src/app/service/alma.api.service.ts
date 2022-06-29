@@ -122,7 +122,7 @@ export class AlmaApiService {
 
     try {
 
-      subfield_008_35_37 = this.getValueFromControlFields(controlfield, "008").substring(35, 37);
+      subfield_008_35_37 = this.getValueFromControlFields(controlfield, "008").substring(35, 38);
       recordInfo.language = subfield_008_35_37;
 
       //NACSIS ID
@@ -222,7 +222,11 @@ export class AlmaApiService {
         let subfields = field.getElementsByTagName("subfield");
         for (let index = 0; index < subfields.length; index++) {
           const subfield = subfields[index];
-          str = str.concat(subfield.innerHTML);
+          // Since $$6 represents a Linkage, it's irrelevant (URM-171458, No. 5)
+          if(subfield.getAttribute("code").valueOf() === "6") {
+            continue;
+          }
+          str = str.concat(subfield.innerHTML) + " ";
         }
       }
     }
