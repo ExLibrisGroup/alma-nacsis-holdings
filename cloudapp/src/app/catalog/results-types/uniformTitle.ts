@@ -41,6 +41,8 @@ export class UniformTitleFull{
     SAF: UniformTitleSAF[];
     // NOTE
     NOTE: UniformTitleNOTE[];
+    // REM
+    REM: string = "";
 }
 
 export class UniformTitleHDNG {
@@ -149,6 +151,9 @@ export class UniformTitleFullDisplay extends IDisplayLines {
                 fieldsArray.push(new ViewFieldBuilder().content(note.NOTE).build());
             this.addLine(new ViewFieldBuilder().label("NOTE").build(), fieldsArray);
         });
+        fieldsArray = new Array<ViewField>()
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.REM).build());
+        this.addLine(new ViewFieldBuilder().label("REM").build(), fieldsArray);
 
         return this.viewLines;
     }
