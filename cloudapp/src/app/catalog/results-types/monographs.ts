@@ -183,12 +183,7 @@ export class MonographSummaryDisplay extends IDisplayLines{
             fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.Book').build());
             fieldsArray.push(new ViewFieldBuilder().content(this.record.PUB[0]?.PUBL).build());
             fieldsArray.push(new ViewFieldBuilder().label(", ").content(this.record.TTLL).build());
-            // PUBDT is better, so YEAR will be displayed when PUBDT cannot be taken
-            if(!this.isEmpty(this.record.PUB[0]?.PUBDT)) {
-                fieldsArray.push(new ViewFieldBuilder().label(": ").content(this.record.PUB[0]?.PUBDT).build());
-            } else {
-                fieldsArray.push(new ViewFieldBuilder().content(this.record.YEAR1).build());
-            }
+            fieldsArray.push(new ViewFieldBuilder().label(": ").content(this.getFirstPriorityDate()).build());           
             fieldsArray.push(new ViewFieldBuilder().label("- ").content(this.record.YEAR2).build());
             fieldsArray.push(new ViewFieldBuilder().label("; ").content(this.record.VOLG[0]?.VOL).build());
             if(this.record.VOLG?.length > 1) {
@@ -267,9 +262,9 @@ export class MonographFullDisplay extends IDisplayLines {
         this.viewLines = new Array<ViewLine>();
         let fieldsArray = new Array<ViewField>()
             fieldsArray.push(new ViewFieldBuilder().label("Create date: ").content(this.dateFormatDisplay(this.record.CRTDT)).build());
-            fieldsArray.push(new ViewFieldBuilder().label("Creating institution: ").content(this.record.CRTFA).build());
+            fieldsArray.push(new ViewFieldBuilder().label("Creating institution: ").content(this.record.CRTFA).link(SearchType.Members).build()); 
             fieldsArray.push(new ViewFieldBuilder().label("Update date: ").content(this.dateFormatDisplay(this.record.RNWDT)).build());
-            fieldsArray.push(new ViewFieldBuilder().label("Modifying institution: ").link(SearchType.Members).content(this.record.RNWFA).build());
+            fieldsArray.push(new ViewFieldBuilder().label("Modifying institution: ").content(this.record.RNWFA).link(SearchType.Members).build());
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
         fieldsArray = new Array<ViewField>()
             fieldsArray.push(new ViewFieldBuilder().content(this.record.ID).build());

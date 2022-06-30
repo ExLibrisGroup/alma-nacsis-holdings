@@ -173,6 +173,8 @@ export class SerialSummaryDisplay extends IDisplayLines{
             fieldsArray.push(new ViewFieldBuilder().content(this.record.PUB[0]?.PUBL).build());
             fieldsArray.push(new ViewFieldBuilder().label(", ").content(this.record.TTLL).build());
             fieldsArray.push(new ViewFieldBuilder().label(": ").content(this.record.VLYR).build());
+            fieldsArray.push(new ViewFieldBuilder().label(": ").content(this.getFirstPriorityDate()).build());           
+            fieldsArray.push(new ViewFieldBuilder().label("- ").content(this.record.YEAR2).build());
             fieldsArray.push(new ViewFieldBuilder().label(")").build());
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
         // TR line
