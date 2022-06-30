@@ -77,6 +77,7 @@ export class MonographFull{
     CLS: MonographCLS[];
     SH: MonographSH[];
     IDENT: MonographIDENT[];
+    REM: string = "";
 }
 
 export class MonographVOLG{
@@ -411,10 +412,11 @@ export class MonographFullDisplay extends IDisplayLines {
                 fieldsArray.push(new ViewFieldBuilder().content(ident.IDENT).build());
             this.addLine(new ViewFieldBuilder().label("IDENT").build(), fieldsArray);
         });
+        fieldsArray = new Array<ViewField>()
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.REM).build());
+        this.addLine(new ViewFieldBuilder().label("REM").build(), fieldsArray);
 
         return this.viewLines;
-        
-
     }
     
 

@@ -39,6 +39,7 @@ export class NameFull{
     SF: NameSF[];
     SAF: NameSAF[];
     NOTE: NameNOTE[];
+    REM: string = "";
 }
 
 export class NameHDNG {
@@ -154,6 +155,9 @@ export class NameFullDisplay extends IDisplayLines {
                 fieldsArray.push(new ViewFieldBuilder().content(note.NOTE).build());
             this.addLine(new ViewFieldBuilder().label("NOTE").build(), fieldsArray);
         });
+        fieldsArray = new Array<ViewField>()
+            fieldsArray.push(new ViewFieldBuilder().content(this.record.REM).build());
+        this.addLine(new ViewFieldBuilder().label("REM").build(), fieldsArray);
 
         return this.viewLines;
     }
