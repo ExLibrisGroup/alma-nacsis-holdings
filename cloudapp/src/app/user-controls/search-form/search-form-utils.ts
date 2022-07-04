@@ -77,6 +77,10 @@ export class SearchField {
       return this.required;
     }
 
+    setRequired(required: boolean) {
+      this.required = required;
+  }
+
     copyField(copyFormControlValues: boolean): SearchField {
         let newField;
         if (copyFormControlValues) {
@@ -90,10 +94,12 @@ export class SearchField {
 
 export class SelectSearchField extends SearchField {
     fieldValueList: any[];
+    isMultiple : boolean = true;
 
-    constructor(fieldValueList, key: FieldName, fieldSize?: FieldSize, formControlValue?: any, readOnly : boolean = false){
+    constructor(fieldValueList, isMultiple : boolean, key: FieldName, fieldSize?: FieldSize, formControlValue?: any,  readOnly : boolean = false){
         super(key, fieldSize, formControlValue, readOnly);
         this.fieldValueList = fieldValueList;
+        this.isMultiple = isMultiple;
     }
 
     getFieldValueList(): any[] {
@@ -176,6 +182,8 @@ export enum FieldName {
     GRPCODE = "GRPCODE",
     COPYS = "COPYS",
     LOANS = "LOANS",
+    COPYAL = "COPYAL",
+    LOANAL = "LOANAL",
     FAXS = "FAXS",
     CATTEL = "CATTEL",
     CATDEPT = "CATDEPT",

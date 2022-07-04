@@ -141,11 +141,11 @@ export class MemberFullDisplay extends IDisplayLines {
 
         fieldsArray = new Array<ViewField>();
         fieldsArray.push(new ViewFieldBuilder().content(this.record.COPYAL).build());
-        this.addLine(new ViewFieldBuilder().label('ILL.MemberInfo.CopyReceptionHallCode').build(), fieldsArray);
+        this.addLine(new ViewFieldBuilder().label('ILL.MemberInfo.COPYAL').build(), fieldsArray);
 
         fieldsArray = new Array<ViewField>();
         fieldsArray.push(new ViewFieldBuilder().content(this.record.LOANAL).build());
-        this.addLine(new ViewFieldBuilder().label('ILL.MemberInfo.RentalAndBorrowingCenterCode').build(), fieldsArray);
+        this.addLine(new ViewFieldBuilder().label('ILL.MemberInfo.LOANAL').build(), fieldsArray);
 
         fieldsArray = new Array<ViewField>();
         fieldsArray.push(new ViewFieldBuilder().content(this.record.LOANP).build());
@@ -278,6 +278,8 @@ export class MemberUpdate {
     ID: string;
     COPYS:string;
     LOANS: string;
+    COPYAL:string;
+    LOANAL: string;
     FAXS: string;
     STAT: string;
     ZIP: string;

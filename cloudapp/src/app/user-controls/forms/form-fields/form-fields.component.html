@@ -10,11 +10,11 @@
             <div *ngSwitchCase="searchFieldType.select">
                 <mat-form-field appearance="outline">
                     <mat-label>{{ field.getFieldLabel() | translate }}</mat-label>
-                    <mat-select [formControl]="field.getFormControl()" [disabled] = "field.getReadOnly()" multiple>
-                        <mat-option *ngFor="let val of field.getFieldValueList()" [value]="val.value">
-                            {{val.viewValue | translate}}
-                        </mat-option>
-                    </mat-select>
+                        <mat-select [formControl]="field.getFormControl()" [disabled] = "field.getReadOnly()" [multiple] = "field.isMultiple">
+                            <mat-option *ngFor="let val of field.getFieldValueList()" [value]="val.value">
+                                {{val.viewValue | translate}}
+                            </mat-option>
+                        </mat-select>
                 </mat-form-field>
             </div>
             <div *ngSwitchCase="searchFieldType.multi">

@@ -257,7 +257,6 @@
       "LendingServiceType":"貸借サービス種別",
       "FAXServiceType":"FAXサービス種別",
       "ServiceStatus":"サービスステータス",
-      "CopyReceptionHallCode":"複写受理館コード",
       "RentalAndBorrowingCenterCode":"貸借受理館コード",
       "LendingPeriod":"貸借期間",
       "RegionPrefectureCode":"地域(県)コード",
@@ -271,7 +270,9 @@
       "Email":"E-mailアドレス",
       "ILLPolicy":"レンディングポリシー",
       "LocationCode":"配置コード",
-      "OffsetCode":"料金相殺グループ"
+      "OffsetCode":"料金相殺グループ",
+      "LOANAL":"貸借受理館コード",
+      "COPYAL":"複写受理館コード"
     },
     "OptionViewValue": {
       "SETCODE" : {
@@ -436,7 +437,9 @@
       "LTR": "ローカルトレーシング",
       "HLV": "所蔵巻次データ",
       "CONT": "受入継続表示",
-      "HLYR": "所蔵年次データ"
+      "HLYR": "所蔵年次データ",
+      "LOANAL":"貸借受理館コード",
+      "COPYAL":"複写受理館コード"
     }
   }
 }
