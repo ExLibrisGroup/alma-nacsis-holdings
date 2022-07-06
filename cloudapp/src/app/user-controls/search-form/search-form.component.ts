@@ -13,14 +13,13 @@ export class SearchFormComponent implements OnChanges {
 
     @Input() databasesList: Array<string> = new Array();
     @Input() fieldsList: Array<SearchField> = new Array();
+    @Input() currentDatabase: string ;
     @Output() selectedDatabase = new EventEmitter<string>();  
-    public defaultDatabase ;
 
     constructor() { }
     
     ngOnChanges() {
-      this.defaultDatabase  = this.databasesList[0];
-      this.selectedDatabase.emit(this.defaultDatabase );
+      this.selectedDatabase.emit(this.currentDatabase);
     }
 
     selectDatabase(db: MatSelectChange) {

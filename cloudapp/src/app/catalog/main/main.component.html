@@ -23,7 +23,7 @@
         <mat-expansion-panel-header>
           <mat-panel-title *ngIf="!panelState">{{ 'Catalog.Form.RefineSearch' | translate }}</mat-panel-title>
         </mat-expansion-panel-header>
-        <search-form [databasesList]="getCurrentDatabases()" [fieldsList]="getSearchFields()"
+        <search-form [databasesList]="getCurrentDatabases()" [fieldsList]="getSearchFields()" [currentDatabase]="currentDatabase"
           (selectedDatabase)="setCurrentDatabase($event)">
         </search-form>
         <br>

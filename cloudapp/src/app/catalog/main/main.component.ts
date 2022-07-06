@@ -26,10 +26,10 @@ export class CatalogMainComponent implements AfterViewInit {
 
     public SEARCH_TYPE_ARRAY = new Array (SearchType.Monographs, SearchType.Serials, SearchType.Names, SearchType.UniformTitles);
     public ALL_DATABASES_MAP = new Map([
-        [SearchType.Monographs, ['BOOK','PREBOOK','JPMARC','TRCMARC','USMARC','USMARCX','GPOMARC','UKMARC','REMARC','DNMARC','CHMARC','KORMARC','RECON','HBZBKS','SPABKS','ITABKS','KERISB','KERISX','BNFBKS']],
-        [SearchType.Serials, ['SERIAL','JPMARCS','USMARCS','SPASER','ITASER','KERISS','BNFSER']],
-        [SearchType.Names, ['NAME', 'JPMARCA', 'USMARCA']],
-        [SearchType.UniformTitles, ['TITLE', 'USMARCT']],
+        [SearchType.Monographs, ['ALL','BOOK','PREBOOK','JPMARC','TRCMARC','USMARC','USMARCX','GPOMARC','UKMARC','REMARC','DNMARC','CHMARC','KORMARC','RECON','HBZBKS','SPABKS','ITABKS','KERISB','KERISX','BNFBKS']],
+        [SearchType.Serials, ['ALL','SERIAL','JPMARCS','USMARCS','SPASER','ITASER','KERISS','BNFSER']],
+        [SearchType.Names, ['ALL','NAME', 'JPMARCA', 'USMARCA']],
+        [SearchType.UniformTitles, ['ALL','TITLE', 'USMARCT']],
         [SearchType.Members, ['MEMBER']]
     ]);
     public ALL_SEARCH_FIELDS_MAP = new Map([
@@ -47,8 +47,8 @@ export class CatalogMainComponent implements AfterViewInit {
 
 
     // Selection variables
-    public currentSearchType: SearchType = SearchType.Monographs;
-    currentDatabase: string;// = 'BOOK';  // first default selection (since opened with Monographs)
+    public currentSearchType: SearchType = SearchType.Monographs;  // Initilzing the first tub as monograph
+    currentDatabase: string = this.ALL_DATABASES_MAP.get(this.currentSearchType)[0]; 
     linkSearchType: SearchType;
     actionMenuEnteries: Array<Action>;
 
@@ -119,7 +119,20 @@ export class CatalogMainComponent implements AfterViewInit {
     }
 
     getPrimaryDatabase(searchType: SearchType) {
-        return this.ALL_DATABASES_MAP.get(searchType)[0];
+        return this.ALL_DATABASES_MAP.get(searchType)[1];
+    }
+
+    getFullDatabaseForUrl() {
+        if(this.currentDatabase !== 'ALL') {
+            return this.currentDatabase;
+        } else {
+            let allDBsArray = this.getCurrentDatabases();
+            let concatingAllDatabases = "";
+            for (let index = 1; index < allDBsArray.length-1; index++) {
+                concatingAllDatabases = concatingAllDatabases + allDBsArray[index] + ",";
+            }
+            return concatingAllDatabases + allDBsArray[allDBsArray.length-1];
+        }
     }
 
     getSearchFields(): Array<SearchField> {
@@ -159,7 +172,7 @@ export class CatalogMainComponent implements AfterViewInit {
         if (valuableFields.length > 0){
             urlParams = urlParams + QueryParams.PageIndex + "=0&" + QueryParams.PageSize + "=20";
             urlParams = urlParams + "&" + QueryParams.SearchType + "=" + this.currentSearchType;
-            urlParams =  urlParams + "&" + QueryParams.Databases + "=" + this.currentDatabase;
+            urlParams =  urlParams + "&" + QueryParams.Databases + "=" + this.getFullDatabaseForUrl();
             valuableFields.forEach(field => {
                     urlParams =  urlParams + "&" + field.getKey();
                     urlParams =  urlParams + "=" + field.getFormControl().value.replace(this.catalogService.punctuationRegex, '');
@@ -173,15 +186,20 @@ export class CatalogMainComponent implements AfterViewInit {
     // Calling Nacsis servlet
     getSearchResultsFromNacsis(urlParams:string) {
         this.loading = true;
+        console.log(urlParams)
+
         try{
             this.catalogService.getSearchResultsFromNacsis(urlParams)
             .subscribe({
                 next: (catalogResults) => {
                     if (catalogResults.status === this.catalogService.OkStatus) {
                         if (catalogResults.totalRecords >= 1) {
+                            urlParams = this.updateDatabaseAfterResults(catalogResults.database, urlParams);
                             this.catalogService.setSearchResultsMap(this.currentSearchType, catalogResults, urlParams);
                             this.setPageIndexAndSize(urlParams);
                             this.setSearchResultsDisplay();
+                            console.log(urlParams)
+
                         } else {
                             this.panelState = false;
                             this.numOfResults = 0;
@@ -211,6 +229,17 @@ export class CatalogMainComponent implements AfterViewInit {
             this.currentResulsTmpl = this.noResultsTmpl;
         } else {
             this.currentResulsTmpl = this.notSearchedTmpl;
+        }
+    }
+
+    updateDatabaseAfterResults(resultDatabase: string, urlParams: string) {
+        // Update the current database according to the results (relevate for the 'ALL' option) 
+        if(resultDatabase != null && this.currentDatabase === 'ALL' && this.getCurrentDatabases().includes(resultDatabase)) {
+            this.currentDatabase = resultDatabase;
+            let newDatabaseStr = QueryParams.Databases + "=" + resultDatabase + "&";
+            return urlParams.replace(/dataBase=.*&/, newDatabaseStr);
+        } else {
+            return urlParams;
         }
     }
 
@@ -478,6 +507,8 @@ export class CatalogMainComponent implements AfterViewInit {
             new SearchField(FieldName.FTITLE, FieldSize.fullWidth), 
             new SearchField(FieldName.PTBL, FieldSize.fullWidth), 
             new SearchField(FieldName.AUTH, FieldSize.fullWidth), 
+            new SearchField(FieldName.TitlePtblVol, FieldSize.large),
+            new SearchField(FieldName.NdlcnLccnOthn, FieldSize.large),
             new SearchField(FieldName.VOL, FieldSize.large), 
             new SearchField(FieldName.AKEY, FieldSize.large), 
             new SearchField(FieldName.PUB, FieldSize.large), 
@@ -503,8 +534,9 @@ export class CatalogMainComponent implements AfterViewInit {
             new SearchField(FieldName.CODEN, FieldSize.small), 
             new SearchField(FieldName.NDLPN, FieldSize.small), 
             new SearchField(FieldName.LCCN, FieldSize.small),
-            new SearchField(FieldName.PUB, FieldSize.large), 
-            new SearchField(FieldName.YEAR, FieldSize.large), 
+            new SearchField(FieldName.PUB, FieldSize.medium), 
+            new SearchField(FieldName.YEAR, FieldSize.medium), 
+            new SearchField(FieldName.NdlpnLccn, FieldSize.medium),
             new SearchField(FieldName.SH, FieldSize.small),
             new SearchField(FieldName.AKEY, FieldSize.small), 
             new SearchField(FieldName.ID, FieldSize.small), 

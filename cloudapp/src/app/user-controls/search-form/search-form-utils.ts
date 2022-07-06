@@ -144,6 +144,9 @@ export enum FieldName {
     PTBL = "PTBL",
     VOL = "VOL",
     AUTH = "AUTH",
+    TitlePtblVol = "TitlePtblVol",
+    NdlcnLccnOthn = "NdlcnLccnOthn",
+    NdlpnLccn = "NdlpnLccn",
     ISSN = "ISSN",
     ISBN = "ISBN",
     NBN = "NBN",
@@ -196,7 +199,7 @@ export enum FieldName {
     HLYR = "HLYR",
     HLV = "HLV",
     CONT = "CONT",
-    LTR = "LTR",
+    LTR = "LTR"
 }
 
 interface selectedFieldValue {
