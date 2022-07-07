@@ -390,6 +390,7 @@
       "AUTH": "AUTH",
       "TitlePtblVol": "TITLE / PTBL / VOL",
       "NdlcnLccnOthn": "NDLCN / LCCN / OTHN",
+      "NdlpnLccn": "NDLPN/LCCN",
       "ISSN": "ISSN",
       "ISBN": "ISBN",
       "NBN": "NBN",
