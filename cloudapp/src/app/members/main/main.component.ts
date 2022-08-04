@@ -226,7 +226,7 @@ export class MembersSearchComponent implements OnInit {
     if (!this.membersService.isEmpty(value)) {
       let concatValue = "";
       urlParams = urlParams + "&" + fieldName;
-      if (fieldValue instanceof SelectSearchField) {
+      if (fieldValue instanceof SelectSearchField && Array.isArray(fieldValue.getFormControl().value)) {
         let valueArr = fieldValue.getFormControl().value;
         valueArr.forEach(value => {
           concatValue = concatValue.concat(value, ',');
