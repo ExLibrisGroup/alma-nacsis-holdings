@@ -371,6 +371,7 @@ export class CatalogMainComponent implements AfterViewInit {
             next: (header) => {
                 if (header.status === this.holdingsService.OkStatus) {
                     sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.CatalogSearchPage);
+                    sessionStorage.setItem(this.holdingsService.OwnerKey, "1"); // Set holding owner as "Mine"
                     this.catalogService.setCurrentSearchType(this.currentSearchType);
                     this.router.navigate(['/holdings', nacsisId, title]);
                 } else {

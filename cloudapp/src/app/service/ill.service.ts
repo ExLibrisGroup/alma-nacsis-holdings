@@ -82,6 +82,7 @@ export class IllService extends BaseService {
     illBorrowing.isbn = this.isEmpty(record.isbn) ? "" : record.isbn;
     illBorrowing.issn = this.isEmpty(record.issn) ? "" : record.issn;
     illBorrowing.exrernalId = this.isEmpty(record.exrernalId) ? "" : record.exrernalId;
+    illBorrowing.volumes = this.isEmpty(record.volumes) ? null : record.volumes;
 
     illBorrowing.seriesSummaryAll = this.isEmpty(record.seriesSummaryAll) ? "" : record.seriesSummaryAll;
   }
@@ -199,6 +200,7 @@ export abstract class BaseRecordInfo {
   isbn: string = "";
   issn: string = "";
   exrernalId: string = "";
+  volumes?: string[];
 
   seriesSummaryAll: string = "";
   summaryDisplay: IDisplayLines;
@@ -217,6 +219,8 @@ export abstract class BaseRecordInfo {
     this.nacsisId = record.nacsisId;
     this.isbn = record.isbn;
     this.issn = record.issn;
+    this.volumes = record.volumes;
+
     this.seriesSummaryAll = record.seriesSummaryAll;
   }
 
@@ -337,9 +341,33 @@ export class AlmaRecordDisplay extends IDisplayLines {
         authorDisPlay = this.translate.instant('ILL.DisplayCard.By') + " " + this.record.author;
       }
 
-      if (!this.illService.isEmpty(this.record.place_of_pub) ||
-        !this.illService.isEmpty(this.record.place_of_pub) || !this.illService.isEmpty(this.record.date_of_pub)) {
-        publicInfo = " (" + this.record.place_of_pub + ": " + this.record.name_of_pub + ", " + this.record.date_of_pub + ")";
+      if (!this.illService.isEmpty(this.record.place_of_pub) || !this.illService.isEmpty(this.record.name_of_pub) 
+        || !this.illService.isEmpty(this.record.date_of_pub) || !this.illService.isEmpty(this.record.volumes)) {
+        publicInfo = " (" ;
+      }
+
+      if (!this.illService.isEmpty(this.record.place_of_pub)) {
+        publicInfo = publicInfo + this.record.place_of_pub;
+      }
+
+      if (!this.illService.isEmpty(this.record.name_of_pub)) {
+        publicInfo = publicInfo + ": " + this.record.name_of_pub;
+      }
+
+      if (!this.illService.isEmpty(this.record.date_of_pub)) {
+        publicInfo = publicInfo + ", " + this.record.date_of_pub;
+      }
+
+      if (!this.illService.isEmpty(this.record.volumes)) {
+        if(this.record.volumes.length === 1) {
+          publicInfo = publicInfo + "; " + this.record.volumes[0];
+        } else {
+          publicInfo = publicInfo + "; " + this.record.volumes[0] + " - " + this.record.volumes[this.record.volumes.length-1];
+        }
+      }
+
+      if(!this.illService.isEmpty(publicInfo)) {
+        publicInfo = publicInfo + ")"
       }
 
       if (!this.illService.isEmpty(authorDisPlay) || !this.illService.isEmpty(publicInfo)) {

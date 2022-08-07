@@ -7,6 +7,8 @@ import { AlmaApiService } from '../../service/alma.api.service';
 import { MEMBER_RECORD, ROUTING_STATE_KEY } from '../../service/base.service';
 import { MemberUpdate } from '../../catalog/results-types/member';
 import { MembersService } from '../../service/members.service';
+import { Observable, of, merge } from 'rxjs';
+import { mergeMap, catchError, map } from 'rxjs/operators';
 
 @Component({
   selector: 'edit-form',
@@ -33,6 +35,7 @@ export class EditFormComponent implements OnInit {
 
    //Save variables
   private editFieldsMap: Map<FieldName, SearchField> = new Map();
+  public editFieldsMapObs : Observable<SearchField[]> = new Observable<SearchField[]>();
 
   /*Initialize all the search values of members search form*/
   private initEditFieldsMap(record): void {
@@ -44,10 +47,12 @@ export class EditFormComponent implements OnInit {
     this.editFieldsMap.set(FieldName.GRPCODE, new SearchField(FieldName.GRPCODE, FieldSize.medium, record.fullRecord.fullView.GRPCODE, true));
     this.editFieldsMap.set(FieldName.CATFLG, new SearchField(FieldName.CATFLG, FieldSize.medium, record.fullRecord.fullView.CATFLG, true));
     this.editFieldsMap.set(FieldName.ILLFLG, new SearchField(FieldName.ILLFLG, FieldSize.medium, record.fullRecord.fullView.ILLFLG, true));
-    this.editFieldsMap.set(FieldName.STAT, new SelectSearchField(this.selectedValues.getServiceStatusList(), FieldName.STAT, FieldSize.medium,  Array(record.fullRecord.fullView.STAT)));
-    this.editFieldsMap.set(FieldName.COPYS, new SelectSearchField(this.selectedValues.getCopyServiceTypeList(), FieldName.COPYS, FieldSize.medium,   Array(record.fullRecord.fullView.COPYS)));
-    this.editFieldsMap.set(FieldName.LOANS, new SelectSearchField(this.selectedValues.getLendingServiceTypeList(), FieldName.LOANS, FieldSize.medium, Array(record.fullRecord.fullView.LOANS)));
-    this.editFieldsMap.set(FieldName.FAXS, new SelectSearchField(this.selectedValues.getFAXServiceTypeList(), FieldName.FAXS, FieldSize.medium,  Array(record.fullRecord.fullView.FAXS)));
+    this.editFieldsMap.set(FieldName.STAT, new SelectSearchField(this.selectedValues.getServiceStatusList(), false, FieldName.STAT, FieldSize.medium,  record.fullRecord.fullView.STAT));
+    this.editFieldsMap.set(FieldName.COPYS, new SelectSearchField(this.selectedValues.getCopyServiceTypeList(), false, FieldName.COPYS, FieldSize.large,   record.fullRecord.fullView.COPYS));
+    this.editFieldsMap.set(FieldName.COPYAL, new SearchField(FieldName.COPYAL, FieldSize.large, record.fullRecord.fullView.COPYAL, true, false));
+    this.editFieldsMap.set(FieldName.LOANS, new SelectSearchField(this.selectedValues.getLendingServiceTypeList(), false, FieldName.LOANS, FieldSize.large, record.fullRecord.fullView.LOANS));
+    this.editFieldsMap.set(FieldName.LOANAL, new SearchField(FieldName.LOANAL, FieldSize.large, record.fullRecord.fullView.LOANAL, true, false));
+    this.editFieldsMap.set(FieldName.FAXS, new SelectSearchField(this.selectedValues.getFAXServiceTypeList(), false, FieldName.FAXS, FieldSize.medium,  record.fullRecord.fullView.FAXS));
     this.editFieldsMap.set(FieldName.LOC, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.LOC, FieldSize.medium, record.fullRecord.fullView.LOC, true), 1));
     this.editFieldsMap.set(FieldName.TEL, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.TEL, FieldSize.medium, record.fullRecord.fullView.TEL), 1));
     this.editFieldsMap.set(FieldName.FAX, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.FAX, FieldSize.medium, record.fullRecord.fullView.FAX), 1));
@@ -59,12 +64,45 @@ export class EditFormComponent implements OnInit {
     this.editFieldsMap.set(FieldName.SYSFAX, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.SYSFAX, FieldSize.medium, record.fullRecord.fullView.SYSFAX), 1));
     this.editFieldsMap.set(FieldName.EMAIL, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.EMAIL, FieldSize.medium, record.fullRecord.fullView.EMAIL), 1));
     this.editFieldsMap.set(FieldName.POLICY, new MultiSearchField(this.createSearchFieldListbyFormControlValues(FieldName.POLICY, FieldSize.medium, record.fullRecord.fullView.POLICY), 1));
-
   }
 
   /* Get list of all search value, calling this function from the DOM */
-  public getEditFieldsList(): Array<SearchField> {
-    return Array.from(this.editFieldsMap.values());
+  public getEditFieldsList() {
+    const copysChanges$ = this.editFieldsMap.get(FieldName.COPYS).getFormControl().valueChanges.pipe(map(copysVal => {
+      if(copysVal === "C") {
+        this.editFieldsMap.get(FieldName.COPYAL).setReadOnly(false);
+        this.editFieldsMap.get(FieldName.COPYAL).setRequired(true);
+      } else {
+        this.editFieldsMap.get(FieldName.COPYAL).setReadOnly(true);
+        this.editFieldsMap.get(FieldName.COPYAL).setRequired(false);
+        this.editFieldsMap.get(FieldName.COPYAL).getFormControl().setValue(null);
+      }
+    }));
+    const loansChanges$ = this.editFieldsMap.get(FieldName.LOANS).getFormControl().valueChanges.pipe(map(loansVal => {
+      if(loansVal === "C") {
+        this.editFieldsMap.get(FieldName.LOANAL).setReadOnly(false);
+        this.editFieldsMap.get(FieldName.LOANAL).setRequired(true);
+      } else {
+        this.editFieldsMap.get(FieldName.LOANAL).setReadOnly(true);
+        this.editFieldsMap.get(FieldName.LOANAL).setRequired(false);
+        this.editFieldsMap.get(FieldName.LOANAL).getFormControl().setValue(null);
+      }
+    }));
+
+   merge(copysChanges$, loansChanges$)
+  .subscribe({
+      next: () => {
+        return Array.from(this.editFieldsMap.values())
+      },
+      error : () => {
+        console.log("Can't merge $copys and $loans")
+
+      },
+      complete : () => {
+        return Array.from(this.editFieldsMap.values())
+      }
+    })
+    return Array.from(this.editFieldsMap.values())
   }
 
   private createSearchFieldListbyFormControlValues(key: FieldName, fieldSize: FieldSize, formControlValues, readOnly? : boolean): any[] {
@@ -87,8 +125,6 @@ export class EditFormComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    
-    
     this.backSession = sessionStorage.getItem(ROUTING_STATE_KEY);
     this.record = JSON.parse(sessionStorage.getItem(MEMBER_RECORD));
     this.initEditFieldsMap(this.record);
@@ -108,10 +144,12 @@ export class EditFormComponent implements OnInit {
     this.loading = true;
     this.member = new MemberUpdate();
     this.member.ID = this.editFieldsMap.get(FieldName.ID).formControl.value;
-    this.member.COPYS = this.flatControlValue(FieldName.COPYS);
-    this.member.LOANS = this.flatControlValue(FieldName.LOANS);
-    this.member.FAXS = this.flatControlValue(FieldName.FAXS);
-    this.member.STAT = this.flatControlValue(FieldName.STAT);
+    this.member.COPYS = this.editFieldsMap.get(FieldName.COPYS).formControl.value;
+    this.member.LOANS = this.editFieldsMap.get(FieldName.LOANS).formControl.value;
+    this.member.COPYAL = this.editFieldsMap.get(FieldName.COPYAL).formControl.value;
+    this.member.LOANAL = this.editFieldsMap.get(FieldName.LOANAL).formControl.value;
+    this.member.FAXS = this.editFieldsMap.get(FieldName.FAXS).formControl.value;
+    this.member.STAT = this.editFieldsMap.get(FieldName.STAT).formControl.value;
     this.member.POLICY = this.getFormControlValues(FieldName.POLICY);
     this.member.CATDEPT = this.getFormControlValues(FieldName.CATDEPT);
     this.member.CATTEL = this.getFormControlValues(FieldName.CATTEL);

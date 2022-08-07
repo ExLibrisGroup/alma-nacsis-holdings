@@ -193,6 +193,8 @@ export class Header {
 
 export class Holding {
   ID: string = "";
+  CRTDT: string = "";
+  RNWDT: string = "";
   BID: string = "";
   description: string = "";
   LIBABL: string = "";

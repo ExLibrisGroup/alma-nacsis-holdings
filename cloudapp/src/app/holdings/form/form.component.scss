@@ -1,3 +1,13 @@
+.flex-displaying {
+  display: flex;
+  flex-wrap: wrap;
+  padding-right: 5px;
+}
+
+.bold-title {
+  font-weight: bold;
+}
+
 .align-to-right {
   justify-content: flex-end;
   margin-bottom: 20px;

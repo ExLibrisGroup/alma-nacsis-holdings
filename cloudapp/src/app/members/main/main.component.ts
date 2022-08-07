@@ -74,16 +74,16 @@ export class MembersSearchComponent implements OnInit {
     this.fieldsMap.set(FieldName.ID, new SearchField(FieldName.ID, FieldSize.medium));
     this.fieldsMap.set(FieldName.NAME, new SearchField(FieldName.NAME, FieldSize.medium));
     this.fieldsMap.set(FieldName.LOC, new SearchField(FieldName.LOC, FieldSize.medium));
-    this.fieldsMap.set(FieldName.KENCODE, new SelectSearchField(this.selectedValues.getRegionCodeList(), FieldName.KENCODE, FieldSize.medium));
-    this.fieldsMap.set(FieldName.SETCODE, new SelectSearchField(this.selectedValues.getEstablisherTypeList(), FieldName.SETCODE, FieldSize.medium));
-    this.fieldsMap.set(FieldName.ORGCODE, new SelectSearchField(this.selectedValues.getInstitutionTypeList(), FieldName.ORGCODE, FieldSize.medium));
-    this.fieldsMap.set(FieldName.GRPCODE, new SelectSearchField(this.selectedValues.getOffsetChargeList(), FieldName.GRPCODE, FieldSize.medium));
-    this.fieldsMap.set(FieldName.CATFLG, new SelectSearchField(this.selectedValues.getILLParticipationTypeList(), FieldName.CATFLG, FieldSize.medium));
-    this.fieldsMap.set(FieldName.ILLFLG, new SelectSearchField(this.selectedValues.getILLParticipationTypeList(), FieldName.ILLFLG, FieldSize.medium));
-    this.fieldsMap.set(FieldName.STAT, new SelectSearchField(this.selectedValues.getServiceStatusList(), FieldName.STAT, FieldSize.medium));
-    this.fieldsMap.set(FieldName.COPYS, new SelectSearchField(this.selectedValues.getCopyServiceTypeList(), FieldName.COPYS, FieldSize.medium));
-    this.fieldsMap.set(FieldName.LOANS, new SelectSearchField(this.selectedValues.getLendingServiceTypeList(), FieldName.LOANS, FieldSize.medium));
-    this.fieldsMap.set(FieldName.FAXS, new SelectSearchField(this.selectedValues.getFAXServiceTypeList(), FieldName.FAXS, FieldSize.medium));
+    this.fieldsMap.set(FieldName.KENCODE, new SelectSearchField(this.selectedValues.getRegionCodeList(), true, FieldName.KENCODE, FieldSize.medium));
+    this.fieldsMap.set(FieldName.SETCODE, new SelectSearchField(this.selectedValues.getEstablisherTypeList(), true, FieldName.SETCODE, FieldSize.medium));
+    this.fieldsMap.set(FieldName.ORGCODE, new SelectSearchField(this.selectedValues.getInstitutionTypeList(), true, FieldName.ORGCODE, FieldSize.medium));
+    this.fieldsMap.set(FieldName.GRPCODE, new SelectSearchField(this.selectedValues.getOffsetChargeList(), true, FieldName.GRPCODE, FieldSize.medium));
+    this.fieldsMap.set(FieldName.CATFLG, new SelectSearchField(this.selectedValues.getILLParticipationTypeList(), true, FieldName.CATFLG, FieldSize.medium));
+    this.fieldsMap.set(FieldName.ILLFLG, new SelectSearchField(this.selectedValues.getILLParticipationTypeList(), true, FieldName.ILLFLG, FieldSize.medium));
+    this.fieldsMap.set(FieldName.STAT, new SelectSearchField(this.selectedValues.getServiceStatusList(), false, FieldName.STAT, FieldSize.medium));
+    this.fieldsMap.set(FieldName.COPYS, new SelectSearchField(this.selectedValues.getCopyServiceTypeList(), false, FieldName.COPYS, FieldSize.medium));
+    this.fieldsMap.set(FieldName.LOANS, new SelectSearchField(this.selectedValues.getLendingServiceTypeList(), false, FieldName.LOANS, FieldSize.medium));
+    this.fieldsMap.set(FieldName.FAXS, new SelectSearchField(this.selectedValues.getFAXServiceTypeList(), false, FieldName.FAXS, FieldSize.medium));
   }
 
   /* Get list of all search value, calling this function from the DOM */
@@ -226,7 +226,7 @@ export class MembersSearchComponent implements OnInit {
     if (!this.membersService.isEmpty(value)) {
       let concatValue = "";
       urlParams = urlParams + "&" + fieldName;
-      if (fieldValue instanceof SelectSearchField) {
+      if (fieldValue instanceof SelectSearchField && Array.isArray(fieldValue.getFormControl().value)) {
         let valueArr = fieldValue.getFormControl().value;
         valueArr.forEach(value => {
           concatValue = concatValue.concat(value, ',');

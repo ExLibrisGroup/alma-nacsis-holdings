@@ -141,15 +141,15 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.fieldsMap.set(FieldName.VOL , new SearchField(FieldName.VOL, FieldSize.small));
     this.fieldsMap.set(FieldName.YEAR, new SearchField(FieldName.YEAR, FieldSize.small)); 
     this.fieldsMap.set(FieldName.LOC, new SearchField(FieldName.LOC, FieldSize.small));
-    this.fieldsMap.set(this.addUnderScore(FieldName.KENCODE), new SelectSearchField( this.selectedValues.getRegionCodeList(), FieldName.KENCODE, FieldSize.medium)); 
-    this.fieldsMap.set(this.addUnderScore(FieldName.SETCODE) , new SelectSearchField(this.selectedValues.getEstablisherTypeList(), FieldName.SETCODE, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.ORGCODE), new SelectSearchField( this.selectedValues.getInstitutionTypeList(), FieldName.ORGCODE, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.ILLFLG), new SelectSearchField( this.selectedValues.getILLParticipationTypeList(), FieldName.ILLFLG, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.STAT), new SelectSearchField( this.selectedValues.getOffsetChargeList(), FieldName.STAT, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.GRPCODE), new SelectSearchField( this.selectedValues.getOffsetChargeList(), FieldName.GRPCODE, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.COPYS), new SelectSearchField( this.selectedValues.getCopyServiceTypeList(), FieldName.COPYS, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.LOANS), new SelectSearchField( this.selectedValues.getLendingServiceTypeList(), FieldName.LOANS, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.FAXS), new SelectSearchField( this.selectedValues.getFAXServiceTypeList(), FieldName.FAXS, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.KENCODE), new SelectSearchField( this.selectedValues.getRegionCodeList(), true, FieldName.KENCODE, FieldSize.medium)); 
+    this.fieldsMap.set(this.addUnderScore(FieldName.SETCODE) , new SelectSearchField(this.selectedValues.getEstablisherTypeList(), true, FieldName.SETCODE, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.ORGCODE), new SelectSearchField( this.selectedValues.getInstitutionTypeList(), true, FieldName.ORGCODE, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.ILLFLG), new SelectSearchField( this.selectedValues.getILLParticipationTypeList(), true, FieldName.ILLFLG, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.STAT), new SelectSearchField( this.selectedValues.getOffsetChargeList(), true, FieldName.STAT, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.GRPCODE), new SelectSearchField( this.selectedValues.getOffsetChargeList(), true, FieldName.GRPCODE, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.COPYS), new SelectSearchField( this.selectedValues.getCopyServiceTypeList(), true, FieldName.COPYS, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.LOANS), new SelectSearchField( this.selectedValues.getLendingServiceTypeList(), true, FieldName.LOANS, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.FAXS), new SelectSearchField( this.selectedValues.getFAXServiceTypeList(), true, FieldName.FAXS, FieldSize.medium));
   }
 
   private addUnderScore(keyField : String) : String {

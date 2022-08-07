@@ -32,7 +32,20 @@
     </mat-progress-spinner>
   </div>
 
-  <mat-card-title *ngIf="holdingId">{{'Holdings.ViewHoldings.ID' | translate}}: {{holdingId}}</mat-card-title>
+  <mat-card-title class="flex-displaying">
+    <div class="id flex-displaying" *ngIf="holdingId"> 
+      <div class="bold-title"> {{'Holdings.ViewHoldings.ID' | translate}} </div>
+      : {{holdingId}}
+    </div>
+    <div class="crtdt flex-displaying" *ngIf="holding.CRTDT"> 
+      <div class="bold-title"> {{'ILL.HoldingSearchResult.CRTDT' | translate}} </div>
+      : {{holding.CRTDT}}
+    </div>
+    <div class="rnwdt flex-displaying" *ngIf="holding.RNWDT"> 
+      <div class="bold-title"> {{'ILL.HoldingSearchResult.RNWDT' | translate}} </div>
+      : {{holding.RNWDT}}
+    </div>
+  </mat-card-title>
   <span><strong>{{'Holdings.ViewHoldings.Library' | translate}}: {{getLibraryFullName()}}</strong></span>
   <br>
   <span><strong [innerHTML]="getMmsInfoTitle()"></strong></span>
