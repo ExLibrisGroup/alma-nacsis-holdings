@@ -226,6 +226,8 @@ export class FormComponent implements OnInit {
             this.alert.success(this.translate.instant('Holdings.Form.Success'), {keepAfterRouteChange:true});  
             this.holdingId = header.holdingId;
             this.holding.ID = header.holdingId;
+            this.holding.CRTDT = header.CRTDT;
+            this.holding.RNWDT = header.RNWDT;
             this.nacsis.saveHolding(this.holding);
             this.router.navigate(['/holdings', this.mmsId, this.mmsTitle]);
           } else {
