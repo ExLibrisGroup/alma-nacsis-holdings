@@ -21,10 +21,8 @@
     </button>
   </div>
 
-  <div class="title">
-    <h2>
+  <div class="main-title bold-title">
       {{ (isReadOnly ? 'Holdings.Form.ViewTitle' : holdingId ? 'Holdings.Form.EditTitle' : 'Holdings.Form.AddTitle') | translate}}
-    </h2>
   </div>
 
   <div class="loading-shade" *ngIf="loading">
@@ -33,22 +31,23 @@
   </div>
 
   <mat-card-title class="flex-displaying">
-    <div class="id flex-displaying" *ngIf="holdingId"> 
-      <div class="bold-title"> {{'Holdings.ViewHoldings.ID' | translate}} </div>
-      : {{holdingId}}
+    <div class="id" *ngIf="holdingId"> 
+      <span class="bold-title">{{'Holdings.ViewHoldings.ID' | translate}}</span>: {{holdingId}}
     </div>
-    <div class="crtdt flex-displaying" *ngIf="holding.CRTDT"> 
-      <div class="bold-title"> {{'ILL.HoldingSearchResult.CRTDT' | translate}} </div>
-      : {{holding.CRTDT}}
+    <div class="crtdt" *ngIf="holding.CRTDT"> 
+      <span class="bold-title">{{'ILL.HoldingSearchResult.CRTDT' | translate}}</span>: {{holding.CRTDT}}
     </div>
-    <div class="rnwdt flex-displaying" *ngIf="holding.RNWDT"> 
-      <div class="bold-title"> {{'ILL.HoldingSearchResult.RNWDT' | translate}} </div>
-      : {{holding.RNWDT}}
+    <div class="rnwdt" *ngIf="holding.RNWDT"> 
+      <span class="bold-title">{{'ILL.HoldingSearchResult.RNWDT' | translate}}</span>: {{holding.RNWDT}}
     </div>
   </mat-card-title>
-  <span><strong>{{'Holdings.ViewHoldings.Library' | translate}}: {{getLibraryFullName()}}</strong></span>
+    <div>
+      <span class="bold-title">{{'Holdings.ViewHoldings.Library' | translate}}</span>: {{getLibraryFullName()}}
+    </div>
   <br>
-  <span><strong [innerHTML]="getMmsInfoTitle()"></strong></span>
+  <div>
+    <span class="bold-title">{{'Holdings.Form.Title' | translate}}</span>: {{this.mmsTitle}} (this.mmsId)
+  </div>
   <br>
   <br>
 

@@ -1,11 +1,16 @@
 .flex-displaying {
   display: flex;
   flex-wrap: wrap;
-  padding-right: 5px;
+  column-gap: 5px;
 }
 
 .bold-title {
   font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.main-title {
+  font-size: large;
 }
 
 .align-to-right {
