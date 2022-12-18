@@ -123,7 +123,7 @@ export class FormComponent implements OnInit {
   }
 
   getMmsInfoTitle(): string {
-    return this.translate.instant('Holdings.Form.Title') + ": " + this.mmsTitle + " (" + this.mmsId + ")";
+    return this.mmsTitle + " (" + this.mmsId + ")";
   }
 
   onCloseClick() {
