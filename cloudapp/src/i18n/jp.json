@@ -69,7 +69,7 @@
         "Edit" : "編集",
         "Delete" : "削除"
       },
-      "ImportSucceeded": "レコードがダウンロードされました"
+      "ImportSucceeded": "レコードは正常にインポートされました"
     }
   },
 
