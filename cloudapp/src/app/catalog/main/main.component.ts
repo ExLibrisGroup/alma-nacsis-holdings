@@ -1,5 +1,5 @@
 import { Component, AfterViewInit , ViewChild, TemplateRef } from '@angular/core';
-import { SearchType, SearchField, FieldSize, FieldName } from '../../user-controls/search-form/search-form-utils';
+import { SearchType, SearchField, FieldSize, FieldName, stopWords } from '../../user-controls/search-form/search-form-utils';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { CatalogService } from '../../service/catalog.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
@@ -13,7 +13,6 @@ import { RecordSelection, Action } from '../../user-controls/result-card/result-
 import { FullViewLink } from '../../user-controls/full-view-display/full-view-display.component';
 import { HoldingsService } from '../../service/holdings.service';
 import { MembersService } from '../../service/members.service';
-
 
 
 @Component({
@@ -150,12 +149,27 @@ export class CatalogMainComponent implements AfterViewInit {
             this.panelState = true;
         }
         this.isRightTableOpen = false;
-    }    
+    } 
+    
+    removeStopWords(SearchType: SearchType, fieldsName : string[]) {
+        var stopWordsRegex = stopWords.join("\\b|\\b");
+        let valuableField = this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).filter(field => (fieldsName.includes(field.getKey())) && (field.getFormControl().value != null) && (field.getFormControl().value != ""));
+        valuableField.forEach(field => {
+            let removalStopWords = field.getFormControl().value.replace(new RegExp(stopWordsRegex, 'gi'), '').trim().replace(/ +/g, ' ');
+            field.getFormControl().setValue(removalStopWords);
+        })
+    }
 
     search() {
         // Generating the URL by the fields' Form Control
         let urlParams = "";
+        
+        //Defining the fields from which we will remove the stop-words:
+        const fieldsToRemoveStopWords = [FieldName.PTBL];
+        //Remove the stop-words.
+        this.removeStopWords(this.currentSearchType, fieldsToRemoveStopWords);
         let valuableFields = this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).filter(field => (field.getFormControl().value != null) && (field.getFormControl().value != ""));
+        
         if (valuableFields.length > 0){
             urlParams = urlParams + QueryParams.PageIndex + "=0&" + QueryParams.PageSize + "=20";
             urlParams = urlParams + "&" + QueryParams.SearchType + "=" + this.currentSearchType;
