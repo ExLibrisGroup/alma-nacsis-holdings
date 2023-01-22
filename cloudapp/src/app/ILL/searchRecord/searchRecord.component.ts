@@ -3,7 +3,7 @@ import { Component, AfterViewInit, ViewChild, TemplateRef } from '@angular/core'
 import { SearchType, SearchField, FieldSize, FieldName } from '../../user-controls/search-form/search-form-utils';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { CatalogService } from '../../service/catalog.service';
-import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
@@ -97,6 +97,7 @@ export class searchRecordComponent implements AfterViewInit {
     private translate: TranslateService,
     private illService: IllService,
     private memberService : MembersService,
+    private storeService: CloudAppStoreService
   ) { }
 
   ngAfterViewInit() {
@@ -255,13 +256,13 @@ export class searchRecordComponent implements AfterViewInit {
 
   next() {
 
-    sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage);
+    this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage).subscribe();
     let title = this.selected.getFullRecordData().getSummaryView().TRD;
     let nacsisID = this.selected.getFullRecordData().getSummaryView().ID;
     let rawData = this.selected.getFullRecordData().getFullView();
     let object = JSON.stringify(rawData);
-    sessionStorage.setItem(SELECTED_RECORD_ILL, object);
-    sessionStorage.setItem(RESULT_RECORD_LIST_ILL, '');
+    this.storeService.set(SELECTED_RECORD_ILL, object).subscribe();
+    this.storeService.set(RESULT_RECORD_LIST_ILL, '').subscribe();
     this.loading = true;
     this.router.navigate(['holdingSearch', nacsisID, title, this.currentSearchType]);
   }
@@ -342,15 +343,21 @@ export class searchRecordComponent implements AfterViewInit {
 
 
   ngOnInit() {
-    this.backSession = sessionStorage.getItem(ROUTING_STATE_KEY);
+    this.storeService.get(ROUTING_STATE_KEY).subscribe({
+      next(backSession) {
+          this.backSession = backSession;
+          if (backSession == "") {
+            this.illService.clearAllSearchResults();
+          } else {
+            this.onBackFromViewHolding();
+          }
+      },
+      error(err) {
+          console.log(err);
+      },
+    })
     this.isBackFromHoldingSearch = this.route.snapshot.params['flagBack'];
     this.fillInItemRecord();
-
-    if (sessionStorage.getItem(ROUTING_STATE_KEY) == "") {
-      this.illService.clearAllSearchResults();
-    } else {
-      this.onBackFromViewHolding();
-    }
   }
 
 

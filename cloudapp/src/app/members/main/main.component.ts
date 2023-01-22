@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DisplayHoldingResult } from '../../service/holdings.service';
 import { MembersService } from '../../service/members.service';
-import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { NacsisCatalogResults, IDisplayLines, ViewLine } from '../../catalog/results-types/results-common'
 import { SearchType, SearchField, FieldSize, FieldName, SelectSearchField, SelectedSearchFieldValues } from '../../user-controls/search-form/search-form-utils';
@@ -108,6 +108,7 @@ export class MembersSearchComponent implements OnInit {
     private alert: AlertService,
     protected almaApiService: AlmaApiService,
     private router: Router,
+    private storeService: CloudAppStoreService
   ) {
     this.owners = [
       { id: "0", name: "Holdings.ViewHoldings.All" },
@@ -117,22 +118,33 @@ export class MembersSearchComponent implements OnInit {
 
   ngOnInit() {
     this.initFieldsMap();
-    let owner = sessionStorage.getItem(this.membersService.OwnerKey);
-
-    if (!this.membersService.isEmpty(owner)) {
-      this.selected = owner;
-    } else if (this.membersService.isEmpty(this.selected)) {
-      this.selected = '0'; // owner = All
-    }
+    this.storeService.get(this.membersService.OwnerKey).subscribe({
+      next(owner) {
+        if (!this.membersService.isEmpty(owner)) {
+          this.selected = owner;
+        } else if (this.membersService.isEmpty(this.selected)) {
+          this.selected = '0'; // owner = All
+        }
+      },
+      error(err) {
+          console.log("OwnerKey doesn't exist");
+      },
+    });
   }
 
   ngAfterViewInit() {
-    if (sessionStorage.getItem(ROUTING_STATE_KEY) == "") {
-      this.membersService.clearAllSearchResults();
-    } else {
-      this.onBackFromEditForm();
-    }
-
+    this.storeService.get(ROUTING_STATE_KEY).subscribe({
+      next(stateKey) {
+        if (stateKey == "") {
+          this.membersService.clearAllSearchResults();
+        } else {
+          this.onBackFromEditForm();
+        }
+      },
+      error(err) {
+          console.log(err);
+      },
+    })
   }
 
   /* Methods called from the DOM */
@@ -149,8 +161,8 @@ export class MembersSearchComponent implements OnInit {
         break;
       case 1: // Edit member
         this.currentResulsTmpl = this.editFormTmpl;
-        sessionStorage.setItem(MEMBER_RECORD, JSON.stringify(record));
-        sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.MembersMainPage);
+        this.storeService.set(MEMBER_RECORD, JSON.stringify(record)).subscribe();
+        this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.MembersMainPage).subscribe();
         this.router.navigate(['editMember']);
         break;
       default: {
@@ -248,7 +260,7 @@ export class MembersSearchComponent implements OnInit {
       mergeMap(integrationProfile => {
         console.log("what about the fano!?");
         this.fanoId = integrationProfile.libraryID;
-        sessionStorage.setItem(FANO_ID, this.fanoId);
+        this.storeService.set(FANO_ID, this.fanoId).subscribe();
         return this.membersService.getSearchResultsFromNacsis(queryParams);
       }),
       mergeMap(nacsisResponse => {
@@ -339,9 +351,14 @@ export class MembersSearchComponent implements OnInit {
     this.catalogResultsData.getResults()?.forEach(result => {
       let summery = result.getSummaryDisplay()
       /* If the memeber is mine - we can edit it */
-      const fanoId = sessionStorage.getItem(FANO_ID);
-      summery.setEnableEdit(result.getSummaryView().ID === fanoId);
-      this.resultsSummaryRecord.push(summery);
+      this.storeService.get(FANO_ID).subscribe({
+        next(fanoId) {
+          summery.setEnableEdit(result.getSummaryView().ID === fanoId);
+          this.resultsSummaryRecord.push(summery);
+        },error(err) {
+            console.log(err);
+        },
+      })
     });
     this.resultsSummaryDisplay = this.resultsSummaryRecord;
     this.panelState = false;
