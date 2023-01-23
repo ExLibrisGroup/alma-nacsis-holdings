@@ -1,6 +1,6 @@
 import { Subscription, of, forkJoin} from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CloudAppEventsService, Entity, EntityType, CloudAppRestService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppEventsService, Entity, EntityType, CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Router } from '@angular/router';
 import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo, AlmaRequestInfo, AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay} from '../../service/ill.service';
 import {  catchError, tap } from 'rxjs/operators';
@@ -44,25 +44,20 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
     private illService: IllService,
     private alert: AlertService,
     private router: Router,
-    private storeService: CloudAppStoreService
   ) { }
 
   ngOnInit() {
 
-    //sessionStorage.clear();
-    this,this.storeService.remove(REQUEST_EXTERNAL_ID).subscribe();
-    this,this.storeService.remove(ROUTING_STATE_KEY).subscribe();
-    this,this.storeService.remove(LIBRARY_ID_KEY).subscribe();
-    this,this.storeService.remove(LIBRARY_MEMBERINFO_KEY).subscribe();
-
+    sessionStorage.clear();
     this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => { 
       this.loading = true;     
       try{
       this.almaApiService.getIntegrationProfile()
       .subscribe( {
         next : integrationProfile => {
-          this.integrationProfile = integrationProfile;
-          this.storeService.set(LIBRARY_ID_KEY ,integrationProfile.libraryID).subscribe();
+            this.integrationProfile = integrationProfile;
+
+          sessionStorage.setItem(LIBRARY_ID_KEY,integrationProfile.libraryID);
           let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS || e.type == EntityType.BORROWING_REQUEST );
           let disCards: AlmaRequestInfo[] = new Array(rawBibs.length);
 
@@ -123,7 +118,7 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
           this.alert.error(e.message, { keepAfterRouteChange: true });
         },
         complete: () => {
-          this.storeService.set(LIBRARY_MEMBERINFO_KEY, JSON.stringify(obj)).subscribe();
+          sessionStorage.setItem(LIBRARY_MEMBERINFO_KEY, JSON.stringify(obj));
           this.loading = false;
         }
       });
@@ -157,15 +152,15 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
   }
 
   next(){
-    this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage).subscribe();
-    this.loading = true;
-    this.storeService.set(REQUEST_EXTERNAL_ID, this.selected.record.exrernalId).subscribe();
-    this.router.navigate(['searchRecord',this.selected.record.nacsisId,this.selected.record.title,
+    sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage);
+      this.loading = true;
+      sessionStorage.setItem(REQUEST_EXTERNAL_ID, this.selected.record.exrernalId);
+      this.router.navigate(['searchRecord',this.selected.record.nacsisId,this.selected.record.title,
                             this.selected.record.isbn,this.selected.record.issn]);
   }
 
   newSearch(){
-    this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage).subscribe();
+    sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage);
     this.router.navigate(['searchRecord']);
   }
 
