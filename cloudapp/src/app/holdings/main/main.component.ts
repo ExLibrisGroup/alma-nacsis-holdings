@@ -1,6 +1,6 @@
 import { Subscription, of, forkJoin } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CloudAppEventsService, Entity, EntityType, CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppEventsService, Entity, EntityType, CloudAppRestService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Router } from '@angular/router';
 import { HoldingsService } from '../../service/holdings.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -41,15 +41,16 @@ export class MainComponent implements OnInit, OnDestroy {
     private nacsis: HoldingsService,
     private translate: TranslateService,
     private alert: AlertService,
-
+    private storeService: CloudAppStoreService,
     private restService: CloudAppRestService,
     private almaApiService: AlmaApiService,
     private illService: IllService,
   ) { }
 
   ngOnInit() {
-
-    sessionStorage.clear();
+    this,this.storeService.remove(ROUTING_STATE_KEY).subscribe();
+    this,this.storeService.remove(VOLUME_LIST).subscribe();
+    //sessionStorage.clear();
     this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => {
 
       this.loading = true;
@@ -114,8 +115,8 @@ export class MainComponent implements OnInit, OnDestroy {
           .subscribe({
             next: (header) => {
               if (header.status === this.nacsis.OkStatus) {
-                sessionStorage.setItem(VOLUME_LIST, bib[0].volumes.join(VOLUME_LIST_SEPARATOR))
-                sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.HoldingsMainPage);
+                this.storeService.set(VOLUME_LIST,bib[0].volumes.join(VOLUME_LIST_SEPARATOR)).subscribe();
+                this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.HoldingsMainPage).subscribe();
                 this.router.navigate(['/holdings', this.selected, bib[0].title]);
               } else {
                 this.alert.error(header.errorMessage, { keepAfterRouteChange: true });
