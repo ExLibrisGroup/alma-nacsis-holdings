@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, HoldingsSearch, NacsisHoldingRecord, DisplayHoldingResult, NacsisBookHoldingsListDetail, NacsisSerialHoldingsListDetail } from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
-import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL,SELECTED_RECORD_LIST_ILL, BaseService} from '../../service/base.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
@@ -99,8 +99,8 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     private nacsis: HoldingsService,
     private membersService: MembersService,
     private alert: AlertService,
-    private _liveAnnouncer: LiveAnnouncer,
-    private storeService: CloudAppStoreService
+    private _liveAnnouncer: LiveAnnouncer
+
   ) {
     this.owners = [
       { id: "0", name: "Holdings.ViewHoldings.All" },
@@ -118,19 +118,13 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.form = holdingFormGroup(null);
     this.selection = new SelectionModel<DisplayHoldingResult>(true, []);
     this.isMaxRowSelected = false;
+    let lastResult = sessionStorage.getItem(RESULT_RECORD_LIST_ILL);
     this.selected = "0";
-    this.storeService.get(RESULT_RECORD_LIST_ILL).subscribe({
-      next : (lastResult) => {
-        if(!this.illService.isEmpty(lastResult)){
-          this.holdings =  JSON.parse(lastResult);
-          this.ngOnChanges(this.holdings);
-          this.panelState = false;
-        }
-      },
-      error : (err) => {
-        console.log(err);
-      }
-    })
+    if(!this.illService.isEmpty(lastResult)){
+      this.holdings =  JSON.parse(lastResult);
+      this.ngOnChanges(this.holdings);
+      this.panelState = false;
+    }
     this.initFieldsMap();
   }
 
@@ -181,7 +175,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
               if (this.nacsisHoldingsResultList != null && this.nacsisHoldingsResultList.length > 0) {
                 this.holdings = this.setDisplayDetails(this.nacsisHoldingsResultList);
                 this.ngOnChanges(this.holdings);
-                this.storeService.set(RESULT_RECORD_LIST_ILL, JSON.stringify(this.holdings)).subscribe();
+                sessionStorage.setItem(RESULT_RECORD_LIST_ILL, JSON.stringify(this.holdings));
                 this.noHoldingRecords = false;
               } else {
                 this.holdings = new Array();
@@ -607,28 +601,35 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   onOwnerSelected() {
     this.clearSelection();
-    this.storeService.set(this.nacsis.OwnerKey, this.selected).subscribe();
-    this.storeService.get(RESULT_RECORD_LIST_ILL).subscribe({
-      next : (value) => {
-        if(!this.illService.isEmpty(value)){
-          this.holdings =  JSON.parse(value);
-        }else{
-          this.holdings = this.setDisplayDetails(this.nacsisHoldingsResultList);
-        }
-        if(this.selected === '0') {
-          this.noHoldingRecords = false;
-          this.ngOnChanges(this.holdings);
-        } else if (this.selected === '1') { 
-          let localnacsisHoldingsResultList = this.holdings.filter(e => e.fano === this.localLibraryID);
-          this.holdings = localnacsisHoldingsResultList;
-          if (localnacsisHoldingsResultList.length == 0) {
-            this.noHoldingRecords = true;
-          }else{
-            this.ngOnChanges(localnacsisHoldingsResultList);
-          }
-        }
+    sessionStorage.setItem(this.nacsis.OwnerKey, this.selected);
+
+    if (this.selected === '0') {
+      
+      this.noHoldingRecords = false;
+      if(!this.illService.isEmpty(sessionStorage.getItem(RESULT_RECORD_LIST_ILL))){
+        this.holdings =  JSON.parse(sessionStorage.getItem(RESULT_RECORD_LIST_ILL));
+      }else{
+        this.holdings = this.setDisplayDetails(this.nacsisHoldingsResultList);
       }
-    })
+      
+      this.ngOnChanges(this.holdings);
+    } else if (this.selected === '1') {
+
+      if(!this.illService.isEmpty(sessionStorage.getItem(RESULT_RECORD_LIST_ILL))){
+        this.holdings =  JSON.parse(sessionStorage.getItem(RESULT_RECORD_LIST_ILL));
+      }else{
+        this.holdings = this.setDisplayDetails(this.nacsisHoldingsResultList);
+      }
+
+      let localnacsisHoldingsResultList = this.holdings.filter(e => e.fano === this.localLibraryID);
+      this.holdings = localnacsisHoldingsResultList;
+      if (localnacsisHoldingsResultList.length == 0) {
+        this.noHoldingRecords = true;
+      }else{
+        this.ngOnChanges(localnacsisHoldingsResultList);
+      }
+    }
+
   }
 
   clearSelection() {
@@ -697,13 +698,13 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.filterSelectVol(this.selecedData);
     this.fillRowsTillFive(this.selecedData);
     let object = JSON.stringify(this.selecedData);
-    this.storeService.set(SELECTED_RECORD_LIST_ILL, object).subscribe();
-    this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.HoldingSearchMainPage).subscribe();
+    sessionStorage.setItem(SELECTED_RECORD_LIST_ILL, object);
+    sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.HoldingSearchMainPage);
     this.router.navigate(['requestForm', this.nacsisId, this.mmsTitle, this.routerSearchType]);
   }
 
   backToSearchRecord() {
-    this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage).subscribe();
+    sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage);
     this.router.navigate(['searchRecord', 'back']);
   }
 

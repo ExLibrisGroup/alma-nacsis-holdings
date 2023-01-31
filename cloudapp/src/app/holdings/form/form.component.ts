@@ -4,7 +4,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, Holding, HoldingsBook, HoldingsSerial, Header } from '../../service/holdings.service';
 import { holdingFormGroup } from './form-utils';
-import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Action } from '../../user-controls/result-card/result-card.component';
 import { MultiSearchField, SearchField, FieldName, FieldSize, SelectSearchField } from '../../user-controls/search-form/search-form-utils';
 import { AlmaApiService } from '../../service/alma.api.service';
@@ -50,9 +50,7 @@ export class FormComponent implements OnInit {
     private router: Router,
     private translate: TranslateService,
     private nacsis: HoldingsService,
-    private alert: AlertService,
-    private storeService: CloudAppStoreService
-
+    private alert: AlertService
   ) { }
 
   public ACTIONS_MENU_LIST = new Array(
@@ -63,15 +61,8 @@ export class FormComponent implements OnInit {
     this.mmsId = this.route.snapshot.params['mmsId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
     this.holdingId = this.route.snapshot.params['holdingId'];
-    this.storeService.get(VOLUME_LIST).subscribe({
-      next : (joinedVolumeList) => {
-        this.volumeList = joinedVolumeList?.split(VOLUME_LIST_SEPARATOR);
-      },
-      error : () => {
-        console.log("joinedVolumeList is undefined");
-      }
-    });
-     
+    let joinedVolumeList = sessionStorage.getItem(VOLUME_LIST);
+    this.volumeList = joinedVolumeList?.split(VOLUME_LIST_SEPARATOR); 
 
 
     this.type = this.nacsis.getHeader().type;
