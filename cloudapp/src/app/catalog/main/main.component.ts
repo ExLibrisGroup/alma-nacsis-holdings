@@ -2,7 +2,7 @@ import { Component, AfterViewInit , ViewChild, TemplateRef } from '@angular/core
 import { SearchType, SearchField, FieldSize, FieldName, stopWords } from '../../user-controls/search-form/search-form-utils';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { CatalogService } from '../../service/catalog.service';
-import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
@@ -13,7 +13,6 @@ import { RecordSelection, Action } from '../../user-controls/result-card/result-
 import { FullViewLink } from '../../user-controls/full-view-display/full-view-display.component';
 import { HoldingsService } from '../../service/holdings.service';
 import { MembersService } from '../../service/members.service';
-
 
 
 @Component({
@@ -84,23 +83,15 @@ export class CatalogMainComponent implements AfterViewInit {
         private router: Router,
         private alert: AlertService,
         private translate: TranslateService,
-        private storeService: CloudAppStoreService
     ) { }
 
 
     ngAfterViewInit(){
-        this.storeService.get(ROUTING_STATE_KEY).subscribe({
-            next : (stateKey) =>{
-                if(stateKey === "") {
-                    this.catalogService.clearAllSearchResults();
-                } else {
-                    this.onBackFromViewHolding();
-                }
-            },
-            error: e => {
-                console.log(e);
-            }
-        }) 
+        if(sessionStorage.getItem(ROUTING_STATE_KEY) == "") {
+            this.catalogService.clearAllSearchResults();
+        } else {
+            this.onBackFromViewHolding();
+        }
     }
 
     
@@ -393,11 +384,8 @@ export class CatalogMainComponent implements AfterViewInit {
             .subscribe({
             next: (header) => {
                 if (header.status === this.holdingsService.OkStatus) {
-                    this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.CatalogSearchPage).subscribe
-                    ({next: (elment) => console.log()});
-                    // Set holding owner as "Mine"
-                    this.storeService.set(this.holdingsService.OwnerKey, "1").subscribe
-                    ({next: (elment) => console.log()});
+                    sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.CatalogSearchPage);
+                    sessionStorage.setItem(this.holdingsService.OwnerKey, "1"); // Set holding owner as "Mine"
                     this.catalogService.setCurrentSearchType(this.currentSearchType);
                     this.router.navigate(['/holdings', nacsisId, title]);
                 } else {

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib/angular/services/cloudapp-store.service';
 import { ROUTING_STATE_KEY, AppRoutingState } from '../service/base.service';
 
 
@@ -12,16 +11,11 @@ import { ROUTING_STATE_KEY, AppRoutingState } from '../service/base.service';
   export class MainMenuComponent implements OnInit {
     menu : Array<{title:string, text:string, icon:string, link:string}> = this.initMenu();
 
-    constructor(
-        private storeService: CloudAppStoreService
-    ) { 
-
-    }
+    constructor() { }
 
     ngOnInit() {
-        //sessionStorage.clear();
-        this,this.storeService.remove(ROUTING_STATE_KEY).subscribe();
-        this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.MainMenuPage).subscribe();
+        sessionStorage.clear();
+        sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.MainMenuPage);
      }
     
     initMenu(): Array<{title:string, text:string, icon:string, link:string}>{
