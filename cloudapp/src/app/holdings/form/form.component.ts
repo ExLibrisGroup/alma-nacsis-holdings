@@ -88,11 +88,20 @@ export class FormComponent implements OnInit {
     });    
   }
 
+  formatDate(dateTime: string) {
+    if (!this.nacsis.isEmpty(dateTime) && dateTime.length == 8) {
+      return dateTime.substring(0, 4) + "/" + dateTime.substring(4, 6) + "/" + dateTime.substring(6, 8);
+    }
+    return dateTime;
+  }
+
   load() {
     if (this.holdingId) { // existing holding
       let holding = this.nacsis.getHolding(this.holdingId);
       this.originLOC = holding.LOC;
       this.holding = holding;
+      holding.CRTDT = this.formatDate(holding.CRTDT);
+      holding.RNWDT = this.formatDate(holding.RNWDT);
       let formsLength = this.nacsis.isEmpty(this.holding.nacsisHoldingsList) ? 0 : this.holding.nacsisHoldingsList.length;
       this.forms = new Array(formsLength);
 
