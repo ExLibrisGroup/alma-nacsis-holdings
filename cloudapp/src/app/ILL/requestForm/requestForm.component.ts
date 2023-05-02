@@ -152,9 +152,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.formResourceInformation = initResourceInformationFormGroup();
     this.formRequesterInformation = initRequesterInformationFormGroup();
     this.formRotamation = initRotaFormGroup();
-    this.panelStateResourceInformation = false;
+    this.panelStateResourceInformation = true;
     this.panelStateRota = true;
-    this.panelStateRequestInformation = false;
+    this.panelStateRequestInformation = true;
     this.extractFullData(this.fullRecordData);
     this.extractSelectedData();
     this.extractLocalMemberInfo(this.localMemberInfo);
