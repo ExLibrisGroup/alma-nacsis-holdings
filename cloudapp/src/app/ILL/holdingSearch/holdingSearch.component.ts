@@ -7,7 +7,7 @@ import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL,SELECTED_RECORD_LIST_ILL, BaseService} from '../../service/base.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { IllService } from '../../service/ill.service';
 import { holdingFormGroup } from './holdingSearch-utils';
 import { MatSort, Sort } from '@angular/material/sort';
@@ -16,7 +16,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { NacsisCatalogResults, IDisplayLines } from '../../catalog/results-types/results-common'
 import { SearchType , SelectedSearchFieldValues, SelectSearchField, SearchField, FieldName, FieldSize} from '../../user-controls/search-form/search-form-utils';
 import { MembersService } from '../../service/members.service';
-
+import { Observable } from 'rxjs/internal/Observable';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'ILL-holdingSearch',
@@ -49,7 +50,9 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   // UI variables
   panelState: boolean = true;
-  
+  columnsList: string[] = ['name','vol', 'hlv','hlyr', 'region', 'establisher', 'institutionType', 'location', 'photoCopy_fee', 'ill', 'stat', 'photoCopy', 'loan', 'fax'];
+  columns = new FormControl();
+
 
   //result view
   displayHoldingResult = new MatTableDataSource<DisplayHoldingResult>();
@@ -91,6 +94,11 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   selectedValues = new SelectedSearchFieldValues();
   fieldsMap =  new Map();
 
+  private configColMap: Map<String, boolean> = new Map();
+  public columnConfingChanges$: Observable<any>  = new  Observable<any>();
+
+
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -125,7 +133,10 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       this.ngOnChanges(this.holdings);
       this.panelState = false;
     }
+    this,this.columns.setValue(this.columnsList);
+    this.initConfigColMap();
     this.initFieldsMap();
+    this.columnConfingChanges$ = this.columns.valueChanges;
   }
 
   ngOnChanges(holdings) {
@@ -134,6 +145,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.selectedVolMap = new Map();
     this.numOfResults = holdings.length;
   }
+  
 
   initFieldsMap() {
 
@@ -708,5 +720,35 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.router.navigate(['searchRecord', 'back']);
   }
 
+  private initConfigColMap(): void {
+    this.columnsList.forEach((val : string) => {
+      this.configColMap.set(val, false);
+    })
+  }
+
+  isColumnVisible(colName : string) {
+    //this.eventSelection();
+    return this.configColMap.get(colName);
+  }
+
+  eventSelection(){
+    this.columnConfingChanges$.subscribe({
+      next: (value) => {
+        this.configColMap.forEach((val : boolean, key : string) => {
+          if(value.includes(key)) {
+            this.configColMap.set(key, false);
+          } else {
+            this.configColMap.set(key, true);
+          }
+        })
+      },
+      error : () => {
+        console.log("Can't subscribe columnConfingChanges$")
+      },
+      complete : () => {
+        console.log("complete columnConfingChanges$")
+      }
+    })
+   }
 }
 
