@@ -80,7 +80,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <div class="align-to-right-no-bottom" fxLayout="row">
+    <div>
       <span class="align-to-right-space" [hidden]="isMaxRowSelected">
         {{selectedIndex.length}} {{'ILL.Results.RowSelected' | translate}}
       </span>
@@ -89,17 +89,17 @@
       </span>
       <a href="javascript:void(0);" (click)="clearSelection()">
         {{'ILL.Results.ClearSelection' | translate}}</a>
+      <button mat-button [matMenuTriggerFor]="menu"> <mat-icon>settings</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+       
+        <button mat-menu-item *ngFor="let column of columnsList" (click)="$event.stopPropagation();">
+          <mat-checkbox [(ngModel)]="columns[column]">{{ column }}</mat-checkbox>
+        </button>
+      </mat-menu>
+
     </div>
-      <div>
-      <mat-form-field appearance="fill">
-        <mat-icon >visibility_off</mat-icon>
-        <mat-select [formControl]="columns" multiple >
-          <!-- <mat-option *ngFor="let column of columnsList"[value]="column">{{column}}</mat-option> -->
-          <mat-option (click)="eventSelection()"*ngFor="let column of columnsList"[value]="column">{{column}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    
+
   </div>
 
   <div [hidden]="!isHoldingRecordsExist()">
@@ -108,7 +108,7 @@
 
       <ng-container matColumnDef="index">
         <th mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
-          </th>
+        </th>
         <td mat-cell *matCellDef="let element"> {{element.index}} </td>
       </ng-container>
 
@@ -122,20 +122,21 @@
       </ng-container>
 
       <ng-container matColumnDef="name">
-        <th [hidden]="isColumnVisible('name')" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['name']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.NAME' | translate}} </th>
-        <td [hidden]="isColumnVisible('name')" mat-cell *matCellDef="let element"> 
+        <td [hidden]="!columns['name']" mat-cell *matCellDef="let element">
           <a (click)="expandedElement = onActionsClick(expandedElement,element, 1)">
-              {{element.name}}
-          </a> 
+            {{element.name}}
+          </a>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="vol">
-        <th [hidden]="isColumnVisible('vol')" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['vol']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.VOL' | translate}} </th>
-        <td [hidden]="isColumnVisible('vol')" mat-cell *matCellDef="let element" >
-          <mat-select (selectionChange)=onVolSelected($event,element) *ngIf="isShowVolValue(element)" [value]="setVolValue(element)">
+        <td [hidden]="!columns['vol']" mat-cell *matCellDef="let element">
+          <mat-select (selectionChange)=onVolSelected($event,element) *ngIf="isShowVolValue(element)"
+            [value]="setVolValue(element)">
             <mat-option *ngFor="let vol of element.vol" [value]="vol.index">
               {{vol.VOL}}
             </mat-option>
@@ -144,76 +145,78 @@
       </ng-container>
 
       <ng-container matColumnDef="hlv">
-        <th  [hidden]="isColumnVisible('hlv')" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['hlv']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.HLV' | translate}} </th>
-        <td [hidden]="isColumnVisible('hlv')" mat-cell *matCellDef="let element"> {{element.hlv}} </td>
+        <td [hidden]="!columns['hlv']" mat-cell *matCellDef="let element"> {{element.hlv}} </td>
       </ng-container>
 
       <ng-container matColumnDef="hlyr">
-        <th [hidden]="isColumnVisible('hlyr')" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['hlyr']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.HLYR' | translate}} </th>
-        <td [hidden]="isColumnVisible('hlyr')" mat-cell *matCellDef="let element"> {{element.hlyr}} </td>
+        <td [hidden]="!columns['hlyr']" mat-cell *matCellDef="let element"> {{element.hlyr}} </td>
       </ng-container>
 
       <ng-container matColumnDef="region">
-        <th [hidden]="isColumnVisible('region')" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['region']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.KENCODE' | translate}} </th>
-        <td [hidden]="isColumnVisible('region')" mat-cell *matCellDef="let element"> {{element.region}} </td>
+        <td [hidden]="!columns['region']" mat-cell *matCellDef="let element"> {{element.region}} </td>
       </ng-container>
 
       <ng-container matColumnDef="establisher">
-        <th [hidden]="isColumnVisible('establisher')" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['establisher']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.SETCODE' | translate}}</th>
-        <td [hidden]="isColumnVisible('establisher')" mat-cell *matCellDef="let element"> {{element.establisher}} </td>
+        <td [hidden]="!columns['establisher']" mat-cell *matCellDef="let element"> {{element.establisher}} </td>
       </ng-container>
 
       <ng-container matColumnDef="institutionType">
-        <th [hidden]="isColumnVisible('institutionType')" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['institutionType']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.ORGCODE' | translate}} </th>
-        <td [hidden]="isColumnVisible('institutionType')"mat-cell *matCellDef="let element"> {{element.institutionType}} </td>
+        <td [hidden]="!columns['institutionType']" mat-cell *matCellDef="let element">
+          {{element.institutionType}} </td>
       </ng-container>
 
       <ng-container matColumnDef="location">
-        <th [hidden]="isColumnVisible('location')" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['location']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.LOC' | translate}} </th>
-        <td [hidden]="isColumnVisible('location')" mat-cell *matCellDef="let element"> {{element.location}} </td>
+        <td [hidden]="!columns['location']" mat-cell *matCellDef="let element"> {{element.location}} </td>
       </ng-container>
 
 
       <ng-container matColumnDef="photoCopy_fee">
-        <th [hidden]="isColumnVisible('photoCopy_fee')" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['photoCopy_fee']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.SUM' | translate}} </th>
-        <td [hidden]="isColumnVisible('photoCopy_fee')" mat-cell *matCellDef="let element"> {{element.photoCopy_fee}} </td>
+        <td [hidden]="!columns['photoCopy_fee']" mat-cell *matCellDef="let element"> {{element.photoCopy_fee}}
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="ill">
-        <th [hidden]="isColumnVisible('ill')" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['ill']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.ILLFLG' | translate}} </th>
-        <td [hidden]="isColumnVisible('ill')" mat-cell *matCellDef="let element"> {{element.ill}} </td>
+        <td [hidden]="!columns['ill']" mat-cell *matCellDef="let element"> {{element.ill}} </td>
       </ng-container>
 
       <ng-container matColumnDef="stat">
-        <th [hidden]="isColumnVisible('stat')" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['stat']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.STAT' | translate}} </th>
-        <td [hidden]="isColumnVisible('stat')" mat-cell *matCellDef="let element"> {{element.stat}} </td>
+        <td [hidden]="!columns['stat']" mat-cell *matCellDef="let element"> {{element.stat}} </td>
       </ng-container>
 
       <ng-container matColumnDef="photoCopy">
-        <th [hidden]="isColumnVisible('photoCopy')" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['photoCopy']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.COPYS' | translate}} </th>
-        <td [hidden]="isColumnVisible('photoCopy')" mat-cell *matCellDef="let element"> {{element.photoCopy}} </td>
+        <td [hidden]="!columns['photoCopy']" mat-cell *matCellDef="let element"> {{element.photoCopy}} </td>
       </ng-container>
 
       <ng-container matColumnDef="loan">
-        <th [hidden]="isColumnVisible('loan')" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['loan']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.LOANS' | translate}} </th>
-        <td [hidden]="isColumnVisible('loan')" mat-cell  *matCellDef="let element"> {{element.loan}} </td>
+        <td [hidden]="!columns['loan']" mat-cell *matCellDef="let element"> {{element.loan}} </td>
       </ng-container>
 
       <ng-container matColumnDef="fax">
-        <th [hidden]="isColumnVisible('fax')" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['fax']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.FAXS' | translate}} </th>
-        <td [hidden]="isColumnVisible('fax')" mat-cell *matCellDef="let element"> {{element.fax}} </td>
+        <td [hidden]="!columns['fax']" mat-cell *matCellDef="let element"> {{element.fax}} </td>
       </ng-container>
 
       <ng-container matColumnDef="actionsColumn">

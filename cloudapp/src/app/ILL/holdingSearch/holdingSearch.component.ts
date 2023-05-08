@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, HoldingsSearch, NacsisHoldingRecord, DisplayHoldingResult, NacsisBookHoldingsListDetail, NacsisSerialHoldingsListDetail } from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL,SELECTED_RECORD_LIST_ILL, BaseService} from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL, SELECTED_RECORD_LIST_ILL, BaseService } from '../../service/base.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -14,7 +14,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { NacsisCatalogResults, IDisplayLines } from '../../catalog/results-types/results-common'
-import { SearchType , SelectedSearchFieldValues, SelectSearchField, SearchField, FieldName, FieldSize} from '../../user-controls/search-form/search-form-utils';
+import { SearchType, SelectedSearchFieldValues, SelectSearchField, SearchField, FieldName, FieldSize } from '../../user-controls/search-form/search-form-utils';
 import { MembersService } from '../../service/members.service';
 import { Observable } from 'rxjs/internal/Observable';
 import { distinctUntilChanged } from 'rxjs/operators';
@@ -46,12 +46,12 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   holdingSearch: HoldingsSearch;
   localLibraryID: string;
   rawData: string;
-  localMemberInfo:any[];
+  localMemberInfo: any[];
 
   // UI variables
   panelState: boolean = true;
-  columnsList: string[] = ['name','vol', 'hlv','hlyr', 'region', 'establisher', 'institutionType', 'location', 'photoCopy_fee', 'ill', 'stat', 'photoCopy', 'loan', 'fax'];
-  columns = new FormControl();
+  columnsList: string[] = ['name', 'vol', 'hlv', 'hlyr', 'region', 'establisher', 'institutionType', 'location', 'photoCopy_fee', 'ill', 'stat', 'photoCopy', 'loan', 'fax'];
+  columns = {}
 
 
   //result view
@@ -92,11 +92,9 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   ]);
 
   selectedValues = new SelectedSearchFieldValues();
-  fieldsMap =  new Map();
+  fieldsMap = new Map();
 
   private configColMap: Map<String, boolean> = new Map();
-  public columnConfingChanges$: Observable<any>  = new  Observable<any>();
-
 
 
   constructor(
@@ -118,25 +116,27 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
 
   ngOnInit() {
+
+    this.columnsList.forEach(col => {
+      this.columns[col] = true;
+    });
     this.nacsisId = this.route.snapshot.params['nacsisId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
     this.routerSearchType = this.route.snapshot.params['searchType'];
-    
+
 
     this.form = holdingFormGroup(null);
     this.selection = new SelectionModel<DisplayHoldingResult>(true, []);
     this.isMaxRowSelected = false;
     let lastResult = sessionStorage.getItem(RESULT_RECORD_LIST_ILL);
     this.selected = "0";
-    if(!this.illService.isEmpty(lastResult)){
-      this.holdings =  JSON.parse(lastResult);
+    if (!this.illService.isEmpty(lastResult)) {
+      this.holdings = JSON.parse(lastResult);
       this.ngOnChanges(this.holdings);
       this.panelState = false;
     }
-    this,this.columns.setValue(this.columnsList);
     this.initConfigColMap();
     this.initFieldsMap();
-    this.columnConfingChanges$ = this.columns.valueChanges;
   }
 
   ngOnChanges(holdings) {
@@ -145,26 +145,26 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.selectedVolMap = new Map();
     this.numOfResults = holdings.length;
   }
-  
+
 
   initFieldsMap() {
 
-    this.fieldsMap.set(FieldName.FANO , new SearchField(FieldName.FANO, FieldSize.small)); 
-    this.fieldsMap.set(FieldName.VOL , new SearchField(FieldName.VOL, FieldSize.small));
-    this.fieldsMap.set(FieldName.YEAR, new SearchField(FieldName.YEAR, FieldSize.small)); 
+    this.fieldsMap.set(FieldName.FANO, new SearchField(FieldName.FANO, FieldSize.small));
+    this.fieldsMap.set(FieldName.VOL, new SearchField(FieldName.VOL, FieldSize.small));
+    this.fieldsMap.set(FieldName.YEAR, new SearchField(FieldName.YEAR, FieldSize.small));
     this.fieldsMap.set(FieldName.LOC, new SearchField(FieldName.LOC, FieldSize.small));
-    this.fieldsMap.set(this.addUnderScore(FieldName.KENCODE), new SelectSearchField( this.selectedValues.getRegionCodeList(), true, FieldName.KENCODE, FieldSize.medium)); 
-    this.fieldsMap.set(this.addUnderScore(FieldName.SETCODE) , new SelectSearchField(this.selectedValues.getEstablisherTypeList(), true, FieldName.SETCODE, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.ORGCODE), new SelectSearchField( this.selectedValues.getInstitutionTypeList(), true, FieldName.ORGCODE, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.ILLFLG), new SelectSearchField( this.selectedValues.getILLParticipationTypeList(), true, FieldName.ILLFLG, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.STAT), new SelectSearchField( this.selectedValues.getOffsetChargeList(), true, FieldName.STAT, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.GRPCODE), new SelectSearchField( this.selectedValues.getOffsetChargeList(), true, FieldName.GRPCODE, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.COPYS), new SelectSearchField( this.selectedValues.getCopyServiceTypeList(), true, FieldName.COPYS, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.LOANS), new SelectSearchField( this.selectedValues.getLendingServiceTypeList(), true, FieldName.LOANS, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.FAXS), new SelectSearchField( this.selectedValues.getFAXServiceTypeList(), true, FieldName.FAXS, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.KENCODE), new SelectSearchField(this.selectedValues.getRegionCodeList(), true, FieldName.KENCODE, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.SETCODE), new SelectSearchField(this.selectedValues.getEstablisherTypeList(), true, FieldName.SETCODE, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.ORGCODE), new SelectSearchField(this.selectedValues.getInstitutionTypeList(), true, FieldName.ORGCODE, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.ILLFLG), new SelectSearchField(this.selectedValues.getILLParticipationTypeList(), true, FieldName.ILLFLG, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.STAT), new SelectSearchField(this.selectedValues.getOffsetChargeList(), true, FieldName.STAT, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.GRPCODE), new SelectSearchField(this.selectedValues.getOffsetChargeList(), true, FieldName.GRPCODE, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.COPYS), new SelectSearchField(this.selectedValues.getCopyServiceTypeList(), true, FieldName.COPYS, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.LOANS), new SelectSearchField(this.selectedValues.getLendingServiceTypeList(), true, FieldName.LOANS, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.FAXS), new SelectSearchField(this.selectedValues.getFAXServiceTypeList(), true, FieldName.FAXS, FieldSize.medium));
   }
 
-  private addUnderScore(keyField : String) : String {
+  private addUnderScore(keyField: String): String {
     return "_" + keyField + "_";
   }
 
@@ -219,7 +219,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     }
   }
 
-  getFormControlValueByKey(key : String) {
+  getFormControlValueByKey(key: String) {
     return this.fieldsMap.get(key).getFormControl().value;
   }
 
@@ -227,14 +227,14 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     let urlParams = "";
     urlParams = "nacsisId=" + this.nacsisId;
 
-    this.fieldsMap.forEach((value, key)=> {
-      if ( value instanceof SelectSearchField) {
+    this.fieldsMap.forEach((value, key) => {
+      if (value instanceof SelectSearchField) {
         urlParams = this.buildParamField_selectBox(urlParams, key, this.getFormControlValueByKey(key));
       } else {
         urlParams = this.buildParamField_text(urlParams, key, this.getFormControlValueByKey(key));
       }
     });
-   
+
     return urlParams;
   }
 
@@ -357,7 +357,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       holding.memberinfo = [];
       this.holdings.push(holding);
     });
-    
+
     return this.holdings;
   }
 
@@ -520,7 +520,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     }
   }
 
-  setMemberInfo(fano){
+  setMemberInfo(fano) {
     let obj = [];
     let queryParams = "";
     //TODO: send the DB also
@@ -530,25 +530,25 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       this.loading = true;
       this.membersService.getSearchResultsFromNacsis(queryParams)
 
-      .subscribe({
-        next: (nacsisResponse) => {
-          if (nacsisResponse.status === this.membersService.OkStatus) {
-            obj = this.convertMemberInfo(nacsisResponse, obj);
-          } else {
+        .subscribe({
+          next: (nacsisResponse) => {
+            if (nacsisResponse.status === this.membersService.OkStatus) {
+              obj = this.convertMemberInfo(nacsisResponse, obj);
+            } else {
+              this.loading = false;
+              this.alert.error(nacsisResponse.errorMessage, { keepAfterRouteChange: true });
+            }
+          },
+          error: e => {
             this.loading = false;
-            this.alert.error(nacsisResponse.errorMessage, { keepAfterRouteChange: true });
+            console.log(e.message);
+            this.alert.error(e.message, { keepAfterRouteChange: true });
+          },
+          complete: () => {
+            this.setSearchResultsDisplay(obj);
+            this.loading = false;
           }
-        },
-        error: e => {
-          this.loading = false;
-          console.log(e.message);
-          this.alert.error(e.message, { keepAfterRouteChange: true });
-        },
-        complete: () => {
-          this.setSearchResultsDisplay(obj);
-          this.loading = false;
-        }
-      });
+        });
     } catch (e) {
       this.loading = false;
       this.alert.error(this.translate.instant('General.Errors.generalError'), { keepAfterRouteChange: true });
@@ -557,26 +557,26 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   convertMemberInfo(header, obj) {
     header.records.forEach(record => {
-      if(!this.illService.isEmpty(record.KENCODE))
-      record.KENCODE = this.convertMapping(record.KENCODE, "KENCODE") + "(" + record.KENCODE + ")";
-      if(!this.illService.isEmpty(record.SETCODE))
-      record.SETCODE = this.convertMapping(record.SETCODE, "SETCODE") + "(" + record.SETCODE + ")";
-      if(!this.illService.isEmpty(record.ORGCODE))
-      record.ORGCODE = this.convertMapping(record.ORGCODE, "ORGCODE") + "(" + record.ORGCODE + ")";
-      if(!this.illService.isEmpty(record.CATFLG))
-      record.CATFLG = this.convertMapping(record.CATFLG, "CATFLG") + "(" + record.CATFLG + ")";
-      if(!this.illService.isEmpty(record.ILLFLG))
-      record.ILLFLG = this.convertMapping(record.ILLFLG, "CATFLG") + "(" + record.ILLFLG + ")";
-      if(!this.illService.isEmpty(record.COPYS))
-      record.COPYS = this.convertMapping(record.COPYS, "COPYS") + "(" + record.COPYS + ")";
-      if(!this.illService.isEmpty(record.LOANS))
-      record.LOANS = this.convertMapping(record.LOANS, "COPYS") + "(" + record.LOANS + ")";
-      if(!this.illService.isEmpty(record.FAXS))
-      record.FAXS = this.convertMapping(record.FAXS, "FAXS") + "(" + record.FAXS + ")";
-      if(!this.illService.isEmpty(record.STAT))
-      record.STAT = this.convertMapping(record.STAT, "FAXS") + "(" + record.STAT + ")";
-      if(!this.illService.isEmpty(record.GRPCODE))
-      record.GRPCODE = this.convertMapping(record.GRPCODE, "GRPCODE") + "(" + record.GRPCODE + ")";
+      if (!this.illService.isEmpty(record.KENCODE))
+        record.KENCODE = this.convertMapping(record.KENCODE, "KENCODE") + "(" + record.KENCODE + ")";
+      if (!this.illService.isEmpty(record.SETCODE))
+        record.SETCODE = this.convertMapping(record.SETCODE, "SETCODE") + "(" + record.SETCODE + ")";
+      if (!this.illService.isEmpty(record.ORGCODE))
+        record.ORGCODE = this.convertMapping(record.ORGCODE, "ORGCODE") + "(" + record.ORGCODE + ")";
+      if (!this.illService.isEmpty(record.CATFLG))
+        record.CATFLG = this.convertMapping(record.CATFLG, "CATFLG") + "(" + record.CATFLG + ")";
+      if (!this.illService.isEmpty(record.ILLFLG))
+        record.ILLFLG = this.convertMapping(record.ILLFLG, "CATFLG") + "(" + record.ILLFLG + ")";
+      if (!this.illService.isEmpty(record.COPYS))
+        record.COPYS = this.convertMapping(record.COPYS, "COPYS") + "(" + record.COPYS + ")";
+      if (!this.illService.isEmpty(record.LOANS))
+        record.LOANS = this.convertMapping(record.LOANS, "COPYS") + "(" + record.LOANS + ")";
+      if (!this.illService.isEmpty(record.FAXS))
+        record.FAXS = this.convertMapping(record.FAXS, "FAXS") + "(" + record.FAXS + ")";
+      if (!this.illService.isEmpty(record.STAT))
+        record.STAT = this.convertMapping(record.STAT, "FAXS") + "(" + record.STAT + ")";
+      if (!this.illService.isEmpty(record.GRPCODE))
+        record.GRPCODE = this.convertMapping(record.GRPCODE, "GRPCODE") + "(" + record.GRPCODE + ")";
       obj.push(record);
     });
     return obj;
@@ -616,20 +616,20 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     sessionStorage.setItem(this.nacsis.OwnerKey, this.selected);
 
     if (this.selected === '0') {
-      
+
       this.noHoldingRecords = false;
-      if(!this.illService.isEmpty(sessionStorage.getItem(RESULT_RECORD_LIST_ILL))){
-        this.holdings =  JSON.parse(sessionStorage.getItem(RESULT_RECORD_LIST_ILL));
-      }else{
+      if (!this.illService.isEmpty(sessionStorage.getItem(RESULT_RECORD_LIST_ILL))) {
+        this.holdings = JSON.parse(sessionStorage.getItem(RESULT_RECORD_LIST_ILL));
+      } else {
         this.holdings = this.setDisplayDetails(this.nacsisHoldingsResultList);
       }
-      
+
       this.ngOnChanges(this.holdings);
     } else if (this.selected === '1') {
 
-      if(!this.illService.isEmpty(sessionStorage.getItem(RESULT_RECORD_LIST_ILL))){
-        this.holdings =  JSON.parse(sessionStorage.getItem(RESULT_RECORD_LIST_ILL));
-      }else{
+      if (!this.illService.isEmpty(sessionStorage.getItem(RESULT_RECORD_LIST_ILL))) {
+        this.holdings = JSON.parse(sessionStorage.getItem(RESULT_RECORD_LIST_ILL));
+      } else {
         this.holdings = this.setDisplayDetails(this.nacsisHoldingsResultList);
       }
 
@@ -637,7 +637,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       this.holdings = localnacsisHoldingsResultList;
       if (localnacsisHoldingsResultList.length == 0) {
         this.noHoldingRecords = true;
-      }else{
+      } else {
         this.ngOnChanges(localnacsisHoldingsResultList);
       }
     }
@@ -688,15 +688,15 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     }
   }
 
-  fillRowsTillFive(rows){
-    if(rows.length == 5){
+  fillRowsTillFive(rows) {
+    if (rows.length == 5) {
       return rows;
-    }else{
+    } else {
       console.log(rows);
       let maxIndex = rows.length;
-      while(maxIndex < 5){
+      while (maxIndex < 5) {
         let emptyRow = new DisplayHoldingResult();
-        emptyRow.index = maxIndex+1;
+        emptyRow.index = maxIndex + 1;
         rows.push(emptyRow);
         maxIndex++;
       }
@@ -721,34 +721,9 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   }
 
   private initConfigColMap(): void {
-    this.columnsList.forEach((val : string) => {
+    this.columnsList.forEach((val: string) => {
       this.configColMap.set(val, false);
     })
   }
-
-  isColumnVisible(colName : string) {
-    //this.eventSelection();
-    return this.configColMap.get(colName);
-  }
-
-  eventSelection(){
-    this.columnConfingChanges$.subscribe({
-      next: (value) => {
-        this.configColMap.forEach((val : boolean, key : string) => {
-          if(value.includes(key)) {
-            this.configColMap.set(key, false);
-          } else {
-            this.configColMap.set(key, true);
-          }
-        })
-      },
-      error : () => {
-        console.log("Can't subscribe columnConfingChanges$")
-      },
-      complete : () => {
-        console.log("complete columnConfingChanges$")
-      }
-    })
-   }
 }
 
