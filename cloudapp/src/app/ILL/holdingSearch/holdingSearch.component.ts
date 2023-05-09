@@ -157,7 +157,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.fieldsMap.set(this.addUnderScore(FieldName.SETCODE), new SelectSearchField(this.selectedValues.getEstablisherTypeList(), true, FieldName.SETCODE, FieldSize.medium));
     this.fieldsMap.set(this.addUnderScore(FieldName.ORGCODE), new SelectSearchField(this.selectedValues.getInstitutionTypeList(), true, FieldName.ORGCODE, FieldSize.medium));
     this.fieldsMap.set(this.addUnderScore(FieldName.ILLFLG), new SelectSearchField(this.selectedValues.getILLParticipationTypeList(), true, FieldName.ILLFLG, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.STAT), new SelectSearchField(this.selectedValues.getOffsetChargeList(), true, FieldName.STAT, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.STAT), new SelectSearchField(this.selectedValues.getServiceStatusList(), true, FieldName.STAT, FieldSize.medium));
     this.fieldsMap.set(this.addUnderScore(FieldName.GRPCODE), new SelectSearchField(this.selectedValues.getOffsetChargeList(), true, FieldName.GRPCODE, FieldSize.medium));
     this.fieldsMap.set(this.addUnderScore(FieldName.COPYS), new SelectSearchField(this.selectedValues.getCopyServiceTypeList(), true, FieldName.COPYS, FieldSize.medium));
     this.fieldsMap.set(this.addUnderScore(FieldName.LOANS), new SelectSearchField(this.selectedValues.getLendingServiceTypeList(), true, FieldName.LOANS, FieldSize.medium));
