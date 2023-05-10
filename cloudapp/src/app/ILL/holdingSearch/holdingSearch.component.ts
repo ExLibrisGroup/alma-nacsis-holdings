@@ -260,10 +260,21 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   }
 
   buildParamField_selectBox(urlParams, fieldName, fieldValue) {
+    
     if (!this.illService.isEmpty(fieldValue)) {
       let valueArr = fieldValue;
       urlParams = urlParams + "&" + fieldName;
       let concatValue = "";
+      //Patch for URM-192029 :
+      const reducedArray = new Array();
+      if(fieldName === "_KENCODE_") { 
+        valueArr.forEach(value => {
+          value = value.split(',');
+          reducedArray.push(value);
+        });
+      }
+      valueArr = new Set(reducedArray.reduce( ( a, c ) => a.concat( [...c] ), [] ) )
+
       valueArr.forEach(value => {
         value = value.split(" ")[0];
         concatValue = concatValue.concat(value, ',');
