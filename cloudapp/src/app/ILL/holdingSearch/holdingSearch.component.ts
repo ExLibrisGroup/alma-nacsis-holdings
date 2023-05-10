@@ -2,12 +2,11 @@ import { Component, ViewChild, OnInit, OnChanges, ViewChildren, QueryList } from
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, HoldingsSearch, NacsisHoldingRecord, DisplayHoldingResult, NacsisBookHoldingsListDetail, NacsisSerialHoldingsListDetail } from '../../service/holdings.service';
-import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL, SELECTED_RECORD_LIST_ILL, BaseService } from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL, SELECTED_RECORD_LIST_ILL, BaseService, HOLDINGS_FIELDS_MAP } from '../../service/base.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { IllService } from '../../service/ill.service';
 import { holdingFormGroup } from './holdingSearch-utils';
 import { MatSort, Sort } from '@angular/material/sort';
@@ -16,8 +15,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { NacsisCatalogResults, IDisplayLines } from '../../catalog/results-types/results-common'
 import { SearchType, SelectedSearchFieldValues, SelectSearchField, SearchField, FieldName, FieldSize } from '../../user-controls/search-form/search-form-utils';
 import { MembersService } from '../../service/members.service';
-import { Observable } from 'rxjs/internal/Observable';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { mapToMapExpression } from '@angular/compiler/src/render3/util';
 
 @Component({
   selector: 'ILL-holdingSearch',
@@ -93,6 +91,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   selectedValues = new SelectedSearchFieldValues();
   fieldsMap = new Map();
+  formControlValuesMap = new Map();
 
   private configColMap: Map<String, boolean> = new Map();
 
@@ -116,7 +115,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
 
   ngOnInit() {
-
     this.columnsList.forEach(col => {
       this.columns[col] = true;
     });
@@ -147,6 +145,8 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   }
 
 
+
+
   initFieldsMap() {
 
     this.fieldsMap.set(FieldName.FANO, new SearchField(FieldName.FANO, FieldSize.small));
@@ -162,6 +162,19 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.fieldsMap.set(this.addUnderScore(FieldName.COPYS), new SelectSearchField(this.selectedValues.getCopyServiceTypeList(), true, FieldName.COPYS, FieldSize.medium));
     this.fieldsMap.set(this.addUnderScore(FieldName.LOANS), new SelectSearchField(this.selectedValues.getLendingServiceTypeList(), true, FieldName.LOANS, FieldSize.medium));
     this.fieldsMap.set(this.addUnderScore(FieldName.FAXS), new SelectSearchField(this.selectedValues.getFAXServiceTypeList(), true, FieldName.FAXS, FieldSize.medium));
+    //Save the form value for the sticky selection
+    if (!this.illService.isObjectEmpty(sessionStorage.getItem(HOLDINGS_FIELDS_MAP))) {
+      let formControlValues  = this.illService.json2Map(JSON.parse(sessionStorage.getItem(HOLDINGS_FIELDS_MAP)));
+      this.fieldsMap.forEach((value, key) => {
+        if(!this.illService.isEmpty(formControlValues.get(key))) {
+          this.fieldsMap.get(key).getFormControl().value = formControlValues.get(key);
+        }
+      });
+    }
+
+    
+    
+    
   }
 
   private addUnderScore(keyField: String): String {
@@ -264,6 +277,10 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   }
 
   clear() {
+    //Clear the sticky selection
+    this.formControlValuesMap = new Map()
+    sessionStorage.setItem(HOLDINGS_FIELDS_MAP, null);
+    
     this.ngOnInit();
     this.holdings = new Array();
     this.panelState = true;
@@ -707,6 +724,12 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
 
   next() {
+    //Save the form value for the sticky selection
+    this.fieldsMap.forEach((value, key) => {
+      this.formControlValuesMap.set(key, this.fieldsMap.get(key).getFormControl().value);
+    });
+    sessionStorage.setItem(HOLDINGS_FIELDS_MAP, this.illService.map2Json(this.formControlValuesMap));
+
     this.filterSelectVol(this.selecedData);
     this.fillRowsTillFive(this.selecedData);
     let object = JSON.stringify(this.selecedData);
@@ -716,6 +739,12 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   }
 
   backToSearchRecord() {
+    //Save the form value for the sticky selection
+    this.fieldsMap.forEach((value, key) => {
+      this.formControlValuesMap.set(key, this.fieldsMap.get(key).getFormControl().value);
+    });
+    sessionStorage.setItem(HOLDINGS_FIELDS_MAP, this.illService.map2Json(this.formControlValuesMap));
+
     sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage);
     this.router.navigate(['searchRecord', 'back']);
   }

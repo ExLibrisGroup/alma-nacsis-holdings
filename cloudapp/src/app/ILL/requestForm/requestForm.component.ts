@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, DisplayHoldingResult} from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL } from '../../service/base.service';
+import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL, RESOURCE_INFORMATION } from '../../service/base.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { IllService, RequestFields, Bibg, HMLG } from '../../service/ill.service';
@@ -121,6 +121,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
   rotaFormControlName = ['HMLID', 'HMLNM', 'LOC', 'VOL', 'CLN', 'RGTN'];
   isAllFieldsFilled: boolean = true;
 
+  formControlValuesMap = new Map();
+
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -158,6 +161,13 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.extractFullData(this.fullRecordData);
     this.extractSelectedData();
     this.extractLocalMemberInfo(this.localMemberInfo);
+    //Save the form value for the sticky selection
+    if (!this.illService.isObjectEmpty(sessionStorage.getItem(RESOURCE_INFORMATION))) {
+      let formControlValues  = this.illService.json2Map(JSON.parse(sessionStorage.getItem(RESOURCE_INFORMATION)));
+      this.payClass.setValue(formControlValues.get('payClass'));
+      this.copyType.setValue(formControlValues.get('copyType'));
+      this.sendingMethod.setValue(formControlValues.get('sendingMethod'));
+    }
 
   }
 
@@ -286,6 +296,12 @@ export class RequestFormComponent implements OnInit, OnChanges {
   }
 
   backToHoldingSearch() {
+    //Save the form value for the sticky selection
+    this.formControlValuesMap.set('payClass', this.payClass.value);
+    this.formControlValuesMap.set('copyType', this.copyType.value);
+    this.formControlValuesMap.set('sendingMethod', this.sendingMethod.value);
+    sessionStorage.setItem(RESOURCE_INFORMATION, this.illService.map2Json(this.formControlValuesMap));
+    
     sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage);
     this.router.navigate(['holdingSearch', this.nacsisId, this.mmsTitle, this.currentSearchType]);
   }
@@ -343,6 +359,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
   }
 
   order() {
+    //Clear the sticky selection
+    this.formControlValuesMap = new Map()
+    sessionStorage.setItem(RESOURCE_INFORMATION, null);
     //check required fields
     this.setFormGroupTouched(this.formResourceInformation);
     this.setFormGroupTouched(this.formRequesterInformation);
