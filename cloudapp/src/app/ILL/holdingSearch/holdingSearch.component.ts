@@ -272,8 +272,8 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
           value = value.split(',');
           reducedArray.push(value);
         });
+        valueArr = new Set(reducedArray.reduce( ( a, c ) => a.concat( [...c] ), [] ) )
       }
-      valueArr = new Set(reducedArray.reduce( ( a, c ) => a.concat( [...c] ), [] ) )
 
       valueArr.forEach(value => {
         value = value.split(" ")[0];
