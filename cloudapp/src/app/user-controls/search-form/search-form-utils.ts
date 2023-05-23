@@ -277,13 +277,13 @@ export class SelectedSearchFieldValues {
     }
   
     establisherTypeList: selectedFieldValue[] = [
+      { value: '9', viewValue: 'ILL.OptionViewValue.SETCODE.Other' },
       { value: '1', viewValue: 'ILL.OptionViewValue.SETCODE.National' },
       { value: '2', viewValue: 'ILL.OptionViewValue.SETCODE.Public' },
       { value: '3', viewValue: 'ILL.OptionViewValue.SETCODE.Private' },
       { value: '4', viewValue: 'ILL.OptionViewValue.SETCODE.SpecialPublicCorporation' },
       { value: '5', viewValue: 'ILL.OptionViewValue.SETCODE.Overseas' },
-      { value: '8', viewValue: 'ILL.OptionViewValue.SETCODE.TrainingTesting' },
-      { value: '9', viewValue: 'ILL.OptionViewValue.SETCODE.Other' }
+      { value: '8', viewValue: 'ILL.OptionViewValue.SETCODE.TrainingTesting' }
     ];
 
     getEstablisherTypeList() {
@@ -291,13 +291,13 @@ export class SelectedSearchFieldValues {
     }
 
     institutionTypeList: selectedFieldValue[] = [
+      { value: '9', viewValue: 'ILL.OptionViewValue.ORGCODE.Other' },
         { value: '1', viewValue: 'ILL.OptionViewValue.ORGCODE.University' },
         { value: '2', viewValue: 'ILL.OptionViewValue.ORGCODE.JuniorCollege' },
         { value: '3', viewValue: 'ILL.OptionViewValue.ORGCODE.CollegeOfTechnology' },
         { value: '4', viewValue: 'ILL.OptionViewValue.ORGCODE.InterResearchInstitutes' },
         { value: '5', viewValue: 'ILL.OptionViewValue.ORGCODE.FacilitiesOfOtherMinistries' },
-        { value: '8', viewValue: 'ILL.OptionViewValue.ORGCODE.TrainingTesting' },
-        { value: '9', viewValue: 'ILL.OptionViewValue.ORGCODE.Other' }
+        { value: '8', viewValue: 'ILL.OptionViewValue.ORGCODE.TrainingTesting' }
     ];
 
     getInstitutionTypeList() {
