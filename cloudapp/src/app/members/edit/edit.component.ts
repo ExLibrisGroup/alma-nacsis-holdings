@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { IDisplayLines } from '../../catalog/results-types/results-common'
 import { SearchField, FieldSize, FieldName, SelectSearchField, SelectedSearchFieldValues, MultiSearchField, SearchType } from '../../user-controls/search-form/search-form-utils';
 import { AlmaApiService } from '../../service/alma.api.service';
@@ -122,12 +122,17 @@ export class EditFormComponent implements OnInit {
     private alert: AlertService,
     protected almaApiService: AlmaApiService,
     private membersService: MembersService,
+    private storeService: CloudAppStoreService
   ) {}
 
   ngOnInit() {
-    this.backSession = sessionStorage.getItem(ROUTING_STATE_KEY);
-    this.record = JSON.parse(sessionStorage.getItem(MEMBER_RECORD));
-    this.initEditFieldsMap(this.record);
+    this.storeService.get(ROUTING_STATE_KEY).subscribe((backSession)=>{
+      this.backSession = backSession;
+    });
+    this.storeService.get(MEMBER_RECORD).subscribe((record)=>{
+      this.record = JSON.parse(record);
+      this.initEditFieldsMap(this.record);
+    });
   }
 
     /* Methods called from the DOM */

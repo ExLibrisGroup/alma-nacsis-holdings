@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, Holding, Header } from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../../dialog/confirmation-dialog.component';
-import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
 import { Action, RecordSelection } from '../../user-controls/result-card/result-card.component';
 
@@ -36,8 +36,8 @@ export class HoldingsComponent implements OnInit {
     private translate: TranslateService,
     private nacsis: HoldingsService,
     private dialog: MatDialog,
-    private alert: AlertService
- 
+    private alert: AlertService,
+    private storeService: CloudAppStoreService
   ) {
     this.owners = [
       { id: "0", name: "Holdings.ViewHoldings.All" },
@@ -53,15 +53,16 @@ export class HoldingsComponent implements OnInit {
   ngOnInit() {
     this.mmsId = this.route.snapshot.params['mmsId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
-
-    let owner = sessionStorage.getItem(this.nacsis.OwnerKey);
-    this.backSession = sessionStorage.getItem(ROUTING_STATE_KEY);
-
-    if(!this.nacsis.isEmpty(owner)) {
-      this.selected = owner;
-    } else if(this.nacsis.isEmpty(this.selected)) {
-      this.selected = '1'; // owner = Mine
-    } 
+    this.storeService.get(ROUTING_STATE_KEY).subscribe((backSession)=>{
+      this.backSession = backSession;
+    });
+    this.storeService.get(this.nacsis.OwnerKey).subscribe((owner)=>{
+      if(!this.nacsis.isEmpty(owner)) {
+        this.selected = owner;
+      } else if(this.nacsis.isEmpty(this.selected)) {
+        this.selected = '1'; // owner = Mine
+      } 
+    });
     this.load();
   }
 
@@ -79,8 +80,7 @@ export class HoldingsComponent implements OnInit {
 
   onOwnerSelected() {
     
-    sessionStorage.setItem(this.nacsis.OwnerKey, this.selected);
-
+    this.storeService.set(this.nacsis.OwnerKey, this.selected).subscribe();
    // owner = All, Mine is included in All, therefore, no need to retrieve from nacsis
     // get All only once
     if (this.selected === '0' && !this.isAllRetrieved) {

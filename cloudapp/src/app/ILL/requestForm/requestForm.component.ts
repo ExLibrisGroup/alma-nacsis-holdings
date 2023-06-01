@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, DisplayHoldingResult} from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
-import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL } from '../../service/base.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
@@ -37,7 +37,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   formResourceInformation: FormGroup;
   formRequesterInformation: FormGroup;
   formRotamation: FormGroup;
-  selecedData: any = [];
+  selectedData: any = [];
   fullRecordData: any = [];
   localMemberInfo: any = [];
 
@@ -132,7 +132,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
     private dialog: MatDialog,
     private alert: AlertService,
     private _liveAnnouncer: LiveAnnouncer,
-    private routeInfo: ActivatedRoute
+    private routeInfo: ActivatedRoute,
+    private storeService: CloudAppStoreService
   ) {
     this.owners = [
       { id: "0", name: "Holdings.ViewHoldings.All" },
@@ -141,24 +142,30 @@ export class RequestFormComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-
     this.nacsisId = this.route.snapshot.params['nacsisId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
     this.currentSearchType = this.route.snapshot.params['searchType'];
-    this.fullRecordData = JSON.parse(sessionStorage.getItem(SELECTED_RECORD_ILL));
-    this.selecedData = JSON.parse(sessionStorage.getItem(SELECTED_RECORD_LIST_ILL));
-    this.localMemberInfo = JSON.parse(sessionStorage.getItem(LIBRARY_MEMBERINFO_KEY));
-    this.ngOnChanges(this.selecedData);
+    this.storeService.get(SELECTED_RECORD_ILL).subscribe((fullRecordData)=>{
+      this.fullRecordData = JSON.parse(fullRecordData);
+      this.extractFullData(this.fullRecordData);
+    });
+    this.storeService.get(SELECTED_RECORD_LIST_ILL).subscribe((selectedData)=>{
+      this.selectedData = JSON.parse(selectedData);
+      this.ngOnChanges(this.selectedData);
+    });
+    this.storeService.get(LIBRARY_MEMBERINFO_KEY).subscribe((localMemberInfo)=>{
+      this.localMemberInfo = JSON.parse(localMemberInfo);
+      this.extractLocalMemberInfo(this.localMemberInfo);
+      this.extractSelectedData();
+
+    });
+
     this.formResourceInformation = initResourceInformationFormGroup();
     this.formRequesterInformation = initRequesterInformationFormGroup();
     this.formRotamation = initRotaFormGroup();
-    this.panelStateResourceInformation = false;
+    this.panelStateResourceInformation = true;
     this.panelStateRota = true;
-    this.panelStateRequestInformation = false;
-    this.extractFullData(this.fullRecordData);
-    this.extractSelectedData();
-    this.extractLocalMemberInfo(this.localMemberInfo);
-
+    this.panelStateRequestInformation = false;   
   }
 
   extractFullData(fullRecordData) {
@@ -181,8 +188,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
     }
     this.vlyrAuto = fullRecordData.VLYR;
     this.bibIDAuto = this.nacsisId;
-    this.externalAuto = sessionStorage.getItem(REQUEST_EXTERNAL_ID);
-
+    this.storeService.get(REQUEST_EXTERNAL_ID).subscribe((externalAuto)=>{
+      this.externalAuto = externalAuto;
+    });
 
     this.formResourceInformation.controls.BIBID.setValue(this.bibIDAuto);
     this.formResourceInformation.controls.BIBNT.setValue(this.buildBibMetadata());
@@ -192,7 +200,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
   extractSelectedData() {
     this.rotaFormControlName.forEach(conrtolName => {
-      for (let i = 1; i <= this.selecedData.length; i++) {
+      for (let i = 1; i <= this.selectedData.length; i++) {
         let tag = conrtolName + i;
         this.setValueForFormRota(tag);
       }
@@ -221,25 +229,25 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
     switch (tagName) {
       case 'HMLID':
-        this.formRotamation.get(tag).setValue(this.selecedData[tagSequence - 1].fano);
+        this.formRotamation.get(tag).setValue(this.selectedData[tagSequence - 1].fano);
         break;
       case 'HMLNM':
-        this.formRotamation.get(tag).setValue(this.selecedData[tagSequence - 1].name);
+        this.formRotamation.get(tag).setValue(this.selectedData[tagSequence - 1].name);
         break;
       case 'LOC':
-        this.formRotamation.get(tag).setValue(this.selecedData[tagSequence - 1].location);
+        this.formRotamation.get(tag).setValue(this.selectedData[tagSequence - 1].location);
         break;
       case 'VOL':
-        if (!this.illService.isEmpty(this.selecedData[tagSequence - 1].vol))
-          this.formRotamation.get(tag).setValue(this.selecedData[tagSequence - 1].vol[0].VOL);
+        if (!this.illService.isEmpty(this.selectedData[tagSequence - 1].vol))
+          this.formRotamation.get(tag).setValue(this.selectedData[tagSequence - 1].vol[0].VOL);
         break;
       case 'CLN':
-        if (!this.illService.isEmpty(this.selecedData[tagSequence - 1].vol))
-          this.formRotamation.get(tag).setValue(this.selecedData[tagSequence - 1].vol[0].CLN);
+        if (!this.illService.isEmpty(this.selectedData[tagSequence - 1].vol))
+          this.formRotamation.get(tag).setValue(this.selectedData[tagSequence - 1].vol[0].CLN);
         break;
       case 'RGTN':
-        if (!this.illService.isEmpty(this.selecedData[tagSequence - 1].vol))
-          this.formRotamation.get(tag).setValue(this.selecedData[tagSequence - 1].vol[0].RGTN);
+        if (!this.illService.isEmpty(this.selectedData[tagSequence - 1].vol))
+          this.formRotamation.get(tag).setValue(this.selectedData[tagSequence - 1].vol[0].RGTN);
         break;
     }
   }
@@ -286,7 +294,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   }
 
   backToHoldingSearch() {
-    sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage);
+    this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage).subscribe();
     this.router.navigate(['holdingSearch', this.nacsisId, this.mmsTitle, this.currentSearchType]);
   }
 
@@ -395,7 +403,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
     //formRotamation
     item.HMLG = new Array();
 
-    for (let i = 1; i <= this.selecedData.length; i++) {
+    for (let i = 1; i <= this.selectedData.length; i++) {
       let hmlgs = new HMLG();
       this.rotaFormControlName.forEach(controlName => {
         hmlgs[controlName] = this.illService.isEmpty(this.formRotamation.get(controlName + i).value) ? "" : this.formRotamation.get(controlName + i).value;

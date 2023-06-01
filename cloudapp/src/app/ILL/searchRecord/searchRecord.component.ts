@@ -1,9 +1,9 @@
 import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL, SELECTED_RECORD_ILL, QueryParams } from '../../service/base.service';
-import { Component, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, TemplateRef, OnDestroy } from '@angular/core';
 import { SearchType, SearchField, FieldSize, FieldName } from '../../user-controls/search-form/search-form-utils';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { CatalogService } from '../../service/catalog.service';
-import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
+import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
@@ -12,6 +12,7 @@ import { IllService, AlmaRecord, AlmaRecordDisplay } from '../../service/ill.ser
 import { FullViewLink } from '../../user-controls/full-view-display/full-view-display.component';
 import { RecordSelection } from '../../user-controls/selectable-result-card/selectable-result-card.component';
 import { MembersService } from '../../service/members.service';
+import { concat } from 'rxjs';
 
 @Component({
   selector: 'ILL-searchRecord',
@@ -19,7 +20,7 @@ import { MembersService } from '../../service/members.service';
   styleUrls: ['./searchRecord.component.scss']
 })
 
-export class searchRecordComponent implements AfterViewInit {
+export class searchRecordComponent implements AfterViewInit, OnDestroy {
 
   public SEARCH_TYPE_ARRAY = new Array(SearchType.Monographs, SearchType.Serials);
   public ALL_SEARCH_FIELDS_MAP = new Map([
@@ -97,6 +98,7 @@ export class searchRecordComponent implements AfterViewInit {
     private translate: TranslateService,
     private illService: IllService,
     private memberService : MembersService,
+    private storeService: CloudAppStoreService
   ) { }
 
   ngAfterViewInit() {
@@ -234,7 +236,6 @@ export class searchRecordComponent implements AfterViewInit {
   }
 
   search() {
-
     this.isFirstIndex = null;
     // Generating the URL by the fields' Form Control
     let urlParams = "";
@@ -255,13 +256,14 @@ export class searchRecordComponent implements AfterViewInit {
 
   next() {
 
-    sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage);
     let title = this.selected.getFullRecordData().getSummaryView().TRD;
     let nacsisID = this.selected.getFullRecordData().getSummaryView().ID;
     let rawData = this.selected.getFullRecordData().getFullView();
-    let object = JSON.stringify(rawData);
-    sessionStorage.setItem(SELECTED_RECORD_ILL, object);
-    sessionStorage.setItem(RESULT_RECORD_LIST_ILL, '');
+    concat(
+      this.storeService.set(SELECTED_RECORD_ILL, JSON.stringify(rawData)),
+      this.storeService.set(RESULT_RECORD_LIST_ILL, ''),
+      this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage)
+    ).subscribe();
     this.loading = true;
     this.router.navigate(['holdingSearch', nacsisID, title, this.currentSearchType]);
   }
@@ -342,17 +344,21 @@ export class searchRecordComponent implements AfterViewInit {
 
 
   ngOnInit() {
-    this.backSession = sessionStorage.getItem(ROUTING_STATE_KEY);
     this.isBackFromHoldingSearch = this.route.snapshot.params['flagBack'];
     this.fillInItemRecord();
-
-    if (sessionStorage.getItem(ROUTING_STATE_KEY) == "") {
-      this.illService.clearAllSearchResults();
-    } else {
-      this.onBackFromViewHolding();
-    }
+    this.storeService.get(ROUTING_STATE_KEY).subscribe((backSession)=>{
+      this.backSession = backSession;
+      if (backSession == "") {
+        this.illService.clearAllSearchResults();
+      } else {
+        this.onBackFromViewHolding();
+      }
+    });
   }
 
+  ngOnDestroy() {
+    this.storeService.set(RESULT_RECORD_LIST_ILL, '').subscribe();
+  }
 
 
   /***  initializing the search fields   ***/

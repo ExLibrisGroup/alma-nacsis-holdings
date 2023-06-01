@@ -1,6 +1,6 @@
-import { Subscription, of, forkJoin } from 'rxjs';
+import { Subscription, of, forkJoin, concat } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CloudAppEventsService, Entity, EntityType, CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppEventsService, Entity, EntityType, CloudAppRestService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Router } from '@angular/router';
 import { HoldingsService } from '../../service/holdings.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -45,12 +45,17 @@ export class MainComponent implements OnInit, OnDestroy {
     private restService: CloudAppRestService,
     private almaApiService: AlmaApiService,
     private illService: IllService,
+    private storeService: CloudAppStoreService
   ) { }
 
   ngOnInit() {
 
-    sessionStorage.clear();
-    this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => {
+ //Clear the store
+ concat(
+  this.storeService.remove(AppRoutingState.HoldingsMainPage),
+  this.storeService.remove(ROUTING_STATE_KEY),
+  this.storeService.remove(VOLUME_LIST)
+).subscribe();    this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => {
 
       this.loading = true;
       try{
@@ -114,8 +119,10 @@ export class MainComponent implements OnInit, OnDestroy {
           .subscribe({
             next: (header) => {
               if (header.status === this.nacsis.OkStatus) {
-                sessionStorage.setItem(VOLUME_LIST, bib[0].volumes.join(VOLUME_LIST_SEPARATOR))
-                sessionStorage.setItem(ROUTING_STATE_KEY, AppRoutingState.HoldingsMainPage);
+                concat(
+                  this.storeService.set(VOLUME_LIST, bib[0].volumes.join(VOLUME_LIST_SEPARATOR)),
+                  this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.HoldingsMainPage)
+                ).subscribe();
                 this.router.navigate(['/holdings', this.selected, bib[0].title]);
               } else {
                 this.alert.error(header.errorMessage, { keepAfterRouteChange: true });
