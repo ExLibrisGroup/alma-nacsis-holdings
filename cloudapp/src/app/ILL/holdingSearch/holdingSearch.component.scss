@@ -93,7 +93,7 @@
     }
   
     .form-commands {
-      margin-right: 15px;
+      margin-right: 5px;
     }
   
  
@@ -127,6 +127,7 @@
     }
   }
   .align-to-right-no-bottom {
+    margin-right: 100px;
     justify-content: flex-end;
     padding: 20px;
     .align-to-right-space{
@@ -333,6 +334,11 @@ a label {
   width:98%;
   min-width: 250px;
   margin-right: 17px;
+}
+
+.example-additional-selection {
+  opacity: 0.75;
+  font-size: 0.75em;
 }
 
 

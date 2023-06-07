@@ -146,7 +146,6 @@ export class searchRecordComponent implements AfterViewInit, OnDestroy {
     if (this.currentSearchType == SearchType.Serials) {
       this.selectedIndexBinding = 1;
     }
-    this.currentDatabase = paramsMap.get(QueryParams.Databases);
     this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).forEach(field => {
       if (paramsMap.has(field.getKey())) {
         field.setFormControl(paramsMap.get(field.getKey()));

@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, HoldingsSearch, NacsisHoldingRecord, DisplayHoldingResult, NacsisBookHoldingsListDetail, NacsisSerialHoldingsListDetail } from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL,SELECTED_RECORD_LIST_ILL, BaseService} from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL,SELECTED_RECORD_LIST_ILL, HOLDINGS_COLUMNS } from '../../service/base.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup } from '@angular/forms';
@@ -50,6 +50,9 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   // UI variables
   panelState: boolean = true;
+  //Configure table
+  columnsList: string[] = ['NAME', 'VOL', 'HLV', 'HLYR', 'KENCODE', 'SETCODE', 'ORGCODE', 'LOC', 'SUM', 'ILLFLG', 'STAT', 'COPYS', 'LOANS', 'FAXS'];
+  columns = {}
   
 
   //result view
@@ -91,6 +94,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   selectedValues = new SelectedSearchFieldValues();
   fieldsMap =  new Map();
+  private configColMap: Map<String, boolean> = new Map();
 
   constructor(
     private route: ActivatedRoute,
@@ -111,6 +115,17 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
 
   ngOnInit() {
+    this.storeService.get(HOLDINGS_COLUMNS).subscribe((columns) =>{
+      if(this.illService.isObjectEmpty(columns)) {
+           this.columnsList.forEach(col => {
+          this.columns[col] = true;
+        });
+      } else {
+        this.columns = JSON.parse(columns);
+
+      }
+    })
+
     this.nacsisId = this.route.snapshot.params['nacsisId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
     this.routerSearchType = this.route.snapshot.params['searchType'];
@@ -127,6 +142,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       }
     });
     this.selected = "0";
+    this.initConfigColMap();
     this.initFieldsMap();
   }
 
@@ -147,7 +163,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.fieldsMap.set(this.addUnderScore(FieldName.SETCODE) , new SelectSearchField(this.selectedValues.getEstablisherTypeList(), true, FieldName.SETCODE, FieldSize.medium));
     this.fieldsMap.set(this.addUnderScore(FieldName.ORGCODE), new SelectSearchField( this.selectedValues.getInstitutionTypeList(), true, FieldName.ORGCODE, FieldSize.medium));
     this.fieldsMap.set(this.addUnderScore(FieldName.ILLFLG), new SelectSearchField( this.selectedValues.getILLParticipationTypeList(), true, FieldName.ILLFLG, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.STAT), new SelectSearchField( this.selectedValues.getOffsetChargeList(), true, FieldName.STAT, FieldSize.medium));
+    this.fieldsMap.set(this.addUnderScore(FieldName.STAT), new SelectSearchField( this.selectedValues.getServiceStatusList(), true, FieldName.STAT, FieldSize.medium));
     this.fieldsMap.set(this.addUnderScore(FieldName.GRPCODE), new SelectSearchField( this.selectedValues.getOffsetChargeList(), true, FieldName.GRPCODE, FieldSize.medium));
     this.fieldsMap.set(this.addUnderScore(FieldName.COPYS), new SelectSearchField( this.selectedValues.getCopyServiceTypeList(), true, FieldName.COPYS, FieldSize.medium));
     this.fieldsMap.set(this.addUnderScore(FieldName.LOANS), new SelectSearchField( this.selectedValues.getLendingServiceTypeList(), true, FieldName.LOANS, FieldSize.medium));
@@ -705,5 +721,17 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.router.navigate(['searchRecord', 'back']);
   }
 
-}
+  private initConfigColMap(): void {
+    this.columnsList.forEach((val: string) => {
+      this.configColMap.set(val, false);
+    })
+  }
 
+  saveConfigToStore(event) {
+    this.storeService.set(HOLDINGS_COLUMNS, JSON.stringify(this.columns)).subscribe();
+   }
+
+   getConfigLabel(event) {
+    return this.translate.instant('ILL.HoldingSearchResult.' + event);
+   }
+}

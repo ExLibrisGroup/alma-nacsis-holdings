@@ -70,6 +70,11 @@ export class IllService extends BaseService {
     return (val === undefined || val == null || val.length <= 0) ? true : false;
   }
 
+  
+  isObjectEmpty(obj) {
+    return obj === undefined || obj === null || JSON.stringify(obj) === '"{}"';
+  }
+
   recordFillIn(illBorrowing: AlmaRecord, record: AlmaRequestInfo) {
     illBorrowing.title = this.isEmpty(record.title) ? "" : record.title;
     illBorrowing.author = this.isEmpty(record.author) ? "" : record.author;

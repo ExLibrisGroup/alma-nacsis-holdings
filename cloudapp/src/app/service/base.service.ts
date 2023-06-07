@@ -178,6 +178,7 @@ export const REQUEST_EXTERNAL_ID = "requestExternalId";
 export const MEMBER_RECORD = "memberRecord";
 export const FANO_ID = "fanoId";
 export const VOLUME_LIST = "volumeList";
+export const HOLDINGS_COLUMNS = "holdingsColumns";
 
 
 
