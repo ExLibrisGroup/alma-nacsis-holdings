@@ -2,9 +2,8 @@ import { Component, ViewChild, OnInit, OnChanges, ViewChildren, QueryList } from
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, HoldingsSearch, NacsisHoldingRecord, DisplayHoldingResult, NacsisBookHoldingsListDetail, NacsisSerialHoldingsListDetail } from '../../service/holdings.service';
-import { MatDialog } from '@angular/material/dialog';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL,SELECTED_RECORD_LIST_ILL, HOLDINGS_COLUMNS } from '../../service/base.service';
+import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL,SELECTED_RECORD_LIST_ILL, HOLDINGS_COLUMNS, HOLDINGS_SEARCH_FIELDS } from '../../service/base.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup } from '@angular/forms';
@@ -16,7 +15,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { NacsisCatalogResults, IDisplayLines } from '../../catalog/results-types/results-common'
 import { SearchType , SelectedSearchFieldValues, SelectSearchField, SearchField, FieldName, FieldSize} from '../../user-controls/search-form/search-form-utils';
 import { MembersService } from '../../service/members.service';
-import { concat } from 'rxjs';
+import { concat, of } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
 
 @Component({
@@ -53,8 +53,10 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   //Configure table
   columnsList: string[] = ['NAME', 'VOL', 'HLV', 'HLYR', 'KENCODE', 'SETCODE', 'ORGCODE', 'LOC', 'SUM', 'ILLFLG', 'STAT', 'COPYS', 'LOANS', 'FAXS'];
   columns = {}
-  
 
+  stickyFields : string[] = ['_SETCODE_', '_ORGCODE_', '_ILLFLG_', '_STAT_', '_GRPCODE_'];
+  stickyFieldsMap = new Map();
+  
   //result view
   displayHoldingResult = new MatTableDataSource<DisplayHoldingResult>();
   @ViewChild(MatSort) sort: MatSort;
@@ -115,32 +117,34 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
 
   ngOnInit() {
-    this.storeService.get(HOLDINGS_COLUMNS).subscribe((columns) =>{
-      if(this.illService.isObjectEmpty(columns)) {
-           this.columnsList.forEach(col => {
+    this.storeService.get(HOLDINGS_COLUMNS).pipe(
+      mergeMap(columns =>{
+        if(this.illService.isObjectEmpty(columns)) {
+          this.columnsList.forEach(col => {
           this.columns[col] = true;
-        });
-      } else {
-        this.columns = JSON.parse(columns);
-
-      }
-    })
+          });
+        } else {
+          this.columns = JSON.parse(columns);
+        }
+        return this.storeService.get(RESULT_RECORD_LIST_ILL);
+      }),
+      mergeMap(lastResult => {
+        if(!this.illService.isEmpty(lastResult)){
+          this.holdings =  JSON.parse(lastResult);
+          this.ngOnChanges(this.holdings);
+          this.panelState = false;
+        }
+        return of();
+      })
+    ).subscribe();
 
     this.nacsisId = this.route.snapshot.params['nacsisId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
     this.routerSearchType = this.route.snapshot.params['searchType'];
-    
 
     this.form = holdingFormGroup(null);
     this.selection = new SelectionModel<DisplayHoldingResult>(true, []);
     this.isMaxRowSelected = false;
-    this.storeService.get(RESULT_RECORD_LIST_ILL).subscribe((lastResult)=>{
-      if(!this.illService.isEmpty(lastResult)){
-        this.holdings =  JSON.parse(lastResult);
-        this.ngOnChanges(this.holdings);
-        this.panelState = false;
-      }
-    });
     this.selected = "0";
     this.initConfigColMap();
     this.initFieldsMap();
@@ -153,21 +157,33 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.numOfResults = holdings.length;
   }
 
-  initFieldsMap() {
+  setValueToFormControl() {
+    const self = this;
+    this.stickyFields.forEach(field => {
+      self.fieldsMap.get(field).getFormControl().value = self.stickyFieldsMap.get(field);
+    })  
+  }
 
-    this.fieldsMap.set(FieldName.FANO , new SearchField(FieldName.FANO, FieldSize.small)); 
-    this.fieldsMap.set(FieldName.VOL , new SearchField(FieldName.VOL, FieldSize.small));
-    this.fieldsMap.set(FieldName.YEAR, new SearchField(FieldName.YEAR, FieldSize.small)); 
-    this.fieldsMap.set(FieldName.LOC, new SearchField(FieldName.LOC, FieldSize.small));
-    this.fieldsMap.set(this.addUnderScore(FieldName.KENCODE), new SelectSearchField( this.selectedValues.getRegionCodeList(), true, FieldName.KENCODE, FieldSize.medium)); 
-    this.fieldsMap.set(this.addUnderScore(FieldName.SETCODE) , new SelectSearchField(this.selectedValues.getEstablisherTypeList(), true, FieldName.SETCODE, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.ORGCODE), new SelectSearchField( this.selectedValues.getInstitutionTypeList(), true, FieldName.ORGCODE, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.ILLFLG), new SelectSearchField( this.selectedValues.getILLParticipationTypeList(), true, FieldName.ILLFLG, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.STAT), new SelectSearchField( this.selectedValues.getServiceStatusList(), true, FieldName.STAT, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.GRPCODE), new SelectSearchField( this.selectedValues.getOffsetChargeList(), true, FieldName.GRPCODE, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.COPYS), new SelectSearchField( this.selectedValues.getCopyServiceTypeList(), true, FieldName.COPYS, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.LOANS), new SelectSearchField( this.selectedValues.getLendingServiceTypeList(), true, FieldName.LOANS, FieldSize.medium));
-    this.fieldsMap.set(this.addUnderScore(FieldName.FAXS), new SelectSearchField( this.selectedValues.getFAXServiceTypeList(), true, FieldName.FAXS, FieldSize.medium));
+  initFieldsMap() {
+    this.storeService.get(HOLDINGS_SEARCH_FIELDS).subscribe(stickyFields => {
+      this.fieldsMap.set(FieldName.FANO , new SearchField(FieldName.FANO, FieldSize.small)); 
+      this.fieldsMap.set(FieldName.VOL , new SearchField(FieldName.VOL, FieldSize.small));
+      this.fieldsMap.set(FieldName.YEAR, new SearchField(FieldName.YEAR, FieldSize.small)); 
+      this.fieldsMap.set(FieldName.LOC, new SearchField(FieldName.LOC, FieldSize.small));
+      this.fieldsMap.set(this.addUnderScore(FieldName.KENCODE), new SelectSearchField( this.selectedValues.getRegionCodeList(), true, FieldName.KENCODE, FieldSize.medium)); 
+      this.fieldsMap.set(this.addUnderScore(FieldName.SETCODE) , new SelectSearchField(this.selectedValues.getEstablisherTypeList(), true, FieldName.SETCODE, FieldSize.medium));
+      this.fieldsMap.set(this.addUnderScore(FieldName.ORGCODE), new SelectSearchField( this.selectedValues.getInstitutionTypeList(), true, FieldName.ORGCODE, FieldSize.medium));
+      this.fieldsMap.set(this.addUnderScore(FieldName.ILLFLG), new SelectSearchField( this.selectedValues.getILLParticipationTypeList(), true, FieldName.ILLFLG, FieldSize.medium));
+      this.fieldsMap.set(this.addUnderScore(FieldName.STAT), new SelectSearchField( this.selectedValues.getServiceStatusList(), true, FieldName.STAT, FieldSize.medium));
+      this.fieldsMap.set(this.addUnderScore(FieldName.GRPCODE), new SelectSearchField( this.selectedValues.getOffsetChargeList(), true, FieldName.GRPCODE, FieldSize.medium));
+      this.fieldsMap.set(this.addUnderScore(FieldName.COPYS), new SelectSearchField( this.selectedValues.getCopyServiceTypeList(), true, FieldName.COPYS, FieldSize.medium));
+      this.fieldsMap.set(this.addUnderScore(FieldName.LOANS), new SelectSearchField( this.selectedValues.getLendingServiceTypeList(), true, FieldName.LOANS, FieldSize.medium));
+      this.fieldsMap.set(this.addUnderScore(FieldName.FAXS), new SelectSearchField( this.selectedValues.getFAXServiceTypeList(), true, FieldName.FAXS, FieldSize.medium));
+      if(!this.illService.isObjectEmpty(stickyFields)){
+        this.stickyFieldsMap =  this.illService.Json2Map(stickyFields);
+        this.setValueToFormControl() 
+      }
+    });
   }
 
   private addUnderScore(keyField : String) : String {
@@ -179,6 +195,13 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   }
 
   search() {
+    const self = this
+    this.stickyFields.forEach(field => {
+      self.stickyFieldsMap.set(field, self.fieldsMap.get(field).getFormControl().value);
+    });
+    concat(
+      this.storeService.set(HOLDINGS_SEARCH_FIELDS, this.illService.map2Json(this.stickyFieldsMap))
+    ).subscribe();
     this.loading = true;
     let queryParams = this.buildQueryUrl();
     this.clearSelection();
@@ -270,12 +293,17 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   }
 
   clear() {
-    this.ngOnInit();
-    this.holdings = new Array();
-    this.panelState = true;
-    this.selected = "0";
-    this.selectedVolMap = new Map();
-    this.holdings = new Array();
+    this.storeService.remove(HOLDINGS_SEARCH_FIELDS).subscribe(()=>{
+      this.stickyFieldsMap = new Map();
+      this.ngOnInit();
+      this.holdings = new Array();
+      this.panelState = true;
+      this.selected = "0";
+      this.selectedVolMap = new Map();
+      this.holdings = new Array();
+      }
+    );
+   
   }
 
   panelOpenState() {
@@ -706,17 +734,14 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   next() {
     this.filterSelectVol(this.selecedData);
     this.fillRowsTillFive(this.selecedData);
-    concat(
-      this.storeService.set(SELECTED_RECORD_LIST_ILL, JSON.stringify(this.selecedData)),
-      this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.HoldingSearchMainPage)
-    ).subscribe();
     this.router.navigate(['requestForm', this.nacsisId, this.mmsTitle, this.routerSearchType]);
+    this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.HoldingSearchMainPage).subscribe();
   }
 
   backToSearchRecord() {
     concat(
       this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage),
-      this.storeService.set(RESULT_RECORD_LIST_ILL, '')
+      this.storeService.set(RESULT_RECORD_LIST_ILL, ''),
     ).subscribe();
     this.router.navigate(['searchRecord', 'back']);
   }

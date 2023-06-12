@@ -179,6 +179,9 @@ export const MEMBER_RECORD = "memberRecord";
 export const FANO_ID = "fanoId";
 export const VOLUME_LIST = "volumeList";
 export const HOLDINGS_COLUMNS = "holdingsColumns";
+export const HOLDINGS_SEARCH_FIELDS = "holdingsFields";
+export const ILL_REQUEST_FIELDS = "illFields";
+
 
 
 

@@ -1,13 +1,14 @@
-import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-//import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
-import { HoldingsService, Holding, Header } from '../../service/holdings.service';
+import { HoldingsService, Holding } from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../../dialog/confirmation-dialog.component';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
+import { ROUTING_STATE_KEY } from '../../service/base.service';
 import { Action, RecordSelection } from '../../user-controls/result-card/result-card.component';
+import { mergeMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-holdings',
@@ -53,16 +54,21 @@ export class HoldingsComponent implements OnInit {
   ngOnInit() {
     this.mmsId = this.route.snapshot.params['mmsId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
-    this.storeService.get(ROUTING_STATE_KEY).subscribe((backSession)=>{
-      this.backSession = backSession;
-    });
-    this.storeService.get(this.nacsis.OwnerKey).subscribe((owner)=>{
-      if(!this.nacsis.isEmpty(owner)) {
-        this.selected = owner;
-      } else if(this.nacsis.isEmpty(this.selected)) {
-        this.selected = '1'; // owner = Mine
-      } 
-    });
+
+    this.storeService.get(ROUTING_STATE_KEY).pipe(
+      mergeMap(backSession =>{
+        this.backSession = backSession;
+        return this.storeService.get(this.nacsis.OwnerKey);
+      }),
+      mergeMap(owner => {
+        if(!this.nacsis.isEmpty(owner)) {
+          this.selected = owner;
+        } else if(this.nacsis.isEmpty(this.selected)) {
+          this.selected = '1'; // owner = Mine
+        } 
+        return of();
+      })
+    ).subscribe();
     this.load();
   }
 

@@ -126,13 +126,17 @@ export class EditFormComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.storeService.get(ROUTING_STATE_KEY).subscribe((backSession)=>{
-      this.backSession = backSession;
-    });
-    this.storeService.get(MEMBER_RECORD).subscribe((record)=>{
-      this.record = JSON.parse(record);
+    this.storeService.get(ROUTING_STATE_KEY).pipe(
+      mergeMap(backSession =>{
+        this.backSession = backSession;
+        return this.storeService.get(MEMBER_RECORD);
+      }),
+      mergeMap(record => {
+        this.record = JSON.parse(record);
       this.initEditFieldsMap(this.record);
-    });
+        return of();
+      })
+    ).subscribe();
   }
 
     /* Methods called from the DOM */

@@ -4,16 +4,18 @@ import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, DisplayHoldingResult} from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL } from '../../service/base.service';
+import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL, ILL_REQUEST_FIELDS } from '../../service/base.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { IllService, RequestFields, Bibg, HMLG } from '../../service/ill.service';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { CatalogService } from '../../service/catalog.service';
 import { SearchType } from '../../user-controls/search-form/search-form-utils';
-import { initResourceInformationFormGroup, initRequesterInformationFormGroup, initRotaFormGroup, FieldName } from '../holdingSearch/holdingSearch-utils';
+import { initResourceInformationFormGroup, initRequesterInformationFormGroup, initRotaFormGroup } from '../holdingSearch/holdingSearch-utils';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
+import { mergeMap } from 'rxjs/operators';
+import { concat, of } from 'rxjs';
 
 @Component({
   selector: 'ILL-requestForm',
@@ -63,6 +65,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
   illNameAuto:string;
   illDeptAuto:string;
   illAddrAuto:string;
+
+  stickyFieldsMap = new Map();
 
   requestType = new FormControl();
   requestTypeList: RequestType[] = [
@@ -145,27 +149,44 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.nacsisId = this.route.snapshot.params['nacsisId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
     this.currentSearchType = this.route.snapshot.params['searchType'];
-    this.storeService.get(SELECTED_RECORD_ILL).subscribe((fullRecordData)=>{
-      this.fullRecordData = JSON.parse(fullRecordData);
-      this.extractFullData(this.fullRecordData);
-    });
-    this.storeService.get(SELECTED_RECORD_LIST_ILL).subscribe((selectedData)=>{
-      this.selectedData = JSON.parse(selectedData);
-      this.ngOnChanges(this.selectedData);
-    });
-    this.storeService.get(LIBRARY_MEMBERINFO_KEY).subscribe((localMemberInfo)=>{
-      this.localMemberInfo = JSON.parse(localMemberInfo);
-      this.extractLocalMemberInfo(this.localMemberInfo);
-      this.extractSelectedData();
+    this.storeService.get(SELECTED_RECORD_ILL).pipe(
+      mergeMap(fullRecordData =>{
+        this.fullRecordData = JSON.parse(fullRecordData);
+        return this.storeService.get(SELECTED_RECORD_LIST_ILL);
+      }),
+      mergeMap(selectedData => {
+        this.selectedData = JSON.parse(selectedData);
+        this.ngOnChanges(this.selectedData);
+        return this.storeService.get(LIBRARY_MEMBERINFO_KEY);
+      }),
+      mergeMap(localMemberInfo => {
+        this.localMemberInfo = JSON.parse(localMemberInfo);
+        return this.storeService.get(ILL_REQUEST_FIELDS);
+      }),
+      mergeMap(stickyFields => {
+        if(!this.illService.isObjectEmpty(stickyFields)){
+          this.stickyFieldsMap =  this.illService.Json2Map(stickyFields);
+          this.setValueToFormControl();
+        }
+        this.formResourceInformation = initResourceInformationFormGroup();
+        this.formRequesterInformation = initRequesterInformationFormGroup();
+        this.formRotamation = initRotaFormGroup();
+        this.panelStateResourceInformation = true;
+        this.panelStateRota = true;
+        this.panelStateRequestInformation = false; 
+        this.extractSelectedData();  
+        this.extractFullData(this.fullRecordData);
+        this.extractLocalMemberInfo(this.localMemberInfo);
+        return of();
+        
+      })
+    ).subscribe();
+  }
 
-    });
-
-    this.formResourceInformation = initResourceInformationFormGroup();
-    this.formRequesterInformation = initRequesterInformationFormGroup();
-    this.formRotamation = initRotaFormGroup();
-    this.panelStateResourceInformation = true;
-    this.panelStateRota = true;
-    this.panelStateRequestInformation = false;   
+  setValueToFormControl() {
+    this.copyType.setValue(this.stickyFieldsMap.get('TYPE'));
+    this.sendingMethod.setValue(this.stickyFieldsMap.get('SPVIA'));
+    this.payClass.setValue(this.stickyFieldsMap.get('ACCT'));
   }
 
   extractFullData(fullRecordData) {
@@ -294,7 +315,13 @@ export class RequestFormComponent implements OnInit, OnChanges {
   }
 
   backToHoldingSearch() {
-    this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage).subscribe();
+    this.stickyFieldsMap.set('TYPE', this.copyType.value);
+    this.stickyFieldsMap.set('SPVIA', this.sendingMethod.value);
+    this.stickyFieldsMap.set('ACCT', this.payClass.value);
+    concat(
+      this.storeService.set(ILL_REQUEST_FIELDS, this.illService.map2Json(this.stickyFieldsMap)),
+      this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage)
+    ).subscribe();
     this.router.navigate(['holdingSearch', this.nacsisId, this.mmsTitle, this.currentSearchType]);
   }
 
@@ -366,6 +393,11 @@ export class RequestFormComponent implements OnInit, OnChanges {
       this.panelStateRequestInformation = true;
       this.panelStateResourceInformation = true;
     }
+
+    this.stickyFieldsMap.set('TYPE', this.copyType.value);
+    this.stickyFieldsMap.set('SPVIA', this.sendingMethod.value);
+    this.stickyFieldsMap.set('ACCT', this.payClass.value);
+    this.storeService.set(ILL_REQUEST_FIELDS, this.illService.map2Json(this.stickyFieldsMap))
   }
 
 
