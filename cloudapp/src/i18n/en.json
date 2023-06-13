@@ -168,7 +168,7 @@
        "ParticipatingOrgCode":"Participating organization code",
        "Volume":"Volume",
        "Location":"Location",
-       "RegionCode":"Region(prefeture) code",
+       "RegionCode":"Region (prefeture) code",
        "EstablisherType":"Establisher type",
        "InstitutionType":"Institution type",
        "ILLParticipationType":"ILL participation type",

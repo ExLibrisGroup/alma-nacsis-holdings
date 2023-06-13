@@ -54,7 +54,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   columnsList: string[] = ['NAME', 'VOL', 'HLV', 'HLYR', 'KENCODE', 'SETCODE', 'ORGCODE', 'LOC', 'SUM', 'ILLFLG', 'STAT', 'COPYS', 'LOANS', 'FAXS'];
   columns = {}
 
-  stickyFields : string[] = ['_SETCODE_', '_ORGCODE_', '_ILLFLG_', '_STAT_', '_GRPCODE_'];
+  stickyFields : string[] = ['_KENCODE_', '_SETCODE_', '_ORGCODE_', '_ILLFLG_', '_STAT_', '_GRPCODE_'];
   stickyFieldsMap = new Map();
   
   //result view
@@ -750,6 +750,13 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.columnsList.forEach((val: string) => {
       this.configColMap.set(val, false);
     })
+  }
+
+  restoreColumnDefault() {
+    this.columnsList.forEach(col => {
+      this.columns[col] = true;
+    });
+    this.storeService.set(HOLDINGS_COLUMNS, JSON.stringify(this.columns)).subscribe();
   }
 
   saveConfigToStore(event) {

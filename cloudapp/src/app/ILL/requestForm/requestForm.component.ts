@@ -149,6 +149,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.nacsisId = this.route.snapshot.params['nacsisId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
     this.currentSearchType = this.route.snapshot.params['searchType'];
+    this.formResourceInformation = initResourceInformationFormGroup();
+    this.formRequesterInformation = initRequesterInformationFormGroup();
     this.storeService.get(SELECTED_RECORD_ILL).pipe(
       mergeMap(fullRecordData =>{
         this.fullRecordData = JSON.parse(fullRecordData);
@@ -168,8 +170,6 @@ export class RequestFormComponent implements OnInit, OnChanges {
           this.stickyFieldsMap =  this.illService.Json2Map(stickyFields);
           this.setValueToFormControl();
         }
-        this.formResourceInformation = initResourceInformationFormGroup();
-        this.formRequesterInformation = initRequesterInformationFormGroup();
         this.formRotamation = initRotaFormGroup();
         this.panelStateResourceInformation = true;
         this.panelStateRota = true;
@@ -293,10 +293,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
   buildRequesterStaff(){
     let requesterStaff = "";
     requesterStaff = requesterStaff + (this.illService.isEmpty(this.illStaffAuto) ? "" : this.illStaffAuto + " ");
-    //TODO : What TEL & FAX doing here?
-    // requesterStaff = requesterStaff + (this.illService.isEmpty(this.illDeptAuto) ? "" : this.illDeptAuto + " ");
-    // requesterStaff = requesterStaff + (this.illService.isEmpty(this.illTelAuto) ? "" : "TEL=" + this.illTelAuto + " ");
-    // requesterStaff = requesterStaff + (this.illService.isEmpty(this.illFaxAuto) ? "" : "FAX=" + this.illFaxAuto);
+    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illDeptAuto) ? "" : this.illDeptAuto + " ");
+    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illTelAuto) ? "" : "TEL=" + this.illTelAuto + " ");
+    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illFaxAuto) ? "" : "FAX=" + this.illFaxAuto);
     return requesterStaff;
   }
 
