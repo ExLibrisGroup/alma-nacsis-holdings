@@ -735,8 +735,10 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.filterSelectVol(this.selecedData);
     this.fillRowsTillFive(this.selecedData);
     this.router.navigate(['requestForm', this.nacsisId, this.mmsTitle, this.routerSearchType]);
-    this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.HoldingSearchMainPage).subscribe();
-  }
+    concat(
+      this.storeService.set(SELECTED_RECORD_LIST_ILL, JSON.stringify(this.selecedData)),
+      this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.HoldingSearchMainPage)
+    ).subscribe();  }
 
   backToSearchRecord() {
     concat(

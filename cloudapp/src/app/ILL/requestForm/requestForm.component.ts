@@ -151,6 +151,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.currentSearchType = this.route.snapshot.params['searchType'];
     this.formResourceInformation = initResourceInformationFormGroup();
     this.formRequesterInformation = initRequesterInformationFormGroup();
+    this.formRotamation = initRotaFormGroup();
     this.storeService.get(SELECTED_RECORD_ILL).pipe(
       mergeMap(fullRecordData =>{
         this.fullRecordData = JSON.parse(fullRecordData);
@@ -170,7 +171,6 @@ export class RequestFormComponent implements OnInit, OnChanges {
           this.stickyFieldsMap =  this.illService.Json2Map(stickyFields);
           this.setValueToFormControl();
         }
-        this.formRotamation = initRotaFormGroup();
         this.panelStateResourceInformation = true;
         this.panelStateRota = true;
         this.panelStateRequestInformation = false; 
