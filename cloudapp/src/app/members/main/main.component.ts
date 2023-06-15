@@ -118,7 +118,7 @@ export class MembersSearchComponent implements OnInit {
 
   ngOnInit() {
     this.initFieldsMap();
-    this.storeService.get(this.membersService.OwnerKey).subscribe((owner)=>{
+    this.storeService.get(this.membersService.OwnerKey).subscribe(owner=>{
       if (!this.membersService.isEmpty(owner)) {
         this.selected = owner;
       } else if (this.membersService.isEmpty(this.selected)) {
@@ -128,7 +128,7 @@ export class MembersSearchComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.storeService.get(ROUTING_STATE_KEY).subscribe((state)=>{
+    this.storeService.get(ROUTING_STATE_KEY).subscribe(state=>{
       if (state == "") {
         this.membersService.clearAllSearchResults();
       } else {
@@ -153,7 +153,7 @@ export class MembersSearchComponent implements OnInit {
         this.currentResulsTmpl = this.editFormTmpl;
         concat(
           this.storeService.set(MEMBER_RECORD, JSON.stringify(record)),
-         this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.MembersMainPage)
+          this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.MembersMainPage)
         ).subscribe();
         this.router.navigate(['editMember']);
         break;
@@ -174,6 +174,7 @@ export class MembersSearchComponent implements OnInit {
   onOwnerSelected() {
     /* owner = All, Mine is included in All, therefore, no need to retrieve from nacsis
        get All only once */
+    this.storeService.set(this.membersService.OwnerKey, this.selected).subscribe();
     if (this.selected === '1') {
       this.resultsSummaryDisplay = this.resultsSummaryRecord.filter(member => member.isEditable);
       this.numOfResults = this.resultsSummaryDisplay.length;
@@ -344,14 +345,17 @@ export class MembersSearchComponent implements OnInit {
       let summery = result.getSummaryDisplay()
       /* If the memeber is mine - we can edit it */
       //TODO: check the async code here:
-      this.storeService.get(FANO_ID).subscribe((fanoId)=>{
+      this.storeService.get(FANO_ID).subscribe(fanoId=>{
         summery.setEnableEdit(result.getSummaryView().ID === fanoId);
         this.resultsSummaryRecord.push(summery);
+        this.resultsSummaryDisplay = this.resultsSummaryRecord;
+        this.panelState = false;
+        this.resultsTemplateFactory();
       });      
     });
-    this.resultsSummaryDisplay = this.resultsSummaryRecord;
-    this.panelState = false;
-    this.resultsTemplateFactory();
+    // this.resultsSummaryDisplay = this.resultsSummaryRecord;
+    // this.panelState = false;
+    // this.resultsTemplateFactory();
   }
 
   getDisplayMembers() {

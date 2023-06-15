@@ -12,7 +12,7 @@ import { MemberUpdate } from "../catalog/results-types/member";
 })
 export class MembersService extends BaseService {
   
-  public OwnerKey: string = 'OWNER_KEY';
+  public OwnerKey: string = 'MEMBER_OWNER_KEY';
   private _header: ResultsHeader;
   protected almaApiService :AlmaApiService;
 

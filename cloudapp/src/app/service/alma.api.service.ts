@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { CloudAppRestService } from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppRestService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { mergeMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay, AlmaRequestInfo } from '../service/ill.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MembersService } from './members.service';
 import { FieldName } from '../user-controls/search-form/search-form-utils';
+import { USER_INFORMATION } from './base.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ import { FieldName } from '../user-controls/search-form/search-form-utils';
 export class AlmaApiService {
 
   integrationProfile :IntegrationProfile;
+  userInfo : UserInformation;
   recordInfoList: AlmaRecordInfo[] = new Array();
   recordsSummaryDisplay: Array<IDisplayLines>;
   almaResultsData: AlmaRecordsResults;
@@ -24,6 +26,7 @@ export class AlmaApiService {
     private restService: CloudAppRestService,
     private translate: TranslateService,
     private illService: IllService,
+    private storeService: CloudAppStoreService
   ) {  }
 
   extractNacsisId(stringXml, systemNumberPrefix) : string{
@@ -278,18 +281,20 @@ export class AlmaApiService {
       return of(this.integrationProfile)
     }
     this.integrationProfile = new IntegrationProfile();
+    this.userInfo = new UserInformation();
      
     return this.restService.call(url).pipe(
       mergeMap(response => { 
         // extract integration profile
         let nacsisIntegrationProfile = response.integration_profile[0]; // assume can be only one CENTRAL_CATALOG_INTEGRATION
         this.integrationProfile.libraryID = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_INFORMATION_B" && param.name.value == "nacsisLibraryId")[0].value;
+        this.integrationProfile.userName = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_INFORMATION_B" && param.name.value == "userNameNacsis")[0].value;
+
         // extract import profiles
         let ContributionConfigurationParams = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_CONTRIBUTION_CONFIGURATION");
         this.integrationProfile.repositoryImportProfile = ContributionConfigurationParams.filter(param => param.name.value == "repositoryImportProfile")[0].value; 
         this.integrationProfile.authorityImportProfileNames = ContributionConfigurationParams.filter(param => param.name.value == "authNames")[0].value;
         this.integrationProfile.authorityImportProfileUniformTitles = ContributionConfigurationParams.filter(param => param.name.value == "authUniformTitle")[0].value;
-        
         let queryParams = FieldName.ID + "=" + this.integrationProfile.libraryID;
         return this.membersService.getSearchResultsFromNacsis(queryParams);
       }),
@@ -310,6 +315,16 @@ export class AlmaApiService {
       mergeMap(response => {
         this.integrationProfile.libraryCode = response.row.filter(row => row.code == "libraryCode")[0].description;
         this.integrationProfile.systemPrefix = response.row.filter(row => row.code == "systemPrefix")[0].description;
+        //return of(this.integrationProfile);
+        url = "/almaws/v1/users/" + this.integrationProfile.userName;
+        return this.restService.call(url);
+      }),
+      mergeMap((response) => {
+        if(!this.isEmpty(response)) {
+          this.userInfo.fullName = response.full_name;
+          this.userInfo.userGroup = response.user_group.value;
+          this.storeService.set(USER_INFORMATION, JSON.stringify(this.userInfo)).subscribe();
+        }
         return of(this.integrationProfile);
       }),
       catchError(error => {
@@ -379,5 +394,11 @@ export class IntegrationProfile {
     authorityImportProfileNames: string;
     authorityImportProfileUniformTitles: string;
     locations: string[];
+    userName : string;
+}
+
+export class UserInformation {
+  fullName: string;
+  userGroup: string;
 }
 

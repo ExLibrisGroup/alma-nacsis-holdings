@@ -4,7 +4,7 @@ import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angul
 import { IDisplayLines } from '../../catalog/results-types/results-common'
 import { SearchField, FieldSize, FieldName, SelectSearchField, SelectedSearchFieldValues, MultiSearchField, SearchType } from '../../user-controls/search-form/search-form-utils';
 import { AlmaApiService } from '../../service/alma.api.service';
-import { MEMBER_RECORD, ROUTING_STATE_KEY } from '../../service/base.service';
+import { AppRoutingState, MEMBER_RECORD, ROUTING_STATE_KEY } from '../../service/base.service';
 import { MemberUpdate } from '../../catalog/results-types/member';
 import { MembersService } from '../../service/members.service';
 import { Observable, of, merge } from 'rxjs';
@@ -128,6 +128,10 @@ export class EditFormComponent implements OnInit {
   ngOnInit() {
     this.storeService.get(ROUTING_STATE_KEY).pipe(
       mergeMap(backSession =>{
+        //TODO why is undefined?
+        if(backSession === undefined || backSession == "") {
+          backSession = AppRoutingState.MembersMainPage;
+        }
         this.backSession = backSession;
         return this.storeService.get(MEMBER_RECORD);
       }),
