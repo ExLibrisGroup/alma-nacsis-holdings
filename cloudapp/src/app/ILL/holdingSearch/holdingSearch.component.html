@@ -92,7 +92,8 @@
       <button mat-button [matMenuTriggerFor]="menu"> <mat-icon>settings</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item  (click)="restoreColumnDefault()">Restore list defaults</button>
+        <button mat-button color="primary" (click)="restoreColumnDefault()" class="restoreButton">Restore list defaults</button>
+        <!-- <button mat-menu-item  (click)="restoreColumnDefault()">Restore list defaults</button> -->
         <button mat-menu-item *ngFor="let column of columnsList" (click)="$event.stopPropagation();">
           <mat-checkbox [(ngModel)]="columns[column]" (change)="saveConfigToStore($event)">{{ getConfigLabel(column)}}</mat-checkbox>
         </button>
