@@ -7,7 +7,7 @@ import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angul
 import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL, ILL_REQUEST_FIELDS, USER_INFORMATION } from '../../service/base.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
-import { IllService, RequestFields, Bibg, HMLG } from '../../service/ill.service';
+import { IllService, RequestFields, BIBG, HMLG, SENDG } from '../../service/ill.service';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { CatalogService } from '../../service/catalog.service';
 import { SearchType } from '../../user-controls/search-form/search-form-utils';
@@ -409,24 +409,26 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.requestBody = new Array();
     let item = new RequestFields;
     // formResourceInformation
-    item.database = this.requestType.value;
-    item.ACCT = this.payClass.value;
-    item.TYPE = this.copyType.value;
-    item.SPVIA = this.illService.isEmpty(this.sendingMethod.value) ? "" : this.sendingMethod.value;
-    item.ONO = this.illService.isEmpty(this.formResourceInformation.value.ONO) ? "" : this.formResourceInformation.value.ONO;
-    item.PRMT = this.illService.isEmpty(this.formResourceInformation.value.PRMT) ? "" : this.formResourceInformation.value.PRMT;
-    item.EXTERNAL_ID = this.externalAuto;//sessionStorage.getItem(REQUEST_EXTERNAL_ID);
-    let bibg = new Bibg();
-  
+    item._DBNAME_ = [this.requestType.value];
+    item.ACCT = [this.payClass.value];
+    item.TYPE = [this.copyType.value];
+    item.SPVIA = this.illService.isEmpty(this.sendingMethod.value) ? [] : [this.sendingMethod.value];
+    item.ONO = this.illService.isEmpty(this.formResourceInformation.value.ONO) ? [] : [this.formResourceInformation.value.ONO];
+    item.PRMT = this.illService.isEmpty(this.formResourceInformation.value.PRMT) ? [] : [this.formResourceInformation.value.PRMT];
+    //TODO check it again, thare is any meaning?
+    item.ID = [this.externalAuto];//sessionStorage.getItem(REQUEST_EXTERNAL_ID);
+    //TODO: make sure the bibg couldn't repeatable 
+    item.BIBG = new Array();
+    let bibg = new BIBG();
     bibg.BIBID = this.illService.isEmpty(this.formResourceInformation.value.BIBID)? this.nacsisId: this.formResourceInformation.value.BIBID;
     bibg.BIBNT = this.formResourceInformation.value.BIBNT;
     bibg.STDNO = this.formResourceInformation.value.STDNO;
-    item.BIBG = bibg;
+    item.BIBG.push(bibg);
 
-    item.VOL = this.illService.isEmpty(this.formResourceInformation.value.VOL) ? "" : this.formResourceInformation.value.VOL;
-    item.PAGE = this.illService.isEmpty(this.formResourceInformation.value.PAGE) ? "" : this.formResourceInformation.value.PAGE;
-    item.YEAR = this.illService.isEmpty(this.formResourceInformation.value.YEAR) ? "" : this.formResourceInformation.value.YEAR;
-    item.ARTCL = this.illService.isEmpty(this.formResourceInformation.value.ARTCL) ? "" : this.formResourceInformation.value.ARTCL;
+    item.VLNO = this.illService.isEmpty(this.formResourceInformation.value.VOL) ? [] : [this.formResourceInformation.value.VOL];
+    item.PAGE = this.illService.isEmpty(this.formResourceInformation.value.PAGE) ? [] : [this.formResourceInformation.value.PAGE];
+    item.YEAR = this.illService.isEmpty(this.formResourceInformation.value.YEAR) ? [] : [this.formResourceInformation.value.YEAR];
+    item.ARTCL = this.illService.isEmpty(this.formResourceInformation.value.ARTCL) ? [] : [this.formResourceInformation.value.ARTCL];
 
     //formRotamation
     item.HMLG = new Array();
@@ -444,17 +446,17 @@ export class RequestFormComponent implements OnInit, OnChanges {
     })
 
     //formRequesterInformation
-    item.BVRFY = this.illService.isEmpty(this.formRequesterInformation.value.BVRFY) ? "" : this.formRequesterInformation.value.BVRFY;
-    item.HVRFY = this.illService.isEmpty(this.formRequesterInformation.value.HVRFY) ? "" : this.formRequesterInformation.value.HVRFY;
-    item.CLNT = this.illService.isEmpty(this.formRequesterInformation.value.CLNT) ? "" : this.formRequesterInformation.value.CLNT;
-    item.CLNTP = this.illService.isEmpty(this.formRequesterInformation.value.CLNTP) ? "" : this.formRequesterInformation.value.CLNTP;
-    item.ODATE = new DatePipe('en').transform(this.ODATE.value, 'yyyyMMdd');
-    item.SENDCMNT = this.illService.isEmpty(this.formRequesterInformation.value.SENDCMNT) ? "" : this.formRequesterInformation.value.SENDCMNT;
-    item.OSTAF = this.formRequesterInformation.value.OSTAF;
-    item.OADRS = this.formRequesterInformation.value.OADRS;
-    item.OLDF = this.illService.isEmpty(this.formRequesterInformation.value.OLDF) ? "" : this.formRequesterInformation.value.OLDF;
-    item.OLDAF = this.illService.isEmpty(this.formRequesterInformation.value.OLDAF) ? "" : this.formRequesterInformation.value.OLDAF;
-    item.OEDA = this.illService.isEmpty(this.formRequesterInformation.value.OEDA) ? "" : this.formRequesterInformation.value.OEDA;
+    item.BVRFY = this.illService.isEmpty(this.formRequesterInformation.value.BVRFY) ? [] : [this.formRequesterInformation.value.BVRFY];
+    item.HVRFY = this.illService.isEmpty(this.formRequesterInformation.value.HVRFY) ? [] : [this.formRequesterInformation.value.HVRFY];
+    item.CLNT = this.illService.isEmpty(this.formRequesterInformation.value.CLNT) ? [] : [this.formRequesterInformation.value.CLNT];
+    item.CLNTP = this.illService.isEmpty(this.formRequesterInformation.value.CLNTP) ? [] : [this.formRequesterInformation.value.CLNTP];
+    item.ODATE = [new DatePipe('en').transform(this.ODATE.value, 'yyyyMMdd')];
+    item._COMMENT_ = this.illService.isEmpty(this.formRequesterInformation.value.SENDCMNT) ? [] : [this.formRequesterInformation.value.SENDCMNT];
+    item.OSTAF = [this.formRequesterInformation.value.OSTAF];
+    item.OADRS = [this.formRequesterInformation.value.OADRS];
+    item.OLDF = this.illService.isEmpty(this.formRequesterInformation.value.OLDF) ? [] : [this.formRequesterInformation.value.OLDF];
+    item.OLDAF = this.illService.isEmpty(this.formRequesterInformation.value.OLDAF) ? [] : [this.formRequesterInformation.value.OLDAF];
+    //item.OEDA = this.illService.isEmpty(this.formRequesterInformation.value.OEDA) ? [] : [this.formRequesterInformation.value.OEDA];
 
     this.requestBody.push(item);
   }
