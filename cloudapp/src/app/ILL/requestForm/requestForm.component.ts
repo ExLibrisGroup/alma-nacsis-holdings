@@ -127,6 +127,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
   rotaFormControlName = ['HMLID', 'HMLNM', 'LOC', 'VOL', 'CLN', 'RGTN'];
   isAllFieldsFilled: boolean = true;
 
+  formControlValuesMap = new Map();
+
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -181,6 +184,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
       })
     ).subscribe();
   }
+
 
   setValueToFormControl() {
     this.copyType.setValue(this.stickyFieldsMap.get('TYPE'));
@@ -374,6 +378,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
   }
 
   order() {
+    //Clear the sticky selection
+    this.formControlValuesMap = new Map()
+    sessionStorage.setItem(RESOURCE_INFORMATION, null);
     //check required fields
     this.setFormGroupTouched(this.formResourceInformation);
     this.setFormGroupTouched(this.formRequesterInformation);

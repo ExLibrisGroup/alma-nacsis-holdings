@@ -13,11 +13,10 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { NacsisCatalogResults, IDisplayLines } from '../../catalog/results-types/results-common'
-import { SearchType , SelectedSearchFieldValues, SelectSearchField, SearchField, FieldName, FieldSize} from '../../user-controls/search-form/search-form-utils';
+import { SearchType, SelectedSearchFieldValues, SelectSearchField, SearchField, FieldName, FieldSize } from '../../user-controls/search-form/search-form-utils';
 import { MembersService } from '../../service/members.service';
 import { concat, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-
 
 @Component({
   selector: 'ILL-holdingSearch',
@@ -46,7 +45,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   holdingSearch: HoldingsSearch;
   localLibraryID: string;
   rawData: string;
-  localMemberInfo:any[];
+  localMemberInfo: any[];
 
   // UI variables
   panelState: boolean = true;
@@ -186,7 +185,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     });
   }
 
-  private addUnderScore(keyField : String) : String {
+  private addUnderScore(keyField: String): String {
     return "_" + keyField + "_";
   }
 
@@ -248,7 +247,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     }
   }
 
-  getFormControlValueByKey(key : String) {
+  getFormControlValueByKey(key: String) {
     return this.fieldsMap.get(key).getFormControl().value;
   }
 
@@ -256,14 +255,14 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     let urlParams = "";
     urlParams = "nacsisId=" + this.nacsisId;
 
-    this.fieldsMap.forEach((value, key)=> {
-      if ( value instanceof SelectSearchField) {
+    this.fieldsMap.forEach((value, key) => {
+      if (value instanceof SelectSearchField) {
         urlParams = this.buildParamField_selectBox(urlParams, key, this.getFormControlValueByKey(key));
       } else {
         urlParams = this.buildParamField_text(urlParams, key, this.getFormControlValueByKey(key));
       }
     });
-   
+
     return urlParams;
   }
 
@@ -276,10 +275,21 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   }
 
   buildParamField_selectBox(urlParams, fieldName, fieldValue) {
+    
     if (!this.illService.isEmpty(fieldValue)) {
       let valueArr = fieldValue;
       urlParams = urlParams + "&" + fieldName;
       let concatValue = "";
+      //Patch for URM-192029 :
+      const reducedArray = new Array();
+      if(fieldName === "_KENCODE_") { 
+        valueArr.forEach(value => {
+          value = value.split(',');
+          reducedArray.push(value);
+        });
+        valueArr = new Set(reducedArray.reduce( ( a, c ) => a.concat( [...c] ), [] ) )
+      }
+
       valueArr.forEach(value => {
         value = value.split(" ")[0];
         concatValue = concatValue.concat(value, ',');
@@ -391,7 +401,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       holding.memberinfo = [];
       this.holdings.push(holding);
     });
-    
+
     return this.holdings;
   }
 
@@ -554,7 +564,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     }
   }
 
-  setMemberInfo(fano){
+  setMemberInfo(fano) {
     let obj = [];
     let queryParams = "";
     //TODO: send the DB also
@@ -564,25 +574,25 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       this.loading = true;
       this.membersService.getSearchResultsFromNacsis(queryParams)
 
-      .subscribe({
-        next: (nacsisResponse) => {
-          if (nacsisResponse.status === this.membersService.OkStatus) {
-            obj = this.convertMemberInfo(nacsisResponse, obj);
-          } else {
+        .subscribe({
+          next: (nacsisResponse) => {
+            if (nacsisResponse.status === this.membersService.OkStatus) {
+              obj = this.convertMemberInfo(nacsisResponse, obj);
+            } else {
+              this.loading = false;
+              this.alert.error(nacsisResponse.errorMessage, { keepAfterRouteChange: true });
+            }
+          },
+          error: e => {
             this.loading = false;
-            this.alert.error(nacsisResponse.errorMessage, { keepAfterRouteChange: true });
+            console.log(e.message);
+            this.alert.error(e.message, { keepAfterRouteChange: true });
+          },
+          complete: () => {
+            this.setSearchResultsDisplay(obj);
+            this.loading = false;
           }
-        },
-        error: e => {
-          this.loading = false;
-          console.log(e.message);
-          this.alert.error(e.message, { keepAfterRouteChange: true });
-        },
-        complete: () => {
-          this.setSearchResultsDisplay(obj);
-          this.loading = false;
-        }
-      });
+        });
     } catch (e) {
       this.loading = false;
       this.alert.error(this.translate.instant('General.Errors.generalError'), { keepAfterRouteChange: true });
@@ -591,26 +601,26 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   convertMemberInfo(header, obj) {
     header.records.forEach(record => {
-      if(!this.illService.isEmpty(record.KENCODE))
-      record.KENCODE = this.convertMapping(record.KENCODE, "KENCODE") + "(" + record.KENCODE + ")";
-      if(!this.illService.isEmpty(record.SETCODE))
-      record.SETCODE = this.convertMapping(record.SETCODE, "SETCODE") + "(" + record.SETCODE + ")";
-      if(!this.illService.isEmpty(record.ORGCODE))
-      record.ORGCODE = this.convertMapping(record.ORGCODE, "ORGCODE") + "(" + record.ORGCODE + ")";
-      if(!this.illService.isEmpty(record.CATFLG))
-      record.CATFLG = this.convertMapping(record.CATFLG, "CATFLG") + "(" + record.CATFLG + ")";
-      if(!this.illService.isEmpty(record.ILLFLG))
-      record.ILLFLG = this.convertMapping(record.ILLFLG, "CATFLG") + "(" + record.ILLFLG + ")";
-      if(!this.illService.isEmpty(record.COPYS))
-      record.COPYS = this.convertMapping(record.COPYS, "COPYS") + "(" + record.COPYS + ")";
-      if(!this.illService.isEmpty(record.LOANS))
-      record.LOANS = this.convertMapping(record.LOANS, "COPYS") + "(" + record.LOANS + ")";
-      if(!this.illService.isEmpty(record.FAXS))
-      record.FAXS = this.convertMapping(record.FAXS, "FAXS") + "(" + record.FAXS + ")";
-      if(!this.illService.isEmpty(record.STAT))
-      record.STAT = this.convertMapping(record.STAT, "FAXS") + "(" + record.STAT + ")";
-      if(!this.illService.isEmpty(record.GRPCODE))
-      record.GRPCODE = this.convertMapping(record.GRPCODE, "GRPCODE") + "(" + record.GRPCODE + ")";
+      if (!this.illService.isEmpty(record.KENCODE))
+        record.KENCODE = this.convertMapping(record.KENCODE, "KENCODE") + "(" + record.KENCODE + ")";
+      if (!this.illService.isEmpty(record.SETCODE))
+        record.SETCODE = this.convertMapping(record.SETCODE, "SETCODE") + "(" + record.SETCODE + ")";
+      if (!this.illService.isEmpty(record.ORGCODE))
+        record.ORGCODE = this.convertMapping(record.ORGCODE, "ORGCODE") + "(" + record.ORGCODE + ")";
+      if (!this.illService.isEmpty(record.CATFLG))
+        record.CATFLG = this.convertMapping(record.CATFLG, "CATFLG") + "(" + record.CATFLG + ")";
+      if (!this.illService.isEmpty(record.ILLFLG))
+        record.ILLFLG = this.convertMapping(record.ILLFLG, "CATFLG") + "(" + record.ILLFLG + ")";
+      if (!this.illService.isEmpty(record.COPYS))
+        record.COPYS = this.convertMapping(record.COPYS, "COPYS") + "(" + record.COPYS + ")";
+      if (!this.illService.isEmpty(record.LOANS))
+        record.LOANS = this.convertMapping(record.LOANS, "COPYS") + "(" + record.LOANS + ")";
+      if (!this.illService.isEmpty(record.FAXS))
+        record.FAXS = this.convertMapping(record.FAXS, "FAXS") + "(" + record.FAXS + ")";
+      if (!this.illService.isEmpty(record.STAT))
+        record.STAT = this.convertMapping(record.STAT, "FAXS") + "(" + record.STAT + ")";
+      if (!this.illService.isEmpty(record.GRPCODE))
+        record.GRPCODE = this.convertMapping(record.GRPCODE, "GRPCODE") + "(" + record.GRPCODE + ")";
       obj.push(record);
     });
     return obj;
@@ -713,15 +723,15 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     }
   }
 
-  fillRowsTillFive(rows){
-    if(rows.length == 5){
+  fillRowsTillFive(rows) {
+    if (rows.length == 5) {
       return rows;
-    }else{
+    } else {
       console.log(rows);
       let maxIndex = rows.length;
-      while(maxIndex < 5){
+      while (maxIndex < 5) {
         let emptyRow = new DisplayHoldingResult();
-        emptyRow.index = maxIndex+1;
+        emptyRow.index = maxIndex + 1;
         rows.push(emptyRow);
         maxIndex++;
       }
@@ -732,6 +742,12 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
 
   next() {
+    //Save the form value for the sticky selection
+    this.fieldsMap.forEach((value, key) => {
+      this.formControlValuesMap.set(key, this.fieldsMap.get(key).getFormControl().value);
+    });
+    sessionStorage.setItem(HOLDINGS_FIELDS_MAP, this.illService.map2Json(this.formControlValuesMap));
+
     this.filterSelectVol(this.selecedData);
     this.fillRowsTillFive(this.selecedData);
     this.router.navigate(['requestForm', this.nacsisId, this.mmsTitle, this.routerSearchType]);
