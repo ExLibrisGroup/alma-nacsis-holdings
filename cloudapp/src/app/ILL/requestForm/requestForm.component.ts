@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, DisplayHoldingResult} from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL, ILL_REQUEST_FIELDS, USER_INFORMATION } from '../../service/base.service';
+import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL, ILL_REQUEST_FIELDS } from '../../service/base.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { IllService, RequestFields, Bibg, HMLG } from '../../service/ill.service';
@@ -239,11 +239,6 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
       this.formRequesterInformation.controls.OSTAF.setValue(this.buildRequesterStaff());
       this.formRequesterInformation.controls.OADRS.setValue(this.buildRequesterAddress());
-      this.storeService.get(USER_INFORMATION).subscribe(info =>{
-        let userInfo = JSON.parse(info);
-        this.formRequesterInformation.controls.CLNT.setValue(userInfo.fullName);
-        this.formRequesterInformation.controls.CLNTP.setValue(userInfo.userGroup);
-      })    
     }
   }
 
