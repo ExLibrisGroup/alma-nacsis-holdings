@@ -127,9 +127,6 @@ export class RequestFormComponent implements OnInit, OnChanges {
   rotaFormControlName = ['HMLID', 'HMLNM', 'LOC', 'VOL', 'CLN', 'RGTN'];
   isAllFieldsFilled: boolean = true;
 
-  formControlValuesMap = new Map();
-
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -184,7 +181,6 @@ export class RequestFormComponent implements OnInit, OnChanges {
       })
     ).subscribe();
   }
-
 
   setValueToFormControl() {
     this.copyType.setValue(this.stickyFieldsMap.get('TYPE'));
@@ -243,6 +239,11 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
       this.formRequesterInformation.controls.OSTAF.setValue(this.buildRequesterStaff());
       this.formRequesterInformation.controls.OADRS.setValue(this.buildRequesterAddress());
+      this.storeService.get(USER_INFORMATION).subscribe(info =>{
+        let userInfo = JSON.parse(info);
+        this.formRequesterInformation.controls.CLNT.setValue(userInfo.fullName);
+        this.formRequesterInformation.controls.CLNTP.setValue(userInfo.userGroup);
+      })    
     }
   }
 
@@ -296,6 +297,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   buildRequesterStaff(){
     let requesterStaff = "";
     requesterStaff = requesterStaff + (this.illService.isEmpty(this.illStaffAuto) ? "" : this.illStaffAuto + " ");
+    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illDeptAuto) ? "" : this.illDeptAuto + " ");
     requesterStaff = requesterStaff + (this.illService.isEmpty(this.illTelAuto) ? "" : "TEL=" + this.illTelAuto + " ");
     requesterStaff = requesterStaff + (this.illService.isEmpty(this.illFaxAuto) ? "" : "FAX=" + this.illFaxAuto);
     return requesterStaff;
@@ -303,8 +305,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
   buildRequesterAddress(){
     let requesterAddress = "";
-    requesterAddress = requesterAddress + (this.illService.isEmpty(this.illNameAuto) ? "" : this.illNameAuto + " ");
+    requesterAddress = requesterAddress + (this.illService.isEmpty(this.illZipAuto) ? "" : "〒" + this.illZipAuto + " ");
     requesterAddress = requesterAddress + (this.illService.isEmpty(this.illAddrAuto) ? "" : this.illAddrAuto + " ");
+    requesterAddress = requesterAddress + (this.illService.isEmpty(this.illNameAuto) ? "" : this.illNameAuto + " ");
     requesterAddress = requesterAddress + (this.illService.isEmpty(this.illDeptAuto) ? "" : this.illDeptAuto);
     return requesterAddress;
   }
@@ -378,9 +381,6 @@ export class RequestFormComponent implements OnInit, OnChanges {
   }
 
   order() {
-    //Clear the sticky selection
-    this.formControlValuesMap = new Map()
-    sessionStorage.setItem(RESOURCE_INFORMATION, null);
     //check required fields
     this.setFormGroupTouched(this.formResourceInformation);
     this.setFormGroupTouched(this.formRequesterInformation);
