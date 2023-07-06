@@ -52,7 +52,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   volFirstAuto: string;
   volLastAuto: string;
   vlyrAuto:string;
-  lccnAuto: string;
+  standardNumber: string;
   dataPubArrayAuto: any[];
   dataVolArrayAuto: any[];
   bibIDAuto: string;
@@ -198,7 +198,6 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.pub_yearAuto = fullRecordData.PUBDT;
     this.quantityAuto = fullRecordData.PHYSP;
     this.sizeAuto = fullRecordData.PHYSS;
-    this.lccnAuto = fullRecordData.LCCN;
     this.dataVolArrayAuto = fullRecordData.VOLG;
     if (this.dataVolArrayAuto != null && this.dataVolArrayAuto.length > 0) {
       this.volFirstAuto = this.dataVolArrayAuto[0].VOL;
@@ -214,8 +213,21 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
     this.formResourceInformation.controls.BIBID.setValue(this.bibIDAuto);
     this.formResourceInformation.controls.BIBNT.setValue(this.buildBibMetadata());
-    if(!this.illService.isEmpty(this.lccnAuto))
-    this.formResourceInformation.controls.STDNO.setValue('LCCN=' + this.lccnAuto);
+    this.setStandardNumber(fullRecordData);
+    if(!this.illService.isEmpty(this.standardNumber))
+    this.formResourceInformation.controls.STDNO.setValue(this.standardNumber);
+  }
+
+  private setStandardNumber(fullRecordData) : void {
+    if(!this.illService.isEmpty(fullRecordData.LCCN)) {
+      this.standardNumber = 'LCCN=' + fullRecordData.LCCN;
+    }
+    else if(!this.illService.isEmpty(fullRecordData.ISSN)) {
+      this.standardNumber = 'ISSN=' + fullRecordData.ISSN;
+    }
+    else if(fullRecordData.VOLG !== undefined && !this.illService.isEmpty(fullRecordData.VOLG[0].ISBN)) {
+      this.standardNumber = 'ISSN=' + fullRecordData.VOLG[0].ISBN;
+    }
   }
 
   extractSelectedData() {
