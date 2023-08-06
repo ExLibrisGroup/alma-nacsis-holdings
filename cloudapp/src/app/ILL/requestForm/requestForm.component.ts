@@ -214,8 +214,6 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
     this.formResourceInformation.controls.BIBID.setValue(this.bibIDAuto);
     this.formResourceInformation.controls.BIBNT.setValue(this.buildBibMetadata());
-    // if(!this.illService.isEmpty(this.lccnAuto))
-    // this.formResourceInformation.controls.STDNO.setValue('LCCN=' + this.lccnAuto);
 
     this.setStandardNumber(fullRecordData);
     if(!this.illService.isEmpty(this.standardNumber))
@@ -224,9 +222,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
   private setStandardNumber(fullRecordData) : void {
     //TODO: is LCCN relevant for Alma?
-    // if(!this.illService.isEmpty(fullRecordData.LCCN)) {
-    //   this.standardNumber = 'LCCN=' + fullRecordData.LCCN;
-    // }
+    if(!this.illService.isEmpty(fullRecordData.LCCN)) {
+      this.standardNumber = 'LCCN=' + fullRecordData.LCCN;
+    }
     if(!this.illService.isEmpty(fullRecordData.ISSN)) {
       this.standardNumber = 'ISSN=' + fullRecordData.ISSN;
     }
