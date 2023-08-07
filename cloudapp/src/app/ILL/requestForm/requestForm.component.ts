@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, DisplayHoldingResult} from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL, ILL_REQUEST_FIELDS, USER_INFORMATION } from '../../service/base.service';
+import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL, ILL_REQUEST_FIELDS } from '../../service/base.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { IllService, RequestFields, BIBG, HMLG, SENDG } from '../../service/ill.service';
@@ -201,7 +201,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.dataVolArrayAuto = fullRecordData.VOLG;
     if (this.dataVolArrayAuto != null && this.dataVolArrayAuto.length > 0) {
       this.volFirstAuto = this.dataVolArrayAuto[0].VOL;
-      if (this.dataVolArrayAuto.length > 1) {
+      if (this.dataVolArrayAuto.length > 0) {
         this.volLastAuto = this.dataVolArrayAuto[this.dataVolArrayAuto.length - 1].VOL;
       }
     }
@@ -304,6 +304,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   buildRequesterStaff(){
     let requesterStaff = "";
     requesterStaff = requesterStaff + (this.illService.isEmpty(this.illStaffAuto) ? "" : this.illStaffAuto + " ");
+    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illDeptAuto) ? "" : this.illDeptAuto + " ");
     requesterStaff = requesterStaff + (this.illService.isEmpty(this.illTelAuto) ? "" : "TEL=" + this.illTelAuto + " ");
     requesterStaff = requesterStaff + (this.illService.isEmpty(this.illFaxAuto) ? "" : "FAX=" + this.illFaxAuto);
     return requesterStaff;
@@ -311,8 +312,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
   buildRequesterAddress(){
     let requesterAddress = "";
-    requesterAddress = requesterAddress + (this.illService.isEmpty(this.illNameAuto) ? "" : this.illNameAuto + " ");
+    requesterAddress = requesterAddress + (this.illService.isEmpty(this.illZipAuto) ? "" : "〒" + this.illZipAuto + " ");
     requesterAddress = requesterAddress + (this.illService.isEmpty(this.illAddrAuto) ? "" : this.illAddrAuto + " ");
+    requesterAddress = requesterAddress + (this.illService.isEmpty(this.illNameAuto) ? "" : this.illNameAuto + " ");
     requesterAddress = requesterAddress + (this.illService.isEmpty(this.illDeptAuto) ? "" : this.illDeptAuto);
     return requesterAddress;
   }

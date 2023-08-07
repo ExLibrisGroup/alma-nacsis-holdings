@@ -280,6 +280,15 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       let valueArr = fieldValue;
       urlParams = urlParams + "&" + fieldName;
       let concatValue = "";
+         //Patch for URM-192029 :
+      const reducedArray = new Array();
+      if(fieldName === "_KENCODE_") { 
+        valueArr.forEach(value => {
+          value = value.split(',');
+          reducedArray.push(value);
+        });
+        valueArr = new Set(reducedArray.reduce( ( a, c ) => a.concat( [...c] ), [] ) )
+      }
       valueArr.forEach(value => {
         value = value.split(" ")[0];
         concatValue = concatValue.concat(value, ',');

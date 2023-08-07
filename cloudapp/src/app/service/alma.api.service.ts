@@ -6,7 +6,6 @@ import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordI
 import { TranslateService } from '@ngx-translate/core';
 import { MembersService } from './members.service';
 import { FieldName } from '../user-controls/search-form/search-form-utils';
-import { USER_INFORMATION } from './base.service';
 
 @Injectable({
   providedIn: 'root'
@@ -315,16 +314,6 @@ export class AlmaApiService {
       mergeMap(response => {
         this.integrationProfile.libraryCode = response.row.filter(row => row.code == "libraryCode")[0].description;
         this.integrationProfile.systemPrefix = response.row.filter(row => row.code == "systemPrefix")[0].description;
-        //return of(this.integrationProfile);
-        url = "/almaws/v1/users/" + this.integrationProfile.userName;
-        return this.restService.call(url);
-      }),
-      mergeMap((response) => {
-        if(!this.isEmpty(response)) {
-          this.userInfo.fullName = response.full_name;
-          this.userInfo.userGroup = response.user_group.value;
-          this.storeService.set(USER_INFORMATION, JSON.stringify(this.userInfo)).subscribe();
-        }
         return of(this.integrationProfile);
       }),
       catchError(error => {
