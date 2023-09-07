@@ -2,9 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { CloudAppEventsService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
-
-import { BaseService } from "./base.service";
+import { CloudAppEventsService, CloudAppStoreService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
+import { BaseService, SELECTED_INTEGRATION_PROFILE } from "./base.service";
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +15,10 @@ export class HoldingsService extends BaseService {
 
   constructor(
     protected eventsService: CloudAppEventsService,
+    protected storeService: CloudAppStoreService,
     protected http: HttpClient
   ) {
-    super(eventsService, http);
+    super(eventsService, storeService, http);
   }
 
   setBaseUrl(initData: InitData) : string {
@@ -34,12 +34,19 @@ export class HoldingsService extends BaseService {
   getHoldingsFromNacsis(nacsisId: any, owner: String){
 
     let fullUrl: string;
+    let queryParams= "&nacsisId=" + nacsisId + "&owner=" + owner;
     
     return this.getInitData().pipe(
       mergeMap(initData => {
-        fullUrl = this.setBaseUrl(initData) + "nacsisId=" + nacsisId + "&owner=" + owner;
-        console.log(fullUrl);
-        return this.getAuthToken()}),
+        fullUrl = this.setBaseUrl(initData);
+        return this.storeService.get(SELECTED_INTEGRATION_PROFILE);
+      }),
+      mergeMap(profile => {
+          let parsedProfile = JSON.parse(profile);
+          fullUrl += "rsLibraryCode=" + parsedProfile.rsLibraryCode +  queryParams;
+          console.log(fullUrl);
+          return this.getAuthToken()
+      }),
       mergeMap(authToken => {
         let headers = this.setAuthHeader(authToken);
         return this.http.get<any>(fullUrl, { headers })}),
@@ -60,9 +67,15 @@ export class HoldingsService extends BaseService {
     let fullUrl: string;
     return this.getInitData().pipe(
       mergeMap(initData => {
-        fullUrl = this.setBaseUrl(initData) +  queryParams;
-        console.log(fullUrl);
-        return this.getAuthToken()}),
+        fullUrl = this.setBaseUrl(initData);
+        return this.storeService.get(SELECTED_INTEGRATION_PROFILE);
+      }),
+      mergeMap(profile => {
+          let parsedProfile = JSON.parse(profile);
+          fullUrl += "rsLibraryCode=" + parsedProfile.rsLibraryCode + "&" +  queryParams;
+          console.log(fullUrl);
+          return this.getAuthToken()
+      }),
       mergeMap(authToken => {
         let headers = this.setAuthHeader(authToken);
         return this.http.get<any>(fullUrl, { headers })}),
@@ -125,11 +138,19 @@ export class HoldingsService extends BaseService {
   deleteHoldingFromNacsis(nacsisId: string, holdingsId: string) {
     
     let fullUrl: string;
+    let queryParams = "&nacsisId=" + nacsisId + '&holdingId=' + holdingsId;
 
     return this.getInitData().pipe(
       mergeMap(initData => {
-        fullUrl = this.setBaseUrl(initData) + "nacsisId=" + nacsisId + '&holdingId=' + holdingsId;
-        return this.getAuthToken()}),
+        fullUrl = this.setBaseUrl(initData); 
+        return this.storeService.get(SELECTED_INTEGRATION_PROFILE);
+      }),
+      mergeMap(profile => {
+          let parsedProfile = JSON.parse(profile);
+          fullUrl += "rsLibraryCode=" + parsedProfile.rsLibraryCode +  queryParams;
+          console.log(fullUrl);
+          return this.getAuthToken()
+      }),
       mergeMap(authToken => {
         let headers = this.setAuthHeader(authToken);
         return this.http.delete<any>(fullUrl, { headers });
@@ -148,12 +169,20 @@ export class HoldingsService extends BaseService {
   saveHoldingToNacsis(nacsisId: string, holding: Holding) {
   
     let fullUrl: string;
+    let queryParams = "&nacsisId=" + nacsisId;
     let body = JSON.stringify(holding);
 
     return this.getInitData().pipe(
       mergeMap(initData => {
-        fullUrl = this.setBaseUrl(initData) + "nacsisId=" + nacsisId;
-        return this.getAuthToken()}),
+        fullUrl = this.setBaseUrl(initData);
+        return this.storeService.get(SELECTED_INTEGRATION_PROFILE);
+      }),
+      mergeMap(profile => {
+          let parsedProfile = JSON.parse(profile);
+          fullUrl += "rsLibraryCode=" + parsedProfile.rsLibraryCode + queryParams;
+          console.log(fullUrl);
+          return this.getAuthToken()
+      }),
       mergeMap(authToken => {
         let headers = this.setAuthHeader(authToken);
         if (this.isEmpty(holding.ID)) { // create/POST

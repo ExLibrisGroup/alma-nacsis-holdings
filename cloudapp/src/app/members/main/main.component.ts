@@ -1,17 +1,15 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { DisplayHoldingResult } from '../../service/holdings.service';
 import { MembersService } from '../../service/members.service';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { NacsisCatalogResults, IDisplayLines, ViewLine } from '../../catalog/results-types/results-common'
 import { SearchType, SearchField, FieldSize, FieldName, SelectSearchField, SelectedSearchFieldValues } from '../../user-controls/search-form/search-form-utils';
-import { FullViewLink } from '../../user-controls/full-view-display/full-view-display.component';
 import { PageEvent } from '@angular/material/paginator';
 import { AlmaApiService } from '../../service/alma.api.service';
 import { RecordSelection, Action } from '../../user-controls/result-card/result-card.component';
 import { Router } from '@angular/router';
-import { MEMBER_RECORD, ROUTING_STATE_KEY, AppRoutingState, QueryParams, FANO_ID } from '../../service/base.service';
+import { MEMBER_RECORD, ROUTING_STATE_KEY, AppRoutingState, QueryParams, FANO_ID, SELECTED_INTEGRATION_PROFILE } from '../../service/base.service';
 import { mergeMap, catchError, } from 'rxjs/operators';
 import { of, concat } from 'rxjs';
 import { MemberSummaryDisplay } from '../../catalog/results-types/member';
@@ -249,8 +247,9 @@ export class MembersSearchComponent implements OnInit {
 
   getSearchResultsFromNacsis(queryParams: string) {
     this.loading = true;
-    this.almaApiService.getIntegrationProfile().pipe(
-      mergeMap(integrationProfile => {
+    this.storeService.get(SELECTED_INTEGRATION_PROFILE).pipe(
+    mergeMap(profile => {
+        const integrationProfile =  JSON.parse(profile)
         console.log("what about the fano!?");
         this.fanoId = integrationProfile.libraryID;
         this.storeService.set(FANO_ID, this.fanoId).subscribe();

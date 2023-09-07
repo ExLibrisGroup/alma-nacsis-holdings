@@ -1,11 +1,10 @@
-import { Injectable } from '@angular/core';
-import { InitData, CloudAppEventsService } from '@exlibris/exl-cloudapp-angular-lib';
+import { InitData, CloudAppEventsService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Observable, of } from 'rxjs';
 import jwt_decode from "jwt-decode";
 import {JwtPayload} from "jwt-decode";
 import { HttpClient } from "@angular/common/http";
 import { SearchType } from '../user-controls/search-form/search-form-utils';
-import { NacsisCatalogResults, ResultsHeader } from '../catalog/results-types/results-common';
+import { NacsisCatalogResults } from '../catalog/results-types/results-common';
 import { TranslateService } from '@ngx-translate/core';
 import { Monograph } from '../catalog/results-types/monographs';
 import { Serial } from '../catalog/results-types/serials';
@@ -19,6 +18,7 @@ export abstract class BaseService {
     protected translate: TranslateService
     protected http: HttpClient;
     protected eventsService: CloudAppEventsService;
+    protected storeService: CloudAppStoreService
     protected  _url: string;
     protected _initData: InitData;
     protected _authToken: string;
@@ -30,10 +30,12 @@ export abstract class BaseService {
     public punctuationRegex = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-.\/:;<=>?\[\]^_`{|}~]/g;
     constructor(
         eventsService: CloudAppEventsService,
+        storeService: CloudAppStoreService,
         http: HttpClient
     ) { 
         this.http = http;
         this.eventsService = eventsService;
+        this.storeService = storeService;
         this.initResultsMap()
     }
 
@@ -147,12 +149,16 @@ export abstract class BaseService {
     }
 
     getSearchResultsFromNacsis(queryParams: string) {
-
         let fullUrl: string;
-
         return this.getInitData().pipe(
             mergeMap(initData => {
-                fullUrl = this.setBaseUrl(initData) + queryParams;
+                fullUrl = this.setBaseUrl(initData)
+                return this.storeService.get(SELECTED_INTEGRATION_PROFILE);
+            }),
+            mergeMap(profile => {
+                let parsedProfile = JSON.parse(profile);
+                fullUrl += "rsLibraryCode=" + parsedProfile.rsLibraryCode + "&" + queryParams;
+                console.log(fullUrl);
                 return this.getAuthToken()
             }),
             mergeMap(authToken => {
@@ -181,8 +187,7 @@ export const VOLUME_LIST = "volumeList";
 export const HOLDINGS_COLUMNS = "holdingsColumns";
 export const HOLDINGS_SEARCH_FIELDS = "holdingsFields";
 export const ILL_REQUEST_FIELDS = "illFields";
-
-
+export const SELECTED_INTEGRATION_PROFILE = "integrationProfile";
 
 
 export enum AppRoutingState {

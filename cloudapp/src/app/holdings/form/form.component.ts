@@ -1,15 +1,14 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { HoldingsService, Holding, HoldingsBook, HoldingsSerial, Header } from '../../service/holdings.service';
-import { holdingFormGroup } from './form-utils';
+import { HoldingsService, Holding, HoldingsBook, HoldingsSerial } from '../../service/holdings.service';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Action } from '../../user-controls/result-card/result-card.component';
-import { MultiSearchField, SearchField, FieldName, FieldSize, SelectSearchField } from '../../user-controls/search-form/search-form-utils';
+import { MultiSearchField, SearchField, FieldName, FieldSize } from '../../user-controls/search-form/search-form-utils';
 import { AlmaApiService } from '../../service/alma.api.service';
 import { VOLUME_LIST_SEPARATOR } from '../main/main.component';
-import { VOLUME_LIST } from '../../service/base.service';
+import { SELECTED_INTEGRATION_PROFILE, VOLUME_LIST } from '../../service/base.service';
 
 
 @Component({
@@ -45,7 +44,6 @@ export class FormComponent implements OnInit {
   locationsList = new Array<string>();
 
   constructor(
-    private almaService: AlmaApiService,
     private route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
@@ -73,9 +71,11 @@ export class FormComponent implements OnInit {
     });
 
     this.loading = true;
-    this.almaService.getIntegrationProfile().subscribe({
+    this.storeService.get(SELECTED_INTEGRATION_PROFILE)
+    .subscribe({
       next: (integrationProfile) => {
-        this.locationsList = integrationProfile.locations;
+        const profile = JSON.parse(integrationProfile)
+        this.locationsList = profile.locations;
         this.load();
       },
       error: e => {

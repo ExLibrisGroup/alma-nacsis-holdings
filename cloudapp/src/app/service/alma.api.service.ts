@@ -5,14 +5,14 @@ import { of } from 'rxjs';
 import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay, AlmaRequestInfo } from '../service/ill.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MembersService } from './members.service';
+import { SELECTED_INTEGRATION_PROFILE } from './base.service';
 import { FieldName } from '../user-controls/search-form/search-form-utils';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlmaApiService {
-
-  integrationProfile :IntegrationProfile;
+  integrationProfilesMap :Map<String,IntegrationProfile>;
   userInfo : UserInformation;
   recordInfoList: AlmaRecordInfo[] = new Array();
   recordsSummaryDisplay: Array<IDisplayLines>;
@@ -271,88 +271,109 @@ export class AlmaApiService {
     return (val === undefined || val == null || val.length <= 0) ? true : false;
   }
  
-
-  getIntegrationProfile() {
+  getAllIntegrationProfiles() {
  
-    let url = "/conf/integration-profiles?type=CENTRAL_CATALOG_INTEGRATION";
+    let urlIntegration = "/conf/integration-profiles?type=CENTRAL_CATALOG_INTEGRATION";
+    let urlLibraries = "/conf/libraries/"
 
-    if(this.integrationProfile != null && this.integrationProfile != undefined) {
-      return of(this.integrationProfile)
+    if(this.integrationProfilesMap != null && this.integrationProfilesMap != undefined) {
+      return of(this.integrationProfilesMap)
     }
-    this.integrationProfile = new IntegrationProfile();
     this.userInfo = new UserInformation();
      
-    return this.restService.call(url).pipe(
+    return this.restService.call(urlIntegration).pipe(
       mergeMap(response => { 
+        this.integrationProfilesMap = new Map<String, IntegrationProfile>();  
         // extract integration profile
-        let nacsisIntegrationProfile = response.integration_profile[0]; // assume can be only one CENTRAL_CATALOG_INTEGRATION
-        this.integrationProfile.libraryID = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_INFORMATION_B" && param.name.value == "nacsisLibraryId")[0].value;
-        this.integrationProfile.userName = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_INFORMATION_B" && param.name.value == "userNameNacsis")[0].value;
+        response.integration_profile?.forEach(nacsisIntegrationProfile => {
+          let integrationProfile = new IntegrationProfile();
+            
+            integrationProfile.libraryID = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_INFORMATION_B" && param.name.value == "nacsisLibraryId")[0].value;
+            integrationProfile.userName = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_INFORMATION_B" && param.name.value == "userNameNacsis")[0].value;
+            integrationProfile.rsLibraryCode = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_INFORMATION_B" && param.name.value == "rsLibrary")[0].value;
 
-        // extract import profiles
-        let ContributionConfigurationParams = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_CONTRIBUTION_CONFIGURATION");
-        this.integrationProfile.repositoryImportProfile = ContributionConfigurationParams.filter(param => param.name.value == "repositoryImportProfile")[0].value; 
-        this.integrationProfile.authorityImportProfileNames = ContributionConfigurationParams.filter(param => param.name.value == "authNames")[0].value;
-        this.integrationProfile.authorityImportProfileUniformTitles = ContributionConfigurationParams.filter(param => param.name.value == "authUniformTitle")[0].value;
-        let queryParams = FieldName.ID + "=" + this.integrationProfile.libraryID;
-        return this.membersService.getSearchResultsFromNacsis(queryParams);
-      }),
-      mergeMap(response => {
-        if (response.status === this.membersService.OkStatus) {
-          this.integrationProfile.locations = response.records[0].LOC;
-        }
-        return of(this.integrationProfile);
+            // extract import profiles
+            let ContributionConfigurationParams = nacsisIntegrationProfile.parameter.filter(param => param.action.value == "CENTRAL_CATALOG_CONTRIBUTION_CONFIGURATION");
+            integrationProfile.repositoryImportProfile = ContributionConfigurationParams.filter(param => param.name.value == "repositoryImportProfile")[0].value; 
+            integrationProfile.authorityImportProfileNames = ContributionConfigurationParams.filter(param => param.name.value == "authNames")[0].value;
+            integrationProfile.authorityImportProfileUniformTitles = ContributionConfigurationParams.filter(param => param.name.value == "authUniformTitle")[0].value;
+            this.integrationProfilesMap.set(integrationProfile.rsLibraryCode, integrationProfile); 
+
+        });
+        //Extract locations:
+        this.integrationProfilesMap.forEach((profile, rsCode) => {
+          let queryParams = FieldName.ID + "=" + profile.libraryID;
+          this.membersService.getSearchResultsFromNacsis(queryParams).subscribe({
+            next : (response)=> {
+              if (response.status === this.membersService.OkStatus) {
+              profile.locations = response.records[0].LOC;
+              }
+            }
+          })
+        });
+        return this.restService.call(urlLibraries);
+      }),mergeMap((libraries) => {
+        libraries.library.forEach(library => {
+          if(this.integrationProfilesMap.has(library.code)) {
+            let profile = this.integrationProfilesMap.get(library.code);
+            profile.rsLibraryName = library.name;
+            this.integrationProfilesMap.set(library.name, profile);
+            this.integrationProfilesMap.delete(library.code);
+          }
+        });
+            return of(this.integrationProfilesMap);
       }),
       catchError(error => {
         console.log("An error occurred while trying to get Nacsis integration profile. " + error.message);
-        return of(this.integrationProfile);
+        return of(this.integrationProfilesMap);
       }),
       mergeMap(() => {
-        url = "/almaws/v1/conf/code-tables/NacsisExternalSystemCodes";
+        let url = "/almaws/v1/conf/code-tables/NacsisExternalSystemCodes";
         return this.restService.call(url);
       }),
       mergeMap(response => {
-        this.integrationProfile.libraryCode = response.row.filter(row => row.code == "libraryCode")[0].description;
-        this.integrationProfile.systemPrefix = response.row.filter(row => row.code == "systemPrefix")[0].description;
-        return of(this.integrationProfile);
+        this.integrationProfilesMap.forEach((profile, rsCode) => {
+          profile.libraryCode = response.row.filter(row => row.code == "libraryCode")[0].description;
+          profile.systemPrefix = response.row.filter(row => row.code == "systemPrefix")[0].description;
+        })
+        return of(this.integrationProfilesMap);
       }),
       catchError(error => {
         console.log("An error occurred while trying to get Nacsis code table parameters. " +  error.message);
-        return of(this.integrationProfile);
+        return of(this.integrationProfilesMap);
       })
     );
   }
-
-  getIntegretionProfileVariable() {
-    return this.integrationProfile;
-  }
-
 
   getAlmaRecodsInfo(records: any[]) {
     let index: number = 0;
     let disCards: AlmaRequestInfo[] = new Array();
     let singleRecordInfo: AlmaRequestInfo;
-
-    records.forEach(record => {
+    this.storeService.get(SELECTED_INTEGRATION_PROFILE)
+    .subscribe({
+      next: (integrationProfile) => {
+       records.forEach(record => {
       if(!this.isEmpty(record.bib)){
-        singleRecordInfo = this.extractDisplayCardInfo(record.bib.anies, this.integrationProfile.libraryCode);
+        singleRecordInfo = this.extractDisplayCardInfo(record.bib.anies, integrationProfile.libraryCode);
       }else{
         if(this.isEmpty(record.anies)){
           singleRecordInfo = this.extractDisplayCardInfoFromRequest(record);
   
          }else{
-          singleRecordInfo = this.extractDisplayCardInfo(record.anies, this.integrationProfile.libraryCode);                 
+          singleRecordInfo = this.extractDisplayCardInfo(record.anies, integrationProfile.libraryCode);                 
         }
       }
-      
       if (singleRecordInfo != null) {                 
         disCards[index]= singleRecordInfo;
       }
       index++;
     })
-
+      },
+      error: e => {
+        console.log(e.message);
+      }
+    });  
     return disCards;
-
   }
 
    setRecordsSummaryDisplay(recordInfoList: AlmaRequestInfo[],type: string){
@@ -376,6 +397,8 @@ export class AlmaApiService {
 }
 
 export class IntegrationProfile {
+    rsLibraryCode : String;
+    rsLibraryName : String;
     libraryCode: string;
     libraryID: string;
     systemPrefix: string;

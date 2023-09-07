@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
-import { ROUTING_STATE_KEY, AppRoutingState } from '../service/base.service';
+import { ROUTING_STATE_KEY, AppRoutingState, SELECTED_INTEGRATION_PROFILE } from '../service/base.service';
 import { concat } from 'rxjs';
+import { MatSelectChange } from '@angular/material/select';
+import { AlmaApiService, IntegrationProfile } from '../service/alma.api.service';
+import { mergeMap } from 'rxjs/operators';
 
 
 @Component({
@@ -11,18 +14,34 @@ import { concat } from 'rxjs';
   })
 
   export class MainMenuComponent implements OnInit {
-    menu : Array<{title:string, text:string, icon:string, link:string}> = this.initMenu();
+
+    @Output() selectionChange: EventEmitter< MatSelectChange >
+
+    menu : Array<{title:string, text:string, icon:string, link:string}>;
+
+    public rsLibrariesNameList;
+    private integrationProfilesMap : Map<String,IntegrationProfile>;
+    public obs;
+    public selected;
 
     constructor(        
-        private storeService: CloudAppStoreService
+        private storeService: CloudAppStoreService,
+        private almaService: AlmaApiService 
     ) { }
 
     ngOnInit() {
+        this.almaService.getAllIntegrationProfiles().pipe(
+            mergeMap(integrationProfiles => {
+                this.integrationProfilesMap = integrationProfiles;
+                this.rsLibrariesNameList = Array.from(integrationProfiles.keys());
+                this.selected = this.rsLibrariesNameList[0];
+                this.menu = this.initMenu();
+                return this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(this.integrationProfilesMap.get(this.selected)));
+            })
+        ).subscribe();
         //Clear the store
         concat(
             this.storeService.remove(AppRoutingState.MainMenuPage),
-            //TODO: check if needed
-            //this.storeService.remove(ROUTING_STATE_KEY),
         ).subscribe();
         this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.MainMenuPage).subscribe();
      }
@@ -56,4 +75,7 @@ import { concat } from 'rxjs';
             );
     }
 
+    selectProfile(event) {
+        this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(this.integrationProfilesMap.get(event.value))).subscribe();
+    }
   }

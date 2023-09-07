@@ -2,14 +2,11 @@ import { Component,  OnInit, OnChanges} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, DisplayHoldingResult} from '../../service/holdings.service';
-import { MatDialog } from '@angular/material/dialog';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL, ILL_REQUEST_FIELDS } from '../../service/base.service';
+import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL, ILL_REQUEST_FIELDS, SELECTED_INTEGRATION_PROFILE } from '../../service/base.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
-import { IllService, RequestFields, BIBG, HMLG, SENDG } from '../../service/ill.service';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { CatalogService } from '../../service/catalog.service';
+import { IllService, RequestFields, BIBG, HMLG } from '../../service/ill.service';
 import { SearchType } from '../../user-controls/search-form/search-form-utils';
 import { initResourceInformationFormGroup, initRequesterInformationFormGroup, initRotaFormGroup } from '../holdingSearch/holdingSearch-utils';
 import { ErrorStateMatcher } from '@angular/material/core';
@@ -59,6 +56,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
   externalAuto: string;
   applicantNameAuto: string;
   applicantAffiliationAuto: string;
+  rsLibraryName: string;
+  rsLibraryCode: string;
 
   illStaffAuto:string;
   illTelAuto:string;
@@ -122,6 +121,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
   OSTAF = new FormControl('', [Validators.required]);
   BIBNT = new FormControl('', [Validators.required]);
   ODATE = new FormControl(new Date().toISOString());
+  RS_LIBRARY = new FormControl('', [Validators.required]);
+
 
   requestBody = new Array();
   rotaFormControlName = ['HMLID', 'HMLNM', 'LOC', 'VOL', 'CLN', 'RGTN'];
@@ -131,14 +132,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
     private route: ActivatedRoute,
     private router: Router,
     private illService: IllService,
-    private catalogService: CatalogService,
-    //private http: HttpClient,
     private translate: TranslateService,
     private nacsis: HoldingsService,
-    private dialog: MatDialog,
     private alert: AlertService,
-    private _liveAnnouncer: LiveAnnouncer,
-    private routeInfo: ActivatedRoute,
     private storeService: CloudAppStoreService
   ) {
     this.owners = [
@@ -166,6 +162,12 @@ export class RequestFormComponent implements OnInit, OnChanges {
       }),
       mergeMap(localMemberInfo => {
         this.localMemberInfo = JSON.parse(localMemberInfo);
+        return this.storeService.get(SELECTED_INTEGRATION_PROFILE);
+      }),
+       mergeMap(profile =>{
+        let parsedProfile = JSON.parse(profile);
+        this.rsLibraryCode = parsedProfile.rsLibraryCode;
+        this.rsLibraryName = parsedProfile.rsLibraryName;
         return this.storeService.get(ILL_REQUEST_FIELDS);
       }),
       mergeMap(stickyFields => {
@@ -177,7 +179,6 @@ export class RequestFormComponent implements OnInit, OnChanges {
         this.extractFullData(this.fullRecordData);
         this.extractLocalMemberInfo(this.localMemberInfo);
         return of();
-        
       })
     ).subscribe();
   }
@@ -251,6 +252,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
       this.formRequesterInformation.controls.OSTAF.setValue(this.buildRequesterStaff());
       this.formRequesterInformation.controls.OADRS.setValue(this.buildRequesterAddress());
+      this.formRequesterInformation.controls.RS_LIBRARY.setValue(this.rsLibraryName);
+
     }
   }
 
@@ -472,13 +475,14 @@ export class RequestFormComponent implements OnInit, OnChanges {
     item.OLDAF = this.illService.isEmpty(this.formRequesterInformation.value.OLDAF) ? [] : [this.formRequesterInformation.value.OLDAF];
     //item.OEDA = this.illService.isEmpty(this.formRequesterInformation.value.OEDA) ? [] : [this.formRequesterInformation.value.OEDA];
 
+
     this.requestBody.push(item);
   }
 
   checkFieldRequired() {
     let needToCheckFields = [this.requestType.value, this.payClass.value,
     this.formResourceInformation.value.BIBNT,  this.formRequesterInformation.value.OSTAF,
-    this.formRequesterInformation.value.OADRS];
+    this.formRequesterInformation.value.OADRS, this.formRequesterInformation.value.RS_LIBRARY];
     this.isAllFieldsFilled = true;
     needToCheckFields.forEach(fieldValue => {
       if (this.isAllFieldsFilled) {

@@ -3,12 +3,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CloudAppEventsService, Entity, EntityType, CloudAppRestService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Router } from '@angular/router';
 import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo, AlmaRequestInfo, AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay} from '../../service/ill.service';
-import {  catchError, tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { AlmaApiService, IntegrationProfile } from '../../service/alma.api.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY, LIBRARY_ID_KEY ,LIBRARY_MEMBERINFO_KEY} from '../../service/base.service';
+import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY, LIBRARY_ID_KEY ,LIBRARY_MEMBERINFO_KEY, SELECTED_INTEGRATION_PROFILE} from '../../service/base.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { HoldingsService} from '../../service/holdings.service';
 import { MembersService } from '../../service/members.service';
 import { concat } from 'rxjs';
 
@@ -57,11 +56,10 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
 ).subscribe();    this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => { 
       this.loading = true;     
       try{
-      this.almaApiService.getIntegrationProfile()
+        this.storeService.get(SELECTED_INTEGRATION_PROFILE)
       .subscribe( {
         next : integrationProfile => {
-            this.integrationProfile = integrationProfile;
-
+          this.integrationProfile =  JSON.parse(integrationProfile)
           this.storeService.set(LIBRARY_ID_KEY,integrationProfile.libraryID).subscribe();
           let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS || e.type == EntityType.BORROWING_REQUEST );
           let disCards: AlmaRequestInfo[] = new Array(rawBibs.length);
