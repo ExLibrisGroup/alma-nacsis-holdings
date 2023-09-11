@@ -300,17 +300,6 @@ export class AlmaApiService {
             this.integrationProfilesMap.set(integrationProfile.rsLibraryCode, integrationProfile); 
 
         });
-        //Extract locations:
-        this.integrationProfilesMap.forEach((profile, rsCode) => {
-          let queryParams = FieldName.ID + "=" + profile.libraryID;
-          this.membersService.getSearchResultsFromNacsis(queryParams).subscribe({
-            next : (response)=> {
-              if (response.status === this.membersService.OkStatus) {
-              profile.locations = response.records[0].LOC;
-              }
-            }
-          })
-        });
         return this.restService.call(urlLibraries);
       }),mergeMap((libraries) => {
         libraries.library.forEach(library => {
