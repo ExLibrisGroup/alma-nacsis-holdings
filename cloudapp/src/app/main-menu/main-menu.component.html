@@ -3,6 +3,7 @@
   <section>
 <div *ngIf="rsLibrariesNameList.length>1"> 
   <mat-label translate>ILL.RequestForm.rsLibrary</mat-label>
+  <br>
   <mat-select required="true"[(value)]="selected" (selectionChange)="selectProfile($event)" class="dropDown" required>
     <mat-option *ngFor="let profile of rsLibrariesNameList" [value]="profile">
       {{profile}}
