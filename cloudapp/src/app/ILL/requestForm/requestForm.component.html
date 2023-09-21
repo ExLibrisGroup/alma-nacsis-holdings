@@ -274,10 +274,10 @@
                             <input matInput formControlName="SENDCMNT">
                         </mat-form-field>
 
-                         <mat-form-field class="form-card-inputs-medium" appearance="outline" disabled="true">
+                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.rsLibrary</mat-label>
                             <input cdkTextareaAutosize matInput formControlName="RS_LIBRARY" [errorStateMatcher]="matcher"
-                                required>
+                                 required readonly>
                             <mat-error *ngIf="RS_LIBRARY.hasError('required')">
                                 {{'ILL.Errors.warningInputValue' | translate}}
                             </mat-error>

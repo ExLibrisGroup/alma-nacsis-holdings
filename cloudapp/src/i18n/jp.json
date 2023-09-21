@@ -233,7 +233,9 @@
     "RequesterAddress":"依頼館宛名",
     "LocalData":"ローカルデータ",
     "LocalAccountingData":"ローカル会計データ",
-    "ElectronicShippingAddress":"電子的配送先アドレス"
+    "ElectronicShippingAddress":"電子的配送先アドレス",
+    "rsLibrary":"参加組織略称"
+
     },
     "MemberInfo":{
       "MemberID":"Member ID:",
