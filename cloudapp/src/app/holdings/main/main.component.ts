@@ -65,7 +65,7 @@ export class MainComponent implements OnInit, OnDestroy {
                 forkJoin(rawBibs.map(entity => this.getRecord(entity)))
                     .subscribe({
                         next: (records: any[]) => {
-                            disCards = this.almaApiService.getAlmaRecodsInfo(records);
+                            disCards = this.almaApiService.getAlmaRecodsInfo(records, this.integrationProfile);
                         },
                         error: e => {
                             this.loading = false;

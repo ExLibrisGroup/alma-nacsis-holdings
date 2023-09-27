@@ -334,14 +334,11 @@ export class AlmaApiService {
     );
   }
 
-  getAlmaRecodsInfo(records: any[]) {
+  getAlmaRecodsInfo(records: any[], integrationProfile: IntegrationProfile) {
     let index: number = 0;
     let disCards: AlmaRequestInfo[] = new Array();
     let singleRecordInfo: AlmaRequestInfo;
-    this.storeService.get(SELECTED_INTEGRATION_PROFILE)
-    .subscribe({
-      next: (integrationProfile) => {
-       records.forEach(record => {
+    records.forEach(record => {
       if(!this.isEmpty(record.bib)){
         singleRecordInfo = this.extractDisplayCardInfo(record.bib.anies, integrationProfile.libraryCode);
       }else{
@@ -356,12 +353,7 @@ export class AlmaApiService {
         disCards[index]= singleRecordInfo;
       }
       index++;
-    })
-      },
-      error: e => {
-        console.log(e.message);
-      }
-    });  
+    })  
     return disCards;
   }
 
