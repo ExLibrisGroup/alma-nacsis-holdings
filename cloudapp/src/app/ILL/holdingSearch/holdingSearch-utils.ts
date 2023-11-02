@@ -49,6 +49,7 @@ export const initRequesterInformationFormGroup = (): FormGroup =>{
     ODATE:new FormControl(new Date().toISOString()),
 
     SENDCMNT:new FormControl(),
+    RS_LIBRARY:new FormControl('', [Validators.required]),
     OSTAF:new FormControl('', [Validators.required]),
     OADRS:new FormControl('', [Validators.required]),
     OLDF:new FormControl(),

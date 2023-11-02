@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { CloudAppEventsService, InitData, CloudAppRestService, HttpMethod } from '@exlibris/exl-cloudapp-angular-lib';
-import { BaseService } from "./base.service";
+import { CloudAppEventsService, InitData, CloudAppRestService, HttpMethod, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
+import { BaseService, SELECTED_INTEGRATION_PROFILE } from "./base.service";
 import { mergeMap } from 'rxjs/operators';
-import { of } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-
-
 import { SearchType } from '../user-controls/search-form/search-form-utils';
 import { AlmaApiService, IntegrationProfile } from './alma.api.service';
 import { Serial } from '../catalog/results-types/serials';
@@ -23,9 +20,10 @@ export class CatalogService extends BaseService {
         protected http: HttpClient,
         protected almaApi: AlmaApiService,
         private restService: CloudAppRestService,
-        protected translate: TranslateService
+        protected translate: TranslateService,
+        protected storeService: CloudAppStoreService
     ) {
-        super(eventsService, http);
+        super(eventsService, storeService, http);
     }
 
     setBaseUrl(initData: InitData): string {
@@ -37,6 +35,23 @@ export class CatalogService extends BaseService {
     getSearchResultsFromNacsis(queryParams: string){
 
         let fullUrl: string;
+
+        return this.getInitData().pipe(
+            mergeMap(initData => {
+                fullUrl = this.setBaseUrl(initData);
+                return this.storeService.get(SELECTED_INTEGRATION_PROFILE);
+            }),
+            mergeMap(profile => {
+                let parsedProfile = JSON.parse(profile);
+                fullUrl += "rsLibraryCode=" + parsedProfile.rsLibraryCode + "&" +  queryParams;
+                return this.getAuthToken()
+             }),
+             mergeMap(authToken => {
+                let headers = this.setAuthHeader(authToken);
+                return this.http.get<any>(fullUrl, { headers })
+            })
+        );
+
         
         return this.getInitData().pipe(
             mergeMap(initData => {
@@ -68,9 +83,18 @@ export class CatalogService extends BaseService {
     }
 
     importRecordToAlma(searchType: SearchType, rawData: string) {
-        return this.almaApi.getIntegrationProfile().pipe(
+
+
+
+
+        // return this.almaApi.getIntegrationProfile()
+        return this.storeService.get(SELECTED_INTEGRATION_PROFILE)
+        .pipe(
             mergeMap(integrationProfile => {
-                let factoryValues = this.integrationProfileFactory(searchType, integrationProfile);
+                //let factoryValues = this.integrationProfileFactory(searchType, integrationProfile);
+                const profile = JSON.parse(integrationProfile)
+                let factoryValues = this.integrationProfileFactory(searchType, profile);
+
                 let body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><" + factoryValues.typeTag + "><record_format>catp</record_format><record><![CDATA[" + rawData + "]]></record></" + factoryValues.typeTag + ">";
                 let Request = {
                     url: "/almaws/v1/bibs" + factoryValues.urlType + "?import_profile=" + factoryValues.ID,

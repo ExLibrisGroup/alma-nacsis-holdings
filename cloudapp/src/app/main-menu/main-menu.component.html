@@ -1,6 +1,25 @@
-<section>
   <p>{{ 'MainMenu.Intro' | translate }}</p>
+  
+  <section>
+<div *ngIf="rsLibrariesNameList.length>1"> 
+ <mat-form-field>
+  <mat-label translate>ILL.RequestForm.rsLibrary</mat-label>
+  <mat-select required="true"[(value)]="selected" (selectionChange)="selectProfile($event)" class="dropDown" required>
+    <mat-option *ngFor="let profile of rsLibrariesNameList" [value]="profile">
+      {{profile}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+
+</section>
+    <section>
+<br><br>
   <eca-menu>
     <eca-menu-item *ngFor="let item of menu" [title]="item.title | translate" [routerLink]="item.link" [icon]="item.icon">{{item.text | translate}}</eca-menu-item>
   </eca-menu>
-</section>
+  </section>
+
+
+

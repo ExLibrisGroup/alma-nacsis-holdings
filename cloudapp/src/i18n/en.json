@@ -234,6 +234,7 @@
     "Comments":"Comments",
     "RequesterStaff":"Requester staff",
     "RequesterAddress":"Requester address",
+    "rsLibrary":"Library",
     "LocalData":"Local data",
     "LocalAccountingData":"Local accounting data",
     "ElectronicShippingAddress":"Electronic shipping address"

@@ -10,3 +10,13 @@ eca-menu {
     }
   }
 }
+
+
+.dropDown {
+  ::ng-deep .mat-select-value {
+    max-width: none !important;
+    width: auto !important;
+    display:flex;
+    min-width: 160px;
+    }
+}

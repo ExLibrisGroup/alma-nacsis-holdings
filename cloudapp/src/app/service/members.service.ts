@@ -1,9 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { mergeMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { CloudAppEventsService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppEventsService, CloudAppStoreService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
 import { ResultsHeader } from '../catalog/results-types/results-common';
-import { BaseService } from "./base.service";
+import { BaseService, SELECTED_INTEGRATION_PROFILE } from "./base.service";
 import { AlmaApiService } from "./alma.api.service";
 import { MemberUpdate } from "../catalog/results-types/member";
 
@@ -18,9 +18,10 @@ export class MembersService extends BaseService {
 
   constructor(
     protected eventsService: CloudAppEventsService,
+    protected storeService: CloudAppStoreService,
     protected http: HttpClient
   ) {
-    super(eventsService, http);
+    super(eventsService, storeService, http);
   }
 
   setBaseUrl(initData: InitData) : string {
@@ -32,12 +33,20 @@ export class MembersService extends BaseService {
   saveMemberToNacsis(member: MemberUpdate) {
   
     let fullUrl: string;
+    let queryParams= "&dataBase=" + "MEMBER&";
     let body = JSON.stringify(member);
 
     return this.getInitData().pipe(
       mergeMap(initData => {
-        fullUrl = this.setBaseUrl(initData) + "dataBase=" + "MEMBER&";
-        return this.getAuthToken()}),
+        fullUrl = this.setBaseUrl(initData)
+         return this.storeService.get(SELECTED_INTEGRATION_PROFILE);
+      }),
+      mergeMap(profile => {
+          let parsedProfile = JSON.parse(profile);
+          fullUrl += "rsLibraryCode=" + parsedProfile.rsLibraryCode +  queryParams;
+          console.log(fullUrl);
+          return this.getAuthToken()
+      }),
       mergeMap(authToken => {
         let headers = this.setAuthHeader(authToken);
         fullUrl = fullUrl + "ID=" + member.ID

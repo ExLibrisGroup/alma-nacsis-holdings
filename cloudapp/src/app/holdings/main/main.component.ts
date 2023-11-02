@@ -5,12 +5,10 @@ import { Router } from '@angular/router';
 import { HoldingsService } from '../../service/holdings.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-
-import { map, catchError, switchMap, tap } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { AlmaApiService, IntegrationProfile } from '../../service/alma.api.service';
-import { AppRoutingState, ROUTING_STATE_KEY, VOLUME_LIST } from '../../service/base.service';
-
-import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay, AlmaRequestInfo} from '../../service/ill.service';
+import { AppRoutingState, ROUTING_STATE_KEY, SELECTED_INTEGRATION_PROFILE, VOLUME_LIST } from '../../service/base.service';
+import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecord,AlmaRecordDisplay, AlmaRequestInfo} from '../../service/ill.service';
 
 
 @Component({
@@ -30,7 +28,6 @@ export class MainComponent implements OnInit, OnDestroy {
   processed = 0;
   integrationProfile: IntegrationProfile;
   recordsSummaryDisplay: Array<IDisplayLines>;
-  private almaResultsData: AlmaRecordsResults;
   baseRecordInfoList: Array<BaseRecordInfo> = new Array();
   recordInfoList: AlmaRequestInfo[] = new Array();
   almaRecord: AlmaRecord = new AlmaRecord('',this.translate,this.illService);
@@ -41,7 +38,6 @@ export class MainComponent implements OnInit, OnDestroy {
     private nacsis: HoldingsService,
     private translate: TranslateService,
     private alert: AlertService,
-
     private restService: CloudAppRestService,
     private almaApiService: AlmaApiService,
     private illService: IllService,
@@ -59,18 +55,17 @@ export class MainComponent implements OnInit, OnDestroy {
 
       this.loading = true;
       try{
-      this.almaApiService.getIntegrationProfile()
+        this.storeService.get(SELECTED_INTEGRATION_PROFILE)
         .subscribe( {
             next : integrationProfile => {
-                this.integrationProfile = integrationProfile;
-
+                this.integrationProfile =  JSON.parse(integrationProfile)
                 let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS);
                 let disCards: AlmaRequestInfo[] = new Array(rawBibs.length);     
 
                 forkJoin(rawBibs.map(entity => this.getRecord(entity)))
                     .subscribe({
                         next: (records: any[]) => {
-                            disCards = this.almaApiService.getAlmaRecodsInfo(records);
+                            disCards = this.almaApiService.getAlmaRecodsInfo(records, this.integrationProfile);
                         },
                         error: e => {
                             this.loading = false;

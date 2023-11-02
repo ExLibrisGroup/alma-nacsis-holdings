@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { SearchType, SearchField, FieldSize, FieldName } from '../user-controls/search-form/search-form-utils';
+import { SearchType, SearchField, FieldName } from '../user-controls/search-form/search-form-utils';
 import { HttpClient } from "@angular/common/http";
 import { mergeMap } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { CloudAppEventsService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
+import { CloudAppEventsService, CloudAppStoreService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
 import { HoldingsService } from '../service/holdings.service';
-import { BaseService, QueryParams } from "./base.service";
+import { BaseService, QueryParams, SELECTED_INTEGRATION_PROFILE } from "./base.service";
 
 @Injectable({
   providedIn: 'root'
@@ -59,11 +58,12 @@ export class IllService extends BaseService {
 
   constructor(
     protected eventsService: CloudAppEventsService,
+    protected storeService: CloudAppStoreService,
     protected http: HttpClient,
     private nacsis: HoldingsService,
     protected translate: TranslateService
   ) {
-    super(eventsService, http);
+    super(eventsService, storeService, http);
   }
 
   isEmpty(val) {
@@ -159,16 +159,20 @@ export class IllService extends BaseService {
   createILLrequest(requestBody) {
     let fullUrl: string;
     let body = JSON.stringify(requestBody);
-    //body = body.substring(1);
-    //body = body.substring(0,body.length-1);
-
     let database = requestBody[0].database;
+    let queryParams= "dataBase=" + database;
+    
     console.log(body);
     return this.getInitData().pipe(
       mergeMap(initData => {
-        fullUrl = this.setBaseUrl(initData) + "dataBase=" + database;
-        return this.getAuthToken()
-      }),
+        fullUrl = this.setBaseUrl(initData);
+        return this.storeService.get(SELECTED_INTEGRATION_PROFILE);
+        }),
+      mergeMap(profile => {
+          let parsedProfile = JSON.parse(profile);
+          fullUrl += "rsLibraryCode=" + parsedProfile.rsLibraryCode + "&" +  queryParams;
+          return this.getAuthToken()
+        }),
       mergeMap(authToken => {
         let headers = this.setAuthHeader(authToken);
         return this.http.post<any>(fullUrl, body, { headers });
@@ -469,6 +473,7 @@ export class RequestFields {
   OMLIDS: string[];
   AMLIDS: string[];
   _COMMENT_: string[];
+  EXTERNAL_ID: string = "";
 
   BIBG: BIBG[];
   HMLG: HMLG[];
