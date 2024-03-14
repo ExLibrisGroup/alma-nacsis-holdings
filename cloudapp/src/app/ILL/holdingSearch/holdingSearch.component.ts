@@ -379,6 +379,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
         }
       }
 
+      holding.regionCode = nacsisHoldingsResult.KENCODE;
       holding.region = this.convertMapping(nacsisHoldingsResult.KENCODE, 'KENCODE');
       holding.establisher = this.convertMapping(nacsisHoldingsResult.SETCODE, 'SETCODE');
       holding.institutionType = this.convertMapping(nacsisHoldingsResult.ORGCODE, 'ORGCODE');
