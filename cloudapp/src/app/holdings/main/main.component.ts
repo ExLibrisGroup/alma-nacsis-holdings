@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { HoldingsService } from '../../service/holdings.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { map, catchError, tap } from 'rxjs/operators';
+import { map, catchError, tap, mergeMap } from 'rxjs/operators';
 import { AlmaApiService, IntegrationProfile } from '../../service/alma.api.service';
 import { AppRoutingState, ROUTING_STATE_KEY, SELECTED_INTEGRATION_PROFILE, VOLUME_LIST } from '../../service/base.service';
 import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecord,AlmaRecordDisplay, AlmaRequestInfo} from '../../service/ill.service';
@@ -21,6 +21,7 @@ export class MainComponent implements OnInit, OnDestroy {
   private pageLoad$: Subscription;
   bibs: Entity[] = [];
   selected: string;
+  owner;
   loading = false;
   title: string;
   message: string;
@@ -110,26 +111,37 @@ export class MainComponent implements OnInit, OnDestroy {
 
       try {
         let bib = this.recordInfoList.filter(almaRecord => almaRecord.nacsisId ==this.selected );
-        this.nacsis.getHoldingsFromNacsis(this.selected, "Mine")
-          .subscribe({
-            next: (header) => {
-              if (header.status === this.nacsis.OkStatus) {
-                concat(
-                  this.storeService.set(VOLUME_LIST, bib[0].volumes.join(VOLUME_LIST_SEPARATOR)),
-                  this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.HoldingsMainPage)
-                ).subscribe();
-                this.router.navigate(['/holdings', this.selected, bib[0].title]);
-              } else {
-                this.alert.error(header.errorMessage, { keepAfterRouteChange: true });
-              }
-            },
-            error: e => {
-              this.loading = false;
-              console.log(e);
-              this.alert.error(e.message, { keepAfterRouteChange: true });
-            },
-            complete: () => this.loading = false
-          });
+
+
+        this.storeService.get(this.nacsis.OwnerKey).pipe(
+              mergeMap(owner => {
+                if(!this.nacsis.isEmpty(owner)) {
+                  this.owner = owner;
+                } else if(this.nacsis.isEmpty(this.selected)) {
+                  this.owner = '1'; // owner = Mine
+                } 
+                return this.nacsis.getHoldingsFromNacsis(this.selected, this.owner);
+              }),
+              mergeMap(header =>{
+                 if (header.status === this.nacsis.OkStatus) {
+                  concat(
+                    this.storeService.set(VOLUME_LIST, bib[0].volumes.join(VOLUME_LIST_SEPARATOR)),
+                    this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.HoldingsMainPage)
+                  ).subscribe();
+                  this.router.navigate(['/holdings', this.selected, bib[0].title]);
+                 } else {
+                  this.alert.error(header.errorMessage, { keepAfterRouteChange: true });
+                 }
+                  this.loading = false
+                 return of();
+              }),
+              catchError(e => {
+                  this.loading = false;
+                  console.log(e);
+                  this.alert.error(e.message, { keepAfterRouteChange: true });
+                  return of();
+              })
+            ).subscribe();
       } catch (e) {
         this.loading = false;
         console.log(e);

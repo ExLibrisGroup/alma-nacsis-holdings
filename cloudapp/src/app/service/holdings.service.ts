@@ -332,6 +332,7 @@ export class DisplayHoldingResult{
   cln: string = "";//serial only
   ldf: string = "";//serial only
   region: string = "";
+  regionCode: string = "";
   establisher: string = "";
   institutionType: string = "";
   fee: string = "";
