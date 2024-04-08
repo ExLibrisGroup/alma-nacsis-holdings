@@ -154,7 +154,7 @@
         <td [hidden]="!columns['HLYR']" mat-cell *matCellDef="let element"> {{element.hlyr}} </td>
       </ng-container>
 
-      <ng-container matColumnDef="region">
+      <ng-container matColumnDef="regionCode">
         <th [hidden]="!columns['KENCODE']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.KENCODE' | translate}} </th>
         <td [hidden]="!columns['KENCODE']" mat-cell *matCellDef="let element"> {{element.region}} </td>

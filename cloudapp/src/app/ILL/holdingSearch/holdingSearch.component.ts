@@ -329,11 +329,11 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   getDisplayedColumns(): string[] {
     if (this.isBook) {
-      return ['index', 'select', 'name', 'vol', 'region',
+      return ['index', 'select', 'name', 'vol', 'regionCode',
         'establisher', 'institutionType', 'location', 'photoCopy_fee', 'ill', 'stat',
         'photoCopy', 'loan', 'fax', 'actionsColumn'];
     } else {
-      return ['index', 'select', 'name', 'hlv', 'hlyr', 'region',
+      return ['index', 'select', 'name', 'hlv', 'hlyr', 'regionCode',
         'establisher', 'institutionType', 'location', 'photoCopy_fee', 'ill', 'stat',
         'photoCopy', 'loan', 'fax', 'actionsColumn'];
     }
