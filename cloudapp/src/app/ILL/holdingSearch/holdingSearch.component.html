@@ -145,7 +145,7 @@
       <ng-container matColumnDef="hlv">
         <th [hidden]="!columns['HLV']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
           {{'ILL.HoldingSearchResult.HLV' | translate}} </th>
-        <td [hidden]="!columns['HLV']" mat-cell *matCellDef="let element"> {{element.hlv}} </td>
+        <td [hidden]="!columns['HLV']" mat-cell *matCellDef="let element"> {{ellipsify(element.hlv, 30)}} </td>
       </ng-container>
 
       <ng-container matColumnDef="hlyr">
