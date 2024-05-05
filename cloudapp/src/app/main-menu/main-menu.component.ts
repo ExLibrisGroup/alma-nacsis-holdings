@@ -51,9 +51,8 @@ import { off } from 'process';
             }),
             mergeMap(response => {
               if (response.status === this.membersService.OkStatus) {
-                selectedProfile.location = response.records[0].LOC;
+                return of(selectedProfile.location = response.records[0].LOC);
               }
-            return this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(selectedProfile));
             })
         ).subscribe();
         //Clear the store
@@ -61,6 +60,10 @@ import { off } from 'process';
             this.storeService.remove(AppRoutingState.MainMenuPage),
         ).subscribe();
         this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.MainMenuPage).subscribe();
+     }
+
+     ngOnChange() {
+        console.log("main menu change");
      }
     
     initMenu(): Array<{title:string, text:string, icon:string, link:string}>{
@@ -92,22 +95,10 @@ import { off } from 'process';
             );
     }
 
-    selectProfile(event) {
+     selectProfile(event) {
         let selectedProfile;
-        of(JSON.stringify(this.integrationProfilesMap.get(event.value))).pipe(
-             mergeMap(profile => {
-                selectedProfile = JSON.parse(profile)
-                let queryParams = FieldName.ID + "=" + selectedProfile.libraryID;
-                return this.membersService.getSearchResultsFromNacsis(queryParams);
-
-            }),
-            mergeMap(response => {
-              if (response.status === this.membersService.OkStatus) {
-                selectedProfile.location = response.records[0].LOC;
-              }
-            return this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(selectedProfile));
-            })
-        ).subscribe();
-        //this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(this.integrationProfilesMap.get(event.value)));
+        let profile = JSON.stringify(this.integrationProfilesMap.get(event.value));
+        selectedProfile = JSON.parse(profile);
+        this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(selectedProfile)).subscribe();
     }
   }
