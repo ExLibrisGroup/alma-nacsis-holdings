@@ -75,7 +75,7 @@ export class FormComponent implements OnInit {
     .subscribe({
       next: (integrationProfile) => {
         const profile = JSON.parse(integrationProfile)
-        this.locationsList = profile.location;
+        this.locationsList = profile.locations;
         this.load();
       },
       error: e => {

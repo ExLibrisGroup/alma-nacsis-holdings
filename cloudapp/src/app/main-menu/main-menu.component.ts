@@ -51,8 +51,9 @@ import { off } from 'process';
             }),
             mergeMap(response => {
               if (response.status === this.membersService.OkStatus) {
-                return of(selectedProfile.location = response.records[0].LOC);
+                this.integrationProfilesMap.get(this.selected).locations = response.records[0].LOC;
               }
+            return this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(this.integrationProfilesMap.get(this.selected)));
             })
         ).subscribe();
         //Clear the store
