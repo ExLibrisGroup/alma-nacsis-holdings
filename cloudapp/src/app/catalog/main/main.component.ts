@@ -1,5 +1,5 @@
 import { Component, AfterViewInit , ViewChild, TemplateRef } from '@angular/core';
-import { SearchType, SearchField, FieldSize, FieldName, stopWords, danceCharacters, charactersToRemoveForAKEY, delimiters } from '../../user-controls/search-form/search-form-utils';
+import { SearchType, SearchField, FieldSize, FieldName, stopWords } from '../../user-controls/search-form/search-form-utils';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { CatalogService } from '../../service/catalog.service';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
@@ -163,33 +163,17 @@ export class CatalogMainComponent implements AfterViewInit {
             field.getFormControl().setValue(removalStopWords);
         })
     }
-    removeSpecialCharacters(SearchType: SearchType, fieldsToHandle :string[] ,charectersToRemove:RegExp) {
-        let valuableField = this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).filter(field => (fieldsToHandle.includes(field.getKey())) && (field.getFormControl().value != null) && (field.getFormControl().value != ""));
-        valuableField.forEach(field => {
-            let afterRemoval = field.getFormControl().value.replace(charectersToRemove, '');
-            field.getFormControl().setValue(afterRemoval);
-        })
-    }
+
     search() {
         // Generating the URL by the fields' Form Control
         let urlParams = "";
         
         //Defining the fields from which we will remove the stop-words:
         const fieldsToRemoveStopWords = [FieldName.PTBL];
-        const fieldsToRemoveAllDanceChars=[FieldName.AKEY];
-        const fieldsToRemoveDelimiters=[FieldName.FTITLE];
-
-       
         //Remove the stop-words.
         this.removeStopWords(this.currentSearchType, fieldsToRemoveStopWords);
-        
         let valuableFields = this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).filter(field => (field.getFormControl().value != null) && (field.getFormControl().value != ""));
-        let valuableFeildsNames=valuableFields.map(field => field.getKey());
-          
-        this.removeSpecialCharacters(this.currentSearchType,valuableFeildsNames,danceCharacters);
-        this.removeSpecialCharacters(this.currentSearchType,fieldsToRemoveAllDanceChars,charactersToRemoveForAKEY);
-        this.removeSpecialCharacters(this.currentSearchType,fieldsToRemoveDelimiters,delimiters);
-      
+        
         if (valuableFields.length > 0){
             urlParams = urlParams + QueryParams.PageIndex + "=0&" + QueryParams.PageSize + "=20";
             urlParams = urlParams + "&" + QueryParams.SearchType + "=" + this.currentSearchType;
