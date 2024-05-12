@@ -778,4 +778,12 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
    getConfigLabel(event) {
     return this.translate.instant('ILL.HoldingSearchResult.' + event);
    }
+   
+   ellipsify (str, length) {
+    if (str.length > length) {
+      return (str.substring(0, length) + "...");
+    } else {
+      return str;
+    }
+}
 }
