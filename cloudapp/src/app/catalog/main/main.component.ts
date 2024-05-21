@@ -14,6 +14,7 @@ import { FullViewLink } from '../../user-controls/full-view-display/full-view-di
 import { HoldingsService } from '../../service/holdings.service';
 import { MembersService } from '../../service/members.service';
 import { concat } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -155,19 +156,12 @@ export class CatalogMainComponent implements AfterViewInit {
         this.isRightTableOpen = false;
     } 
     
-    removeStopWords(SearchType: SearchType, fieldsName : string[]) {
-        var stopWordsRegex = stopWords.join("\\b|\\b");
-        let valuableField = this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).filter(field => (fieldsName.includes(field.getKey())) && (field.getFormControl().value != null) && (field.getFormControl().value != ""));
-        valuableField.forEach(field => {
-            let removalStopWords = field.getFormControl().value.replace(new RegExp(stopWordsRegex, 'gi'), '').trim().replace(/ +/g, ' ');
-            field.getFormControl().setValue(removalStopWords);
-        })
-    }
-    removeSpecialCharacters(SearchType: SearchType, fieldsToHandle :string[] ,charectersToRemove:RegExp) {
+    removeSpecialCharacters(SearchType: SearchType, fieldsToHandle :string[] ,charectersToRemove:RegExp ,valuesMap:Map<any,any>) {
         let valuableField = this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).filter(field => (fieldsToHandle.includes(field.getKey())) && (field.getFormControl().value != null) && (field.getFormControl().value != ""));
         valuableField.forEach(field => {
             let afterRemoval = field.getFormControl().value.replace(charectersToRemove, '');
-            field.getFormControl().setValue(afterRemoval);
+            // field.getFormControl().setValue(afterRemoval);
+            valuesMap.set(field,afterRemoval);
         })
     }
     search() {
@@ -180,23 +174,31 @@ export class CatalogMainComponent implements AfterViewInit {
         const fieldsToRemoveDelimiters=[FieldName.FTITLE];
 
        
-        //Remove the stop-words.
-        this.removeStopWords(this.currentSearchType, fieldsToRemoveStopWords);
+     //remove special charecters and stop words
         
         let valuableFields = this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).filter(field => (field.getFormControl().value != null) && (field.getFormControl().value != ""));
         let valuableFeildsNames=valuableFields.map(field => field.getKey());
-          
-        this.removeSpecialCharacters(this.currentSearchType,valuableFeildsNames,danceCharacters);
-        this.removeSpecialCharacters(this.currentSearchType,fieldsToRemoveAllDanceChars,charactersToRemoveForAKEY);
-        this.removeSpecialCharacters(this.currentSearchType,fieldsToRemoveDelimiters,delimiters);
+        let stopWordsRegex = new RegExp(stopWords.join("\\b|\\b"), 'gi');
+        let searchValuesMap=new Map();
+        valuableFields.forEach(field=>{
+            let value=field.getFormControl().value;
+            searchValuesMap.set(field,value);
+        })
+
+        this.removeSpecialCharacters(this.currentSearchType, fieldsToRemoveStopWords,stopWordsRegex ,searchValuesMap);  
+        this.removeSpecialCharacters(this.currentSearchType,valuableFeildsNames,danceCharacters,searchValuesMap);
+        this.removeSpecialCharacters(this.currentSearchType,fieldsToRemoveAllDanceChars,charactersToRemoveForAKEY,searchValuesMap);
+        this.removeSpecialCharacters(this.currentSearchType,fieldsToRemoveDelimiters,delimiters,searchValuesMap);
       
-        if (valuableFields.length > 0){
+        if (valuableFields.length > 0){       
+
             urlParams = urlParams + QueryParams.PageIndex + "=0&" + QueryParams.PageSize + "=20";
             urlParams = urlParams + "&" + QueryParams.SearchType + "=" + this.currentSearchType;
             urlParams =  urlParams + "&" + QueryParams.Databases + "=" + this.currentDatabase;
+            
             valuableFields.forEach(field => {
                     urlParams =  urlParams + "&" + field.getKey();
-                    urlParams =  urlParams + "=" + field.getFormControl().value.replace(this.catalogService.punctuationRegex, '');
+                    urlParams =  urlParams + "=" + searchValuesMap.get(field).replace(this.catalogService.punctuationRegex, '');
             });
             this.getSearchResultsFromNacsis(urlParams);
         } else {
