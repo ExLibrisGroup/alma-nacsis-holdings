@@ -8,7 +8,7 @@
     "Clear": "クリア",
     "Search": "検索",
     "Next": "次へ",
-    "Order": "発注",
+    "Order": "依頼（ORDER）",
     "Errors": {
       "generalError": "アプリケーションエラー",
       "RequiredField": "この項目が必須です"
@@ -206,7 +206,7 @@
    },
    "RequestForm":{
     "ResourceInformation":"リソース情報",
-    "Rota":"ロタ",
+    "Rota":"依頼候補館",
     "RequesterInformation":"リクエスター情報",
     "RequestType":"依頼種別",
     "PayClass":"支払区分",
@@ -331,7 +331,7 @@
       "payClassList" : {
         "ResearchExpenses" : "産学連携等研究費",
         "UniversityHospital" : "大学附属病院",
-        "NationalSchool" : "国立学校",
+        "NationalSchool" : "公費",
         "PrivateExpense" : "私費",
         "Laboratory" : "研究所"
       },
