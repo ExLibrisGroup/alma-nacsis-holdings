@@ -8,26 +8,26 @@
   "dependencies": {
     "@angular/animations": "~11.2.14",
     "@angular/cdk": "~11.2.12",
+    "@angular/flex-layout": "^10.0.0-beta.32",
+    "@angular/material": "~11.2.12",
+    "@exlibris/exl-cloudapp-angular-lib": "^1.4.2",
+    "@exlibris/exl-cloudapp-base": "^1.4.2",
+    "font-awesome": "^4.7.0",
+    "jwt-decode": "^3.1.2",
+    "minimist": "~1.2.6",
+    "sweetalert2": "^9.17.1",
+    "url-parse": "~1.5.9",
     "@angular/common": "~11.2.14",
     "@angular/compiler": "~11.2.14",
     "@angular/core": "~11.2.14",
-    "@angular/flex-layout": "^10.0.0-beta.32",
     "@angular/forms": "~11.2.14",
     "@angular/language-service": "~11.2.14",
-    "@angular/material": "~11.2.12",
     "@angular/platform-browser": "~11.2.14",
     "@angular/platform-browser-dynamic": "~11.2.14",
     "@angular/router": "~11.2.14",
-    "@exlibris/exl-cloudapp-angular-lib": "^1.4.2",
-    "@exlibris/exl-cloudapp-base": "^1.4.2",
     "@ngx-translate/core": "~13.0.0",
-    "font-awesome": "^4.7.0",
-    "jwt-decode": "^3.1.2",
     "lodash": "~4.17.21",
-    "minimist": "~1.2.6",
     "rxjs": "~6.5.5",
-    "sweetalert2": "^9.17.1",
-    "url-parse": "~1.5.9",
     "zone.js": "~0.10.3"
   },
   "devDependencies": {
@@ -37,7 +37,6 @@
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~13.13.5",
-    "eventsource": "2.0.2",
     "jasmine-core": "~3.7.1",
     "jasmine-spec-reporter": "~7.0.0",
     "karma": "~6.3.2",
@@ -46,6 +45,7 @@
     "karma-jasmine": "~4.0.1",
     "karma-jasmine-html-reporter": "~1.5.4",
     "postcss": "~8.3.0",
-    "typescript": "~4.1.5"
+    "typescript": "~4.1.5",
+    "eventsource": "2.0.2"
   }
 }
