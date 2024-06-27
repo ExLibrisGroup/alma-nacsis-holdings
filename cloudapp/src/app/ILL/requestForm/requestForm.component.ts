@@ -92,6 +92,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
   copyType = new FormControl();
   copyTypeList: CopyType[] = [
+    { value: '', viewValue: '' },
     { value: 'Electronic copy', viewValue: 'ILL.OptionViewValue.copyTypeList.ElectronicCopy' },
     { value: 'FAX', viewValue: 'ILL.OptionViewValue.copyTypeList.FAX' },
     { value: 'eDDS', viewValue: 'ILL.OptionViewValue.copyTypeList.eDDS' },
@@ -340,7 +341,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
 
   getDisplayedColumns(): string[] {
-    return ['id', 'index', 'fano', 'name', 'location', 'vol', 'callNumber',
+    return ['id', 'fano', 'name', 'location', 'vol', 'callNumber',
       'registrationNumber', 'bid'];
   }
 
