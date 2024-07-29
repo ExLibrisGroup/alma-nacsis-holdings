@@ -106,7 +106,7 @@
       multiTemplateDataRows>
 
       <ng-container matColumnDef="index">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
           </th>
         <td mat-cell *matCellDef="let element"> {{element.index}} </td>
       </ng-container>
@@ -121,7 +121,7 @@
       </ng-container>
 
       <ng-container matColumnDef="name">
-        <th  [hidden]="!columns['NAME']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th  [hidden]="!columns['NAME']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
           {{'ILL.HoldingSearchResult.NAME' | translate}} </th>
         <td  [hidden]="!columns['NAME']" mat-cell *matCellDef="let element"> 
           <a (click)="expandedElement = onActionsClick(expandedElement,element, 1)">
@@ -131,7 +131,7 @@
       </ng-container>
 
       <ng-container matColumnDef="vol">
-        <th [hidden]="!columns['VOL']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['VOL']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
           {{'ILL.HoldingSearchResult.VOL' | translate}} </th>
         <td [hidden]="!columns['VOL']" mat-cell *matCellDef="let element" >
           <mat-select (selectionChange)=onVolSelected($event,element) *ngIf="isShowVolValue(element)" [value]="setVolValue(element)">
@@ -143,74 +143,74 @@
       </ng-container>
 
       <ng-container matColumnDef="hlv">
-        <th [hidden]="!columns['HLV']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['HLV']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
           {{'ILL.HoldingSearchResult.HLV' | translate}} </th>
         <td [hidden]="!columns['HLV']" mat-cell *matCellDef="let element"  matTooltip="{{element.hlv}}"> {{ellipsify(element.hlv, 30)}} </td>
       </ng-container>
 
       <ng-container matColumnDef="hlyr">
-        <th [hidden]="!columns['HLYR']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['HLYR']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
           {{'ILL.HoldingSearchResult.HLYR' | translate}} </th>
         <td [hidden]="!columns['HLYR']" mat-cell *matCellDef="let element"> {{element.hlyr}} </td>
       </ng-container>
 
       <ng-container matColumnDef="regionCode">
-        <th [hidden]="!columns['KENCODE']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['KENCODE']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
           {{'ILL.HoldingSearchResult.KENCODE' | translate}} </th>
         <td [hidden]="!columns['KENCODE']" mat-cell *matCellDef="let element"> {{element.region}} </td>
       </ng-container>
 
       <ng-container matColumnDef="establisher">
-        <th [hidden]="!columns['SETCODE']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['SETCODE']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
           {{'ILL.HoldingSearchResult.SETCODE' | translate}}</th>
         <td [hidden]="!columns['SETCODE']" mat-cell *matCellDef="let element"> {{element.establisher}} </td>
       </ng-container>
 
       <ng-container matColumnDef="institutionType">
-        <th [hidden]="!columns['ORGCODE']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['ORGCODE']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
           {{'ILL.HoldingSearchResult.ORGCODE' | translate}} </th>
         <td [hidden]="!columns['ORGCODE']" mat-cell *matCellDef="let element"> {{element.institutionType}} </td>
       </ng-container>
 
       <ng-container matColumnDef="location">
-        <th [hidden]="!columns['LOC']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['LOC']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear class="hide-arrow">
           {{'ILL.HoldingSearchResult.LOC' | translate}} </th>
         <td [hidden]="!columns['LOC']" mat-cell *matCellDef="let element"> {{element.location}} </td>
       </ng-container>
 
 
       <ng-container matColumnDef="photoCopy_fee">
-        <th [hidden]="!columns['SUM']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['SUM']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
           {{'ILL.HoldingSearchResult.SUM' | translate}} </th>
         <td [hidden]="!columns['SUM']" mat-cell *matCellDef="let element"> {{element.photoCopy_fee}} </td>
       </ng-container>
 
       <ng-container matColumnDef="ill">
-        <th [hidden]="!columns['ILLFLG']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['ILLFLG']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
           {{'ILL.HoldingSearchResult.ILLFLG' | translate}} </th>
         <td [hidden]="!columns['ILLFLG']" mat-cell *matCellDef="let element"> {{element.ill}} </td>
       </ng-container>
 
       <ng-container matColumnDef="stat">
-        <th [hidden]="!columns['STAT']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['STAT']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
           {{'ILL.HoldingSearchResult.STAT' | translate}} </th>
         <td [hidden]="!columns['STAT']" mat-cell *matCellDef="let element"> {{element.stat}} </td>
       </ng-container>
 
       <ng-container matColumnDef="photoCopy">
-        <th [hidden]="!columns['COPYS']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['COPYS']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
           {{'ILL.HoldingSearchResult.COPYS' | translate}} </th>
         <td [hidden]="!columns['COPYS']" mat-cell *matCellDef="let element"> {{element.photoCopy}} </td>
       </ng-container>
 
       <ng-container matColumnDef="loan">
-        <th [hidden]="!columns['LOANS']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['LOANS']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
           {{'ILL.HoldingSearchResult.LOANS' | translate}} </th>
         <td [hidden]="!columns['LOANS']" mat-cell *matCellDef="let element"> {{element.loan}} </td>
       </ng-container>
 
       <ng-container matColumnDef="fax">
-        <th [hidden]="!columns['FAXS']" mat-header-cell *matHeaderCellDef mat-sort-header class="hide-arrow">
+        <th [hidden]="!columns['FAXS']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
           {{'ILL.HoldingSearchResult.FAXS' | translate}} </th>
         <td [hidden]="!columns['FAXS']" mat-cell *matCellDef="let element"> {{element.fax}} </td>
       </ng-container>
