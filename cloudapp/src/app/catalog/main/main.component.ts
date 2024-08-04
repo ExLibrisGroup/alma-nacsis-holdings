@@ -131,9 +131,11 @@ export class CatalogMainComponent implements AfterViewInit {
     }
 
     clear() {
-        this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).forEach(searchField => {
-            searchField.getFormControl().setValue(null)
-        });        
+           this.ALL_SEARCH_FIELDS_MAP.forEach(searchType => {
+            searchType.forEach(searchField => {
+                searchField.getFormControl().setValue(null)
+            }); 
+           });      
     }
 
     panelOpenState() {
