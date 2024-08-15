@@ -43,12 +43,12 @@ export class MonographFull{
     RNWDT: string = "";
     RNWFA: string = "";
     ISSN: string = "";
-    NBN: string = "";
+    NBN: MonographNBN[];
+    OTHN: MonographOTHN[];
     LCCN: string = "";
     NDLCN: string = "";
     REPRO: string = "";
     GPON: string = "";
-    OTHN: string = "";
     GMD: string = "";
     SMD: string = "";
     YEAR1: string = "";
@@ -115,6 +115,14 @@ export class MonographCW{
 export class MonographNOTE{
     NOTE: string = "";
 }
+
+export class MonographOTHN{
+    OTHN: string = "";
+}
+export class MonographNBN{
+    NBN: string = "";
+}
+
 
 export class MonographPTBL{
     PTBTR: string = "";
@@ -289,12 +297,18 @@ export class MonographFullDisplay extends IDisplayLines {
         this.addLine(new ViewFieldBuilder().label("ID").build(), fieldsArray);
         fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().label("ISSN: ").content(this.record.ISSN).build());
-            fieldsArray.push(new ViewFieldBuilder().label("NBN: ").content(this.record.NBN).build());
             fieldsArray.push(new ViewFieldBuilder().label("LCCN: ").content(this.record.LCCN).build());
             fieldsArray.push(new ViewFieldBuilder().label("NDLCN: ").content(this.record.NDLCN).build());
             fieldsArray.push(new ViewFieldBuilder().label("REPRO: ").content(this.record.REPRO).build());
             fieldsArray.push(new ViewFieldBuilder().label("GPON: ").content(this.record.GPON).build());
-            fieldsArray.push(new ViewFieldBuilder().label("OTHN: ").content(this.record.OTHN).build());
+        this.addLine(new ViewFieldBuilder().label("CODE").build(), fieldsArray);
+        fieldsArray = new Array<ViewField>();
+        this.record.OTHN?.forEach(othn => {
+            fieldsArray.push(new ViewFieldBuilder().label("OTHN: ").content(othn.OTHN).build());
+        });
+        this.record.NBN?.forEach(nbn => {
+            fieldsArray.push(new ViewFieldBuilder().label("NBN: ").content(nbn.NBN).build());
+        });
         this.addLine(new ViewFieldBuilder().label("CODE").build(), fieldsArray);
         fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().label("GMD: ").content(this.record.GMD).build());
