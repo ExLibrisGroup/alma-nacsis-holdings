@@ -17,5 +17,7 @@ export class ConfigurationService{
   set config(config: any) {
     this._config = config;
   }
-
+  get config(): any {
+    return this._config;
+  }
 }

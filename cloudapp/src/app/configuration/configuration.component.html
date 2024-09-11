@@ -14,6 +14,11 @@
       <input matInput placeholder="{{'Config.Fields.Code' | translate}}" formControlName="code">
     </mat-form-field>  
   </section>
+  <section class="config-section">
+    <mat-form-field>
+      <input matInput placeholder="{{'Config.Fields.Rmsg' | translate}}" formControlName="rmsg">
+    </mat-form-field>  
+  </section>
 
   <div class="commands-container">
     <button mat-stroked-button type="button" color="primary" (click)="save()" [disabled]="!form.dirty">{{'Save' | translate}}</button>

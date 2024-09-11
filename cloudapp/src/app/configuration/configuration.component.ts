@@ -32,15 +32,15 @@ export class ConfigurationComponent implements OnInit {
   }
 
   load() {
-    this.configService.getAsFormGroup().subscribe( config => {
-      this.form = Object.keys(config.value).length==0
-        ? this.fb.group({
-            code: this.fb.control('')
-          })
-        : config;
-      });
-  }
+    this.configService.getAsFormGroup().subscribe(config => {
+        this.form = this.fb.group({
+            code: config.get('code')?.value || '', 
+            rmsg: config.get('rmsg')?.value || '',  
+        });
 
+        console.log(this.form.value); 
+    });
+}
   save() {
     this.saving = true;
     this.nacsis.config = this.form.value;

@@ -13,6 +13,8 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
 import { mergeMap } from 'rxjs/operators';
 import { concat, of } from 'rxjs';
+import { ConfigurationService } from '../../service/configuration.service';
+
 
 @Component({
   selector: 'ILL-requestForm',
@@ -36,6 +38,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   formResourceInformation: FormGroup;
   formRequesterInformation: FormGroup;
   formRotamation: FormGroup;
+  rMsg:string;
   selectedData: any = [];
   fullRecordData: any = [];
   localMemberInfo: any = [];
@@ -68,6 +71,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   illAddrAuto:string;
 
   stickyFieldsMap = new Map();
+  
 
   requestType = new FormControl();
   requestTypeList: RequestType[] = [
@@ -136,7 +140,10 @@ export class RequestFormComponent implements OnInit, OnChanges {
     private translate: TranslateService,
     private nacsis: HoldingsService,
     private alert: AlertService,
-    private storeService: CloudAppStoreService
+    private storeService: CloudAppStoreService,
+    private configService: ConfigurationService
+
+    
   ) {
     this.owners = [
       { id: "0", name: "Holdings.ViewHoldings.All" },
@@ -306,7 +313,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   }
 
   buildRequesterStaff(){
-    let requesterStaff = "";
+    let requesterStaff = this.configService.config.rmsg;
     requesterStaff = requesterStaff + (this.illService.isEmpty(this.illStaffAuto) ? "" : this.illStaffAuto + " ");
     requesterStaff = requesterStaff + (this.illService.isEmpty(this.illDeptAuto) ? "" : this.illDeptAuto + " ");
     requesterStaff = requesterStaff + (this.illService.isEmpty(this.illTelAuto) ? "" : "TEL=" + this.illTelAuto + " ");

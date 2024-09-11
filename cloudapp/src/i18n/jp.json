@@ -367,7 +367,8 @@
     "Title": "設定",
     "Success": "設定が保存されました.",
     "Fields": {
-      "Code": "NACSISのコード"
+      "Code": "NACSISのコード",
+      "Rmsg":"依頼館担当者"
     }
   },
 

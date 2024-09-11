@@ -366,7 +366,8 @@
     "Title": "Configuration",
     "Success": "Configuration successfully saved.",
     "Fields": {
-      "Code": "NACSIS Code"
+      "Code": "NACSIS Code",
+      "Rmsg": "ILL Department Contact"
     }
   },
 
