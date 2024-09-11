@@ -188,6 +188,7 @@ export const HOLDINGS_COLUMNS = "holdingsColumns";
 export const HOLDINGS_SEARCH_FIELDS = "holdingsFields";
 export const ILL_REQUEST_FIELDS = "illFields";
 export const SELECTED_INTEGRATION_PROFILE = "integrationProfile";
+export const SELECTED_LIB_NAME = "libraryName";
 
 
 export enum AppRoutingState {

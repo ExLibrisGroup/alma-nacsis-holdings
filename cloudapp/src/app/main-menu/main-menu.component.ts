@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
-import { ROUTING_STATE_KEY, AppRoutingState, SELECTED_INTEGRATION_PROFILE } from '../service/base.service';
+import { ROUTING_STATE_KEY, AppRoutingState, SELECTED_INTEGRATION_PROFILE, SELECTED_LIB_NAME } from '../service/base.service';
 import { concat, of } from 'rxjs';
 import { MatSelectChange } from '@angular/material/select';
 import { AlmaApiService, IntegrationProfile } from '../service/alma.api.service';
@@ -38,8 +38,11 @@ import { off } from 'process';
         this.almaService.getAllIntegrationProfiles().pipe(
             mergeMap(integrationProfiles => {
                 this.integrationProfilesMap = integrationProfiles;
+ 
                 this.rsLibrariesNameList = Array.from(integrationProfiles.keys());
-                this.selected = this.rsLibrariesNameList[0];
+                this.storeService.get(SELECTED_LIB_NAME).subscribe((value) => {
+                    this.selected = value;
+                  });
                 this.menu = this.initMenu();
                 return this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(this.integrationProfilesMap.get(this.selected)));
             }),
@@ -100,6 +103,8 @@ import { off } from 'process';
         let selectedProfile;
         let profile = JSON.stringify(this.integrationProfilesMap.get(event.value));
         selectedProfile = JSON.parse(profile);
+        this.storeService.set(SELECTED_LIB_NAME,event.value).subscribe();
         this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(selectedProfile)).subscribe();
+        
     }
   }
