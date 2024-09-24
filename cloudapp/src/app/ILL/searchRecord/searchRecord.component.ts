@@ -1,4 +1,3 @@
-import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL, SELECTED_RECORD_ILL, QueryParams } from '../../service/base.service';
 import { Component, AfterViewInit, ViewChild, TemplateRef, OnDestroy } from '@angular/core';
 import { SearchType, SearchField, FieldSize, FieldName } from '../../user-controls/search-form/search-form-utils';
 import { MatTabChangeEvent } from '@angular/material/tabs';
@@ -14,6 +13,10 @@ import { RecordSelection } from '../../user-controls/selectable-result-card/sele
 import { MembersService } from '../../service/members.service';
 import { concat } from 'rxjs';
 import { CatalogUtil } from '../../Utils/CatalogUtil';
+import { QueryParams } from '../../Utils/BaseUtil';
+import { AppRoutingState, SessionStorageKeys } from '../../Utils/RoutingUtil';
+
+
 
 
 
@@ -251,9 +254,9 @@ export class searchRecordComponent implements AfterViewInit, OnDestroy {
     let nacsisID = this.selected.getFullRecordData().getSummaryView().ID;
     let rawData = this.selected.getFullRecordData().getFullView();
     concat(
-      this.storeService.set(SELECTED_RECORD_ILL, JSON.stringify(rawData)),
-      this.storeService.set(RESULT_RECORD_LIST_ILL, ''),
-      this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage)
+      this.storeService.set(SessionStorageKeys.SELECTED_RECORD_ILL, JSON.stringify(rawData)),
+      this.storeService.set(SessionStorageKeys.RESULT_RECORD_LIST_ILL, ''),
+      this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage)
     ).subscribe();
     this.loading = true;
     this.router.navigate(['holdingSearch', nacsisID, title, this.currentSearchType]);
@@ -337,7 +340,7 @@ export class searchRecordComponent implements AfterViewInit, OnDestroy {
   ngOnInit() {
     this.isBackFromHoldingSearch = this.route.snapshot.params['flagBack'];
     this.fillInItemRecord();
-    this.storeService.get(ROUTING_STATE_KEY).subscribe((backSession)=>{
+    this.storeService.get(SessionStorageKeys.ROUTING_STATE_KEY).subscribe((backSession)=>{
       this.backSession = backSession;
       if (backSession == "") {
         this.illService.clearAllSearchResults();
@@ -348,7 +351,7 @@ export class searchRecordComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.storeService.set(RESULT_RECORD_LIST_ILL, '').subscribe();
+    this.storeService.set(SessionStorageKeys.RESULT_RECORD_LIST_ILL, '').subscribe();
   }
 
 

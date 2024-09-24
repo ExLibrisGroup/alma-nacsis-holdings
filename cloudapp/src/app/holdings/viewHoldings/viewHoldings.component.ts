@@ -5,11 +5,12 @@ import { HoldingsService } from '../../service/holdings.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../../dialog/confirmation-dialog.component';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, ROUTING_STATE_KEY } from '../../service/base.service';
 import { Action, RecordSelection } from '../../user-controls/result-card/result-card.component';
 import { mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Holding } from '../../Utils/HoldingsUtil';
+import { AppRoutingState, SessionStorageKeys } from '../../Utils/RoutingUtil';
+
 
 
 @Component({
@@ -56,7 +57,7 @@ export class HoldingsComponent implements OnInit {
   ngOnInit() {
     this.mmsId = this.route.snapshot.params['mmsId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
-    this.storeService.get(ROUTING_STATE_KEY).pipe(
+    this.storeService.get(SessionStorageKeys.ROUTING_STATE_KEY).pipe(
       mergeMap(backSession =>{
         if(backSession === undefined) {
           backSession = AppRoutingState.HoldingsMainPage;

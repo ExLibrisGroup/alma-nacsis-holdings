@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService} from '../../service/holdings.service';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL, ILL_REQUEST_FIELDS, SELECTED_INTEGRATION_PROFILE } from '../../service/base.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { IllService } from '../../service/ill.service';
@@ -17,6 +16,8 @@ import { ConfigurationService } from '../../service/configuration.service';
 import { IllUtil } from '../../Utils/IllUtil';
 import { RequestFields, BIBG, HMLG } from '../../Utils/RequestFields';
 import { DisplayHoldingResult } from '../../Utils/HoldingsUtil';
+import { AppRoutingState, SessionStorageKeys } from '../../Utils/RoutingUtil';
+
 
 
 
@@ -164,25 +165,25 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.formResourceInformation = initResourceInformationFormGroup();
     this.formRequesterInformation = initRequesterInformationFormGroup();
     this.formRotamation = initRotaFormGroup();
-    this.storeService.get(SELECTED_RECORD_ILL).pipe(
+    this.storeService.get(SessionStorageKeys.SELECTED_RECORD_ILL).pipe(
       mergeMap(fullRecordData =>{
         this.fullRecordData = JSON.parse(fullRecordData);
-        return this.storeService.get(SELECTED_RECORD_LIST_ILL);
+        return this.storeService.get(SessionStorageKeys.SELECTED_RECORD_LIST_ILL);
       }),
       mergeMap(selectedData => {
         this.selectedData = JSON.parse(selectedData);
         this.ngOnChanges(this.selectedData);
-        return this.storeService.get(LIBRARY_MEMBERINFO_KEY);
+        return this.storeService.get(SessionStorageKeys.LIBRARY_MEMBERINFO_KEY);
       }),
       mergeMap(localMemberInfo => {
         this.localMemberInfo = JSON.parse(localMemberInfo);
-        return this.storeService.get(SELECTED_INTEGRATION_PROFILE);
+        return this.storeService.get(SessionStorageKeys.SELECTED_INTEGRATION_PROFILE);
       }),
        mergeMap(profile =>{
         let parsedProfile = JSON.parse(profile);
         this.rsLibraryCode = parsedProfile.rsLibraryCode;
         this.rsLibraryName = parsedProfile.rsLibraryName;
-        return this.storeService.get(ILL_REQUEST_FIELDS);
+        return this.storeService.get(SessionStorageKeys.ILL_REQUEST_FIELDS);
       }),
       mergeMap(stickyFields => {
         if(!this.illUtil.isObjectEmpty(stickyFields)){
@@ -222,7 +223,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
     }
     this.vlyrAuto = fullRecordData.VLYR;
     this.bibIDAuto = this.nacsisId;
-    this.storeService.get(REQUEST_EXTERNAL_ID).subscribe((externalAuto)=>{
+    this.storeService.get(SessionStorageKeys.REQUEST_EXTERNAL_ID).subscribe((externalAuto)=>{
       this.externalAuto = externalAuto;
     });
 
@@ -346,8 +347,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.stickyFieldsMap.set('SPVIA', this.sendingMethod.value);
     this.stickyFieldsMap.set('ACCT', this.payClass.value);
     concat(
-      this.storeService.set(ILL_REQUEST_FIELDS, this.illUtil.map2Json(this.stickyFieldsMap)),
-      this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage)
+      this.storeService.set(SessionStorageKeys.ILL_REQUEST_FIELDS, this.illUtil.map2Json(this.stickyFieldsMap)),
+      this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage)
     ).subscribe();
     this.router.navigate(['holdingSearch', this.nacsisId, this.mmsTitle, this.currentSearchType]);
   }
@@ -424,7 +425,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.stickyFieldsMap.set('TYPE', this.copyType.value);
     this.stickyFieldsMap.set('SPVIA', this.sendingMethod.value);
     this.stickyFieldsMap.set('ACCT', this.payClass.value);
-    this.storeService.set(ILL_REQUEST_FIELDS, this.illUtil.map2Json(this.stickyFieldsMap))
+    this.storeService.set(SessionStorageKeys.ILL_REQUEST_FIELDS, this.illUtil.map2Json(this.stickyFieldsMap))
   }
 
 

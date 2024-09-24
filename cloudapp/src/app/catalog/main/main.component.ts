@@ -4,18 +4,21 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { CatalogService } from '../../service/catalog.service';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
 
 import { NacsisCatalogResults, IDisplayLines } from '../results-types/results-common'
-import { AppRoutingState, ROUTING_STATE_KEY, QueryParams } from '../../service/base.service';
 import { RecordSelection, Action } from '../../user-controls/result-card/result-card.component';
 import { FullViewLink } from '../../user-controls/full-view-display/full-view-display.component';
 import { HoldingsService } from '../../service/holdings.service';
 import { MembersService } from '../../service/members.service';
-import { concat } from 'rxjs';
+import { concat, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CatalogUtil } from '../../Utils/CatalogUtil';
+import { CatalogUtil} from '../../Utils/CatalogUtil';
+import { QueryParams } from '../../Utils/BaseUtil';
+import { AppRoutingState, SessionStorageKeys } from '../../Utils/RoutingUtil';
+
+
 
 
 
@@ -65,6 +68,8 @@ export class CatalogMainComponent implements AfterViewInit {
     public resultFullDisplay;
     public resultFullLinkDisplay;
 
+    isIllCatalogSearch$: Observable<boolean>;
+
     // Templates
     @ViewChild('notSearched') notSearchedTmpl:TemplateRef<any>;
     @ViewChild('searchResults') searchResultsTmpl:TemplateRef<any>;
@@ -78,15 +83,22 @@ export class CatalogMainComponent implements AfterViewInit {
         private holdingsService: HoldingsService,
         private membersService : MembersService,
         private router: Router,
+        private route: ActivatedRoute,
         private alert: AlertService,
         private translate: TranslateService,
         private storeService: CloudAppStoreService,
         private catalogUtil: CatalogUtil
-    ) { }
-
+    ) {}
+    
 
     ngAfterViewInit(){
-        this.storeService.get(ROUTING_STATE_KEY).subscribe((stateKey)=>{
+        // Determine which search form to display (regular catalog or ILL catalog) 
+        this.isIllCatalogSearch$ = this.route.queryParamMap.pipe(
+            map((params: ParamMap) => params.get('isCatalogIll')),
+            map(val => val == 'true' ? true : false));
+            this.isIllCatalogSearch$.subscribe(param => console.log(param));
+
+        this.storeService.get(SessionStorageKeys.ROUTING_STATE_KEY).subscribe((stateKey)=>{
             if(stateKey == "") {
                 this.catalogService.clearAllSearchResults();
             } else {
@@ -405,7 +417,7 @@ export class CatalogMainComponent implements AfterViewInit {
             next: (header) => {
                 if (header.status === this.holdingsService.OkStatus) {
                     concat(
-                        this.storeService.set(ROUTING_STATE_KEY ,AppRoutingState.CatalogSearchPage),
+                        this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY ,AppRoutingState.CatalogSearchPage),
                         this.storeService.set(this.holdingsService.OwnerKey, "1")// Set holding owner as "Mine"
                     ).subscribe();
                     this.catalogService.setCurrentSearchType(this.currentSearchType);

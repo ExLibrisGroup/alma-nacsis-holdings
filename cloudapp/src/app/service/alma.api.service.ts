@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecordInfo,AlmaRecord,AlmaRecordDisplay, AlmaRequestInfo } from '../service/ill.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MembersService } from './members.service';
-import { SELECTED_INTEGRATION_PROFILE } from './base.service';
+
 import { FieldName } from '../user-controls/search-form/search-form-utils';
 
 @Injectable({

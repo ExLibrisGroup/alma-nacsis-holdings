@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService } from '../../service/holdings.service';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL,SELECTED_RECORD_LIST_ILL, HOLDINGS_COLUMNS, HOLDINGS_SEARCH_FIELDS } from '../../service/base.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup } from '@angular/forms';
@@ -18,6 +17,7 @@ import { MembersService } from '../../service/members.service';
 import { concat, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { IllUtil } from '../../Utils/IllUtil';
+import { AppRoutingState, SessionStorageKeys } from '../../Utils/RoutingUtil';
 import { HoldingsSearch, NacsisHoldingRecord, DisplayHoldingResult, NacsisBookHoldingsListDetail } from '../../Utils/HoldingsUtil';
 
 
@@ -115,7 +115,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
 
   ngOnInit() {
-    this.storeService.get(HOLDINGS_COLUMNS).pipe(
+    this.storeService.get(SessionStorageKeys.HOLDINGS_COLUMNS).pipe(
       mergeMap(columns =>{
         if(this.illUtil.isObjectEmpty(columns)) {
           this.columnsList.forEach(col => {
@@ -124,7 +124,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
         } else {
           this.columns = JSON.parse(columns);
         }
-        return this.storeService.get(RESULT_RECORD_LIST_ILL);
+        return this.storeService.get(SessionStorageKeys.RESULT_RECORD_LIST_ILL);
       }),
       mergeMap(lastResult => {
         if(!this.illService.isEmpty(lastResult)){
@@ -163,7 +163,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   }
 
   initFieldsMap() {
-    this.storeService.get(HOLDINGS_SEARCH_FIELDS).subscribe(stickyFields => {
+    this.storeService.get(SessionStorageKeys.HOLDINGS_SEARCH_FIELDS).subscribe(stickyFields => {
       this.fieldsMap.set(FieldName.FANO , new SearchField(FieldName.FANO, FieldSize.small)); 
       this.fieldsMap.set(FieldName.VOL , new SearchField(FieldName.VOL, FieldSize.small));
       this.fieldsMap.set(FieldName.YEAR, new SearchField(FieldName.YEAR, FieldSize.small)); 
@@ -198,7 +198,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       self.stickyFieldsMap.set(field, self.fieldsMap.get(field).getFormControl().value);
     });
     concat(
-      this.storeService.set(HOLDINGS_SEARCH_FIELDS, this.illUtil.map2Json(this.stickyFieldsMap))
+      this.storeService.set(SessionStorageKeys.HOLDINGS_SEARCH_FIELDS, this.illUtil.map2Json(this.stickyFieldsMap))
     ).subscribe();
     this.loading = true;
     let queryParams = this.buildQueryUrl();
@@ -214,7 +214,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
               if (this.nacsisHoldingsResultList != null && this.nacsisHoldingsResultList.length > 0) {
                 this.holdings = this.setDisplayDetails(this.nacsisHoldingsResultList);
                 this.ngOnChanges(this.holdings);
-                this.storeService.set(RESULT_RECORD_LIST_ILL, JSON.stringify(this.holdings)).subscribe();
+                this.storeService.set(SessionStorageKeys.RESULT_RECORD_LIST_ILL, JSON.stringify(this.holdings)).subscribe();
                 this.noHoldingRecords = false;
               } else {
                 this.holdings = new Array();
@@ -300,7 +300,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   }
 
   clear() {
-    this.storeService.remove(HOLDINGS_SEARCH_FIELDS).subscribe(()=>{
+    this.storeService.remove(SessionStorageKeys.HOLDINGS_SEARCH_FIELDS).subscribe(()=>{
       this.stickyFieldsMap = new Map();
       this.ngOnInit();
       this.holdings = new Array();
@@ -656,7 +656,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   onOwnerSelected() {
     this.clearSelection();
     this.storeService.set(this.nacsis.OwnerKey, this.selected).subscribe();
-    this.storeService.get(RESULT_RECORD_LIST_ILL).subscribe((holdings)=>{
+    this.storeService.get(SessionStorageKeys.RESULT_RECORD_LIST_ILL).subscribe((holdings)=>{
       if(!this.illService.isEmpty(holdings)){
         this.holdings =  JSON.parse(holdings);
       }else{
@@ -744,14 +744,14 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.fillRowsTillFive(this.selecedData);
     this.router.navigate(['requestForm', this.nacsisId, this.mmsTitle, this.routerSearchType]);
     concat(
-      this.storeService.set(SELECTED_RECORD_LIST_ILL, JSON.stringify(this.selecedData)),
-      this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.HoldingSearchMainPage)
+      this.storeService.set(SessionStorageKeys.SELECTED_RECORD_LIST_ILL, JSON.stringify(this.selecedData)),
+      this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY, AppRoutingState.HoldingSearchMainPage)
     ).subscribe();  }
 
   backToSearchRecord() {
     concat(
-      this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage),
-      this.storeService.set(RESULT_RECORD_LIST_ILL, ''),
+      this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage),
+      this.storeService.set(SessionStorageKeys.RESULT_RECORD_LIST_ILL, ''),
     ).subscribe();
     this.router.navigate(['searchRecord', 'back']);
   }
@@ -766,11 +766,11 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     this.columnsList.forEach(col => {
       this.columns[col] = true;
     });
-    this.storeService.set(HOLDINGS_COLUMNS, JSON.stringify(this.columns)).subscribe();
+    this.storeService.set(SessionStorageKeys.HOLDINGS_COLUMNS, JSON.stringify(this.columns)).subscribe();
   }
 
   saveConfigToStore(event) {
-    this.storeService.set(HOLDINGS_COLUMNS, JSON.stringify(this.columns)).subscribe();
+    this.storeService.set(SessionStorageKeys.HOLDINGS_COLUMNS, JSON.stringify(this.columns)).subscribe();
    }
 
    getConfigLabel(event) {

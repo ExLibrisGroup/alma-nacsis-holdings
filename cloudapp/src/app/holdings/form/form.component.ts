@@ -6,10 +6,10 @@ import { HoldingsService } from '../../service/holdings.service';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Action } from '../../user-controls/result-card/result-card.component';
 import { MultiSearchField, SearchField, FieldName, FieldSize } from '../../user-controls/search-form/search-form-utils';
-import { AlmaApiService } from '../../service/alma.api.service';
 import { VOLUME_LIST_SEPARATOR } from '../main/main.component';
-import { SELECTED_INTEGRATION_PROFILE, VOLUME_LIST } from '../../service/base.service';
 import { Holding, HoldingsBook, HoldingsSerial } from '../../Utils/HoldingsUtil';
+import { SessionStorageKeys } from '../../Utils/RoutingUtil';
+
 
 
 
@@ -62,7 +62,7 @@ export class FormComponent implements OnInit {
     this.mmsId = this.route.snapshot.params['mmsId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
     this.holdingId = this.route.snapshot.params['holdingId'];
-    this.storeService.get(VOLUME_LIST).subscribe((joinedVolumeList)=>{
+    this.storeService.get(SessionStorageKeys.VOLUME_LIST).subscribe((joinedVolumeList)=>{
       this.volumeList = joinedVolumeList?.split(VOLUME_LIST_SEPARATOR); 
     });
     this.type = this.nacsis.getHeader().type;
@@ -73,7 +73,7 @@ export class FormComponent implements OnInit {
     });
 
     this.loading = true;
-    this.storeService.get(SELECTED_INTEGRATION_PROFILE)
+    this.storeService.get(SessionStorageKeys.SELECTED_INTEGRATION_PROFILE)
     .subscribe({
       next: (integrationProfile) => {
         const profile = JSON.parse(integrationProfile)

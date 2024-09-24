@@ -4,7 +4,11 @@ import { SearchType, FieldName } from '../user-controls/search-form/search-form-
 import { HttpClient } from "@angular/common/http";
 import { mergeMap } from 'rxjs/operators';
 import { CloudAppEventsService, CloudAppStoreService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
-import { BaseService, QueryParams, SELECTED_INTEGRATION_PROFILE } from "./base.service";
+import { BaseService } from "./base.service";
+import { QueryParams } from '../Utils/BaseUtil';
+import { SessionStorageKeys } from '../Utils/RoutingUtil';
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -105,7 +109,7 @@ export class IllService extends BaseService {
     return this.getInitData().pipe(
       mergeMap(initData => {
         fullUrl = this.setBaseUrl(initData);
-        return this.storeService.get(SELECTED_INTEGRATION_PROFILE);
+        return this.storeService.get(SessionStorageKeys.SELECTED_INTEGRATION_PROFILE);
         }),
       mergeMap(profile => {
           let parsedProfile = JSON.parse(profile);

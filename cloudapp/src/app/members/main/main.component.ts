@@ -9,10 +9,13 @@ import { PageEvent } from '@angular/material/paginator';
 import { AlmaApiService } from '../../service/alma.api.service';
 import { RecordSelection, Action } from '../../user-controls/result-card/result-card.component';
 import { Router } from '@angular/router';
-import { MEMBER_RECORD, ROUTING_STATE_KEY, AppRoutingState, QueryParams, FANO_ID, SELECTED_INTEGRATION_PROFILE } from '../../service/base.service';
 import { mergeMap, catchError, } from 'rxjs/operators';
 import { of, concat } from 'rxjs';
 import { MemberSummaryDisplay } from '../../catalog/results-types/member';
+import { QueryParams } from '../../Utils/BaseUtil';
+import { AppRoutingState, SessionStorageKeys } from '../../Utils/RoutingUtil';
+
+
 
 @Component({
   selector: 'members',
@@ -126,7 +129,7 @@ export class MembersSearchComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.storeService.get(ROUTING_STATE_KEY).subscribe(state=>{
+    this.storeService.get(SessionStorageKeys.ROUTING_STATE_KEY).subscribe(state=>{
       if (state == "") {
         this.membersService.clearAllSearchResults();
       } else {
@@ -150,8 +153,8 @@ export class MembersSearchComponent implements OnInit {
       case 1: // Edit member
         this.currentResulsTmpl = this.editFormTmpl;
         concat(
-          this.storeService.set(MEMBER_RECORD, JSON.stringify(record)),
-          this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.MembersMainPage)
+          this.storeService.set(SessionStorageKeys.MEMBER_RECORD, JSON.stringify(record)),
+          this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY, AppRoutingState.MembersMainPage)
         ).subscribe();
         this.router.navigate(['editMember']);
         break;
@@ -247,12 +250,12 @@ export class MembersSearchComponent implements OnInit {
 
   getSearchResultsFromNacsis(queryParams: string) {
     this.loading = true;
-    this.storeService.get(SELECTED_INTEGRATION_PROFILE).pipe(
+    this.storeService.get(SessionStorageKeys.SELECTED_INTEGRATION_PROFILE).pipe(
     mergeMap(profile => {
         const integrationProfile =  JSON.parse(profile)
         console.log("what about the fano!?");
         this.fanoId = integrationProfile.libraryID;
-        this.storeService.set(FANO_ID, this.fanoId).subscribe();
+        this.storeService.set(SessionStorageKeys.FANO_ID, this.fanoId).subscribe();
         return this.membersService.getSearchResultsFromNacsis(queryParams);
       }),
       mergeMap(nacsisResponse => {
@@ -344,7 +347,7 @@ export class MembersSearchComponent implements OnInit {
       let summery = result.getSummaryDisplay()
       /* If the memeber is mine - we can edit it */
       //TODO: check the async code here:
-      this.storeService.get(FANO_ID).subscribe(fanoId=>{
+      this.storeService.get(SessionStorageKeys.FANO_ID).subscribe(fanoId=>{
         summery.setEnableEdit(result.getSummaryView().ID === fanoId);
         this.resultsSummaryRecord.push(summery);
         this.resultsSummaryDisplay = this.resultsSummaryRecord;

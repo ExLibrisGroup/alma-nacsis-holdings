@@ -7,8 +7,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { map, catchError, tap, mergeMap } from 'rxjs/operators';
 import { AlmaApiService, IntegrationProfile } from '../../service/alma.api.service';
-import { AppRoutingState, ROUTING_STATE_KEY, SELECTED_INTEGRATION_PROFILE, VOLUME_LIST } from '../../service/base.service';
 import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo,AlmaRecord,AlmaRecordDisplay, AlmaRequestInfo} from '../../service/ill.service';
+import { AppRoutingState, SessionStorageKeys } from '../../Utils/RoutingUtil';
 
 
 @Component({
@@ -50,13 +50,13 @@ export class MainComponent implements OnInit, OnDestroy {
  //Clear the store
  concat(
   this.storeService.remove(AppRoutingState.HoldingsMainPage),
-  this.storeService.remove(ROUTING_STATE_KEY),
-  this.storeService.remove(VOLUME_LIST)
+  this.storeService.remove(SessionStorageKeys.ROUTING_STATE_KEY),
+  this.storeService.remove(SessionStorageKeys.VOLUME_LIST)
 ).subscribe();    this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => {
 
       this.loading = true;
       try{
-        this.storeService.get(SELECTED_INTEGRATION_PROFILE)
+        this.storeService.get(SessionStorageKeys.SELECTED_INTEGRATION_PROFILE)
         .subscribe( {
             next : integrationProfile => {
                 this.integrationProfile =  JSON.parse(integrationProfile)
@@ -125,8 +125,8 @@ export class MainComponent implements OnInit, OnDestroy {
               mergeMap(header =>{
                  if (header.status === this.nacsis.OkStatus) {
                   concat(
-                    this.storeService.set(VOLUME_LIST, bib[0].volumes.join(VOLUME_LIST_SEPARATOR)),
-                    this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.HoldingsMainPage)
+                    this.storeService.set(SessionStorageKeys.VOLUME_LIST, bib[0].volumes.join(VOLUME_LIST_SEPARATOR)),
+                    this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY, AppRoutingState.HoldingsMainPage)
                   ).subscribe();
                   this.router.navigate(['/holdings', this.selected, bib[0].title]);
                  } else {

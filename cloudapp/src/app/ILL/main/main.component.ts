@@ -6,10 +6,11 @@ import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo, AlmaReques
 import { catchError, tap } from 'rxjs/operators';
 import { AlmaApiService, IntegrationProfile } from '../../service/alma.api.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY, LIBRARY_ID_KEY ,LIBRARY_MEMBERINFO_KEY, SELECTED_INTEGRATION_PROFILE} from '../../service/base.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { MembersService } from '../../service/members.service';
 import { concat } from 'rxjs';
+import { AppRoutingState, SessionStorageKeys } from '../../Utils/RoutingUtil';
+
 
 @Component({
   selector: 'ILL-main',
@@ -50,17 +51,17 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
   ngOnInit() {
  //Clear the store
  concat(
-  this.storeService.remove(REQUEST_EXTERNAL_ID),
-  this.storeService.remove(LIBRARY_ID_KEY),
-  this.storeService.remove(LIBRARY_MEMBERINFO_KEY)
+  this.storeService.remove(SessionStorageKeys.REQUEST_EXTERNAL_ID),
+  this.storeService.remove(SessionStorageKeys.LIBRARY_ID_KEY),
+  this.storeService.remove(SessionStorageKeys.LIBRARY_MEMBERINFO_KEY)
 ).subscribe();    this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => { 
       this.loading = true;     
       try{
-        this.storeService.get(SELECTED_INTEGRATION_PROFILE)
+        this.storeService.get(SessionStorageKeys.SELECTED_INTEGRATION_PROFILE)
       .subscribe( {
         next : integrationProfile => {
           this.integrationProfile =  JSON.parse(integrationProfile)
-          this.storeService.set(LIBRARY_ID_KEY,integrationProfile.libraryID).subscribe();
+          this.storeService.set(SessionStorageKeys.LIBRARY_ID_KEY,integrationProfile.libraryID).subscribe();
           let rawBibs = (pageInfo.entities || []).filter(e => e.type == EntityType.BIB_MMS || e.type == EntityType.BORROWING_REQUEST );
           let disCards: AlmaRequestInfo[] = new Array(rawBibs.length);
 
@@ -121,7 +122,7 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
           this.alert.error(e.message, { keepAfterRouteChange: true });
         },
         complete: () => {
-          this.storeService.set(LIBRARY_MEMBERINFO_KEY, JSON.stringify(obj)).subscribe();
+          this.storeService.set(SessionStorageKeys.LIBRARY_MEMBERINFO_KEY, JSON.stringify(obj)).subscribe();
           this.loading = false;
         }
       });
@@ -157,18 +158,18 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
   next(){
     this.loading = true;
     concat(
-      this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage),
-     this.storeService.set(REQUEST_EXTERNAL_ID, this.selected.record.exrernalId)
+      this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage),
+     this.storeService.set(SessionStorageKeys.REQUEST_EXTERNAL_ID, this.selected.record.exrernalId)
     ).subscribe();
     this.router.navigate(['searchRecord',this.selected.record.nacsisId,this.selected.record.title,
                             this.selected.record.isbn,this.selected.record.issn]);
   }
 
   newSearch(){
-    this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage).subscribe();
-    // this.router.navigate(['searchRecord']);
-        this.router.navigate(['catalog']);
-
+    this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage).subscribe();
+    this.router.navigate(['searchRecord']);
+    // The query params help us to determine which search form to display (regular catalog or ILL catalog) 
+    // this.router.navigate(['catalog'], { queryParams: { isCatalogIll: 'true' } });
   }
 
 

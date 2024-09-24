@@ -3,9 +3,11 @@ import { mergeMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { CloudAppEventsService, CloudAppStoreService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
 import { ResultsHeader } from '../catalog/results-types/results-common';
-import { BaseService, SELECTED_INTEGRATION_PROFILE } from "./base.service";
+import { BaseService } from "./base.service";
 import { AlmaApiService } from "./alma.api.service";
 import { MemberUpdate } from "../catalog/results-types/member";
+import { SessionStorageKeys } from '../Utils/RoutingUtil';
+
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +41,7 @@ export class MembersService extends BaseService {
     return this.getInitData().pipe(
       mergeMap(initData => {
         fullUrl = this.setBaseUrl(initData)
-         return this.storeService.get(SELECTED_INTEGRATION_PROFILE);
+         return this.storeService.get(SessionStorageKeys.SELECTED_INTEGRATION_PROFILE);
       }),
       mergeMap(profile => {
           let parsedProfile = JSON.parse(profile);

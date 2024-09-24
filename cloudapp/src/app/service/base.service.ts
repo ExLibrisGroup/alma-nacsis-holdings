@@ -12,6 +12,8 @@ import { Name } from '../catalog/results-types/name';
 import { UniformTitle } from '../catalog/results-types/uniformTitle';
 import { Member } from '../catalog/results-types/member';
 import { mergeMap } from 'rxjs/operators';
+import { SessionStorageKeys } from '../Utils/RoutingUtil';
+
 
 export abstract class BaseService {
     private searchResultsMap: Map<SearchType, NacsisCatalogResults>;
@@ -153,7 +155,7 @@ export abstract class BaseService {
         return this.getInitData().pipe(
             mergeMap(initData => {
                 fullUrl = this.setBaseUrl(initData)
-                return this.storeService.get(SELECTED_INTEGRATION_PROFILE);
+                return this.storeService.get(SessionStorageKeys.SELECTED_INTEGRATION_PROFILE);
             }),
             mergeMap(profile => {
                 let parsedProfile = JSON.parse(profile);
@@ -171,41 +173,3 @@ export abstract class BaseService {
         );
     }
 }
-
-// Session Storage consts 
-// TODO: Turned it into Enum
-export const ROUTING_STATE_KEY = "routingState";
-export const LIBRARY_ID_KEY = "libraryIDKey";
-export const LIBRARY_MEMBERINFO_KEY = "libraryMemberInfoKey";
-export const SELECTED_RECORD_ILL = "selectedDataInILL";
-export const SELECTED_RECORD_LIST_ILL = "selectedDataListInILL";
-export const RESULT_RECORD_LIST_ILL = "resultDataInILL";
-export const REQUEST_EXTERNAL_ID = "requestExternalId";
-export const MEMBER_RECORD = "memberRecord";
-export const FANO_ID = "fanoId";
-export const VOLUME_LIST = "volumeList";
-export const HOLDINGS_COLUMNS = "holdingsColumns";
-export const HOLDINGS_SEARCH_FIELDS = "holdingsFields";
-export const ILL_REQUEST_FIELDS = "illFields";
-export const SELECTED_INTEGRATION_PROFILE = "integrationProfile";
-export const SELECTED_LIB_NAME = "libraryName";
-
-
-export enum AppRoutingState {
-    MainMenuPage = "",
-    HoldingsMainPage = "/holdings",
-    CatalogSearchPage = "/catalog",
-    ILLBorrowingMainPage = "/ILL",
-    SearchRecordMainPage = "/searchRecord",
-    HoldingSearchMainPage = "/holdingSearch",
-    MembersMainPage = "/members"
-}
-
-export enum QueryParams {
-    PageIndex = "pageIndex",
-    PageSize = "pageSize",
-    SearchType = "searchType",
-    Databases = "dataBase",
-    ID = "ID"
-  }
-  

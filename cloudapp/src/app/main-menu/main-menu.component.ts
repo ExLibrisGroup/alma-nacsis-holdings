@@ -1,13 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
-import { ROUTING_STATE_KEY, AppRoutingState, SELECTED_INTEGRATION_PROFILE, SELECTED_LIB_NAME } from '../service/base.service';
-import { concat, of } from 'rxjs';
+import { concat } from 'rxjs';
 import { MatSelectChange } from '@angular/material/select';
 import { AlmaApiService, IntegrationProfile } from '../service/alma.api.service';
 import { mergeMap } from 'rxjs/operators';
 import { MembersService } from '../service/members.service';
 import { FieldName } from '../user-controls/search-form/search-form-utils';
-import { off } from 'process';
+import { AppRoutingState, SessionStorageKeys } from '../Utils/RoutingUtil';
+
 
 
 @Component({
@@ -40,11 +40,11 @@ import { off } from 'process';
                 this.integrationProfilesMap = integrationProfiles;
  
                 this.rsLibrariesNameList = Array.from(integrationProfiles.keys());
-                this.storeService.get(SELECTED_LIB_NAME).subscribe((value) => {
+                this.storeService.get(SessionStorageKeys.SELECTED_LIB_NAME).subscribe((value) => {
                     this.selected = value;
                   });
                 this.menu = this.initMenu();
-                return this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(this.integrationProfilesMap.get(this.selected)));
+                return this.storeService.set(SessionStorageKeys.SELECTED_INTEGRATION_PROFILE, JSON.stringify(this.integrationProfilesMap.get(this.selected)));
             }),
             mergeMap(profile => {
                 selectedProfile = JSON.parse(profile.value)
@@ -56,14 +56,14 @@ import { off } from 'process';
               if (response.status === this.membersService.OkStatus) {
                 this.integrationProfilesMap.get(this.selected).locations = response.records[0].LOC;
               }
-            return this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(this.integrationProfilesMap.get(this.selected)));
+            return this.storeService.set(SessionStorageKeys.SELECTED_INTEGRATION_PROFILE, JSON.stringify(this.integrationProfilesMap.get(this.selected)));
             })
         ).subscribe();
         //Clear the store
         concat(
             this.storeService.remove(AppRoutingState.MainMenuPage),
         ).subscribe();
-        this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.MainMenuPage).subscribe();
+        this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY, AppRoutingState.MainMenuPage).subscribe();
      }
 
      ngOnChange() {
@@ -103,8 +103,8 @@ import { off } from 'process';
         let selectedProfile;
         let profile = JSON.stringify(this.integrationProfilesMap.get(event.value));
         selectedProfile = JSON.parse(profile);
-        this.storeService.set(SELECTED_LIB_NAME,event.value).subscribe();
-        this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(selectedProfile)).subscribe();
+        this.storeService.set(SessionStorageKeys.SELECTED_LIB_NAME,event.value).subscribe();
+        this.storeService.set(SessionStorageKeys.SELECTED_INTEGRATION_PROFILE, JSON.stringify(selectedProfile)).subscribe();
         
     }
   }
