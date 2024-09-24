@@ -20,6 +20,9 @@
         "activityBar.background": "#4E0E59",
         "titleBar.activeBackground": "#6D147D",
         "titleBar.activeForeground": "#FEFCFE"
-    }
+    },
+    "cSpell.words": [
+        "BIBG"
+    ]
     
 }

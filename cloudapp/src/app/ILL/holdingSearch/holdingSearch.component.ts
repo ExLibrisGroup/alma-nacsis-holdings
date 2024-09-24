@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnInit, OnChanges, ViewChildren, QueryList } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { HoldingsService, HoldingsSearch, NacsisHoldingRecord, DisplayHoldingResult, NacsisBookHoldingsListDetail, NacsisSerialHoldingsListDetail } from '../../service/holdings.service';
+import { HoldingsService } from '../../service/holdings.service';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AppRoutingState, ROUTING_STATE_KEY, RESULT_RECORD_LIST_ILL,SELECTED_RECORD_LIST_ILL, HOLDINGS_COLUMNS, HOLDINGS_SEARCH_FIELDS } from '../../service/base.service';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -17,6 +17,9 @@ import { SearchType , SelectedSearchFieldValues, SelectSearchField, SearchField,
 import { MembersService } from '../../service/members.service';
 import { concat, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
+import { IllUtil } from '../../Utils/IllUtil';
+import { HoldingsSearch, NacsisHoldingRecord, DisplayHoldingResult, NacsisBookHoldingsListDetail } from '../../Utils/HoldingsUtil';
+
 
 
 @Component({
@@ -87,12 +90,6 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   private resultsSummaryDisplay: Array<IDisplayLines>;
   resultFullDisplay;
   private resultFullLinkDisplay;
-  public ALL_DATABASES_MAP_SEARCH = new Map([
-    [SearchType.Monographs, ['BOOK', 'PREBOOK', 'JPMARC', 'TRCMARC', 'USMARC', 'USMARCX', 'GPOMARC', 'UKMARC', 'REMARC', 'DNMARC', 'CHMARC', 'KORMARC', 'RECON', 'HBZBKS', 'SPABKS', 'ITABKS', 'KERISB', 'KERISX', 'BNFBKS']],
-    [SearchType.Serials, ['SERIAL', 'JPMARCS', 'USMARCS', 'SPASER', 'ITASER', 'KERISS', 'BNFSER']],
-    [SearchType.Names, ['NAME', 'JPMARCA', 'USMARCA']],
-    [SearchType.UniformTitles, ['TITLE', 'USMARCT']]
-  ]);
 
   selectedValues = new SelectedSearchFieldValues();
   fieldsMap =  new Map();
@@ -102,6 +99,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     private route: ActivatedRoute,
     private router: Router,
     private illService: IllService,
+    private illUtil : IllUtil,
     private translate: TranslateService,
     private nacsis: HoldingsService,
     private membersService: MembersService,
@@ -119,7 +117,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.storeService.get(HOLDINGS_COLUMNS).pipe(
       mergeMap(columns =>{
-        if(this.illService.isObjectEmpty(columns)) {
+        if(this.illUtil.isObjectEmpty(columns)) {
           this.columnsList.forEach(col => {
           this.columns[col] = true;
           });
@@ -179,8 +177,8 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       this.fieldsMap.set(this.addUnderScore(FieldName.COPYS), new SelectSearchField( this.selectedValues.getCopyServiceTypeList(), true, FieldName.COPYS, FieldSize.medium));
       this.fieldsMap.set(this.addUnderScore(FieldName.LOANS), new SelectSearchField( this.selectedValues.getLendingServiceTypeList(), true, FieldName.LOANS, FieldSize.medium));
       this.fieldsMap.set(this.addUnderScore(FieldName.FAXS), new SelectSearchField( this.selectedValues.getFAXServiceTypeList(), true, FieldName.FAXS, FieldSize.medium));
-      if(!this.illService.isObjectEmpty(stickyFields)){
-        this.stickyFieldsMap =  this.illService.Json2Map(stickyFields);
+      if(!this.illUtil.isObjectEmpty(stickyFields)){
+        this.stickyFieldsMap =  this.illUtil.Json2Map(stickyFields);
         this.setValueToFormControl() 
       }
     });
@@ -200,7 +198,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
       self.stickyFieldsMap.set(field, self.fieldsMap.get(field).getFormControl().value);
     });
     concat(
-      this.storeService.set(HOLDINGS_SEARCH_FIELDS, this.illService.map2Json(this.stickyFieldsMap))
+      this.storeService.set(HOLDINGS_SEARCH_FIELDS, this.illUtil.map2Json(this.stickyFieldsMap))
     ).subscribe();
     this.loading = true;
     let queryParams = this.buildQueryUrl();
@@ -410,28 +408,28 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
     let paramsMap = new Map();
     switch (tag) {
       case 'KENCODE':
-        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illService.regionCodeList);
+        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illUtil.regionCodeList);
         break;
       case 'SETCODE':
-        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illService.establisherTypeResult);
+        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illUtil.establisherTypeResult);
         break;
       case 'ORGCODE':
-        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illService.institutionTypeResult);
+        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illUtil.institutionTypeResult);
         break;
       case 'CATFLG':
-        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illService.iLLParticipationTypeResult);
+        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illUtil.iLLParticipationTypeResult);
         break;
 
       case 'COPYS':
-        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illService.copyServiceTypeResult);
+        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illUtil.copyServiceTypeResult);
         break;
 
       case 'FAXS':
-        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illService.fAXServiceTypeResult);
+        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illUtil.fAXServiceTypeResult);
         break;
 
       case 'GRPCODE':
-        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illService.offsetCodeTypeResult);
+        paramsMap = this.fillParamMapWithTypeList(paramsMap, this.illUtil.offsetCodeTypeResult);
         break;
 
     }

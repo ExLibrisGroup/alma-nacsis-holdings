@@ -1,12 +1,12 @@
 import { Component,  OnInit, OnChanges} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { HoldingsService, DisplayHoldingResult} from '../../service/holdings.service';
+import { HoldingsService} from '../../service/holdings.service';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL, ILL_REQUEST_FIELDS, SELECTED_INTEGRATION_PROFILE } from '../../service/base.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
-import { IllService, RequestFields, BIBG, HMLG } from '../../service/ill.service';
+import { IllService } from '../../service/ill.service';
 import { SearchType } from '../../user-controls/search-form/search-form-utils';
 import { initResourceInformationFormGroup, initRequesterInformationFormGroup, initRotaFormGroup } from '../holdingSearch/holdingSearch-utils';
 import { ErrorStateMatcher } from '@angular/material/core';
@@ -14,6 +14,11 @@ import { DatePipe } from '@angular/common';
 import { mergeMap } from 'rxjs/operators';
 import { concat, of } from 'rxjs';
 import { ConfigurationService } from '../../service/configuration.service';
+import { IllUtil } from '../../Utils/IllUtil';
+import { RequestFields, BIBG, HMLG } from '../../Utils/RequestFields';
+import { DisplayHoldingResult } from '../../Utils/HoldingsUtil';
+
+
 
 
 @Component({
@@ -137,6 +142,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
     private route: ActivatedRoute,
     private router: Router,
     private illService: IllService,
+    private illUtil : IllUtil,
     private translate: TranslateService,
     private nacsis: HoldingsService,
     private alert: AlertService,
@@ -179,8 +185,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
         return this.storeService.get(ILL_REQUEST_FIELDS);
       }),
       mergeMap(stickyFields => {
-        if(!this.illService.isObjectEmpty(stickyFields)){
-          this.stickyFieldsMap =  this.illService.Json2Map(stickyFields);
+        if(!this.illUtil.isObjectEmpty(stickyFields)){
+          this.stickyFieldsMap =  this.illUtil.Json2Map(stickyFields);
           this.setValueToFormControl();
         } 
         this.extractSelectedData();  
@@ -340,7 +346,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.stickyFieldsMap.set('SPVIA', this.sendingMethod.value);
     this.stickyFieldsMap.set('ACCT', this.payClass.value);
     concat(
-      this.storeService.set(ILL_REQUEST_FIELDS, this.illService.map2Json(this.stickyFieldsMap)),
+      this.storeService.set(ILL_REQUEST_FIELDS, this.illUtil.map2Json(this.stickyFieldsMap)),
       this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage)
     ).subscribe();
     this.router.navigate(['holdingSearch', this.nacsisId, this.mmsTitle, this.currentSearchType]);
@@ -418,7 +424,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.stickyFieldsMap.set('TYPE', this.copyType.value);
     this.stickyFieldsMap.set('SPVIA', this.sendingMethod.value);
     this.stickyFieldsMap.set('ACCT', this.payClass.value);
-    this.storeService.set(ILL_REQUEST_FIELDS, this.illService.map2Json(this.stickyFieldsMap))
+    this.storeService.set(ILL_REQUEST_FIELDS, this.illUtil.map2Json(this.stickyFieldsMap))
   }
 
 

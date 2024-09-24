@@ -2,13 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { HoldingsService, Holding, HoldingsBook, HoldingsSerial } from '../../service/holdings.service';
+import { HoldingsService } from '../../service/holdings.service';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { Action } from '../../user-controls/result-card/result-card.component';
 import { MultiSearchField, SearchField, FieldName, FieldSize } from '../../user-controls/search-form/search-form-utils';
 import { AlmaApiService } from '../../service/alma.api.service';
 import { VOLUME_LIST_SEPARATOR } from '../main/main.component';
 import { SELECTED_INTEGRATION_PROFILE, VOLUME_LIST } from '../../service/base.service';
+import { Holding, HoldingsBook, HoldingsSerial } from '../../Utils/HoldingsUtil';
+
 
 
 @Component({

@@ -13,6 +13,9 @@ import { FullViewLink } from '../../user-controls/full-view-display/full-view-di
 import { RecordSelection } from '../../user-controls/selectable-result-card/selectable-result-card.component';
 import { MembersService } from '../../service/members.service';
 import { concat } from 'rxjs';
+import { CatalogUtil } from '../../Utils/CatalogUtil';
+
+
 
 @Component({
   selector: 'ILL-searchRecord',
@@ -27,19 +30,7 @@ export class searchRecordComponent implements AfterViewInit, OnDestroy {
     [SearchType.Monographs, this.initMonographsSearchFields()],
     [SearchType.Serials, this.initSerialsSearchFields()]
   ]);
-
-  public ALL_DATABASES_MAP = new Map([
-    [SearchType.Monographs, ['BOOK', 'PREBOOK', 'JPMARC', 'TRCMARC', 'USMARC', 'USMARCX', 'GPOMARC', 'UKMARC', 'REMARC', 'DNMARC', 'CHMARC', 'KORMARC', 'RECON', 'HBZBKS', 'SPABKS', 'ITABKS', 'KERISB', 'KERISX', 'BNFBKS']],
-    [SearchType.Serials, ['SERIAL', 'JPMARCS', 'USMARCS', 'SPASER', 'ITASER', 'KERISS', 'BNFSER']],
-  ]);
-
-  public ALL_DATABASES_MAP_SEARCH = new Map([
-    [SearchType.Monographs, ['BOOK', 'PREBOOK', 'JPMARC', 'TRCMARC', 'USMARC', 'USMARCX', 'GPOMARC', 'UKMARC', 'REMARC', 'DNMARC', 'CHMARC', 'KORMARC', 'RECON', 'HBZBKS', 'SPABKS', 'ITABKS', 'KERISB', 'KERISX', 'BNFBKS']],
-    [SearchType.Serials, ['SERIAL', 'JPMARCS', 'USMARCS', 'SPASER', 'ITASER', 'KERISS', 'BNFSER']],
-    [SearchType.Names, ['NAME', 'JPMARCA', 'USMARCA']],
-    [SearchType.UniformTitles, ['TITLE', 'USMARCT']]
-  ]);
-
+  
   public ACTIONS_MENU_LIST = new Map([
     [SearchType.Monographs, ['Catalog.Results.Actions.View']],
     [SearchType.Serials, ['Catalog.Results.Actions.View']],
@@ -98,7 +89,8 @@ export class searchRecordComponent implements AfterViewInit, OnDestroy {
     private translate: TranslateService,
     private illService: IllService,
     private memberService : MembersService,
-    private storeService: CloudAppStoreService
+    private storeService: CloudAppStoreService,
+    private catalogUtil: CatalogUtil
   ) { }
 
   ngAfterViewInit() {
@@ -201,7 +193,7 @@ export class searchRecordComponent implements AfterViewInit, OnDestroy {
   }
 
   getCurrentDatabases(): Array<string> {
-    return this.ALL_DATABASES_MAP.get(this.currentSearchType);
+    return this.catalogUtil.ALL_DATABASES_MAP.get(this.currentSearchType);
   }
 
   /***  Summary View Section  ***/
@@ -429,7 +421,7 @@ export class searchRecordComponent implements AfterViewInit, OnDestroy {
     let urlParams = "";
     urlParams = urlParams + QueryParams.PageIndex + "=0&" + QueryParams.PageSize + "=20";
     urlParams = urlParams + "&" + QueryParams.SearchType + "=" + fullViewLink.searchType;
-    urlParams = urlParams + "&" + QueryParams.Databases + "=" + this.ALL_DATABASES_MAP_SEARCH.get(fullViewLink.searchType)[0];
+    urlParams = urlParams + "&" + QueryParams.Databases + "=" + this.catalogUtil.ALL_DATABASES_MAP_SEARCH.get(fullViewLink.searchType)[0];
     urlParams = urlParams + "&" + QueryParams.ID + "=" + fullViewLink.linkID;
 
     this.getResultsFromNacsis(urlParams, true);

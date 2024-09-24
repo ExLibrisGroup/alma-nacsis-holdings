@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { SearchType, SearchField, FieldName } from '../user-controls/search-form/search-form-utils';
+import { SearchType, FieldName } from '../user-controls/search-form/search-form-utils';
 import { HttpClient } from "@angular/common/http";
 import { mergeMap } from 'rxjs/operators';
 import { CloudAppEventsService, CloudAppStoreService, InitData } from '@exlibris/exl-cloudapp-angular-lib';
-import { HoldingsService } from '../service/holdings.service';
 import { BaseService, QueryParams, SELECTED_INTEGRATION_PROFILE } from "./base.service";
 
 @Injectable({
@@ -21,76 +20,16 @@ export class IllService extends BaseService {
 
   public currentSearchType: SearchType = SearchType.Monographs;
 
-  regionCodeList: string[] = [
-    '01 北海道', '02 青森', '03 岩手', '04 宮城', '05 秋田', '06 山形',
-    '07 福島', '08 茨城', '09 栃木', '10 群馬', '11 埼玉', '12 千葉',
-    '13 東京', '14 神奈川', '15 新潟', '16 富山', '17 石川', '18 福井',
-    '19 山梨', '20 長野', '21 岐阜', '22 静岡', '23 愛知', '24 三重',
-    '25 滋賀', '26 京都', '27 大阪', '28 兵庫', '29 奈良', '30 和歌山',
-    '31 鳥取', '32 島根', '33 岡山', '34 広島', '35 山口', '36 徳島',
-    '37 香川', '38 愛媛', '39 高知', '40 福岡', '41 佐賀', '42 長崎',
-    '43 熊本', '44 大分', '45 宮崎', '46 鹿児島', '47 沖縄', 'なし 全国'
-  ];
-  
-
-  establisherTypeResult: string[] = [
-    '1 国立', '2 公立', '3 私立', '4 特殊法人', '5 海外', '8 研修・テスト用', '9 その他'
-  ];
-  institutionTypeResult: string[] = [
-    '1 大学', '2 短期大学', '3 高等専門学校', '4 大学共同利用機関等', '5 他省庁の施設機関等', '8 研修・テスト用', '9 その他'
-  ];
-  iLLParticipationTypeResult: string[] = [
-    'A 参加', 'N 未参加'
-  ];
-
-  copyServiceTypeResult: string[] = [
-    'A 受け付ける', 'N 受け付けない', 'C 他の窓口で受け付ける'
-  ];
-
-  fAXServiceTypeResult: string[] = [
-    'A サービス可', 'N サービス不可', 'C 条件付でサービス可'
-  ];
-
-  offsetCodeTypeResult: string[] = [
-    'N ILL文献複写等料金相殺サービス参加'
-  ];
-
-
   constructor(
     protected eventsService: CloudAppEventsService,
     protected storeService: CloudAppStoreService,
     protected http: HttpClient,
-    private nacsis: HoldingsService,
     protected translate: TranslateService
   ) {
     super(eventsService, storeService, http);
   }
 
-  isEmpty(val) {
-    return (val === undefined || val == null || val.length <= 0) ? true : false;
-  }
 
-  
-  isObjectEmpty(obj) {
-    return obj === undefined || obj === null || JSON.stringify(obj) === '"{}"';
-  }
-
-  map2Json(map) {
-    let jsonObject = {};
-    map.forEach((value, key) => {
-      jsonObject[key] = value;
-    });
-    return JSON.stringify(jsonObject);
-  }
-
-  Json2Map(jsonObject) {
-    let map = new Map();
-    jsonObject = JSON.parse(jsonObject);
-    for (var value in jsonObject) {
-      map.set(value, jsonObject[value]);
-    }
-    return map;
-  }
 
   recordFillIn(illBorrowing: AlmaRecord, record: AlmaRequestInfo) {
     illBorrowing.title = this.isEmpty(record.title) ? "" : record.title;
@@ -414,100 +353,6 @@ export class AlmaRecordDisplay extends IDisplayLines {
 
         if (!this.illService.isEmpty(this.record.seriesSummaryAll))
         summaryLines.push(this.record.seriesSummaryAll);
-
-
     return summaryLines;
   }
-
-
 }
-
-export class RequestFields {
-  ID: string[];
-  _DBNAME_: string[];
-  CRTDT: string[];
-  RNWDT: string[];
-  CRTUID: string[];
-  RNWUID: string[];  
-  BSFLG: string[];
-  STAT: string[];
-  ONO: string[];
-  ANO: string[];
-  CLAIMFLG: string[];
-  LOANFLG: string[];
-  ODATE: string[];
-  ADATE: string[];
-  SDATE: string[];
-  RDATE: string[];
-  DDATE: string[];
-  BDATE: string[];  
-  KDATE: string[];
-  OMLID: string[];
-  OMLNM: string[];
-  AMLID: string[];
-  AMLNM: string[];
-  CLNT: string[];
-  CLNTP: string[];
-  SRVCE: string[];
-  VLNO: string[];
-  PAGE: string[];
-  YEAR: string[];  
-  ARTCL: string[];
-  BVRFY: string[];
-  HVRFY: string[];
-  ACCT: string[];
-  TYPE: string[];
-  FEE: string[];
-  POSTG: string[];
-  SUM: string[];
-  SPVIA: string[];
-  PRMT: string[];
-  OSTAF: string[];
-  ASTAF: string[];
-  OLDF: string[];
-  OLDAF: string[];
-  ALDF: string[];
-  OADRS: string[];
-  AADRS: string[];
-  IRUID: string[];
-  OMLIDS: string[];
-  AMLIDS: string[];
-  _COMMENT_: string[];
-  EXTERNAL_ID: string = "";
-
-  BIBG: BIBG[];
-  HMLG: HMLG[];
-  SENDG : SENDG[];
-  CHG : CHG[];
-}
-
-export class BIBG {
-  BIBID: string = "";
-  BIBNT: string = "";
-  STDNO: string = "";
-}
-
-export class HMLG {
-  HMLID: string = "";
-  HMLNM: string = "";
-  LOC: string = "";
-  VOL: string = "";
-  CLN: string = "";
-  RGTN: string = "";
-}
-
-export class SENDG {
-  SENDCMND: string = "";
-  SENDMLID: string = "";
-  SENDCMNT: string = "";
-}
-
-export class CHG {
-  ITEM: string = "";
-  UPRCE: string = "";
-  QNT: string = "";
-  CHRGE: string = "";
-
-}
-
-

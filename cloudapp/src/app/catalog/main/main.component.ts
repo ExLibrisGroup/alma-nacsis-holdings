@@ -15,6 +15,8 @@ import { HoldingsService } from '../../service/holdings.service';
 import { MembersService } from '../../service/members.service';
 import { concat } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CatalogUtil } from '../../Utils/CatalogUtil';
+
 
 
 @Component({
@@ -26,13 +28,6 @@ import { map } from 'rxjs/operators';
 export class CatalogMainComponent implements AfterViewInit {
 
     public SEARCH_TYPE_ARRAY = new Array (SearchType.Monographs, SearchType.Serials, SearchType.Names, SearchType.UniformTitles);
-    public ALL_DATABASES_MAP = new Map([
-        [SearchType.Monographs, ['BOOK','PREBOOK','JPMARC','TRCMARC','USMARC','USMARCX','GPOMARC','UKMARC','REMARC','DNMARC','CHMARC','KORMARC','RECON','HBZBKS','SPABKS','ITABKS','KERISB','KERISX','BNFBKS']],
-        [SearchType.Serials, ['SERIAL','JPMARCS','USMARCS','SPASER','ITASER','KERISS','BNFSER']],
-        [SearchType.Names, ['NAME', 'JPMARCA', 'USMARCA']],
-        [SearchType.UniformTitles, ['TITLE', 'USMARCT']],
-        [SearchType.Members, ['MEMBER']]
-    ]);
     public ALL_SEARCH_FIELDS_MAP = new Map([
         [SearchType.Monographs, this.initMonographsSearchFields()],
         [SearchType.Serials, this.initSerialsSearchFields()], 
@@ -85,7 +80,8 @@ export class CatalogMainComponent implements AfterViewInit {
         private router: Router,
         private alert: AlertService,
         private translate: TranslateService,
-        private storeService: CloudAppStoreService
+        private storeService: CloudAppStoreService,
+        private catalogUtil: CatalogUtil
     ) { }
 
 
@@ -115,7 +111,7 @@ export class CatalogMainComponent implements AfterViewInit {
     }
     
     getCurrentDatabases(): Array<string> {
-        return this.ALL_DATABASES_MAP.get(this.currentSearchType);
+        return this.catalogUtil.ALL_DATABASES_MAP.get(this.currentSearchType);
     }
 
     setCurrentDatabase(db: string) {
@@ -123,7 +119,7 @@ export class CatalogMainComponent implements AfterViewInit {
     }
 
     getPrimaryDatabase(searchType: SearchType) {
-        return this.ALL_DATABASES_MAP.get(searchType)[0];
+        return this.catalogUtil.ALL_DATABASES_MAP.get(searchType)[0];
     }
 
     getSearchFields(): Array<SearchField> {

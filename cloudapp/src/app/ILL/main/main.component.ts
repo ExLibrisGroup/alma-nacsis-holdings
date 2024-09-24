@@ -166,7 +166,9 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
 
   newSearch(){
     this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage).subscribe();
-    this.router.navigate(['searchRecord']);
+    // this.router.navigate(['searchRecord']);
+        this.router.navigate(['catalog']);
+
   }
 
 
