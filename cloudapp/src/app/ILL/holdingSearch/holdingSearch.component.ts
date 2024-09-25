@@ -750,10 +750,13 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
 
   backToSearchRecord() {
     concat(
-      this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage),
+      // this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage),
+      this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY, AppRoutingState.CatalogSearchPage),
+
       this.storeService.set(SessionStorageKeys.RESULT_RECORD_LIST_ILL, ''),
     ).subscribe();
-    this.router.navigate(['searchRecord', 'back']);
+    // this.router.navigate(['searchRecord', 'back']);
+    this.router.navigate(['catalog'], { queryParams: { isCatalogIll: 'true' } });
   }
 
   private initConfigColMap(): void {

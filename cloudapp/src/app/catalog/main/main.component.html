@@ -1,15 +1,22 @@
 <div class="align-space-between" fxLayout="row">
   <button mat-flat-button color="secondary" [routerLink]="['']">
     <mat-icon>arrow_back_ios</mat-icon>
-    {{ 'General.BackToMenu' | translate }}
+     {{'General.Back' | translate}}
+    <!-- {{ 'General.BackToMenu' | translate }} -->
   </button>
   <div class="align-to-right" fxLayout="row">
     <button style="margin-right: 15px" mat-flat-button color="secondary" (click)="clear()">
       {{ 'General.Clear' | translate }}
     </button>
-    <button mat-flat-button color="primary" type="submit" (click)="search()">
+    <button style="margin-right: 15px" mat-flat-button color="primary" type="submit" (click)="search()">
       {{ 'General.Search' | translate }}
     </button>
+    <!-- for ill -->
+    <button *ngIf="(isIllCatalogSearch$ | async) === true" style="margin-right: 15px" mat-flat-button color="primary" type="submit" (click)="next()" [disabled]= "!isFirstIndex">
+      {{ 'General.Next' | translate }}
+    </button>
+    <!-- ******* -->
+
   </div>
 </div>
 <br>
@@ -44,11 +51,16 @@
 
 
 <ng-template #searchResults>
-  <results-list [numOfResults]="numOfResults" [pageIndex]="pageIndex" [pageSize]="pageSize"
-    [resultsSummaryDisplay]="resultsSummaryDisplay" [resultActionList]="actionMenuEnteries"
+  <results-list *ngIf="(isIllCatalogSearch$ | async) != true" [numOfResults]="numOfResults" [pageIndex]="pageIndex" [pageSize]="pageSize"
+    [resultsSummaryDisplay]="resultsSummaryDisplay" [resultActionList]="getActionMenu()"
     (onActionSelected)="onActionsClick($event)" (onTitleSelected)="onTitleClick($event)"
     (onPageSelected)="onPageAction($event)">
-  </results-list>
+  </results-list> 
+  <selectable-results-list *ngIf="(isIllCatalogSearch$ | async) === true" [numOfResults]="numOfResults" [pageIndex]="pageIndex" [pageSize]="pageSize"
+    [resultsSummaryDisplay]="resultsSummaryDisplay" [resultActionList]="getActionMenu()"
+    (onActionSelected)="onActionsClick($event)" (onTitleSelected)="onTitleClick($event)"
+    (onPageSelected)="onPageAction($event)" (onRadioSelected) = "onRadioClick($event)">
+  </selectable-results-list>
 </ng-template>
 
 

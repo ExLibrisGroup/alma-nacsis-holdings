@@ -167,9 +167,9 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
 
   newSearch(){
     this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage).subscribe();
-    this.router.navigate(['searchRecord']);
+    // this.router.navigate(['searchRecord']);
     // The query params help us to determine which search form to display (regular catalog or ILL catalog) 
-    // this.router.navigate(['catalog'], { queryParams: { isCatalogIll: 'true' } });
+    this.router.navigate(['catalog'], { queryParams: { isCatalogIll: 'true' } });
   }
 
 

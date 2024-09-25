@@ -18,6 +18,8 @@ import { CatalogUtil} from '../../Utils/CatalogUtil';
 import { QueryParams } from '../../Utils/BaseUtil';
 import { AppRoutingState, SessionStorageKeys } from '../../Utils/RoutingUtil';
 
+import { AlmaRecordDisplay, IllService } from '../../service/ill.service';
+
 
 
 
@@ -30,26 +32,11 @@ import { AppRoutingState, SessionStorageKeys } from '../../Utils/RoutingUtil';
 
 export class CatalogMainComponent implements AfterViewInit {
 
-    public SEARCH_TYPE_ARRAY = new Array (SearchType.Monographs, SearchType.Serials, SearchType.Names, SearchType.UniformTitles);
-    public ALL_SEARCH_FIELDS_MAP = new Map([
-        [SearchType.Monographs, this.initMonographsSearchFields()],
-        [SearchType.Serials, this.initSerialsSearchFields()], 
-        [SearchType.Names, this.initNamesSearchFields()], 
-        [SearchType.UniformTitles, this.initUniformTitlesSearchFields()] 
-    ]);
-    public ACTIONS_MENU_LIST = new Map([
-        [SearchType.Monographs, [new Action('Catalog.Results.Actions.View'), new Action('Catalog.Results.Actions.Import')]],
-        [SearchType.Serials, [new Action('Catalog.Results.Actions.View'), new Action('Catalog.Results.Actions.Import')]],
-        [SearchType.Names, [new Action('Catalog.Results.Actions.View') , new Action('Catalog.Results.Actions.Import')]],
-        [SearchType.UniformTitles, [new Action('Catalog.Results.Actions.View'), new Action('Catalog.Results.Actions.Import')]],
-    ]);
-
-
+   
     // Selection variables
     public currentSearchType: SearchType = SearchType.Monographs;
     currentDatabase: string;// = 'BOOK';  // first default selection (since opened with Monographs)
     linkSearchType: SearchType;
-    actionMenuEnteries: Array<Action>;
 
     // UI variables
     public panelState: boolean = true;
@@ -68,7 +55,13 @@ export class CatalogMainComponent implements AfterViewInit {
     public resultFullDisplay;
     public resultFullLinkDisplay;
 
+    //For ILL form:
     isIllCatalogSearch$: Observable<boolean>;
+    isIllCatalogSearch: boolean = false;
+
+    selected: IDisplayLines;
+    isFirstIndex: number;
+    searchTypeArray : Array<SearchType>;
 
     // Templates
     @ViewChild('notSearched') notSearchedTmpl:TemplateRef<any>;
@@ -82,27 +75,51 @@ export class CatalogMainComponent implements AfterViewInit {
         private catalogService: CatalogService,
         private holdingsService: HoldingsService,
         private membersService : MembersService,
+        private illService: IllService,
         private router: Router,
         private route: ActivatedRoute,
         private alert: AlertService,
         private translate: TranslateService,
         private storeService: CloudAppStoreService,
         private catalogUtil: CatalogUtil
-    ) {}
-    
-
-    ngAfterViewInit(){
-        // Determine which search form to display (regular catalog or ILL catalog) 
+    ) {
+          // Determine which search form to display (regular catalog or ILL catalog) 
         this.isIllCatalogSearch$ = this.route.queryParamMap.pipe(
             map((params: ParamMap) => params.get('isCatalogIll')),
             map(val => val == 'true' ? true : false));
-            this.isIllCatalogSearch$.subscribe(param => console.log(param));
+            this.isIllCatalogSearch$.subscribe(
+                value => {
+                    console.log(value);
+                    if(value){
+                        this.isIllCatalogSearch = true;
+                        this.searchTypeArray = this.catalogUtil.SEARCH_TYPE_ARRAY_ILL;
+                    } else {
+                        this.isIllCatalogSearch = false;
+                        this.searchTypeArray = this.catalogUtil.SEARCH_TYPE_ARRAY_CATALOG;
+                    }
+                }
+                
+            );
 
+    }
+    
+
+    ngAfterViewInit(){
         this.storeService.get(SessionStorageKeys.ROUTING_STATE_KEY).subscribe((stateKey)=>{
-            if(stateKey == "") {
-                this.catalogService.clearAllSearchResults();
-            } else {
-                this.onBackFromViewHolding();
+            switch (stateKey) {
+                case "": //In case of regular catalog section is opened
+                    this.catalogService.clearAllSearchResults();
+                    break;
+                case  AppRoutingState.CatalogSearchPage:
+                    if(this.isIllCatalogSearch) {
+                        this.setSearchResultsDisplay();//In case of ILL catalog section is opened
+                    }else {
+                        this.onBackFromViewHolding(); //In case of regular catalog section is opened
+                    }
+                    break;
+                default: {
+                    this.catalogService.clearAllSearchResults();
+                }
             }
         });
     }
@@ -112,14 +129,14 @@ export class CatalogMainComponent implements AfterViewInit {
 
     getSearchTypesLabels(): Array<string>{
         let searchTypeMap = new Array(); 
-        this.SEARCH_TYPE_ARRAY.forEach(type=> {
+        this.searchTypeArray.forEach(type=> {
             searchTypeMap.push("Catalog.Form.SearchTypes." + type)
         });
         return searchTypeMap;
     }
 
     getSearchTypeIndex(): number {
-        return this.SEARCH_TYPE_ARRAY.indexOf(this.currentSearchType);
+        return this.searchTypeArray.indexOf(this.currentSearchType);
     }
     
     getCurrentDatabases(): Array<string> {
@@ -135,11 +152,11 @@ export class CatalogMainComponent implements AfterViewInit {
     }
 
     getSearchFields(): Array<SearchField> {
-        return this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType);
+        return this.catalogUtil.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType);
     }
 
     clear() {
-           this.ALL_SEARCH_FIELDS_MAP.forEach(searchType => {
+           this.catalogUtil.ALL_SEARCH_FIELDS_MAP.forEach(searchType => {
             searchType.forEach(searchField => {
                 searchField.getFormControl().setValue(null)
             }); 
@@ -155,7 +172,7 @@ export class CatalogMainComponent implements AfterViewInit {
     }
 
     onTabChange(event: MatTabChangeEvent){
-        this.currentSearchType =  this.SEARCH_TYPE_ARRAY[event.index];
+        this.currentSearchType =  this.searchTypeArray[event.index];
         this.currentDatabase = this.getCurrentDatabases()[0];
         if(this.catalogService.getSearchResults(this.currentSearchType).getResults() != null){
             this.setSearchResultsDisplay();
@@ -167,7 +184,7 @@ export class CatalogMainComponent implements AfterViewInit {
     } 
     
     removeSpecialCharacters(SearchType: SearchType, fieldsToHandle :string[] ,charectersToRemove:RegExp ,valuesMap:Map<any,any>) {
-        let valuableField = this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).filter(field => (fieldsToHandle.includes(field.getKey())) && (field.getFormControl().value != null) && (field.getFormControl().value != ""));
+        let valuableField = this.catalogUtil.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).filter(field => (fieldsToHandle.includes(field.getKey())) && (field.getFormControl().value != null) && (field.getFormControl().value != ""));
         valuableField.forEach(field => {
             let afterRemoval = field.getFormControl().value.replace(charectersToRemove, '');
             // field.getFormControl().setValue(afterRemoval);
@@ -175,6 +192,7 @@ export class CatalogMainComponent implements AfterViewInit {
         })
     }
     search() {
+        this.isFirstIndex = null;
         // Generating the URL by the fields' Form Control
         let urlParams = "";
         
@@ -186,7 +204,7 @@ export class CatalogMainComponent implements AfterViewInit {
        
      //remove special charecters and stop words
         
-        let valuableFields = this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).filter(field => (field.getFormControl().value != null) && (field.getFormControl().value != ""));
+        let valuableFields = this.catalogUtil.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).filter(field => (field.getFormControl().value != null) && (field.getFormControl().value != ""));
         let valuableFeildsNames=valuableFields.map(field => field.getKey());
         let stopWordsRegex = new RegExp(stopWords.join("\\b|\\b"), 'gi');
         let searchValuesMap=new Map();
@@ -264,22 +282,21 @@ export class CatalogMainComponent implements AfterViewInit {
     /***  Summary View Section  ***/
 
     getActionMenu() {
+        if(this.isIllCatalogSearch) {
+            return this.catalogUtil.CATALOG_ILL_ACTIONS_MENU_LIST;
+        }
         let searchedDBName =  this.getParamsFromSearchQuery(this.currentSearchType).get(QueryParams.Databases);
         // For searches inside BOOK or SERIAL DB, return the full option
         if (searchedDBName === "BOOK" || searchedDBName === "SERIAL") {
-            let additionalMenu = [...this.ACTIONS_MENU_LIST.get(this.currentSearchType)];
-            additionalMenu.push(new Action('Catalog.Results.Actions.ViewHoldings'));
-            return additionalMenu;
+            return this.catalogUtil.CATALOG_BOOKS_ACTIONS_MENU_LIST;
         } else {
-            return this.ACTIONS_MENU_LIST.get(this.currentSearchType);
+            return this.catalogUtil.CATALOG_ACTIONS_MENU_LIST;
         }
     }
 
     private setSearchResultsDisplay(){
         this.catalogResultsData = this.catalogService.getSearchResults(this.currentSearchType);
         this.numOfResults = this.catalogResultsData.getHeader().totalRecords;
-        this.actionMenuEnteries = new Array();
-        this.actionMenuEnteries = this.getActionMenu();
         this.resultsSummaryDisplay = new Array();
         this.catalogResultsData.getResults()?.forEach(result=>{
             this.resultsSummaryDisplay.push(result.getSummaryDisplay());
@@ -502,7 +519,7 @@ export class CatalogMainComponent implements AfterViewInit {
         this.pageSize = paramsMap.get(QueryParams.PageSize);
         this.currentSearchType = SearchType[paramsMap.get(QueryParams.SearchType)];
         this.currentDatabase = paramsMap.get(QueryParams.Databases);
-        this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).forEach(field => {
+        this.catalogUtil.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).forEach(field => {
             if(paramsMap.has(field.getKey())){
                 field.setFormControl(paramsMap.get(field.getKey()));
             }
@@ -518,64 +535,29 @@ export class CatalogMainComponent implements AfterViewInit {
         return paramsMap;
     }
 
+
+    //For ILL form :
+    onRadioClick(record: IDisplayLines) {
+        this.isFirstIndex = 1;
+        this.selected = record;
+    }
+
+     next() {
+
+    let title = this.selected.getFullRecordData().getSummaryView().TRD;
+    let nacsisID = this.selected.getFullRecordData().getSummaryView().ID;
+    let rawData = this.selected.getFullRecordData().getFullView();
+    concat(
+      this.storeService.set(SessionStorageKeys.SELECTED_RECORD_ILL, JSON.stringify(rawData)),
+      this.storeService.set(SessionStorageKeys.RESULT_RECORD_LIST_ILL, ''),
+      this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY, AppRoutingState.CatalogSearchPage)
+    //   this.storeService.set(SessionStorageKeys.ROUTING_STATE_KEY, AppRoutingState.SearchRecordMainPage)
+    ).subscribe();
+    this.loading = true;
+    this.router.navigate(['holdingSearch', nacsisID, title, this.currentSearchType]);
+  }
+
     
 
-    /***  initializing the search fields   ***/
-
-    initMonographsSearchFields(): Array<SearchField> {
-        return new Array(new SearchField(FieldName.TITLE, FieldSize.fullWidth), 
-            new SearchField(FieldName.FTITLE, FieldSize.fullWidth), 
-            new SearchField(FieldName.PTBL, FieldSize.fullWidth), 
-            new SearchField(FieldName.AUTH, FieldSize.fullWidth), 
-            new SearchField(FieldName.VOL, FieldSize.large), 
-            new SearchField(FieldName.AKEY, FieldSize.large), 
-            new SearchField(FieldName.PUB, FieldSize.large), 
-            new SearchField(FieldName.YEAR, FieldSize.large), 
-            new SearchField(FieldName.PLACE, FieldSize.medium), 
-            new SearchField(FieldName.CNTRY, FieldSize.medium), 
-            new SearchField(FieldName.LANG, FieldSize.medium), 
-            new SearchField(FieldName.SH, FieldSize.medium), 
-            new SearchField(FieldName.ID, FieldSize.medium), 
-            new SearchField(FieldName.PID, FieldSize.medium), 
-            new SearchField(FieldName.ISSN, FieldSize.small), 
-            new SearchField(FieldName.ISBN, FieldSize.small), 
-            new SearchField(FieldName.NBN, FieldSize.small), 
-            new SearchField(FieldName.NDLCN, FieldSize.small), 
-            new SearchField(FieldName.LCCN, FieldSize.small));
-    }
-
-    initSerialsSearchFields(): Array<SearchField> {
-        return new Array(new SearchField(FieldName.TITLE, FieldSize.fullWidth), 
-            new SearchField(FieldName.FTITLE, FieldSize.fullWidth), 
-            new SearchField(FieldName.AUTH, FieldSize.fullWidth), 
-            new SearchField(FieldName.ISSN, FieldSize.small), 
-            new SearchField(FieldName.CODEN, FieldSize.small), 
-            new SearchField(FieldName.NDLPN, FieldSize.small), 
-            new SearchField(FieldName.LCCN, FieldSize.small),
-            new SearchField(FieldName.PUB, FieldSize.large), 
-            new SearchField(FieldName.YEAR, FieldSize.large), 
-            new SearchField(FieldName.SH, FieldSize.small),
-            new SearchField(FieldName.AKEY, FieldSize.small), 
-            new SearchField(FieldName.ID, FieldSize.small), 
-            new SearchField(FieldName.FID, FieldSize.small),
-            new SearchField(FieldName.PLACE, FieldSize.medium), 
-            new SearchField(FieldName.CNTRY, FieldSize.medium), 
-            new SearchField(FieldName.LANG, FieldSize.medium));
-    }
-    initNamesSearchFields(): Array<SearchField> {
-        return new Array(new SearchField(FieldName.AUTH, FieldSize.fullWidth), 
-            new SearchField(FieldName.ID, FieldSize.large), 
-            new SearchField(FieldName.SAID, FieldSize.large),
-            new SearchField(FieldName.AKEY, FieldSize.medium), 
-            new SearchField(FieldName.PLACEKEY, FieldSize.medium), 
-            new SearchField(FieldName.DATE, FieldSize.medium));
-    }
-
-    initUniformTitlesSearchFields(): Array<SearchField> {
-        return new Array(new SearchField(FieldName.TITLE, FieldSize.fullWidth), 
-            new SearchField(FieldName.AUTH, FieldSize.fullWidth), 
-            new SearchField(FieldName.AKEY, FieldSize.medium), 
-            new SearchField(FieldName.ID, FieldSize.medium), 
-            new SearchField(FieldName.SAID, FieldSize.medium));
-    }
+  
 }
