@@ -311,15 +311,20 @@ export class RequestFormComponent implements OnInit, OnChanges {
     bibMetadata = bibMetadata + (this.illService.isEmpty(this.sizeAuto) ? "" : this.sizeAuto + ". ");
     return bibMetadata;
   }
-
-  buildRequesterStaff(){
+  buildRequesterStaff() {
     let requesterStaff = this.configService.config.rmsg;
-    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illStaffAuto) ? "" : this.illStaffAuto + " ");
-    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illDeptAuto) ? "" : this.illDeptAuto + " ");
-    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illTelAuto) ? "" : "TEL=" + this.illTelAuto + " ");
-    requesterStaff = requesterStaff + (this.illService.isEmpty(this.illFaxAuto) ? "" : "FAX=" + this.illFaxAuto);
-    return requesterStaff;
-  }
+    if (!this.illService.isEmpty(requesterStaff)) {
+        return requesterStaff;
+    }
+    requesterStaff = "";
+    requesterStaff += this.illService.isEmpty(this.illStaffAuto) ? "" : this.illStaffAuto + " ";
+    requesterStaff += this.illService.isEmpty(this.illDeptAuto) ? "" : this.illDeptAuto + " ";
+    requesterStaff += this.illService.isEmpty(this.illTelAuto) ? "" : "TEL=" + this.illTelAuto + " ";
+    requesterStaff += this.illService.isEmpty(this.illFaxAuto) ? "" : "FAX=" + this.illFaxAuto;
+    
+    return requesterStaff.trim();
+}
+
 
   buildRequesterAddress(){
     let requesterAddress = "";
