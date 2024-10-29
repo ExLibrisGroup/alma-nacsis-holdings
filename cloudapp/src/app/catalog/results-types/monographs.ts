@@ -407,7 +407,7 @@ export class MonographFullDisplay extends IDisplayLines {
                 fieldsArray.push(new ViewFieldBuilder().content(utl.UTHDNGR).build());
                 fieldsArray.push(new ViewFieldBuilder().content(utl.UTHDNGVR).build());
                 fieldsArray = this.setSeparator(fieldsArray, "||");
-                fieldsArray.push(new ViewFieldBuilder().content(utl.UTID).build());
+                fieldsArray.push(new ViewFieldBuilder().content(utl.UTID).link(SearchType.Names).build());
                 fieldsArray.push(new ViewFieldBuilder().content(utl.UTINFO).build());
             this.addLine(new ViewFieldBuilder().label("UTL").build(), fieldsArray);
         });
