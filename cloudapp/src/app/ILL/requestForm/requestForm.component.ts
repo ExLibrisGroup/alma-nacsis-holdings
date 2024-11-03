@@ -312,11 +312,12 @@ export class RequestFormComponent implements OnInit, OnChanges {
     return bibMetadata;
   }
   buildRequesterStaff() {
-    let requesterStaff = this.configService.config.rmsg;
+  let  requesterStaff = "";
+  if(this.configService.config != undefined && this.configService.config.rmsg!=undefined){
+    requesterStaff = this.configService.config.rmsg;}
     if (!this.illService.isEmpty(requesterStaff)) {
         return requesterStaff;
     }
-    requesterStaff = "";
     requesterStaff += this.illService.isEmpty(this.illStaffAuto) ? "" : this.illStaffAuto + " ";
     requesterStaff += this.illService.isEmpty(this.illDeptAuto) ? "" : this.illDeptAuto + " ";
     requesterStaff += this.illService.isEmpty(this.illTelAuto) ? "" : "TEL=" + this.illTelAuto + " ";
