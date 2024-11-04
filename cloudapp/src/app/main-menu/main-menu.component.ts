@@ -40,9 +40,12 @@ import { off } from 'process';
                 this.integrationProfilesMap = integrationProfiles;
  
                 this.rsLibrariesNameList = Array.from(integrationProfiles.keys());
+                this.selected = this.rsLibrariesNameList[0];
+                if(this.storeService.get(SELECTED_LIB_NAME)!=null && this.storeService.get(SELECTED_LIB_NAME)!=undefined){
                 this.storeService.get(SELECTED_LIB_NAME).subscribe((value) => {
                     this.selected = value;
-                  });
+                  });}
+                  
                 this.menu = this.initMenu();
                 return this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(this.integrationProfilesMap.get(this.selected)));
             }),
