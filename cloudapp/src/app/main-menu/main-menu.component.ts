@@ -38,14 +38,12 @@ import { off } from 'process';
         this.almaService.getAllIntegrationProfiles().pipe(
             mergeMap(integrationProfiles => {
                 this.integrationProfilesMap = integrationProfiles;
- 
                 this.rsLibrariesNameList = Array.from(integrationProfiles.keys());
                 this.selected = this.rsLibrariesNameList[0];
-                if(this.storeService.get(SELECTED_LIB_NAME)!=null && this.storeService.get(SELECTED_LIB_NAME)!=undefined){
+                if(this.rsLibrariesNameList.length>1){
                 this.storeService.get(SELECTED_LIB_NAME).subscribe((value) => {
                     this.selected = value;
-                  });}
-                  
+                  });}      
                 this.menu = this.initMenu();
                 return this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(this.integrationProfilesMap.get(this.selected)));
             }),
@@ -53,7 +51,6 @@ import { off } from 'process';
                 selectedProfile = JSON.parse(profile.value)
                 let queryParams = FieldName.ID + "=" + selectedProfile.libraryID;
                 return this.membersService.getSearchResultsFromNacsis(queryParams);
-
             }),
             mergeMap(response => {
               if (response.status === this.membersService.OkStatus) {
