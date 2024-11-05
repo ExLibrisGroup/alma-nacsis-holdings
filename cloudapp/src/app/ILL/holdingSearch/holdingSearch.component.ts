@@ -54,7 +54,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
   columnsList: string[] = ['NAME', 'VOL', 'HLV', 'HLYR', 'KENCODE', 'SETCODE', 'ORGCODE', 'LOC', 'SUM', 'ILLFLG', 'STAT', 'COPYS', 'LOANS', 'FAXS'];
   columns = {}
 
-  stickyFields : string[] = ['_KENCODE_', '_SETCODE_', '_ORGCODE_', '_ILLFLG_', '_STAT_', '_GRPCODE_'];
+  stickyFields : string[] = ['_KENCODE_', '_SETCODE_', '_ORGCODE_', '_ILLFLG_', '_STAT_', '_GRPCODE_','_COPYS_','_LOANS_'];
   stickyFieldsMap = new Map();
   
   //result view
