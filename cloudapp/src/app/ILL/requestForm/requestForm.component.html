@@ -248,7 +248,9 @@
 
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.DateNeededBy</mat-label>
-                            <input matInput [matDatepicker]="picker" [formControl]="ODATE">
+                            <input matInput [matDatepicker]="picker" [formControl]="ODATE"required 
+                            [disabled]="true" 
+                            (focus)="picker.open()">
                             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                             <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
