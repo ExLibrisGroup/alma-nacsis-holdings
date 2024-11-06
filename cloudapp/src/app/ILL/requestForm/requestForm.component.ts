@@ -235,7 +235,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
       this.standardNumber = 'ISSN=' + fullRecordData.ISSN;
     }
     else if(fullRecordData.VOLG !== undefined && !this.illService.isEmpty(fullRecordData.VOLG[0]?.ISBN)) {
-      this.standardNumber = 'ISSN=' + fullRecordData.VOLG[0]?.ISBN;
+      this.standardNumber = 'ISBN=' + fullRecordData.VOLG[0]?.ISBN;
     }
   }
 
