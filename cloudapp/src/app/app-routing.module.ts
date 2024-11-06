@@ -13,6 +13,8 @@ import { HoldingSearchComponent }  from './ILL/holdingSearch/holdingSearch.compo
 import { RequestFormComponent } from './ILL/requestForm/requestForm.component';
 import { MembersSearchComponent } from './members/main/main.component';
 import { EditFormComponent } from './members/edit/edit.component';
+import { RequestTypeComponent } from './ILL/requestType/requestType.component'; 
+
 
 
 
@@ -26,7 +28,8 @@ const routes: Routes = [
   { path: 'holdings/:mmsId/view/:holdingId/:mmsTitle', component: FormComponent },
   { path: 'help', component: HelpComponent },
   { path: 'catalog', component: CatalogMainComponent },
-  { path: 'ILL', component: ILLBorrowingMainComponent },
+  { path: 'ILL', component: RequestTypeComponent },
+  { path: 'ILLBorrowingMain', component: ILLBorrowingMainComponent },  
   { path: 'members', component: MembersSearchComponent }, 
   { path: 'members/:ViewChild', component: MembersSearchComponent },
   { path: 'editMember', component: EditFormComponent },
