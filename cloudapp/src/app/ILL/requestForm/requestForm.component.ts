@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { HoldingsService, DisplayHoldingResult} from '../../service/holdings.service';
 import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
-import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL, ILL_REQUEST_FIELDS, SELECTED_INTEGRATION_PROFILE } from '../../service/base.service';
+import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY,LIBRARY_MEMBERINFO_KEY,SELECTED_RECORD_LIST_ILL,SELECTED_RECORD_ILL, ILL_REQUEST_FIELDS, SELECTED_INTEGRATION_PROFILE, SELECTED_REQUEST_TYPE } from '../../service/base.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { IllService, RequestFields, BIBG, HMLG } from '../../service/ill.service';
@@ -61,6 +61,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
   applicantAffiliationAuto: string;
   rsLibraryName: string;
   rsLibraryCode: string;
+  requestType :string;
+  
 
   illStaffAuto:string;
   illTelAuto:string;
@@ -72,13 +74,10 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
   stickyFieldsMap = new Map();
   
-
-  requestType = new FormControl();
-  requestTypeList: RequestType[] = [
+  requestTypeList = [
     { value: 'COPYO', viewValue: 'ILL.OptionViewValue.requestTypeList.Copy' },
     { value: 'LOANO', viewValue: 'ILL.OptionViewValue.requestTypeList.Loan' }
   ];
-
   commentsType = new FormControl();
   commentsTypeList: CommentsType[] = [
     { value: 'Comment1', viewValue: 'Comment1' },
@@ -152,12 +151,16 @@ export class RequestFormComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+  
     this.nacsisId = this.route.snapshot.params['nacsisId'];
     this.mmsTitle = this.route.snapshot.params['mmsTitle'];
     this.currentSearchType = this.route.snapshot.params['searchType'];
     this.formResourceInformation = initResourceInformationFormGroup();
     this.formRequesterInformation = initRequesterInformationFormGroup();
     this.formRotamation = initRotaFormGroup();
+    this.storeService.get(SELECTED_REQUEST_TYPE).subscribe((value) => {
+      this.requestType =this.requestTypeList.find(type => type.value === value).viewValue;
+    });
     this.storeService.get(SELECTED_RECORD_ILL).pipe(
       mergeMap(fullRecordData =>{
         this.fullRecordData = JSON.parse(fullRecordData);
@@ -408,7 +411,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
     //check required fields
     this.setFormGroupTouched(this.formResourceInformation);
     this.setFormGroupTouched(this.formRequesterInformation);
-    this.requestType.markAsTouched({ onlySelf: true });
+    // this.requestType.markAsTouched({ onlySelf: true });
     this.payClass.markAsTouched({ onlySelf: true });
     this.copyType.markAsTouched({ onlySelf: true });
     this.checkFieldRequired();
@@ -440,7 +443,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.requestBody = new Array();
     let item = new RequestFields;
     // formResourceInformation
-    item._DBNAME_ = [this.requestType.value];
+    item._DBNAME_ = [this.requestType];
     item.ACCT = [this.payClass.value];
     item.TYPE = [this.copyType.value];
     item.SPVIA = this.illService.isEmpty(this.sendingMethod.value) ? [] : [this.sendingMethod.value];
@@ -494,7 +497,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   }
 
   checkFieldRequired() {
-    let needToCheckFields = [this.requestType.value, this.payClass.value,
+    let needToCheckFields = [ this.payClass.value,
     this.formResourceInformation.value.BIBNT,  this.formRequesterInformation.value.OSTAF,
     this.formRequesterInformation.value.OADRS, this.formRequesterInformation.value.RS_LIBRARY];
     this.isAllFieldsFilled = true;
@@ -542,7 +545,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   }
 
   onRequestTypeSelected(){
-    if(this.requestType.value === 'COPYO'){
+    if(this.requestType=== 'COPYO'){
       this.copyType.setValue('Electronic copy');
     }
   }

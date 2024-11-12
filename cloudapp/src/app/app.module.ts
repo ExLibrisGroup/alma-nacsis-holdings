@@ -38,10 +38,12 @@ import { FormMultiOccurrenceComponent } from './user-controls/forms/form-multi-o
 import { FormFieldsComponent } from './user-controls/forms/form-fields/form-fields.component';
 
 // ILL
+import { RequestTypeComponent } from './ILL/requestType/requestType.component'; 
 import { ILLBorrowingMainComponent } from './ILL/main/main.component';
 import { searchRecordComponent } from './ILL/searchRecord/searchRecord.component';
 import { HoldingSearchComponent } from './ILL/holdingSearch/holdingSearch.component';
 import { RequestFormComponent } from './ILL/requestForm/requestForm.component';
+
 
 // Member
 import { MembersSearchComponent } from './members/main/main.component';
@@ -70,6 +72,7 @@ import { PaginatorIntlService } from './service/paginator.translate';
       ResultsListComponent,
       ResultCardComponent,
       FullviewDisplayComponent,
+      RequestTypeComponent,
       ILLBorrowingMainComponent,
       RecordsListComponent,
       RecordCardComponent,

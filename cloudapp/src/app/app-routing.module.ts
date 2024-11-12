@@ -29,6 +29,7 @@ const routes: Routes = [
   { path: 'help', component: HelpComponent },
   { path: 'catalog', component: CatalogMainComponent },
   { path: 'ILL', component: RequestTypeComponent },
+  { path: 'ILLBorrowingMain/ILL', component: RequestTypeComponent },
   { path: 'ILLBorrowingMain', component: ILLBorrowingMainComponent },  
   { path: 'members', component: MembersSearchComponent }, 
   { path: 'members/:ViewChild', component: MembersSearchComponent },

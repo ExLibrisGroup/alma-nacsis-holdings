@@ -1,26 +1,22 @@
-<div class="title">
-    <h2>{{ 'RequestType.Title' | translate }}</h2>
-    <a [routerLink]="['/app-list']">
-      <button mat-raised-button>
-        <mat-icon>arrow_back</mat-icon>
-        {{ 'Back' | translate }}
-      </button>
-    </a>
-  </div>
-  
-  <form *ngIf="form" [formGroup]="form">
-    <section class="request-type-section">
-      <p>{{ 'RequestType.SelectRequestType' | translate }}</p>
-      
-      <mat-radio-group formControlName="requestType">
-        <mat-radio-button value="copy">{{ 'RequestType.Copy' | translate }}</mat-radio-button>
-        <mat-radio-button value="loan">{{ 'RequestType.Loan' | translate }}</mat-radio-button>
-      </mat-radio-group>
-    </section>
-  
-    <div class="buttons">
-      <button mat-raised-button (click)="goBack()">{{ 'Back' | translate }}</button>
-      <button mat-raised-button color="primary" (click)="goNext()" [disabled]="!form.value.requestType">{{ 'Next' | translate }}</button>
-    </div>
-  </form>
-  
+<div class="header">
+  <button mat-raised-button  [routerLink]="['']" class="back-button">
+    <mat-icon>arrow_back</mat-icon>
+    {{ 'Back' | translate }}
+  </button>
+
+  <button mat-raised-button color="primary" (click)="goNext()" [disabled]="!form.value.requestType">
+    {{ 'Next' | translate }}
+  </button>
+</div>
+
+<form *ngIf="form" [formGroup]="form">
+  <section class="request-type-section">
+    <p>{{ 'RequestType.SelectRequestType' | translate }}</p>
+    
+    <mat-radio-group formControlName="requestType">
+      <mat-radio-button value='COPYO'>{{ 'RequestType.Copy' | translate }}</mat-radio-button>
+      <mat-radio-button value='LOANO'>{{ 'RequestType.Loan' | translate }}</mat-radio-button>
+    </mat-radio-group>
+  </section>
+</form>
+

@@ -370,6 +370,11 @@
       "Rmsg": "ILL Department Contact"
     }
   },
+  "RequestType":{
+    "SelectRequestType":"Select the request type:",
+    "Copy":"Copy",
+    "Loan":"Loan"
+  },
 
   "PagePaginator": {
     "itemsPerPageLabel": "Items per page:",

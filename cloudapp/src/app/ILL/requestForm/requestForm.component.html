@@ -33,11 +33,7 @@
                     <form [formGroup]="formResourceInformation" >
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.RequestType</mat-label>
-                            <mat-select [formControl]="requestType" required (selectionChange)=onRequestTypeSelected()>
-                                <mat-option *ngFor="let requestType of requestTypeList" [value]="requestType.value">
-                                    {{requestType.viewValue | translate}}
-                                </mat-option>
-                            </mat-select>
+                            <input matInput [value]="requestType" readonly />
                         </mat-form-field>
 
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
