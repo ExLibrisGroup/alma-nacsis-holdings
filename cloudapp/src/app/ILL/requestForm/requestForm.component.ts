@@ -159,7 +159,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.formRequesterInformation = initRequesterInformationFormGroup();
     this.formRotamation = initRotaFormGroup();
     this.storeService.get(SELECTED_REQUEST_TYPE).subscribe((value) => {
-      this.requestType =this.requestTypeList.find(type => type.value === value).viewValue;
+      this.requestType =value;
     });
     this.storeService.get(SELECTED_RECORD_ILL).pipe(
       mergeMap(fullRecordData =>{
@@ -548,6 +548,10 @@ export class RequestFormComponent implements OnInit, OnChanges {
     if(this.requestType=== 'COPYO'){
       this.copyType.setValue('Electronic copy');
     }
+  }
+  getViewValueByValue(value: string): string {
+    const selectedType = this.requestTypeList.find(type => type.value === value);
+    return selectedType ? selectedType.viewValue : '';
   }
 
 }

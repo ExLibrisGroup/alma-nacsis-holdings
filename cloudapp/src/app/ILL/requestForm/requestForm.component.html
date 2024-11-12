@@ -33,8 +33,9 @@
                     <form [formGroup]="formResourceInformation" >
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.RequestType</mat-label>
-                            <input matInput [value]="requestType" readonly />
-                        </mat-form-field>
+                    
+                            <input matInput [value]="getViewValueByValue(requestType) | translate" readonly  />
+                          </mat-form-field>
 
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.PayClass</mat-label>
@@ -244,7 +245,7 @@
 
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.DateNeededBy</mat-label>
-                            <input matInput [matDatepicker]="picker" [formControl]="ODATE"required 
+                            <input matInput [matDatepicker]="picker" [formControl]="ODATE"
                             [disabled]="true" 
                             (focus)="picker.open()">
                             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>

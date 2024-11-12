@@ -20,17 +20,15 @@ export class RequestTypeComponent implements OnInit {
     private storeService: CloudAppStoreService,
 
   ) {
-    // Initialize the form with a 'requestType' field
     this.form = this.fb.group({
-      requestType: ['']  // Initialize with an empty value
+      requestType: ['']  
     });
   }
 
   ngOnInit(): void {
-    // Subscribe to the valueChanges of the 'requestType' form control
     this.form.get('requestType')?.valueChanges.subscribe((value) => {
-      this.selected = value;  // Update the selected value
-      this.storeService.set(SELECTED_REQUEST_TYPE, this.selected).subscribe();  // Save to store service
+      this.selected = value;  
+      this.storeService.set(SELECTED_REQUEST_TYPE, this.selected).subscribe();  
     });
   }
 
