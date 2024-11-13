@@ -9,7 +9,6 @@ import { MainMenuComponent } from './main-menu/main-menu.component';
 import { CatalogMainComponent } from './catalog/main/main.component';
 import { ILLBorrowingMainComponent } from './ILL/main/main.component';
 import { searchRecordComponent } from './ILL/searchRecord/searchRecord.component';
-import { viewDraftsComponent } from './ILL/viewDrafts/viewDrafts.component';
 import { HoldingSearchComponent }  from './ILL/holdingSearch/holdingSearch.component';
 import { RequestFormComponent } from './ILL/requestForm/requestForm.component';
 import { MembersSearchComponent } from './members/main/main.component';
@@ -36,7 +35,6 @@ const routes: Routes = [
   { path: 'members/:ViewChild', component: MembersSearchComponent },
   { path: 'editMember', component: EditFormComponent },
   { path: 'searchRecord', component: searchRecordComponent },
-  { path: 'viewDrafts', component: viewDraftsComponent },
   { path: 'searchRecord/:flagBack', component: searchRecordComponent },
   { path: 'searchRecord/:nacsisId/:ViewChild/:isbn/:issn', component: searchRecordComponent },
   { path: 'holdingSearch', component: HoldingSearchComponent },

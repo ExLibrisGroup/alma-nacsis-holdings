@@ -169,10 +169,7 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
     this.router.navigate(['searchRecord']);
   }
 
-viewDrafts(){
-    this.storeService.set(ROUTING_STATE_KEY, AppRoutingState.ILLBorrowingMainPage).subscribe();
-    this.router.navigate(['searchRecord']);
-  }
+
 
   onRadioClick(item : AlmaRecordDisplay) {
     this.selected = item;

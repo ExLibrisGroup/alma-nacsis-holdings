@@ -18,11 +18,6 @@
   </button>
   </div>
 
-  <div class="align-space-between" fxLayout="row">
-    <button mat-flat-button color="secondary" aria-label="view drafts" (click)="viewDrafts()">
-      {{ 'ILL.Main.ViewDrafts' | translate }}
-    </button>
-  </div>
 
  <div *ngIf="recordInfoList.length>0  || loading  else nobibs" fxLayout="column"> 
     <p translate>ILL.Main.Intro</p>
