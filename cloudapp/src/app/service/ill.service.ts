@@ -160,7 +160,7 @@ export class IllService extends BaseService {
     let fullUrl: string;
     let body = JSON.stringify(requestBody);
     let database = requestBody[0].database;
-    let queryParams= "dataBase=" + database;
+    let queryParams= "dataBase=" + database + "&action=ORDER";
     
     console.log(body);
     return this.getInitData().pipe(
@@ -173,6 +173,29 @@ export class IllService extends BaseService {
           fullUrl += "rsLibraryCode=" + parsedProfile.rsLibraryCode + "&" +  queryParams;
           return this.getAuthToken()
         }),
+      mergeMap(authToken => {
+        let headers = this.setAuthHeader(authToken);
+        return this.http.post<any>(fullUrl, body, { headers });
+      })
+    );
+  }
+
+  saveRequest(requestBody) {
+    let fullUrl: string;
+    let body = JSON.stringify(requestBody);
+    let database = requestBody[0].database;
+    let queryParams= "dataBase=" + database + "&action=SAVE";
+    
+    console.log(body);
+    return this.getInitData().pipe(
+      mergeMap(initData => {
+        fullUrl = this.setBaseUrl(initData);
+        return this.storeService.get(SELECTED_INTEGRATION_PROFILE);
+        }),
+        mergeMap(profile => {
+          fullUrl += queryParams;
+          return this.getAuthToken()
+        }),        
       mergeMap(authToken => {
         let headers = this.setAuthHeader(authToken);
         return this.http.post<any>(fullUrl, body, { headers });

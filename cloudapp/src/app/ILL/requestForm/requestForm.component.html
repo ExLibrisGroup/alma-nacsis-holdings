@@ -6,6 +6,9 @@
         </button>
     </a>
     <div class="align-to-right" fxLayout="row">
+        <button mat-flat-button color="secondary" aria-label="search" (click)="saveDraft()" [disabled]="">
+            {{ 'General.save' | translate }}
+        </button>
         <button mat-flat-button color="primary" aria-label="search" (click)="order()" [disabled]="">
             {{ 'General.Order' | translate }}
         </button>

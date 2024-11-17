@@ -430,6 +430,28 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.storeService.set(ILL_REQUEST_FIELDS, this.illService.map2Json(this.stickyFieldsMap))
   }
 
+  saveDraft() {
+    //check required fields
+    this.setFormGroupTouched(this.formResourceInformation);
+    this.setFormGroupTouched(this.formRequesterInformation);
+    //this.requestType.markAsTouched({ onlySelf: true });
+    this.payClass.markAsTouched({ onlySelf: true });
+    this.copyType.markAsTouched({ onlySelf: true });
+    this.checkFieldRequired();
+
+    if (this.isAllFieldsFilled) {
+      this.buildRequestBody();
+      this.sendToIllSaveRequest(this.requestBody);
+    } else {
+      this.panelStateRequestInformation = true;
+      this.panelStateResourceInformation = true;
+    }
+
+    this.stickyFieldsMap.set('TYPE', this.copyType.value);
+    this.stickyFieldsMap.set('SPVIA', this.sendingMethod.value);
+    this.stickyFieldsMap.set('ACCT', this.payClass.value);
+    this.storeService.set(ILL_REQUEST_FIELDS, this.illService.map2Json(this.stickyFieldsMap))
+  }  
 
   setFormGroupTouched(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(field => {
@@ -517,6 +539,39 @@ export class RequestFormComponent implements OnInit, OnChanges {
     try {
 
       this.illService.createILLrequest(requestBody)
+      .subscribe({
+        next: (header) => {
+          console.log(header);
+          if (header.status === this.nacsis.OkStatus) {
+            let requestID = header.requestId;
+            console.log(requestID);
+            this.alert.success(this.translate.instant('ILL.Main.CreateILLSuccess') + requestID, {autoClose:false,keepAfterRouteChange:true,delay:10000});  
+            this.router.navigate(['/ILL']);
+          } else {
+            this.alert.error(header.errorMessage, {keepAfterRouteChange:true});  
+          }
+        },
+        error: e => {
+          this.loading = false;
+          console.log(e.message);
+          this.alert.error(e.message, {keepAfterRouteChange:true});
+        },
+        complete: () => this.loading = false
+      });
+
+    } catch (e) {
+      this.loading = false;
+      console.log(e);
+      this.alert.error(this.translate.instant('General.Errors.generalError'), { keepAfterRouteChange: true });
+    }
+  }
+
+  sendToIllSaveRequest(requestBody) {
+    this.loading = true;
+
+    try {
+
+      this.illService.saveRequest(requestBody)
       .subscribe({
         next: (header) => {
           console.log(header);
