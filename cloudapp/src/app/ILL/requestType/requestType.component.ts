@@ -32,6 +32,7 @@ export class RequestTypeComponent implements OnInit {
   }
 
   goNext(): void {
+    this.storeService.set(SELECTED_REQUEST_TYPE, this.selected).subscribe();  
     this.router.navigate(['ILLBorrowingMain']);
   }
 }

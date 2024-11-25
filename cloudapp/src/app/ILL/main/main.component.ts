@@ -6,7 +6,7 @@ import { IllService,AlmaRecordsResults, IDisplayLines,BaseRecordInfo, AlmaReques
 import { catchError, tap } from 'rxjs/operators';
 import { AlmaApiService, IntegrationProfile } from '../../service/alma.api.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY, LIBRARY_ID_KEY ,LIBRARY_MEMBERINFO_KEY, SELECTED_INTEGRATION_PROFILE} from '../../service/base.service';
+import { AppRoutingState, REQUEST_EXTERNAL_ID, ROUTING_STATE_KEY, LIBRARY_ID_KEY ,LIBRARY_MEMBERINFO_KEY, SELECTED_INTEGRATION_PROFILE, SELECTED_REQUEST_TYPE} from '../../service/base.service';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { MembersService } from '../../service/members.service';
 import { concat } from 'rxjs';
@@ -52,7 +52,8 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
  concat(
   this.storeService.remove(REQUEST_EXTERNAL_ID),
   this.storeService.remove(LIBRARY_ID_KEY),
-  this.storeService.remove(LIBRARY_MEMBERINFO_KEY)
+  this.storeService.remove(LIBRARY_MEMBERINFO_KEY),
+  this.storeService.remove(SELECTED_REQUEST_TYPE)
 ).subscribe();    this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => { 
       this.loading = true;     
       try{
