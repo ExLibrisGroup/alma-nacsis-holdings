@@ -160,7 +160,7 @@ export class IllService extends BaseService {
     let fullUrl: string;
     let body = JSON.stringify(requestBody);
     let database = requestBody[0].database;
-    let queryParams= "dataBase=" + database;
+    let queryParams= "dataBase=" + database + "&action=ORDER";
     
     console.log(body);
     return this.getInitData().pipe(
@@ -489,6 +489,7 @@ export class BIBG {
 
 export class HMLG {
   HMLID: string = "";
+  AMLIDA: string ="";
   HMLNM: string = "";
   LOC: string = "";
   VOL: string = "";

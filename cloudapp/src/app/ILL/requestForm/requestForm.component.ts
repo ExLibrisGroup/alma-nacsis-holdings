@@ -62,6 +62,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
   rsLibraryName: string;
   rsLibraryCode: string;
   requestType :string;
+  amlida:string;
   
 
   illStaffAuto:string;
@@ -129,7 +130,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
 
   requestBody = new Array();
-  rotaFormControlName = ['HMLID', 'HMLNM', 'LOC', 'VOL', 'CLN', 'RGTN'];
+  rotaFormControlName = ['HMLID', 'HMLNM', 'LOC', 'VOL', 'CLN', 'RGTN','AMLIDA'];
   isAllFieldsFilled: boolean = true;
 
   constructor(
@@ -295,6 +296,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
         if (!this.illService.isEmpty(this.selectedData[tagSequence - 1].vol))
           this.formRotamation.get(tag).setValue(this.selectedData[tagSequence - 1].vol[0].RGTN);
         break;
+      case 'AMLIDA':
+            this.formRotamation.get(tag).setValue(this.selectedData[tagSequence - 1].fano);
+        break;
     }
   }
 
@@ -358,7 +362,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
 
   getDisplayedColumns(): string[] {
     return ['id', 'fano', 'name', 'location', 'vol', 'callNumber',
-      'registrationNumber', 'bid'];
+      'registrationNumber', 'bid','amlida'];
   }
 
 
@@ -476,7 +480,7 @@ export class RequestFormComponent implements OnInit, OnChanges {
     }
 
     item.HMLG = item.HMLG.filter(hmlg=>{
-        return !this.illService.isEmpty(hmlg.HMLID + hmlg.HMLNM + hmlg.LOC + hmlg.VOL + hmlg.CLN + hmlg.RGTN);
+        return !this.illService.isEmpty(hmlg.HMLID + hmlg.HMLNM + hmlg.LOC + hmlg.VOL + hmlg.CLN + hmlg.RGTN +hmlg.AMLIDA);
     })
 
     //formRequesterInformation

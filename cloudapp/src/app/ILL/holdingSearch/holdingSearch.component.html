@@ -129,6 +129,12 @@
           </a> 
         </td>
       </ng-container>
+      <ng-container matColumnDef="amlida">
+        <th  [hidden]="!columns['AMLIDA']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
+          {{'ILL.HoldingSearchResult.AMLIDA' | translate}} </th>
+        <td  [hidden]="!columns['AMLIDA']" mat-cell *matCellDef="let element"> 
+        </td>
+      </ng-container>
 
       <ng-container matColumnDef="vol">
         <th [hidden]="!columns['VOL']" mat-header-cell *matHeaderCellDef mat-sort-header disableClear="true" class="hide-arrow">
@@ -259,6 +265,10 @@
                   <td class="expand-middle-column">
                     <span class="expand-middle-column-header">{{'ILL.HoldingSearchResult.CRTDT' |
                       translate}}:</span>{{element.crtdt}}
+                  </td>
+                  <td class="expand-middle-column">
+                    <span class="expand-middle-column-header">{{'ILL.HoldingSearchResult.AMLIDA' |
+                      translate}}:</span>{{element.amlida}}
                   </td>
                   <td class="expand-middle-column">
                     <span class="expand-middle-column-header">{{'ILL.HoldingSearchResult.RNWDT' |

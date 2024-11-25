@@ -223,7 +223,7 @@
     "TreatiseRelatedMatters":"論文関係事項",
     "FANO":"所蔵館コード ( HMLID)",
     "NAME":"所蔵館略称 (HMLNM)",
-    "AMLID":"受理館コード (AMLIDA)",
+    "AMLIDA":"受理館コード (AMLIDA)",
     "BibliographicAuthority":"書誌典拠",
     "CollectionAuthority":"所蔵典拠",
     "ApplicantName":"申込者氏名",

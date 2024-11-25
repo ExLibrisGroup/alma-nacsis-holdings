@@ -67,6 +67,12 @@ export const initRotaFormGroup = (): FormGroup =>{
     HMLID4:new FormControl(),
     HMLID5:new FormControl(),
 
+    AMLIDA1:new FormControl(),
+    AMLIDA2:new FormControl(),
+    AMLIDA3:new FormControl(),
+    AMLIDA4:new FormControl(),
+    AMLIDA5:new FormControl(),
+
     HMLNM1:new FormControl(),
     HMLNM2:new FormControl(),
     HMLNM3:new FormControl(),

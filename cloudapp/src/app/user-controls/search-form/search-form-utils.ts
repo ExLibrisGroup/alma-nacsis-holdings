@@ -171,6 +171,7 @@ export enum FieldName {
     DATE = "DATE",
     SAID = "SAID",
     FANO = "FANO",
+    AMLIDA="AMLIDA",
     NAME = "NAME",
     CATFLG = "CATFLG",
     LOC = "LOC",
