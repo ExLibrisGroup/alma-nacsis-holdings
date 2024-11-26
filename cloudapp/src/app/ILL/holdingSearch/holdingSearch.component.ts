@@ -458,6 +458,7 @@ export class HoldingSearchComponent implements OnInit, OnChanges {
           bookHolDetail.index = indexVol;
           bookHolDetail.VOL = this.illService.isEmpty(nacsisHolding.VOL) ? '' : nacsisHolding.VOL;
           bookHolDetail.RGTN = this.illService.isEmpty(nacsisHolding.RGTN) ? '' : nacsisHolding.RGTN;
+          bookHolDetail.CLN = this.illService.isEmpty(nacsisHolding.CLN) ? '' : nacsisHolding.CLN;
           bookHolDetail.LDF = this.illService.isEmpty(nacsisHolding.LDF) ? '' : nacsisHolding.LDF;
           if (!this.illService.isEmpty(bookHolDetail.VOL)) {
             fieldArr.push(bookHolDetail);
