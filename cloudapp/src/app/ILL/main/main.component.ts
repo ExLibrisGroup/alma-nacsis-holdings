@@ -52,8 +52,8 @@ export class ILLBorrowingMainComponent implements OnInit, OnDestroy {
  concat(
   this.storeService.remove(REQUEST_EXTERNAL_ID),
   this.storeService.remove(LIBRARY_ID_KEY),
-  this.storeService.remove(LIBRARY_MEMBERINFO_KEY),
-  this.storeService.remove(SELECTED_REQUEST_TYPE)
+  this.storeService.remove(LIBRARY_MEMBERINFO_KEY)
+
 ).subscribe();    this.pageLoad$ = this.eventsService.onPageLoad(pageInfo => { 
       this.loading = true;     
       try{
