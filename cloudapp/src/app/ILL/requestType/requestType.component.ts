@@ -11,8 +11,7 @@ import { CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 })
 export class RequestTypeComponent implements OnInit {
   form: FormGroup;
-  loading: boolean;
-  selected: any;
+  selected: string = 'COPYO'; // Default value
 
   constructor(
     private fb: FormBuilder,
@@ -20,14 +19,19 @@ export class RequestTypeComponent implements OnInit {
     private storeService: CloudAppStoreService,
   ) {
     this.form = this.fb.group({
-      requestType: ['COPYO']  
+      requestType: [this.selected]
     });
   }
 
   ngOnInit(): void {
+    this.storeService.get(SELECTED_REQUEST_TYPE).subscribe((value) => {
+      this.selected = value === 'LOANO' || value === 'COPYO' ? value : 'COPYO';
+      this.form.get('requestType')?.setValue(this.selected, { emitEvent: false });
+    });
+
     this.form.get('requestType')?.valueChanges.subscribe((value) => {
-      this.selected = value;  
-      this.storeService.set(SELECTED_REQUEST_TYPE, this.selected).subscribe();  
+      this.selected = value;
+      this.storeService.set(SELECTED_REQUEST_TYPE, this.selected).subscribe();
     });
   }
 
