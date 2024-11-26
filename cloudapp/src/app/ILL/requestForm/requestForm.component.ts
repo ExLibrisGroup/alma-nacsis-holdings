@@ -179,7 +179,6 @@ export class RequestFormComponent implements OnInit, OnChanges {
        mergeMap(profile =>{
         let parsedProfile = JSON.parse(profile);
         this.rsLibraryCode = parsedProfile.rsLibraryCode;
-        this.rsLibraryName = parsedProfile.rsLibraryName;
         return this.storeService.get(ILL_REQUEST_FIELDS);
       }),
       mergeMap(stickyFields => {
@@ -261,6 +260,8 @@ export class RequestFormComponent implements OnInit, OnChanges {
       this.illAddrAuto = localMemberInfo[0].ADDRESS;
       this.illNameAuto = localMemberInfo[0].NAME;
       this.illTelAuto = localMemberInfo[0].TEL;
+      this.rsLibraryName = localMemberInfo[0].NAME;
+
 
       this.formRequesterInformation.controls.OSTAF.setValue(this.buildRequesterStaff());
       this.formRequesterInformation.controls.OADRS.setValue(this.buildRequesterAddress());
