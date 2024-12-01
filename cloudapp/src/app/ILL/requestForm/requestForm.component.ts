@@ -391,26 +391,43 @@ export class RequestFormComponent implements OnInit, OnChanges {
   panelCloseStateRequestInformation() {
     this.panelStateRequestInformation = false;
   }
-
-
   showVolDetal(element, tag) {
-    let str = "";
     let volumeArr = element.vol;
-    if (!this.illService.isEmpty(volumeArr)) {
-      switch (tag) {
-        case 'VOL':
-          str = volumeArr[0].VOL;
-          break;
-        case 'CLN':
-          str = volumeArr[0].CLN;
-          break;
-        case 'RGTN':
-          str = volumeArr[0].RGTN;
-          break;
-      }
+    if (this.illService.isEmpty(volumeArr)) {
+      return ""; // Return an empty string if no volume data exists
     }
-    return str;
+  
+    switch (tag) {
+      case 'VOL':
+        return volumeArr[0]?.VOL || ""; // Safely access VOL
+      case 'CLN':
+        return volumeArr[0]?.CLN || ""; // Safely access CLN
+      case 'RGTN':
+        return volumeArr[0]?.RGTN || ""; // Safely access RGTN
+      default:
+        return ""; // Default case
+    }
   }
+  
+
+  // showVolDetal(element, tag) {
+  //   let str = "";
+  //   let volumeArr = element.vol;
+  //   if (!this.illService.isEmpty(volumeArr)) {
+  //     switch (tag) {
+  //       case 'VOL':
+  //         str = volumeArr[0].VOL;
+  //         break;
+  //       case 'CLN':
+  //         str = volumeArr[0].CLN;
+  //         break;
+  //       case 'RGTN':
+  //         str = volumeArr[0].RGTN;
+  //         break;
+  //     }
+  //   }
+  //   return str;
+  // }
 
   order() {
     //check required fields

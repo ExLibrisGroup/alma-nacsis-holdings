@@ -33,9 +33,12 @@
                     <form [formGroup]="formResourceInformation" >
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.RequestType</mat-label>
-                    
-                            <input matInput [value]="getViewValueByValue(requestType) | translate" readonly  />
-                          </mat-form-field>
+                            <mat-select [formControl]="requestType" required (selectionChange)=onRequestTypeSelected()>
+                                <mat-option *ngFor="let requestType of requestTypeList" [value]="requestType.value">
+                                    {{requestType.viewValue | translate}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.PayClass</mat-label>
@@ -161,19 +164,7 @@
                             formControlName="HMLNM{{element.index}}">
                     </td>
                 </ng-container>
-                <ng-container matColumnDef="amlida">
-                    <th mat-header-cell *matHeaderCellDef>
-                      {{ 'ILL.RequestForm.AMLIDA' | translate }}
-                    </th>
-                    <td mat-cell *matCellDef="let element">
-                      <input
-                        cdkTextareaAutosize
-                        matInput
-                        [formControlName]="'AMLIDA' + element.index"
-                      />
-                    </td>
-                  </ng-container>
-                  
+
                 <ng-container matColumnDef="location">
                     <th mat-header-cell *matHeaderCellDef>
                         {{'ILL.HoldingSearchResult.LOC' | translate}} </th>
@@ -257,9 +248,7 @@
 
                         <mat-form-field class="form-card-inputs-medium" appearance="outline">
                             <mat-label translate>ILL.RequestForm.DateNeededBy</mat-label>
-                            <input matInput [matDatepicker]="picker" [formControl]="ODATE"
-                            [disabled]="true" 
-                            (focus)="picker.open()">
+                            <input matInput [matDatepicker]="picker" [formControl]="ODATE">
                             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                             <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
