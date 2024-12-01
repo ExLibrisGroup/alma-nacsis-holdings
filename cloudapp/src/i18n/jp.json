@@ -180,7 +180,7 @@
       "VOL":"巻冊次等",
       "HLV":"HLV",
       "HLYR":"HLYR",
-      "BID":"書誌ID",
+      "BID":"書誌ID (BID)",
       "COPYS":"複写サービス種別",
       "LOANS":"貸借サービス種別",
       "CRTDT":"Create date",

@@ -165,6 +165,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
        } else{
       this.requestType =value;}
     });
+    if(this.requestType=== 'COPYO'){
+      this.copyType.setValue('Electronic copy');
+    }
     this.storeService.get(SELECTED_RECORD_ILL).pipe(
       mergeMap(fullRecordData =>{
         this.fullRecordData = JSON.parse(fullRecordData);
