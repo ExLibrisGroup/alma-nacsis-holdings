@@ -24,25 +24,19 @@ export class RequestTypeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.storeService.get(SELECTED_REQUEST_TYPE).subscribe((value) => {
-      if (value === null || value === undefined || (value !== 'COPYO' && value !== 'LOANO')) {
-        this.selected = 'COPYO';
-        this.storeService.set(SELECTED_REQUEST_TYPE, this.selected).subscribe();
-      } else {
-        this.selected = value;
-      }
-      this.form.get('requestType')?.setValue(this.selected, { emitEvent: false });
+    this.storeService.set(SELECTED_REQUEST_TYPE, null).subscribe(() => {
+      this.selected = 'COPYO';
+      this.form.get('requestType')?.setValue(this.selected);
     });
   
     this.form.get('requestType')?.valueChanges.subscribe((value) => {
-      if (value) {
+      if (value && value !== this.selected) {
         this.selected = value;
         this.storeService.set(SELECTED_REQUEST_TYPE, this.selected).subscribe();
       }
     });
-  }
-  
-  
+  }  
+
   goNext(): void {
     this.router.navigate(['ILLBorrowingMain']);
   }

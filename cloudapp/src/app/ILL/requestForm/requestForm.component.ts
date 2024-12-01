@@ -160,7 +160,10 @@ export class RequestFormComponent implements OnInit, OnChanges {
     this.formRequesterInformation = initRequesterInformationFormGroup();
     this.formRotamation = initRotaFormGroup();
     this.storeService.get(SELECTED_REQUEST_TYPE).subscribe((value) => {
-      this.requestType =value;
+      if (!value || (value !== 'LOANO' && value !== 'COPYO')) {
+        this.requestType = 'COPYO';
+       } else{
+      this.requestType =value;}
     });
     this.storeService.get(SELECTED_RECORD_ILL).pipe(
       mergeMap(fullRecordData =>{
