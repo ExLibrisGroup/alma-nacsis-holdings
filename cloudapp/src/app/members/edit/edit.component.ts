@@ -42,9 +42,9 @@ export class EditFormComponent implements OnInit {
     this.editFieldsMap.set(FieldName.ID, new SearchField(FieldName.ID, FieldSize.medium, record.fullRecord.fullView.ID, true));
     this.editFieldsMap.set(FieldName.NAME, new SearchField(FieldName.NAME, FieldSize.medium, record.fullRecord.fullView.NAME, true));
     this.editFieldsMap.set(FieldName.KENCODE, new SearchField(FieldName.KENCODE, FieldSize.medium, record.fullRecord.fullView.KENCODE, true));
-    this.editFieldsMap.set(FieldName.ILLSTAFF, new SearchField(FieldName.ILLSTAFF, FieldSize.medium, record.fullRecord.fullView.ILLSTAFF, true));
-    this.editFieldsMap.set(FieldName.ADDRESS, new SearchField(FieldName.ADDRESS, FieldSize.medium, record.fullRecord.fullView.ADDRESS, true));
-    this.editFieldsMap.set(FieldName.ILLDEPT, new SearchField(FieldName.ILLDEPT, FieldSize.medium, record.fullRecord.fullView.ILLDEPT, true));
+    this.editFieldsMap.set(FieldName.ILLSTAFF, new SearchField(FieldName.ILLSTAFF, FieldSize.medium, record.fullRecord.fullView.ILLSTAFF, false));
+    this.editFieldsMap.set(FieldName.ADDRESS, new SearchField(FieldName.ADDRESS, FieldSize.medium, record.fullRecord.fullView.ADDRESS, false));
+    this.editFieldsMap.set(FieldName.ILLDEPT, new SearchField(FieldName.ILLDEPT, FieldSize.medium, record.fullRecord.fullView.ILLDEPT, false));
     this.editFieldsMap.set(FieldName.SETCODE, new SearchField(FieldName.SETCODE, FieldSize.medium, record.fullRecord.fullView.SETCODE, true));
     this.editFieldsMap.set(FieldName.ORGCODE, new SearchField(FieldName.ORGCODE, FieldSize.medium, record.fullRecord.fullView.ORGCODE, true));
     this.editFieldsMap.set(FieldName.GRPCODE, new SearchField(FieldName.GRPCODE, FieldSize.medium, record.fullRecord.fullView.GRPCODE, true));
@@ -160,6 +160,9 @@ export class EditFormComponent implements OnInit {
     this.loading = true;
     this.member = new MemberUpdate();
     this.member.ID = this.editFieldsMap.get(FieldName.ID).formControl.value;
+    this.member.ILLSTAFF = this.editFieldsMap.get(FieldName.ILLSTAFF).formControl.value;
+    this.member.ADDRESS = this.editFieldsMap.get(FieldName.ADDRESS).formControl.value;
+    this.member.ILLDEPT = this.editFieldsMap.get(FieldName.ILLDEPT).formControl.value;
     this.member.COPYS = this.editFieldsMap.get(FieldName.COPYS).formControl.value;
     this.member.LOANS = this.editFieldsMap.get(FieldName.LOANS).formControl.value;
     this.member.COPYAL = this.editFieldsMap.get(FieldName.COPYAL).formControl.value;
