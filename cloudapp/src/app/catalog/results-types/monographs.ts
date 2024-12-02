@@ -196,12 +196,14 @@ export class MonographSummaryDisplay extends IDisplayLines{
             fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.Book').build());
             fieldsArray.push(new ViewFieldBuilder().content(this.record.PUB[0]?.PUBL).build());
             fieldsArray.push(new ViewFieldBuilder().label(", ").content(this.record.TTLL).build());
+            fieldsArray.push(new ViewFieldBuilder().label(": ").content(this.getFirstPriorityDate()).build());           
+            fieldsArray.push(new ViewFieldBuilder().label("- ").content(this.record.YEAR2).build());
             //Do not display in case the YEAR ot the PUB DATE are empty or contain non numeric value.
-            let date : string = this.getFirstPriorityDate();
-            if(!this.isEmpty(date) && date.match(/^[0-9]+$/)) {
-                fieldsArray.push(new ViewFieldBuilder().label(": ").content(date).build());           
-                fieldsArray.push(new ViewFieldBuilder().label("- ").content(this.record.YEAR2).build());
-            }
+            // let date : string = this.getFirstPriorityDate();
+            // if(!this.isEmpty(date) && date.match(/^[0-9]+$/)) {
+            //     fieldsArray.push(new ViewFieldBuilder().label(": ").content(date).build());           
+            //     fieldsArray.push(new ViewFieldBuilder().label("- ").content(this.record.YEAR2).build());
+            // }
           
             fieldsArray.push(new ViewFieldBuilder().label("; ").content(this.record.VOLG[0]?.VOL).build());
             if(this.record.VOLG?.length > 1) {

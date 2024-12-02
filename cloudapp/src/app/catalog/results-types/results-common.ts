@@ -164,7 +164,7 @@ export abstract class IDisplayLines {
         // The most detailed PUBDT is superior to the YEAR1 field
         // The PUBDT is separated by dots (e.g. year.month.day)
         let record = this.fullRecord.getSummaryView();
-        let mostDetailedData = !this.isEmpty(record.YEAR1)? record.YEAR1 : "";
+        let mostDetailedData =  !this.isEmpty( record.YEAR1) &&  record.YEAR1.match(/^[0-9]+$/)? record.YEAR1 :"";
         if(!this.isEmpty(record.PUB)) {
             record.PUB.forEach(pub => {
                 if(!this.isEmpty(pub.PUBDT) && (pub.PUBDT.split(/\./g)?.length >= mostDetailedData.split(/\./g)?.length)) {
