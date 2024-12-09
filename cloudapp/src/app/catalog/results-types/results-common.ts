@@ -159,19 +159,43 @@ export abstract class IDisplayLines {
         }
         return arrWithLabels;
     }
-
+    
+    getValidDate(date: string): string {
+        const parts = date.split('.');
+    
+        const year = parts[0];
+        if (!/^\d{4}$/.test(year)) return '';
+    
+        if (parts.length === 1) return year;
+    
+        const month = parts[1];
+        if (!/^\d{2}$/.test(month) || +month < 1 || +month > 12) return year;
+    
+        if (parts.length === 2) return `${year}.${month}`;
+    
+        const day = parts[2];
+        if (!/^\d{2}$/.test(day) || +day < 1 || +day > 31) return `${year}.${month}`;
+    
+        return `${year}.${month}.${day}`;
+    }
+    
+    
+    
     getFirstPriorityDate(): string {
         // The most detailed PUBDT is superior to the YEAR1 field
         // The PUBDT is separated by dots (e.g. year.month.day)
         let record = this.fullRecord.getSummaryView();
         let mostDetailedData =  !this.isEmpty( record.YEAR1) &&  record.YEAR1.match(/^[0-9]+$/)? record.YEAR1 :"";
-        if(!this.isEmpty(record.PUB)) {
+        if (!this.isEmpty(record.PUB)) {
             record.PUB.forEach(pub => {
-                if(!this.isEmpty(pub.PUBDT) && (pub.PUBDT.split(/\./g)?.length >= mostDetailedData.split(/\./g)?.length)) {
-                    mostDetailedData = pub.PUBDT;
+                if (!this.isEmpty(pub.PUBDT)) {
+                    const validDate = this.getValidDate(pub.PUBDT);
+                    if (validDate && (validDate.split(/\./g)?.length >= mostDetailedData.split(/\./g)?.length)) {
+                        mostDetailedData = validDate;
+                    }
                 }
             });
-        } 
+        }
         return mostDetailedData;
     }
 }
