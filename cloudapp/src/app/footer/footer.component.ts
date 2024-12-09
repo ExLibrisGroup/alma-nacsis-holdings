@@ -13,14 +13,14 @@ export class FooterComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.translate.use('jp');
     const savedLang = localStorage.getItem('currentLang') || 'jp';
-    this.translate.use(savedLang);
-
+    this.translate.use(savedLang);  
+  
     if (!localStorage.getItem('currentLang')) {
-      localStorage.setItem('currentLang', 'jp');
+      localStorage.setItem('currentLang', 'jp');  
     }
   }
+  
 
   setLang(lang: string) {
     this.translate.use(lang);
