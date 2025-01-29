@@ -161,7 +161,7 @@ export class CatalogMainComponent implements AfterViewInit {
     removeSpecialCharacters(SearchType: SearchType, fieldsToHandle :string[] ,charectersToRemove:RegExp ,valuesMap:Map<any,any>) {
         let valuableField = this.ALL_SEARCH_FIELDS_MAP.get(this.currentSearchType).filter(field => (fieldsToHandle.includes(field.getKey())) && (field.getFormControl().value != null) && (field.getFormControl().value != ""));
         valuableField.forEach(field => {
-            let afterRemoval = field.getFormControl().value.replace(charectersToRemove, '');
+            let afterRemoval = field.getFormControl().value.replace(charectersToRemove, '  ');
             // field.getFormControl().setValue(afterRemoval);
             valuesMap.set(field,afterRemoval);
         })
