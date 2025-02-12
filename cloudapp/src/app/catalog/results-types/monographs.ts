@@ -355,7 +355,7 @@ export class MonographFullDisplay extends IDisplayLines {
             fieldsArray.push(new ViewFieldBuilder().content(this.record.PHYSP).build());
             fieldsArray.push(new ViewFieldBuilder().content(this.record.PHYSI).build());
             fieldsArray.push(new ViewFieldBuilder().content(this.record.PHYSS).build());
-            fieldsArray = this.setSeparator(fieldsArray, ";");
+            fieldsArray = this.setSeparator(fieldsArray, ":");
             fieldsArray.push(new ViewFieldBuilder().label("+").content(this.record.PHYSA).build());
         this.addLine(new ViewFieldBuilder().label("PHYS").build(), fieldsArray);
         this.record.VT?.forEach(vt=>{
