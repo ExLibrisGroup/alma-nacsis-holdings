@@ -231,7 +231,7 @@ export class SerialFullDisplay extends IDisplayLines {
         this.viewLines = new Array<ViewLine>();
         let fieldsArray = new Array<ViewField>()
             fieldsArray.push(new ViewFieldBuilder().label("Create date: ").content(this.dateFormatDisplay(this.record.CRTDT)).build());
-            fieldsArray.push(new ViewFieldBuilder().label("Creating institution: ").content(this.record.CRTFA).build());
+            fieldsArray.push(new ViewFieldBuilder().label("Creating institution: ").link(SearchType.Members).content(this.record.CRTFA).build());
             fieldsArray.push(new ViewFieldBuilder().label("Update date: ").content(this.dateFormatDisplay(this.record.RNWDT)).build());
             fieldsArray.push(new ViewFieldBuilder().label("Modifying institution: ").link(SearchType.Members).content(this.record.RNWFA).build());
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
