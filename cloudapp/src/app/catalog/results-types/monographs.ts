@@ -353,9 +353,8 @@ export class MonographFullDisplay extends IDisplayLines {
         });
         fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().content(this.record.PHYSP).build());
-            fieldsArray.push(new ViewFieldBuilder().content(this.record.PHYSI).build());
-            fieldsArray.push(new ViewFieldBuilder().content(this.record.PHYSS).build());
-            fieldsArray = this.setSeparator(fieldsArray, ":");
+            fieldsArray.push(new ViewFieldBuilder().label(": ").content(this.record.PHYSI).build());
+            fieldsArray.push(new ViewFieldBuilder().label("; ").content(this.record.PHYSS).build());
             fieldsArray.push(new ViewFieldBuilder().label("+").content(this.record.PHYSA).build());
         this.addLine(new ViewFieldBuilder().label("PHYS").build(), fieldsArray);
         this.record.VT?.forEach(vt=>{
