@@ -340,17 +340,11 @@ export class MonographFullDisplay extends IDisplayLines {
         this.addLine(new ViewFieldBuilder().label("ED").build(), fieldsArray);
         this.record.PUB?.forEach(pub=>{
             fieldsArray = new Array<ViewField>();
-                if (pub.PUBF == "m") {
-                    fieldsArray.push(new ViewFieldBuilder().label("(").build());
-                }
                 fieldsArray.push(new ViewFieldBuilder().content(pub.PUBP).build());
                 fieldsArray.push(new ViewFieldBuilder().label(": ").content(pub.PUBL).build());
                 fieldsArray.push(new ViewFieldBuilder().label(", ").content(pub.PUBDT).build());
                 if (pub.PUBF != null)
                     fieldsArray.push(new ViewFieldBuilder().label("# ").content(pub.PUBF).build());
-                if (pub.PUBF == "m") {
-                    fieldsArray.push(new ViewFieldBuilder().label(")").build());
-                }
             this.addLine(new ViewFieldBuilder().label("PUB").build(), fieldsArray);
         });
         fieldsArray = new Array<ViewField>();
