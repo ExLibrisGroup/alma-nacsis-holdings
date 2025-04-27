@@ -200,7 +200,7 @@ export class CatalogMainComponent implements AfterViewInit {
             
             valuableFields.forEach(field => {
                     urlParams =  urlParams + "&" + field.getKey();
-                    urlParams =  urlParams + "=" + searchValuesMap.get(field).replace(this.catalogService.punctuationRegex, '');
+                    urlParams =  urlParams + "=" + searchValuesMap.get(field).replace(this.catalogService.punctuationRegex, ' ');
             });
             this.getSearchResultsFromNacsis(urlParams);
         } else {
