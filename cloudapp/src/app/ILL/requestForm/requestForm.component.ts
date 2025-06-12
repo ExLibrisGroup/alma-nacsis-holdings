@@ -195,7 +195,9 @@ export class RequestFormComponent implements OnInit, OnChanges {
         } 
         this.extractSelectedData();  
         this.extractFullData(this.fullRecordData);
-        this.extractLocalMemberInfo(this.localMemberInfo);
+        setTimeout(() => {
+          this.extractLocalMemberInfo(this.localMemberInfo);
+        } , 200); 
         return of();
       })
     ).subscribe();
