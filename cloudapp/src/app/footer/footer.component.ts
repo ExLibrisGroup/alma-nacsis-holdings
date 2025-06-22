@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 
 @Component({
   selector: 'app-footer',
@@ -10,8 +9,7 @@ import { AlertService, CloudAppStoreService } from '@exlibris/exl-cloudapp-angul
 export class FooterComponent implements OnInit {
 
   constructor(
-    private translate: TranslateService,
-    private storeService: CloudAppStoreService
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -21,20 +19,12 @@ export class FooterComponent implements OnInit {
     if (!localStorage.getItem('currentLang')) {
       localStorage.setItem('currentLang', 'jp');  
     }
-      this.storeService.get('currentLang').subscribe(lang=>{
-        if (!lang) {
-          this.translate.use('jp');
-        } else {
-          this.translate.use(lang);
-        }
-      });
   }
   
 
   setLang(lang: string) {
     this.translate.use(lang);
-    this.storeService.set('currentLang',lang).subscribe();   
-
+    localStorage.setItem('currentLang', lang);
   }
 
 }
