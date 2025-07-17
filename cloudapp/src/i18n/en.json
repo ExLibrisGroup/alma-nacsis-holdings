@@ -123,7 +123,7 @@
   },
   "Members" : {
     "Main" : {
-      "SearchMembers":"Search for NACSIS member information"
+      "SearchMembers":"Search for NACSIS member information"      
     },
     "Form": {
       "Success": "The member information was successfully saved"
@@ -377,6 +377,7 @@
     "Loan":"Loan"
   },
 
+
   "PagePaginator": {
     "itemsPerPageLabel": "Items per page:",
     "firstPageLabel": "first page",
@@ -410,6 +411,7 @@
       "SH": "SH",
       "AKEY": "AKEY",
       "ID": "NCID",
+      "MID": "ID",
       "PID": "PID",
       "CODEN": "CODEN",
       "NDLPN": "NDLPN",

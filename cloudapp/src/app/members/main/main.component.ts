@@ -69,7 +69,7 @@ export class MembersSearchComponent implements OnInit {
 
   /*Initialize all the search values of members search form*/
   private initFieldsMap(): void {
-    this.fieldsMap.set(FieldName.ID, new SearchField(FieldName.ID, FieldSize.medium));
+    this.fieldsMap.set(FieldName.ID, new SearchField(FieldName.MID, FieldSize.medium));
     this.fieldsMap.set(FieldName.NAME, new SearchField(FieldName.NAME, FieldSize.medium));
     this.fieldsMap.set(FieldName.LOC, new SearchField(FieldName.LOC, FieldSize.medium));
     this.fieldsMap.set(FieldName.KENCODE, new SelectSearchField(this.selectedValues.getRegionCodeList(), true, FieldName.KENCODE, FieldSize.medium));
