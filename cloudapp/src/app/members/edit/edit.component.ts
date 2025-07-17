@@ -39,7 +39,7 @@ export class EditFormComponent implements OnInit {
 
   /*Initialize all the search values of members search form*/
   private initEditFieldsMap(record): void {
-    this.editFieldsMap.set(FieldName.ID, new SearchField(FieldName.MID, FieldSize.medium, record.fullRecord.fullView.ID, true));
+    this.editFieldsMap.set(FieldName.ID, new SearchField(FieldName.ID, FieldSize.medium, record.fullRecord.fullView.ID, true));
     this.editFieldsMap.set(FieldName.NAME, new SearchField(FieldName.NAME, FieldSize.medium, record.fullRecord.fullView.NAME, true));
     this.editFieldsMap.set(FieldName.KENCODE, new SearchField(FieldName.KENCODE, FieldSize.medium, record.fullRecord.fullView.KENCODE, true));
     this.editFieldsMap.set(FieldName.SETCODE, new SearchField(FieldName.SETCODE, FieldSize.medium, record.fullRecord.fullView.SETCODE, true));

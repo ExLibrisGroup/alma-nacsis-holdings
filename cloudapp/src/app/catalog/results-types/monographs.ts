@@ -294,7 +294,7 @@ export class MonographFullDisplay extends IDisplayLines {
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
         fieldsArray = new Array<ViewField>()
             fieldsArray.push(new ViewFieldBuilder().content(this.record.ID).build());
-        this.addLine(new ViewFieldBuilder().label("NACSIS ID").build(), fieldsArray);
+        this.addLine(new ViewFieldBuilder().label("ID").build(), fieldsArray);
         fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().label("ISSN: ").content(this.record.ISSN).build());
             fieldsArray.push(new ViewFieldBuilder().label("LCCN: ").content(this.record.LCCN).build());
@@ -401,9 +401,7 @@ export class MonographFullDisplay extends IDisplayLines {
                 fieldsArray.push(new ViewFieldBuilder().content(utl.UTHDNG).build());
                 fieldsArray.push(new ViewFieldBuilder().content(utl.UTHDNGR).build());
                 fieldsArray.push(new ViewFieldBuilder().content(utl.UTHDNGVR).build());
-                if(utl.UTFLG !== "*" && (!this.isEmpty(utl.UTHDNGR) || !this.isEmpty(utl.UTHDNGVR))){
-                    fieldsArray = this.setSeparator(fieldsArray, "||");
-                }
+                fieldsArray = this.setSeparator(fieldsArray, "||");
                 fieldsArray.push(new ViewFieldBuilder().content(utl.UTID).link(SearchType.Names).build());
                 fieldsArray.push(new ViewFieldBuilder().content(utl.UTINFO).build());
             this.addLine(new ViewFieldBuilder().label("UTL").build(), fieldsArray);

@@ -196,7 +196,6 @@ export enum FieldName {
     POLICY = "POLICY",
     TEL = "TEL",
     FAX = "FAX",
-    MID = "MID",
     // Holdings fields
     CLN = "CLN",
     RGTN = "RGTN",

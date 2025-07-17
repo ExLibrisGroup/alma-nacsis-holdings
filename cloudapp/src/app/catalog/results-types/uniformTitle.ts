@@ -120,7 +120,7 @@ export class UniformTitleFullDisplay extends IDisplayLines {
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
         fieldsArray = new Array<ViewField>()
             fieldsArray.push(new ViewFieldBuilder().content(this.record.ID).build());
-        this.addLine(new ViewFieldBuilder().label("NACSIS ID").build(), fieldsArray);
+        this.addLine(new ViewFieldBuilder().label("ID").build(), fieldsArray);
         fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().content(this.record.HDNG[0].HDNGD).build());
             fieldsArray.push(new ViewFieldBuilder().label("|| ").content(this.record.HDNG[0].HDNGR).build());
