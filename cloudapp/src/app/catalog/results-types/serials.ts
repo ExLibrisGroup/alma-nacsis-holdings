@@ -237,7 +237,7 @@ export class SerialFullDisplay extends IDisplayLines {
         this.addLine(new ViewFieldBuilder().build(), fieldsArray);
         fieldsArray = new Array<ViewField>()
             fieldsArray.push(new ViewFieldBuilder().content(this.record.ID).build());
-        this.addLine(new ViewFieldBuilder().label("ID").build(), fieldsArray);
+        this.addLine(new ViewFieldBuilder().label("NACSIS ID").build(), fieldsArray);
         fieldsArray = new Array<ViewField>();
             fieldsArray.push(new ViewFieldBuilder().label("ISSN: ").content(this.record.ISSN).build());
             fieldsArray.push(new ViewFieldBuilder().label("XISSN: ").content(this.record.XISSN).build());
