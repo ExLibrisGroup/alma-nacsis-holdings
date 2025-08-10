@@ -42,8 +42,10 @@ export class CatalogMainComponent implements AfterViewInit {
     public ACTIONS_MENU_LIST = new Map([
         [SearchType.Monographs, [new Action('Catalog.Results.Actions.View'), new Action('Catalog.Results.Actions.Import')]],
         [SearchType.Serials, [new Action('Catalog.Results.Actions.View'), new Action('Catalog.Results.Actions.Import')]],
-        [SearchType.Names, [new Action('Catalog.Results.Actions.View') , new Action('Catalog.Results.Actions.Import')]],
-        [SearchType.UniformTitles, [new Action('Catalog.Results.Actions.View'), new Action('Catalog.Results.Actions.Import')]],
+        [SearchType.Names, [new Action('Catalog.Results.Actions.View') , new Action('Catalog.Results.Actions.Import'),
+            new Action('Catalog.Results.Actions.LinkedMonographRecords'), new Action('Catalog.Results.Actions.LinkedSerialRecords')]],
+        [SearchType.UniformTitles, [new Action('Catalog.Results.Actions.View'), new Action('Catalog.Results.Actions.Import'),
+            new Action('Catalog.Results.Actions.LinkedMonographRecords')]],
     ]);
 
 
@@ -282,22 +284,57 @@ export class CatalogMainComponent implements AfterViewInit {
 
     onActionsClick(selection: RecordSelection) {
         let record = this.resultsSummaryDisplay[selection.recordIndex];
-        switch (selection.actionIndex) {
-            case 0: // Full view
+        switch (selection.actionName) {
+            case 'Catalog.Results.Actions.View': // Full view
                 this.currentResulsTmpl = this.fullRecordTmpl;
                 this.resultFullDisplay = record.getFullRecordData().getFullViewDisplay().initContentDisplay();
                 break;
-            case 1: // Import the record
+            case 'Catalog.Results.Actions.Import': // Import the record
                 this.onImportRecord(record.getFullRecordData().getRawData());
                 break;
-            case 2: // View Holdings
+            case 'Catalog.Results.Actions.ViewHoldings': // View Holdings
                 this.onViewHoldings(record.getFullRecordData().getID(), record.initTitleDisplay().toStringLine());
                 break;
+            case 'Catalog.Results.Actions.LinkedSerialRecords':
+                console.log("HOPA", record.getFullRecordData().getFullView());
+                this.onLinkedSerialRecords(record.getFullRecordData().getID());
+                break;
+            case 'Catalog.Results.Actions.LinkedMonographRecords':
+                console.log("HOPA 2")
+                this.onLinkedMonographRecords(record.getFullRecordData().getID());
+                break;    
             default: {
                 this.currentResulsTmpl = this.noResultsTmpl;
             }
         }
         
+    }
+
+    onLinkedMonographRecords(nacsisId: string) {
+        this.loading = true;
+        const keyToSearch = this.currentSearchType == SearchType.UniformTitles ? "UTID" : "AID";
+        try {
+            this.currentSearchType = SearchType.Monographs;
+            this.getSearchResultsFromNacsis(`${QueryParams.SearchType}=Monographs&${QueryParams.Databases}=BOOK&${QueryParams.PageIndex}=0&${QueryParams.PageSize}=20&${keyToSearch}=${nacsisId}`)
+            
+        } catch (e) {
+            this.loading = false;
+            console.log(e);
+            this.alert.error(this.translate.instant('General.Errors.generalError'), { keepAfterRouteChange: true });
+        }
+    }
+
+    onLinkedSerialRecords(nacsisId: string) {
+        this.loading = true;
+        try {
+            this.currentSearchType = SearchType.Serials;
+            this.getSearchResultsFromNacsis(`${QueryParams.SearchType}=Serials&${QueryParams.Databases}=SERIAL&${QueryParams.PageIndex}=0&${QueryParams.PageSize}=20&AID=${nacsisId}`)
+            
+        } catch (e) {
+            this.loading = false;
+            console.log(e);
+            this.alert.error(this.translate.instant('General.Errors.generalError'), { keepAfterRouteChange: true });
+        }
     }
     
     onTitleClick(recordIndex: number) {
@@ -470,11 +507,9 @@ export class CatalogMainComponent implements AfterViewInit {
     /***   Pagination    ***/
     
     setPageIndexAndSize(urlParams: string) {
-        let pageIndexParam = QueryParams.PageIndex + "=";
-        let pageSizeParam = "&" + QueryParams.PageSize + "=";
-        let searchTypeParam = "&" + QueryParams.SearchType;
-        this.pageIndex = Number(urlParams.split(pageIndexParam).pop().split(pageSizeParam)[0]);
-        this.pageSize = Number(urlParams.split(pageSizeParam).pop().split(searchTypeParam)[0]);
+        const params = new URLSearchParams(urlParams);
+        this.pageIndex = Number(params.get(QueryParams.PageIndex));
+        this.pageSize = Number(params.get(QueryParams.PageSize));
     }
 
     onPageAction(pageEvent: PageEvent) {

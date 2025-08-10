@@ -27,8 +27,8 @@ export class ResultCardComponent implements OnInit {
     this.contentDisplay = this.record.initContentDisplay();
   }
 
-  onActionsClick(recordIndex: number, actionIndex: number) {
-    this.onActionSelected.emit(new RecordSelection(recordIndex, actionIndex));
+  onActionsClick(recordIndex: number, actionIndex: number, actionName: string) {
+    this.onActionSelected.emit(new RecordSelection(recordIndex, actionIndex, actionName));
   }
 
   onEditClick(recordIndex: number) {
@@ -48,10 +48,14 @@ export class ResultCardComponent implements OnInit {
 }
 
 export class RecordSelection {
-  constructor (
-    public recordIndex: number,
-    public actionIndex: number
-  ) { }
+  recordIndex: number;
+  actionIndex: number;
+  actionName: string;
+  constructor (recordIndex: number, actionIndex: number, actionName : string = '') {
+    this.recordIndex = recordIndex;
+    this.actionIndex = actionIndex;
+    this.actionName = actionName;
+   }
 }
 
 export class Action {
