@@ -36,7 +36,6 @@ const routes: Routes = [
   { path: 'editMember', component: EditFormComponent },
   { path: 'searchRecord', component: searchRecordComponent },
   { path: 'searchRecord/:flagBack', component: searchRecordComponent },
-  { path: 'searchRecord/:nacsisId', component: searchRecordComponent },
   { path: 'searchRecord/:nacsisId/:ViewChild/:isbn/:issn', component: searchRecordComponent },
   { path: 'holdingSearch', component: HoldingSearchComponent },
   { path: 'holdingSearch/:nacsisId/:mmsTitle', component: HoldingSearchComponent },
