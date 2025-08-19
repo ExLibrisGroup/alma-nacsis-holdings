@@ -296,11 +296,9 @@ export class CatalogMainComponent implements AfterViewInit {
                 this.onViewHoldings(record.getFullRecordData().getID(), record.initTitleDisplay().toStringLine());
                 break;
             case 'Catalog.Results.Actions.LinkedSerialRecords':
-                console.log("HOPA", record.getFullRecordData().getFullView());
                 this.onLinkedSerialRecords(record.getFullRecordData().getID());
                 break;
             case 'Catalog.Results.Actions.LinkedMonographRecords':
-                console.log("HOPA 2")
                 this.onLinkedMonographRecords(record.getFullRecordData().getID());
                 break;    
             default: {
