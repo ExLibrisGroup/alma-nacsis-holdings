@@ -65,6 +65,8 @@
       "Actions" : {
         "View" : "View",
         "Import" : "Import",
+        "LinkedMonographRecords" : "Linked Monograph records",
+        "LinkedSerialRecords" : "Linked Serial records",
         "ViewHoldings" : "View Holdings",
         "Edit" : "Edit",
         "Delete" : "Delete"

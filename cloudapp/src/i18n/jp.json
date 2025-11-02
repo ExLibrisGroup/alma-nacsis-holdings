@@ -65,6 +65,8 @@
       "Actions" : {
         "View" : "プレビュー",
         "Import" : "ダウンロード",
+        "LinkedMonographRecords" : "関連する単行書書誌レコード",
+        "LinkedSerialRecords" : "関連する逐次刊行書誌レコード",
         "ViewHoldings" : "所蔵を確認する",
         "Edit" : "編集",
         "Delete" : "削除"

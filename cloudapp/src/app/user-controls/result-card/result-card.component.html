@@ -34,7 +34,7 @@
     </button>
     <mat-menu #actionsMenu="matMenu">
       <div *ngFor="let item of getResultActionList(); index as ActionsIndex">
-        <button mat-menu-item type="submit" (click)="onActionsClick(recordIndex, ActionsIndex)">
+        <button mat-menu-item type="submit" (click)="onActionsClick(recordIndex, ActionsIndex, item.label)">
           {{ item.label | translate }}
         </button>
       </div>
