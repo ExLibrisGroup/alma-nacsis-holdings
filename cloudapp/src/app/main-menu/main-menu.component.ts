@@ -4,7 +4,7 @@ import { ROUTING_STATE_KEY, AppRoutingState, SELECTED_INTEGRATION_PROFILE, SELEC
 import { concat, of } from 'rxjs';
 import { MatSelectChange } from '@angular/material/select';
 import { AlmaApiService, IntegrationProfile } from '../service/alma.api.service';
-import { mergeMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { MembersService } from '../service/members.service';
 import { FieldName } from '../user-controls/search-form/search-form-utils';
 import { off } from 'process';
@@ -40,13 +40,23 @@ import { off } from 'process';
                 this.integrationProfilesMap = integrationProfiles;
                 this.rsLibrariesNameList = Array.from(integrationProfiles.keys());
                 this.selected = this.rsLibrariesNameList[0];
-                if(this.rsLibrariesNameList.length>1){
-                this.storeService.get(SELECTED_LIB_NAME).subscribe((value) => {
-                    this.selected = value;
-                  });}      
-                this.menu = this.initMenu();
-                return this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(this.integrationProfilesMap.get(this.selected)));
+            
+            // Return observable that completes with the selected value
+                if(this.rsLibrariesNameList.length > 1) {
+                    return this.storeService.get(SELECTED_LIB_NAME).pipe(
+                        map(value => value || this.selected)
+                    );
+                } else {
+                    return of(this.selected);
+                }
             }),
+            mergeMap(selectedLib => {
+                this.selected = selectedLib;
+                this.menu = this.initMenu();
+                return this.storeService.set(SELECTED_INTEGRATION_PROFILE, 
+                    JSON.stringify(this.integrationProfilesMap.get(this.selected)));
+            }),
+            
             mergeMap(profile => {
                 selectedProfile = JSON.parse(profile.value)
                 let queryParams = FieldName.ID + "=" + selectedProfile.libraryID;
