@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CloudAppStoreService } from '@exlibris/exl-cloudapp-angular-lib';
 import { ROUTING_STATE_KEY, AppRoutingState, SELECTED_INTEGRATION_PROFILE, SELECTED_LIB_NAME } from '../service/base.service';
-import { concat, of } from 'rxjs';
+import { concat, Observable, of } from 'rxjs';
 import { MatSelectChange } from '@angular/material/select';
 import { AlmaApiService, IntegrationProfile } from '../service/alma.api.service';
 import { map, mergeMap } from 'rxjs/operators';
@@ -57,17 +57,7 @@ import { off } from 'process';
                     JSON.stringify(this.integrationProfilesMap.get(this.selected)));
             }),
             
-            mergeMap(profile => {
-                selectedProfile = JSON.parse(profile.value)
-                let queryParams = FieldName.ID + "=" + selectedProfile.libraryID;
-                return this.membersService.getSearchResultsFromNacsis(queryParams);
-            }),
-            mergeMap(response => {
-              if (response.status === this.membersService.OkStatus) {
-                this.integrationProfilesMap.get(this.selected).locations = response.records[0].LOC;
-              }
-            return this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(this.integrationProfilesMap.get(this.selected)));
-            })
+            mergeMap(profile => this.getLocations(profile.value))
         ).subscribe();
         //Clear the store
         concat(
@@ -115,6 +105,23 @@ import { off } from 'process';
         selectedProfile = JSON.parse(profile);
         this.storeService.set(SELECTED_LIB_NAME,event.value).subscribe();
         this.storeService.set(SELECTED_INTEGRATION_PROFILE, JSON.stringify(selectedProfile)).subscribe();
+        this.storeService.get(SELECTED_INTEGRATION_PROFILE).pipe(
+            mergeMap(profile => this.getLocations(profile))).subscribe();
         
+    }
+
+    getLocations(profile: any): Observable<any> {
+        const selectedProfile = JSON.parse(profile);
+        const queryParams = FieldName.ID + "=" + selectedProfile.libraryID;
+    
+        return this.membersService.getSearchResultsFromNacsis(queryParams).pipe(
+            mergeMap(response => {
+                if (response.status === this.membersService.OkStatus) {
+                    this.integrationProfilesMap.get(this.selected).locations = response.records[0].LOC;
+                }
+                return this.storeService.set(SELECTED_INTEGRATION_PROFILE, 
+                    JSON.stringify(this.integrationProfilesMap.get(this.selected)));
+            })
+        );
     }
   }
