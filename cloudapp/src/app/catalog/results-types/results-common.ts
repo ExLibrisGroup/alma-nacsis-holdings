@@ -163,11 +163,16 @@ export abstract class IDisplayLines {
     getFirstPriorityDate(): string {
         // The most detailed PUBDT is superior to the YEAR1 field
         // The PUBDT is separated by dots (e.g. year.month.day)
+        // A valid PUBDT must start with a numeric value, and can optionally be followed by a period plus month and day.
+        // For example, 200 or 2000 or 2000.1 or 2000.01 or 2000.12.31.
+        // Sometimes PUBDT contains values like "c1985" but that is not valid to replace the YEAR1 value.
         let record = this.fullRecord.getSummaryView();
         let mostDetailedData = !this.isEmpty(record.YEAR1)? record.YEAR1 : "";
         if(!this.isEmpty(record.PUB)) {
             record.PUB.forEach(pub => {
-                if(!this.isEmpty(pub.PUBDT) && (pub.PUBDT.split(/\./g)?.length >= mostDetailedData.split(/\./g)?.length)) {
+                if(!this.isEmpty(pub.PUBDT) 
+                        && pub.PUBDT.match(/^[0-9]{1,4}\.?[0-9]{0,2}\.?[0-9]{0,2}$/)
+                        && (pub.PUBDT.split(/\./g)?.length >= mostDetailedData.split(/\./g)?.length)) {
                     mostDetailedData = pub.PUBDT;
                 }
             });
