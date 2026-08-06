@@ -196,9 +196,13 @@ export class MonographSummaryDisplay extends IDisplayLines{
             fieldsArray.push(new ViewFieldBuilder().label('Catalog.Results.Book').build());
             fieldsArray.push(new ViewFieldBuilder().content(this.record.PUB[0]?.PUBL).build());
             fieldsArray.push(new ViewFieldBuilder().label(", ").content(this.record.TTLL).build());
-            //Do not display in case the YEAR ot the PUB DATE are empty or contain non numeric value.
+            // Do not display in case the YEAR or the PUB DATE are empty or contain non numeric value.
+            // A valid PUB DATE must start with a numeric value, and can optionally be followed by a period plus month and day.
+            // For example, 200 or 2000 or 2000.1 or 2000.01 or 2000.12.31
             let date : string = this.getFirstPriorityDate();
-            if(!this.isEmpty(date) && date.match(/^[0-9]+$/)) {
+            // Do date format validation in getFirstPriorityDate():
+            // if(!this.isEmpty(date) && date.match(/^[0-9]{1,4}\.?[0-9]{0,2}\.?[0-9]{0,2}$/)) {
+            if (!this.isEmpty(date)) {
                 fieldsArray.push(new ViewFieldBuilder().label(": ").content(date).build());           
                 fieldsArray.push(new ViewFieldBuilder().label("- ").content(this.record.YEAR2).build());
             }
